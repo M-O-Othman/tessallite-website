@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <defs><linearGradient id="gGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#EBCB55"/><stop offset="100%" stop-color="#B88F1F"/></linearGradient></defs>
+  <polygon points="8,30 28,30 36,44 16,44" fill="#006C35"/>
+  <polygon points="30,30 50,30 58,44 38,44" fill="#004A24"/>
+  <polygon points="8,14 28,14 36,28 16,28" fill="#004A24"/>
+  <polygon points="30,14 50,14 58,28 38,28" fill="url(#gGold)"/>
+</svg>

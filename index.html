@@ -1,1 +1,315 @@
-<h1>tessallite website main page</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tessallite | Transparent Query Acceleration for BI</title>
+    <link rel="icon" type="image/svg+xml" href="assets/logos/favicon.svg">
+    <link rel="stylesheet" href="css/brand.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container header-container">
+            <a href="index.html" class="logo">
+                <img src="assets/logos/logo-primary-horizontal.svg" alt="Tessallite Logo" height="80">
+            </a>
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li><a href="#features" class="nav-link">Features</a></li>
+                    <li><a href="#how-it-works" class="nav-link">How it Works</a></li>
+                    <li><a href="#architecture" class="nav-link">Architecture</a></li>
+                    <li><a href="#roadmap" class="nav-link">Roadmap</a></li>
+                </ul>
+            </nav>
+            <div class="header-cta">
+                <a href="#get-started" class="button button-primary">Get Started</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container hero-container">
+                <div class="hero-content reveal">
+                    <div class="badge">Exactness First &bull; Correctness Guaranteed</div>
+                    <h1 class="hero-title">The Transparent Acceleration Layer for Modern BI</h1>
+                    <p class="hero-subtitle">Achieve up to 80% reduction in analytical query costs with automated, semantic-aware aggregate management. Sub-second performance for BigQuery and PostgreSQL.</p>
+                    <div class="hero-actions">
+                        <a href="#get-started" class="button button-primary">Explore Solution</a>
+                        <a href="#how-it-works" class="button button-secondary">View Architecture</a>
+                    </div>
+                </div>
+                <div class="hero-visual reveal">
+                    <img src="assets/illustrations/hero-mockup.svg" alt="Tessallite Hero Visual" class="hero-image">
+                </div>
+            </div>
+        </section>
+
+        <section class="logo-cloud">
+            <div class="container">
+                <p class="logo-cloud-title">Accelerating Data Teams At</p>
+                <div class="logo-grid-flex">
+                    <!-- Placeholder Logos representing industry standard icons -->
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" alt="Partner">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/bd/Tesla_Motors_logo.svg" alt="Partner">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" alt="Partner">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Partner">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Partner">
+                </div>
+            </div>
+        </section>
+
+        <section class="challenge section-mint">
+            <div class="container">
+                <div class="section-header center reveal">
+                    <h2 class="section-title">The Challenge of Analytical Scale</h2>
+                    <p class="section-description">Direct-to-warehouse queries are slow and expensive. Manual aggregate management is fragile. Tessallite bridges the gap.</p>
+                </div>
+                <div class="grid grid-3">
+                    <div class="card reveal">
+                        <h3 class="card-title">Eliminate Scan Costs</h3>
+                        <p class="card-text">Avoid repetitive, high-volume full table scans. Tessallite routes queries to optimized summary tables, significantly lowering your cloud warehouse spend.</p>
+                    </div>
+                    <div class="card reveal">
+                        <h3 class="card-title">Correctness at Scale</h3>
+                        <p class="card-text">We never trade accuracy for speed. Tessallite guarantees 100% exact results by falling back to the raw source whenever an aggregate cannot satisfy the grain.</p>
+                    </div>
+                    <div class="card reveal">
+                        <h3 class="card-title">Automated Lifecycle</h3>
+                        <p class="card-text">Forget manual tuning. Our Optimizer observes workloads, calculates ROI, and manages the entire aggregate lifecycle—from creation to retirement.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="experience" class="experience section-white">
+            <div class="container">
+                <div class="section-header reveal">
+                    <h2 class="section-title">Engineering-Grade Experience</h2>
+                    <p class="section-description">Built for analysts who demand the precision of code and the speed of modern cloud infrastructure.</p>
+                </div>
+                
+                <div class="tabs-container reveal">
+                    <div class="tab-nav">
+                        <button class="tab-button active" data-tab="gateway">
+                            <h4>Multi-Protocol Gateway</h4>
+                            <p>Transparent connectivity for Power BI, Tableau, and Excel.</p>
+                        </button>
+                        <button class="tab-button" data-tab="router">
+                            <h4>Semantic-Aware Router</h4>
+                            <p>Intelligent query rewriting with 100% correctness fallback.</p>
+                        </button>
+                        <button class="tab-button" data-tab="optimizer">
+                            <h4>ROI-Driven Optimizer</h4>
+                            <p>Automated aggregate promotion based on scan volume metrics.</p>
+                        </button>
+                    </div>
+                    <div class="tab-content">
+                        <div id="gateway" class="tab-pane active">
+                            <h3>Connect Any BI Tool</h3>
+                            <p>Tessallite masquerades as a standard PostgreSQL or XMLA endpoint. Your BI tools see a high-performance database, while we manage the complexity of the underlying warehouse.</p>
+                            <pre class="code-block"><code>// JDBC Connection String
+jdbc:postgresql://tessallite.io:5432/analytics</code></pre>
+                        </div>
+                        <div id="router" class="tab-pane">
+                            <h3>Smart Query Rewriting</h3>
+                            <p>The router parses every SQL and DAX query. If a request can be satisfied by a pre-computed aggregate at the correct grain, the query is rewritten on the fly.</p>
+                            <pre class="code-block"><code>SELECT sum(sales) FROM raw_sales // Intercepted
+SELECT sum(sales) FROM agg_sales_daily // Executed</code></pre>
+                        </div>
+                        <div id="optimizer" class="tab-pane">
+                            <h3>Zero-Maintenance Tuning</h3>
+                            <p>The Optimizer monitors your "miss" log. When it identifies a recurring pattern that would benefit from acceleration, it automatically creates the aggregate and manages its refresh schedule.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="how-it-works" class="how-it-works section-mint">
+            <div class="container">
+                <div class="section-header reveal">
+                    <h2 class="section-title">Visualizing the Loop</h2>
+                    <p class="section-description">A transparent proxy that continuously learns from your analytical workloads.</p>
+                </div>
+                <div class="architecture-diagram reveal">
+                    <img src="assets/illustrations/architecture-diagram.png" alt="Tessallite Architecture Diagram" class="architecture-image">
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="features section-green">
+            <div class="container">
+                <div class="section-header center invert reveal">
+                    <h2 class="section-title">Core Capabilities</h2>
+                    <p class="section-description">Comprehensive tools for analytical acceleration and semantic governance.</p>
+                </div>
+                <div class="grid grid-2">
+                    <div class="card reveal">
+                        <h3 class="card-title">Semantic Modeling</h3>
+                        <p class="card-text">Define facts, dimensions, and measures once. Our logical layer maps raw data to business concepts, ensuring governed results across all tools.</p>
+                    </div>
+                    <div class="card reveal">
+                        <h3 class="card-title">DirectQuery DAX Support</h3>
+                        <p class="card-text">Native XMLA-over-HTTP support for Excel and Power BI. Experience sub-second PivotTable performance without data imports.</p>
+                    </div>
+                    <div class="card reveal">
+                        <h3 class="card-title">Multi-Tenant Isolation</h3>
+                        <p class="card-text">A hardened two-level PostgreSQL metadata system ensures strict tenant and project-level isolation for enterprise deployments.</p>
+                    </div>
+                    <div class="card reveal">
+                        <h3 class="card-title">Transparent Governance</h3>
+                        <p class="card-text">Observe every routing decision, monitor aggregate health, and track lineage from the logical measure back to the raw source column.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="testimonials-wall">
+            <div class="container">
+                <div class="section-header center reveal">
+                    <h2 class="section-title">Trusted by Engineers</h2>
+                </div>
+                <div class="grid grid-3">
+                    <div class="testimonial-card reveal">
+                        <p class="testimonial-quote">"Tessallite reduced our BigQuery scan costs by 75% in the first month. The transparency is what sold us—our dashboards just got faster without changing a single line of DAX."</p>
+                        <div class="testimonial-author">
+                            <div class="author-info">
+                                <h5>Sarah Jenkins</h5>
+                                <p>Head of Data, FinTech ScaleUp</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card reveal">
+                        <p class="testimonial-quote">"The 'Exactness First' guarantee is critical. We've tried other caching layers that returned stale or approximate data. Tessallite's fallback logic is a game-changer for financial reporting."</p>
+                        <div class="testimonial-author">
+                            <div class="author-info">
+                                <h5>David Chen</h5>
+                                <p>Lead Data Architect, Global Logistics</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card reveal">
+                        <p class="testimonial-quote">"Finally, an accelerator that speaks XMLA. Our Excel power users are finally seeing the performance they need on petabyte-scale datasets."</p>
+                        <div class="testimonial-author">
+                            <div class="author-info">
+                                <h5>Maria Rodriguez</h5>
+                                <p>BI Director, Retail Analytics</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="roadmap" class="roadmap section-white">
+            <div class="container">
+                <div class="section-header center reveal">
+                    <h2 class="section-title">Product Roadmap</h2>
+                    <p class="section-description">The evolution of the Tessallite acceleration layer.</p>
+                </div>
+                <div class="grid grid-2">
+                    <div class="roadmap-item reveal">
+                        <h4 class="roadmap-ver">v0.5.0 (Current)</h4>
+                        <ul class="roadmap-list">
+                            <li>BigQuery & PostgreSQL Sources</li>
+                            <li>JDBC & DAX DirectQuery Protocols</li>
+                            <li>Automated Aggregate Lifecycle</li>
+                            <li>Semantic Modeling UI</li>
+                        </ul>
+                    </div>
+                    <div class="roadmap-item reveal">
+                        <h4 class="roadmap-ver">v0.6.0 (Upcoming)</h4>
+                        <ul class="roadmap-list">
+                            <li>dbt Model & Metric Importer</li>
+                            <li>Cost/ROI Advisor Dashboard</li>
+                            <li>BigQuery Partition-Swap Refresh</li>
+                            <li>Calcite-Backed SQL Parser</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="faq" class="faq section-mint">
+            <div class="container">
+                <div class="section-header center reveal">
+                    <h2 class="section-title">Technical FAQ</h2>
+                    <p class="section-description">Deep dive into the Tessallite acceleration engine.</p>
+                </div>
+                <div class="grid grid-2">
+                    <div class="faq-item reveal">
+                        <h4 class="faq-question">How does Tessallite guarantee "Exactness First"?</h4>
+                        <p class="faq-answer">Tessallite's router understands the grain of every aggregate. If a query requires a grain finer than what is available in the summary tables, the router automatically falls back to the raw source, ensuring 100% accuracy without manual intervention.</p>
+                    </div>
+                    <div class="faq-item reveal">
+                        <h4 class="faq-question">Which protocols are supported for BI connectivity?</h4>
+                        <p class="faq-answer">Tessallite supports the PostgreSQL Wire Protocol for standard JDBC/ODBC connections (Tableau, DBeaver) and XMLA-over-HTTP for native Excel and Power BI DirectQuery workflows.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="get-started" class="cta section-green">
+            <div class="container center invert reveal">
+                <h2 class="cta-title">Accelerate Your Analytics Today</h2>
+                <p class="cta-subtitle">Deploy Tessallite as a containerized solution and start seeing sub-second query performance with up to 80% cost reduction.</p>
+                <div class="cta-actions">
+                    <a href="#docs" class="button button-secondary">Read Documentation</a>
+                    <a href="https://github.com/M-O-Othman/tessallite" class="button button-white-outline">View on GitHub</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer section-charcoal">
+        <div class="container footer-fat reveal">
+            <div class="footer-brand">
+                <img src="assets/logos/logo-monochrome-white.svg" alt="Tessallite Monochrome" height="32">
+                <p class="footer-tagline">Semantic Query Acceleration</p>
+                <p style="opacity: 0.5; font-size: 13px; margin-top: 24px;">The engineering-grade layer for modern data teams.</p>
+            </div>
+            <div class="link-group">
+                <h4>Product</h4>
+                <ul>
+                    <li><a href="#features">Optimizer</a></li>
+                    <li><a href="#how-it-works">Router</a></li>
+                    <li><a href="#experience">Gateway</a></li>
+                </ul>
+            </div>
+            <div class="link-group">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="https://github.com/M-O-Othman/tessallite">GitHub</a></li>
+                    <li><a href="#roadmap">Roadmap</a></li>
+                    <li><a href="#">User Guide</a></li>
+                </ul>
+            </div>
+            <div class="link-group">
+                <h4>Offerings</h4>
+                <ul>
+                    <li><a href="#">BigQuery</a></li>
+                    <li><a href="#">PostgreSQL</a></li>
+                    <li><a href="#">Snowflake (Beta)</a></li>
+                </ul>
+            </div>
+            <div class="link-group">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="https://github.com/M-O-Othman">About</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="#">Licensing</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2026 Tessallite Solution. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

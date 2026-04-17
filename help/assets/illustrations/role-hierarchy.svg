@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 440" role="img" aria-label="Tessallite role hierarchy from least to most access">
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#006C35"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="240" y="24" font-size="14" font-weight="700" fill="#006C35" text-anchor="middle" font-family="Inter, sans-serif">Role Hierarchy</text>
+
+  <!-- Left-side "More access" label with upward arrow -->
+  <text x="30" y="240" font-size="11" fill="#6B7280" text-anchor="middle" font-family="Inter, sans-serif" transform="rotate(-90,30,240)">More access</text>
+  <line x1="30" y1="100" x2="30" y2="360" stroke="#CBD5E1" stroke-width="1.5"/>
+  <polygon points="30,88 25,104 35,104" fill="#6B7280"/>
+
+  <!-- Separation lines between role bands -->
+  <line x1="75" y1="124" x2="405" y2="124" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="3,3"/>
+  <line x1="75" y1="214" x2="405" y2="214" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="3,3"/>
+  <line x1="75" y1="304" x2="405" y2="304" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="3,3"/>
+
+  <!-- Level 1 (top, most access): System Admin -->
+  <rect x="80" y="80" width="320" height="44" rx="10" fill="#EFF7F3" stroke="#006C35" stroke-width="2"/>
+  <text x="240" y="106" font-size="13" font-weight="600" fill="#333333" text-anchor="middle" font-family="Inter, sans-serif">System Admin</text>
+  <text x="240" y="142" font-size="11" fill="#6B7280" text-anchor="middle" font-family="Inter, sans-serif">Manages the platform installation</text>
+
+  <!-- Level 2: Tenant Admin -->
+  <rect x="80" y="170" width="320" height="44" rx="10" fill="#EFF7F3" stroke="#006C35" stroke-width="1.5"/>
+  <text x="240" y="196" font-size="13" font-weight="600" fill="#333333" text-anchor="middle" font-family="Inter, sans-serif">Tenant Admin</text>
+  <text x="240" y="232" font-size="11" fill="#6B7280" text-anchor="middle" font-family="Inter, sans-serif">Manages workspace users and settings</text>
+
+  <!-- Level 3: Modeller -->
+  <rect x="80" y="260" width="320" height="44" rx="10" fill="#F2F7F4" stroke="#CBD5E1" stroke-width="1.5"/>
+  <text x="240" y="286" font-size="13" font-weight="600" fill="#333333" text-anchor="middle" font-family="Inter, sans-serif">Modeller</text>
+  <text x="240" y="322" font-size="11" fill="#6B7280" text-anchor="middle" font-family="Inter, sans-serif">Builds and maintains models</text>
+
+  <!-- Level 4 (bottom, least access): Analyst / Viewer -->
+  <rect x="80" y="350" width="320" height="44" rx="10" fill="#F2F7F4" stroke="#CBD5E1" stroke-width="1.5"/>
+  <text x="240" y="376" font-size="13" font-weight="600" fill="#333333" text-anchor="middle" font-family="Inter, sans-serif">Analyst / Viewer</text>
+  <text x="240" y="412" font-size="11" fill="#6B7280" text-anchor="middle" font-family="Inter, sans-serif">Queries data, connects BI tools</text>
+</svg>

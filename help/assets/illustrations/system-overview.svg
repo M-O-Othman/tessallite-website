@@ -1,0 +1,95 @@
+<svg viewBox="0 0 800 480" xmlns="http://www.w3.org/2000/svg" font-family="Inter, sans-serif" role="img" aria-labelledby="svg-title">
+  <title id="svg-title">Tessallite system overview</title>
+
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#006C35"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="480" fill="#FFFFFF"/>
+
+  <!-- ===== LEFT COLUMN: BI Tools ===== -->
+  <!-- Column label -->
+  <text x="100" y="48" text-anchor="middle" fill="#6B7280" font-size="12" font-weight="600" letter-spacing="0.05em">BI TOOLS</text>
+
+  <!-- Excel / Power BI box -->
+  <rect x="20" y="60" width="160" height="50" fill="#F2F7F4" stroke="#006C35" stroke-width="1.5" rx="8"/>
+  <text x="100" y="80" text-anchor="middle" fill="#333333" font-size="14" font-weight="600">Excel / Power BI</text>
+  <text x="100" y="98" text-anchor="middle" fill="#6B7280" font-size="11">XMLA</text>
+
+  <!-- Tableau / DBeaver box -->
+  <rect x="20" y="215" width="160" height="50" fill="#F2F7F4" stroke="#006C35" stroke-width="1.5" rx="8"/>
+  <text x="100" y="235" text-anchor="middle" fill="#333333" font-size="14" font-weight="600">Tableau / DBeaver</text>
+  <text x="100" y="253" text-anchor="middle" fill="#6B7280" font-size="11">JDBC</text>
+
+  <!-- Custom apps box -->
+  <rect x="20" y="370" width="160" height="50" fill="#F2F7F4" stroke="#006C35" stroke-width="1.5" rx="8"/>
+  <text x="100" y="390" text-anchor="middle" fill="#333333" font-size="14" font-weight="600">Custom apps</text>
+  <text x="100" y="408" text-anchor="middle" fill="#6B7280" font-size="11">JDBC</text>
+
+  <!-- ===== CENTER: Tessallite ===== -->
+  <rect x="310" y="90" width="180" height="300" fill="#EFF7F3" stroke="#006C35" stroke-width="2" rx="12"/>
+  <text x="400" y="118" text-anchor="middle" fill="#006C35" font-size="16" font-weight="700">Tessallite</text>
+
+  <!-- Inner component labels -->
+  <!-- Gateway -->
+  <rect x="330" y="130" width="140" height="32" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1" rx="6"/>
+  <text x="400" y="151" text-anchor="middle" fill="#333333" font-size="13" font-weight="500">Gateway</text>
+
+  <!-- Query Router -->
+  <rect x="330" y="174" width="140" height="32" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1" rx="6"/>
+  <text x="400" y="195" text-anchor="middle" fill="#333333" font-size="13" font-weight="500">Query Router</text>
+
+  <!-- Semantic Layer -->
+  <rect x="330" y="218" width="140" height="32" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1" rx="6"/>
+  <text x="400" y="239" text-anchor="middle" fill="#333333" font-size="13" font-weight="500">Semantic Layer</text>
+
+  <!-- Optimizer + Scheduler -->
+  <rect x="330" y="262" width="140" height="44" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1" rx="6"/>
+  <text x="400" y="281" text-anchor="middle" fill="#333333" font-size="13" font-weight="500">Optimizer +</text>
+  <text x="400" y="298" text-anchor="middle" fill="#333333" font-size="13" font-weight="500">Scheduler</text>
+
+  <!-- ===== RIGHT COLUMN: Data Sources ===== -->
+  <!-- Column label -->
+  <text x="700" y="48" text-anchor="middle" fill="#6B7280" font-size="12" font-weight="600" letter-spacing="0.05em">DATA SOURCES</text>
+
+  <!-- PostgreSQL box -->
+  <rect x="620" y="60" width="160" height="50" fill="#F2F7F4" stroke="#006C35" stroke-width="1.5" rx="8"/>
+  <text x="700" y="80" text-anchor="middle" fill="#333333" font-size="14" font-weight="600">PostgreSQL</text>
+  <text x="700" y="98" text-anchor="middle" fill="#6B7280" font-size="11">SQL</text>
+
+  <!-- BigQuery box -->
+  <rect x="620" y="215" width="160" height="50" fill="#F2F7F4" stroke="#006C35" stroke-width="1.5" rx="8"/>
+  <text x="700" y="235" text-anchor="middle" fill="#333333" font-size="14" font-weight="600">BigQuery</text>
+  <text x="700" y="253" text-anchor="middle" fill="#6B7280" font-size="11">SQL</text>
+
+  <!-- Hadoop / Spark box -->
+  <rect x="620" y="370" width="160" height="50" fill="#F2F7F4" stroke="#006C35" stroke-width="1.5" rx="8"/>
+  <text x="700" y="390" text-anchor="middle" fill="#333333" font-size="14" font-weight="600">Hadoop / Spark</text>
+  <text x="700" y="408" text-anchor="middle" fill="#6B7280" font-size="11">SQL</text>
+
+  <!-- ===== ARROWS: BI Tools → Tessallite ===== -->
+  <!-- Excel/Power BI → Gateway (XMLA port 8080) -->
+  <line x1="182" y1="85" x2="308" y2="146" stroke="#006C35" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+  <text x="230" y="104" text-anchor="middle" fill="#6B7280" font-size="11">XMLA port 8080</text>
+
+  <!-- Tableau/DBeaver + Custom apps → Gateway (JDBC port 5433) -->
+  <line x1="182" y1="270" x2="308" y2="200" stroke="#006C35" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+  <line x1="182" y1="395" x2="308" y2="220" stroke="#006C35" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+  <text x="230" y="310" text-anchor="middle" fill="#6B7280" font-size="11">JDBC port 5433</text>
+
+  <!-- ===== ARROWS: Tessallite → Data Sources ===== -->
+  <!-- Tessallite → PostgreSQL -->
+  <line x1="492" y1="170" x2="618" y2="88" stroke="#006C35" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+  <text x="560" y="115" text-anchor="middle" fill="#6B7280" font-size="11">SQL</text>
+
+  <!-- Tessallite → BigQuery -->
+  <line x1="492" y1="240" x2="618" y2="240" stroke="#006C35" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+  <text x="560" y="233" text-anchor="middle" fill="#6B7280" font-size="11">SQL</text>
+
+  <!-- Tessallite → Hadoop/Spark -->
+  <line x1="492" y1="310" x2="618" y2="392" stroke="#006C35" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+  <text x="570" y="370" text-anchor="middle" fill="#6B7280" font-size="11">SQL</text>
+</svg>

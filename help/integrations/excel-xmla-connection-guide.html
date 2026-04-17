@@ -21,20 +21,139 @@
       <span class="updated">Updated 2026-04-17</span>
     </div>
     <h1>Excel XMLA Connection Guide</h1>
-    <div class="stub-notice">
-      <strong>Coming soon — Wave 3</strong>
-      <p>This article has not yet been written. It will be published as part of the Wave 3 reference and integrations content.</p>
+
+    <h2>What this covers</h2>
+    <p>This is the detailed connection reference for Microsoft Excel connecting to Tessallite via the XMLA endpoint. Tessallite exposes an Analysis Services-compatible XMLA interface on port 8080. Excel's Analysis Services connector uses this interface to query models as if they were OLAP cubes.</p>
+    <p>For a shorter introduction, see <a href="../getting-started/connect-excel.html">Connect Excel via XMLA</a>.</p>
+
+    <h2>XMLA endpoint details</h2>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Parameter</th>
+            <th>Value</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>URL</td>
+            <td><code>http://HOST:8080/xmla</code></td>
+            <td>Replace HOST with the Tessallite Gateway hostname. Must include the <code>/xmla</code> path.</td>
+          </tr>
+          <tr>
+            <td>Authentication</td>
+            <td>HTTP Basic</td>
+            <td>Username and password of a Tessallite user account.</td>
+          </tr>
+          <tr>
+            <td>Catalog</td>
+            <td>Workspace slug (e.g., <code>acme</code>)</td>
+            <td>Case-sensitive. Obtain from your Tenant Admin.</td>
+          </tr>
+          <tr>
+            <td>Protocol</td>
+            <td>XMLA 1.1</td>
+            <td>Standard Analysis Services protocol.</td>
+          </tr>
+          <tr>
+            <td>Cube / Perspective</td>
+            <td>Model name within the project</td>
+            <td>Shown in the catalog browser once you connect.</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    <p>This article will provide a detailed guide for connecting Microsoft Excel to Tessallite via XMLA, covering all connection dialog options, catalogue selection, pivot table setup, and known compatibility issues.</p>
+
+    <h2>Connect Excel to Tessallite</h2>
+    <ol>
+      <li>Open Excel.</li>
+      <li>Go to <strong>Data</strong> → <strong>Get Data</strong> → <strong>From Other Sources</strong> → <strong>From Analysis Services</strong>.</li>
+      <li>In the <strong>Server name</strong> field, enter the full XMLA URL: <code>http://HOST:8080/xmla</code></li>
+      <li>Under <strong>Log on credentials</strong>, select <strong>Use the following User Name and Password</strong>.</li>
+      <li>Enter your Tessallite username (email address) and password.</li>
+      <li>Click <strong>Next</strong>.</li>
+      <li>In the <strong>Select the database</strong> dropdown, choose your workspace slug (the catalog).</li>
+      <li>In the cube list, select the model name you want to query.</li>
+      <li>Click <strong>Next</strong>, then <strong>Finish</strong>.</li>
+      <li>In the <strong>Import Data</strong> dialog, select <strong>PivotTable Report</strong> and click <strong>OK</strong>.</li>
+    </ol>
+    <p>A PivotTable is inserted in the worksheet. The field list on the right shows the dimensions and measures from the selected model.</p>
+
+    <h2>Create a PivotTable</h2>
+    <p>Drag dimensions to the Rows or Columns area and measures to the Values area. Excel sends MDX queries to Tessallite, which routes them to the fastest available source.</p>
+
+    <h2>Refresh data</h2>
+    <p>To refresh the data in a connected PivotTable, right-click anywhere in the PivotTable and select <strong>Refresh</strong>. This sends a new query to Tessallite and updates the displayed values.</p>
+    <p>To configure automatic refresh, go to <strong>Data</strong> → <strong>Queries &amp; Connections</strong>, right-click the connection, and select <strong>Properties</strong>. Under the <strong>Usage</strong> tab, enable <strong>Refresh every N minutes</strong> or <strong>Refresh data when opening the file</strong>.</p>
+
+    <h2>Manage connection properties</h2>
+    <ol>
+      <li>Go to <strong>Data</strong> → <strong>Queries &amp; Connections</strong>.</li>
+      <li>Right-click the Tessallite connection and select <strong>Properties</strong>.</li>
+      <li>On the <strong>Definition</strong> tab you can modify the connection string and command text.</li>
+      <li>On the <strong>Usage</strong> tab you can set refresh intervals and control connection behavior when the file opens.</li>
+    </ol>
+
+    <h2>Troubleshooting</h2>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Problem</th>
+            <th>Likely cause</th>
+            <th>Fix</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Cannot connect / "Unable to connect to the server"</td>
+            <td>Wrong URL format or port blocked by firewall</td>
+            <td>Verify the URL is exactly <code>http://HOST:8080/xmla</code>. Do not use HTTPS unless SSL is configured. Test port access: <code>curl -v http://HOST:8080/xmla</code></td>
+          </tr>
+          <tr>
+            <td>"Catalog not found" or no catalog in dropdown</td>
+            <td>Wrong workspace slug</td>
+            <td>Check the workspace slug with your Tenant Admin. Slug is case-sensitive.</td>
+          </tr>
+          <tr>
+            <td>"Authentication failed" / "The user name or password is incorrect"</td>
+            <td>Wrong credentials</td>
+            <td>Reset your Tessallite password via the Admin panel and try again.</td>
+          </tr>
+          <tr>
+            <td>"No cubes found" / cube list is empty</td>
+            <td>No published model in the selected project</td>
+            <td>Ask your Modeller to verify the model is saved and published in Model Builder.</td>
+          </tr>
+          <tr>
+            <td>Excel cached a bad connection</td>
+            <td>Stale connection cache</td>
+            <td>Go to <strong>Data</strong> → <strong>Queries &amp; Connections</strong>, right-click the connection, and select <strong>Delete</strong>. Reconnect from scratch.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout-note">
+      <p>The XMLA URL must include the <code>/xmla</code> path segment. Entering only <code>http://HOST:8080</code> will not work.</p>
+    </div>
+
     <div class="related">
       <h2>Related</h2>
-      <ul><li><a href="../getting-started/connect-excel.html">Connect Excel</a></li><li><a href="../troubleshooting/excel-connection-problems.html">Excel connection problems</a></li></ul>
+      <ul>
+        <li><a href="../getting-started/connect-excel.html">Connect Excel via XMLA (getting started)</a></li>
+        <li><a href="jdbc-connection-guide.html">JDBC Connection Guide</a></li>
+        <li><a href="powerbi-connection-guide.html">Power BI Connection Guide</a></li>
+        <li><a href="../troubleshooting/excel-connection-problems.html">Excel Connection Problems</a></li>
+      </ul>
     </div>
   </main>
   <nav class="page-nav">
-    <span class="page-nav-btn prev disabled"></span>
+    <a href="jdbc-connection-guide.html" class="page-nav-btn prev">← JDBC Connection Guide</a>
     <a href="../index.html" class="page-nav-btn home">Home</a>
-    <span class="page-nav-btn next disabled"></span>
+    <a href="powerbi-connection-guide.html" class="page-nav-btn next">Power BI Connection Guide →</a>
   </nav>
   <footer class="site-footer">
     <p>Tessallite Help — <a href="../index.html">Back to contents</a></p>

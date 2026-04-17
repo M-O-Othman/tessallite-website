@@ -21,20 +21,168 @@
       <span class="updated">Updated 2026-04-17</span>
     </div>
     <h1>Configure Environment Variables</h1>
-    <div class="stub-notice">
-      <strong>Coming soon — Wave 4</strong>
-      <p>This article has not yet been written. It will be published as part of the Wave 4 admin and system documentation.</p>
+
+    <h2>What this covers</h2>
+    <p>The complete reference for all environment variables accepted by Tessallite, with types, defaults, and the services each variable applies to. Also covers how to set variables in Docker Compose and Cloud Run, and how to keep secrets out of source control.</p>
+
+    <h2>Variable reference</h2>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Variable</th>
+            <th>Required</th>
+            <th>Default</th>
+            <th>Services</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>DB_HOST</code></td>
+            <td>Yes</td>
+            <td><code>postgres</code></td>
+            <td>All except gateway</td>
+            <td>Hostname of the internal PostgreSQL instance. In Docker Compose, use the service name <code>postgres</code>. On GCP, use the Cloud SQL private IP or <code>127.0.0.1</code> when using the Auth Proxy sidecar.</td>
+          </tr>
+          <tr>
+            <td><code>DB_PORT</code></td>
+            <td>No</td>
+            <td><code>5432</code></td>
+            <td>All except gateway</td>
+            <td>Port of the internal PostgreSQL instance.</td>
+          </tr>
+          <tr>
+            <td><code>DB_NAME</code></td>
+            <td>No</td>
+            <td><code>tessallite</code></td>
+            <td>All except gateway</td>
+            <td>Database name in the internal PostgreSQL instance.</td>
+          </tr>
+          <tr>
+            <td><code>DB_USER</code></td>
+            <td>Yes</td>
+            <td>—</td>
+            <td>All except gateway</td>
+            <td>PostgreSQL username. Must match the user created in the internal database.</td>
+          </tr>
+          <tr>
+            <td><code>DB_PASS</code></td>
+            <td>Yes</td>
+            <td>—</td>
+            <td>All except gateway</td>
+            <td>PostgreSQL password. Store in Secret Manager or Docker secrets — do not commit to source control.</td>
+          </tr>
+          <tr>
+            <td><code>ADMIN_USER</code></td>
+            <td>Yes</td>
+            <td>—</td>
+            <td>frontend</td>
+            <td>System Admin username for initial login to the web UI.</td>
+          </tr>
+          <tr>
+            <td><code>ADMIN_PASS</code></td>
+            <td>Yes</td>
+            <td>—</td>
+            <td>frontend</td>
+            <td>System Admin password. Change this from any example value before deploying.</td>
+          </tr>
+          <tr>
+            <td><code>SESSION_SECRET</code></td>
+            <td>Yes</td>
+            <td>—</td>
+            <td>frontend</td>
+            <td>Random string used to sign session tokens. Minimum 32 characters. No default — service will not start without this variable set.</td>
+          </tr>
+          <tr>
+            <td><code>GATEWAY_PORT_JDBC</code></td>
+            <td>No</td>
+            <td><code>5433</code></td>
+            <td>gateway</td>
+            <td>Port on which gateway listens for JDBC connections (PostgreSQL wire protocol).</td>
+          </tr>
+          <tr>
+            <td><code>GATEWAY_PORT_XMLA</code></td>
+            <td>No</td>
+            <td><code>8080</code></td>
+            <td>gateway</td>
+            <td>Port on which gateway listens for XMLA connections.</td>
+          </tr>
+          <tr>
+            <td><code>FRONTEND_PORT</code></td>
+            <td>No</td>
+            <td><code>3000</code></td>
+            <td>frontend</td>
+            <td>Port on which the web UI is served.</td>
+          </tr>
+          <tr>
+            <td><code>OPTIMIZER_SCORE_THRESHOLD</code></td>
+            <td>No</td>
+            <td><code>50</code></td>
+            <td>optimizer</td>
+            <td>Minimum ROI score required before optimizer surfaces an aggregate as a build recommendation. Integer, 0–100. Lower values surface more recommendations; higher values surface fewer.</td>
+          </tr>
+          <tr>
+            <td><code>SCHEDULER_MAX_CONCURRENT</code></td>
+            <td>No</td>
+            <td><code>3</code></td>
+            <td>scheduler</td>
+            <td>Maximum number of aggregate build jobs that can run simultaneously. Reduce if your data source has strict concurrency limits.</td>
+          </tr>
+          <tr>
+            <td><code>LOG_LEVEL</code></td>
+            <td>No</td>
+            <td><code>info</code></td>
+            <td>All</td>
+            <td>Log verbosity. Accepted values: <code>debug</code>, <code>info</code>, <code>warn</code>, <code>error</code>. Use <code>debug</code> only for short-duration troubleshooting.</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    <p>This article will provide a complete reference for all environment variables accepted by Tessallite — required variables, optional variables with defaults, service-specific settings, and guidance for production configuration.</p>
+
+    <h2>Setting variables in Docker Compose</h2>
+    <p>The recommended approach is a <code>.env</code> file in the same directory as <code>docker-compose.yml</code>. Docker Compose reads it automatically.</p>
+    <pre><code># .env
+DB_HOST=postgres
+DB_PORT=5432
+DB_NAME=tessallite
+DB_USER=tessallite
+DB_PASS=changeme
+ADMIN_USER=admin
+ADMIN_PASS=changeme
+SESSION_SECRET=your-random-secret-here</code></pre>
+    <p>Alternatively, set variables directly in the <code>environment:</code> block of each service in <code>docker-compose.yml</code>. This approach is suitable for non-secret variables such as <code>LOG_LEVEL</code> or <code>OPTIMIZER_SCORE_THRESHOLD</code>.</p>
+
+    <h2>Setting variables in Cloud Run</h2>
+    <p>Two methods are available:</p>
+    <ul>
+      <li><strong>Via the console:</strong> Open the Cloud Run service, select Edit and Deploy New Revision, then open the Variables and Secrets tab. Add each variable as a plain environment variable or as a Secret Manager reference.</li>
+      <li><strong>Via the CLI:</strong></li>
+    </ul>
+    <pre><code>gcloud run services update SERVICE_NAME \
+  --region REGION \
+  --set-env-vars LOG_LEVEL=info,OPTIMIZER_SCORE_THRESHOLD=50 \
+  --update-secrets DB_PASS=tessallite-db-pass:latest,SESSION_SECRET=tessallite-session-secret:latest</code></pre>
+    <p>Use <code>--set-env-vars</code> for non-secret values and <code>--update-secrets</code> to mount Secret Manager secrets as environment variables.</p>
+
+    <div class="callout-warning">
+      <p>Never commit <code>DB_PASS</code>, <code>ADMIN_PASS</code>, or <code>SESSION_SECRET</code> to source control. Add <code>.env</code> to <code>.gitignore</code>. On GCP, use Secret Manager for all credential values rather than embedding them in the Cloud Run service definition.</p>
+    </div>
+
     <div class="related">
       <h2>Related</h2>
-      <ul><li><a href="../getting-started/install-local.html">Install locally</a></li><li><a href="../getting-started/install-gcp.html">Install on GCP</a></li></ul>
+      <ul>
+        <li><a href="deploy-local.html">Deploy Locally</a></li>
+        <li><a href="deploy-gcp.html">Deploy on GCP</a></li>
+        <li><a href="service-reference.html">Service Reference</a></li>
+      </ul>
     </div>
   </main>
   <nav class="page-nav">
-    <span class="page-nav-btn prev disabled"></span>
+    <a href="deploy-gcp.html" class="page-nav-btn prev">← Deploy on GCP</a>
     <a href="../index.html" class="page-nav-btn home">Home</a>
-    <span class="page-nav-btn next disabled"></span>
+    <a href="service-reference.html" class="page-nav-btn next">Service Reference →</a>
   </nav>
   <footer class="site-footer">
     <p>Tessallite Help — <a href="../index.html">Back to contents</a></p>

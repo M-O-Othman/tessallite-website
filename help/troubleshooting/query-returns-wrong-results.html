@@ -21,20 +21,67 @@
       <span class="updated">Updated 2026-04-17</span>
     </div>
     <h1>Query Returns Wrong Results</h1>
-    <div class="stub-notice">
-      <strong>Coming soon — Wave 3</strong>
-      <p>This article has not yet been written. It will be published as part of the Wave 3 reference and troubleshooting content.</p>
+
+    <h2>What this covers</h2>
+    <p>Diagnosing incorrect values returned by Tessallite queries. Tessallite returns the same values whether a query hits an aggregate or the raw source — if the values are wrong, the cause is almost always in the model definition, data freshness, or a problem in the underlying source data, not in the routing layer.</p>
+
+    <h2>Step 1 — Check the measure definition</h2>
+    <p>Open <strong>Model Builder</strong> and navigate to the measure that is returning unexpected values.</p>
+    <ul>
+      <li>Verify the source column is correct. A column rename in the source table produces wrong results silently if schema drift has not been detected.</li>
+      <li>Verify the aggregation type: SUM, COUNT, COUNT DISTINCT, AVG, MIN, MAX. An incorrect aggregation type is a common cause of wrong totals.</li>
+      <li>Check whether any filters are applied to the measure definition.</li>
+    </ul>
+
+    <h2>Step 2 — Check for grain mismatch</h2>
+    <p>If a query asks for totals and an aggregate exists at a finer grain, Tessallite re-aggregates the pre-built summary to answer the query. This is correct for additive measures (SUM, MIN, MAX) but produces wrong results for COUNT DISTINCT.</p>
+    <p>If the query uses COUNT DISTINCT and returns a value that is too high, no exact-grain aggregate exists for that query pattern. To fix this:</p>
+    <ul>
+      <li>Ask your Modeller to build an aggregate at the exact grain required by the query.</li>
+      <li>Or reformulate the query to use a grain for which an exact aggregate exists.</li>
+    </ul>
+
+    <h2>Step 3 — Check for stale data</h2>
+    <p>An aggregate may not have been refreshed after the source data changed. In Model Builder, check the status column for each aggregate:</p>
+    <ul>
+      <li><strong>Ready</strong>: the aggregate is current.</li>
+      <li><strong>Stale</strong>: the source has changed since the last build. Ask your Modeller to trigger a refresh.</li>
+      <li><strong>Building</strong>: a refresh is in progress. Wait for it to complete.</li>
+      <li><strong>Error</strong>: the last build failed. See <a href="aggregates-not-building.html">Aggregates Not Building</a>.</li>
+    </ul>
+
+    <h2>Step 4 — Check for schema drift</h2>
+    <p>A source table column that a measure or dimension references may have changed type or been renamed since the model was built. Tessallite detects this and reports it in the Health tab.</p>
+    <ol>
+      <li>Open <strong>Model Builder</strong>.</li>
+      <li>Select the project.</li>
+      <li>Go to the <strong>Health</strong> tab.</li>
+      <li>Look for "Schema drift detected" warnings. Each warning identifies the affected table and column.</li>
+      <li>Update the model to reference the correct column name or type, then re-publish and rebuild aggregates.</li>
+    </ol>
+
+    <h2>Step 5 — Compare with a direct query</h2>
+    <p>Run the equivalent query directly against the source data, bypassing Tessallite entirely. If the direct query also returns wrong values, the problem is in the source data — not in Tessallite. If the direct query returns correct values but Tessallite does not, return to Steps 1–4.</p>
+    <p>To run a direct query, connect to the source database using the source credentials (not the Tessallite JDBC endpoint) and execute the equivalent SQL.</p>
+
+    <div class="callout-note">
+      <p>Tessallite does not transform data. It routes queries and pre-aggregates, but the values it returns come from the source. If the source has data quality issues, Tessallite reflects them.</p>
     </div>
-    <p>This article will cover common causes of incorrect query results — mismatched aggregate grain, stale data, invalid model objects, and dimension visibility issues — with steps to diagnose each case.</p>
+
     <div class="related">
       <h2>Related</h2>
-      <ul><li><a href="../concepts/query-routing.html">Query routing</a></li><li><a href="common-errors.html">Common errors</a></li></ul>
+      <ul>
+        <li><a href="../concepts/query-routing.html">Query Routing</a></li>
+        <li><a href="aggregates-not-building.html">Aggregates Not Building</a></li>
+        <li><a href="common-errors.html">Common Errors</a></li>
+        <li><a href="excel-connection-problems.html">Excel Connection Problems</a></li>
+      </ul>
     </div>
   </main>
   <nav class="page-nav">
-    <span class="page-nav-btn prev disabled"></span>
+    <a href="excel-connection-problems.html" class="page-nav-btn prev">← Excel Connection Problems</a>
     <a href="../index.html" class="page-nav-btn home">Home</a>
-    <span class="page-nav-btn next disabled"></span>
+    <a href="aggregates-not-building.html" class="page-nav-btn next">Aggregates Not Building →</a>
   </nav>
   <footer class="site-footer">
     <p>Tessallite Help — <a href="../index.html">Back to contents</a></p>

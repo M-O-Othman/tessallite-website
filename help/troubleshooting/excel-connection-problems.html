@@ -21,20 +21,92 @@
       <span class="updated">Updated 2026-04-17</span>
     </div>
     <h1>Excel Connection Problems</h1>
-    <div class="stub-notice">
-      <strong>Coming soon — Wave 3</strong>
-      <p>This article has not yet been written. It will be published as part of the Wave 3 reference and troubleshooting content.</p>
+
+    <h2>What this covers</h2>
+    <p>Diagnosing and resolving connection failures when connecting Microsoft Excel to Tessallite via the XMLA endpoint. For the connection setup procedure, see <a href="../integrations/excel-xmla-connection-guide.html">Excel XMLA Connection Guide</a>.</p>
+
+    <h2>Pre-connection checklist</h2>
+    <p>Before troubleshooting, verify:</p>
+    <ul>
+      <li>Port 8080 is reachable from this machine. Test with: <code>curl -v http://HOST:8080/xmla</code></li>
+      <li>You have the workspace slug (obtain from your Tenant Admin). It is case-sensitive.</li>
+      <li>You have valid Tessallite credentials (email address and password).</li>
+      <li>You know the project name and model name you intend to query.</li>
+    </ul>
+
+    <h2>Symptom reference</h2>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Symptom</th>
+            <th>Likely cause</th>
+            <th>Resolution</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>"We couldn't connect to the Analysis Services server"</td>
+            <td>Wrong URL format</td>
+            <td>The URL must be exactly <code>http://HOST:8080/xmla</code>. Do not omit the <code>/xmla</code> path. Do not use HTTPS unless SSL is explicitly configured on the Tessallite server.</td>
+          </tr>
+          <tr>
+            <td>"We couldn't connect to the Analysis Services server" (URL appears correct)</td>
+            <td>Port 8080 blocked by firewall or Gateway service not running</td>
+            <td>Test connectivity from the command line: <code>curl -v http://HOST:8080/xmla</code>. If it times out or is refused, escalate to your System Admin to check the Gateway service and firewall rules.</td>
+          </tr>
+          <tr>
+            <td>"The catalog name is invalid" or no catalog appears in the dropdown</td>
+            <td>Wrong workspace slug, or slug entered with wrong case</td>
+            <td>Verify the workspace slug with your Tenant Admin. The slug is case-sensitive. Enter it exactly as provided.</td>
+          </tr>
+          <tr>
+            <td>"The user name or password is incorrect"</td>
+            <td>Wrong Tessallite credentials</td>
+            <td>Confirm you are using your Tessallite email address and password (not credentials for the underlying database). Reset your password via the Tessallite Admin panel if needed.</td>
+          </tr>
+          <tr>
+            <td>"No cubes were found in the database" or the model list is empty</td>
+            <td>The project has no published model</td>
+            <td>Ask your Modeller to open the project in Model Builder, verify the model is complete, and publish it. A model must be saved and published before it is visible through XMLA.</td>
+          </tr>
+          <tr>
+            <td>Data looks stale or values do not match expected figures</td>
+            <td>Aggregate not refreshed after source data changed</td>
+            <td>Ask your Modeller to check the aggregate status in Model Builder. If the status is Stale, run a refresh. If no aggregate exists for this query grain, Tessallite is showing raw-source data which may be at a different freshness level.</td>
+          </tr>
+          <tr>
+            <td>Excel shows an error after previously working</td>
+            <td>Excel cached a connection with old or invalid settings</td>
+            <td>Clear the cached connection: go to <strong>Data</strong> → <strong>Queries &amp; Connections</strong>, right-click the Tessallite connection, and select <strong>Delete</strong>. Then reconnect from scratch using the steps in the <a href="../integrations/excel-xmla-connection-guide.html">Excel XMLA Connection Guide</a>.</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    <p>This article will cover the most common Excel XMLA connection failures — wrong URL format, authentication errors, missing catalogues, and session timeouts — with diagnostic steps and resolutions for each.</p>
+
+    <h2>Testing the XMLA endpoint directly</h2>
+    <p>To verify the endpoint is reachable before opening Excel, run this command from a terminal on the same machine as Excel:</p>
+    <pre><code>curl -v http://HOST:8080/xmla</code></pre>
+    <p>A response of <code>200 OK</code> or any HTTP response (even an error from the server) confirms the port is reachable. A timeout or "connection refused" means the port is not reachable and is a network or service issue, not an Excel configuration issue.</p>
+
+    <div class="callout-note">
+      <p>If you receive an HTTP response but Excel still cannot connect, the problem is in the URL, credentials, or catalog name entered in the Excel wizard — not in network connectivity.</p>
+    </div>
+
     <div class="related">
       <h2>Related</h2>
-      <ul><li><a href="../getting-started/connect-excel.html">Connect Excel</a></li><li><a href="../integrations/excel-xmla-connection-guide.html">Excel XMLA connection guide</a></li></ul>
+      <ul>
+        <li><a href="../integrations/excel-xmla-connection-guide.html">Excel XMLA Connection Guide</a></li>
+        <li><a href="common-errors.html">Common Errors</a></li>
+        <li><a href="query-returns-wrong-results.html">Query Returns Wrong Results</a></li>
+        <li><a href="aggregates-not-building.html">Aggregates Not Building</a></li>
+      </ul>
     </div>
   </main>
   <nav class="page-nav">
-    <span class="page-nav-btn prev disabled"></span>
+    <a href="../integrations/api-reference.html" class="page-nav-btn prev">← API Reference</a>
     <a href="../index.html" class="page-nav-btn home">Home</a>
-    <span class="page-nav-btn next disabled"></span>
+    <a href="query-returns-wrong-results.html" class="page-nav-btn next">Query Returns Wrong Results →</a>
   </nav>
   <footer class="site-footer">
     <p>Tessallite Help — <a href="../index.html">Back to contents</a></p>

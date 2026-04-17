@@ -21,18 +21,121 @@
       <span class="updated">Updated 2026-04-17</span>
     </div>
     <h1>Common Errors</h1>
-    <div class="stub-notice">
-      <strong>Coming soon — Wave 3</strong>
-      <p>This article has not yet been written. It will be published as part of the Wave 3 reference and troubleshooting content.</p>
+
+    <h2>What this covers</h2>
+    <p>A reference table of error messages returned by Tessallite services and the Gateway, grouped by category. For step-by-step diagnostic guides, see the linked troubleshooting articles.</p>
+
+    <h2>Connection errors</h2>
+    <p>These errors appear when a BI tool or API client cannot establish a connection to Tessallite.</p>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Error message</th>
+            <th>Likely cause</th>
+            <th>Resolution</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>FATAL: database "X" does not exist</code></td>
+            <td>The value in the Database field is not a valid workspace slug</td>
+            <td>Verify the workspace slug with your Tenant Admin. The slug is case-sensitive. Example: <code>acme</code>, not <code>Acme</code> or <code>acme_db</code>.</td>
+          </tr>
+          <tr>
+            <td><code>FATAL: password authentication failed for user "X"</code></td>
+            <td>Wrong username or password</td>
+            <td>Confirm you are using Tessallite credentials (email and password), not the credentials for the underlying data source. Reset via the Admin panel if needed.</td>
+          </tr>
+          <tr>
+            <td><code>Connection refused (port 5433)</code></td>
+            <td>Gateway service is not running, or wrong host/port</td>
+            <td>Ask your System Admin to check the Gateway service: <code>docker compose ps gateway</code>. Confirm the hostname and port are correct.</td>
+          </tr>
+          <tr>
+            <td><code>SSL SYSCALL error: EOF detected</code></td>
+            <td>Server requires SSL but the client is not configured for it</td>
+            <td>Append <code>?sslmode=require</code> to the JDBC URL, or enable SSL in your client connection settings.</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    <p>This article will provide a reference table of error messages returned by Tessallite's services and gateway, with their causes and recommended actions.</p>
+
+    <h2>Query errors</h2>
+    <p>These errors appear in BI tool error dialogs or in the API response body when a query fails.</p>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Error message</th>
+            <th>Likely cause</th>
+            <th>Resolution</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>ERROR: column "X" does not exist</code></td>
+            <td>A dimension or measure in the model references a column that has been renamed or removed in the source table (schema drift)</td>
+            <td>Open Model Builder → Health tab → look for "Schema drift detected" → update the model to reference the correct column → re-publish and rebuild aggregates.</td>
+          </tr>
+          <tr>
+            <td><code>ERROR: Query timeout exceeded</code></td>
+            <td>The query ran longer than the workspace query timeout setting</td>
+            <td>Increase the query timeout in Workspace Settings. For recurring slow queries, ask your Modeller to build a matching aggregate so the query is served from a pre-built summary.</td>
+          </tr>
+          <tr>
+            <td><code>ERROR: permission denied for schema "X"</code></td>
+            <td>The Tessallite database user lacks read permission on the source schema</td>
+            <td>Grant <code>USAGE</code> on the schema and <code>SELECT</code> on the required tables to the database user configured in the data source connection.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Aggregate errors</h2>
+    <p>These errors appear in the Model Builder Health tab or in Scheduler logs when an aggregate build fails.</p>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Error message</th>
+            <th>Likely cause</th>
+            <th>Resolution</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>Aggregate build failed: write permission denied</code></td>
+            <td>The Scheduler cannot write pre-aggregated results to the target schema</td>
+            <td>Grant <code>CREATE TABLE</code>, <code>INSERT</code>, and <code>DROP TABLE</code> on the target schema to the Tessallite database user. See <a href="aggregates-not-building.html">Aggregates Not Building</a> for the full grant command.</td>
+          </tr>
+          <tr>
+            <td><code>Aggregate build failed: source timeout</code></td>
+            <td>The source query for the aggregate build exceeded the query timeout</td>
+            <td>Reduce the aggregate grain (use fewer dimensions) or increase the source query timeout in Workspace Settings.</td>
+          </tr>
+          <tr>
+            <td><code>Aggregate retired</code></td>
+            <td>The AI Optimizer identified the aggregate as unused and removed it</td>
+            <td>Re-create the aggregate manually in Model Builder if it is still needed. To prevent future retirements, lower the retirement threshold in the Optimizer settings.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
     <div class="related">
       <h2>Related</h2>
-      <ul><li><a href="excel-connection-problems.html">Excel connection problems</a></li><li><a href="query-returns-wrong-results.html">Query returns wrong results</a></li><li><a href="service-not-starting.html">Service not starting</a></li></ul>
+      <ul>
+        <li><a href="excel-connection-problems.html">Excel Connection Problems</a></li>
+        <li><a href="query-returns-wrong-results.html">Query Returns Wrong Results</a></li>
+        <li><a href="aggregates-not-building.html">Aggregates Not Building</a></li>
+        <li><a href="service-not-starting.html">Service Not Starting</a></li>
+        <li><a href="../integrations/jdbc-connection-guide.html">JDBC Connection Guide</a></li>
+      </ul>
     </div>
   </main>
   <nav class="page-nav">
-    <span class="page-nav-btn prev disabled"></span>
+    <a href="service-not-starting.html" class="page-nav-btn prev">← Service Not Starting</a>
     <a href="../index.html" class="page-nav-btn home">Home</a>
     <span class="page-nav-btn next disabled"></span>
   </nav>

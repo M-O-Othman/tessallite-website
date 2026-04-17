@@ -12,7 +12,7 @@
   <header class="site-header">
     <a href="../index.html" class="logo">Tessallite Help</a>
     <nav class="breadcrumb">
-      <a href="../index.html">Home</a> / <span>Concepts</span> / <span>Aggregates</span>
+      <a href="../index.html">Home</a> / <a href="#">Concepts</a> / <span>Aggregates</span>
     </nav>
   </header>
   <main class="article">
@@ -21,21 +21,104 @@
       <span class="updated">Updated 2026-04-17</span>
     </div>
     <h1>Aggregates</h1>
-    <div class="stub-notice">
-      <strong>Coming soon — Wave 3</strong>
-      <p>This article has not yet been written. It will be published as part of the Wave 3 reference and integrations content.</p>
+
+    <h2>What this covers</h2>
+    <p>This article explains what aggregate tables are, how they are created and maintained, when the Query Router uses them, and how the Optimizer and Scheduler manage their lifecycle.</p>
+
+    <h2>What an aggregate is</h2>
+    <p>An aggregate is a pre-computed summary table stored in a target schema. Where the fact table might contain hundreds of millions of individual transaction rows, an aggregate compresses that data into thousands of summary rows — one per unique combination of grouped dimensions. A query that previously required a full scan of the fact table can instead read a small number of aggregate rows.</p>
+    <p>Aggregates are physical tables, not views. They exist in the target schema until the Optimizer retires them. Tessallite manages their creation, refresh, and deletion through the Scheduler and Optimizer services.</p>
+
+    <h2>Grain and measures</h2>
+    <p>Each aggregate is defined by two things:</p>
+    <ul>
+      <li><strong>Grain</strong> — the set of dimensions at which the data was grouped. Example: {Region, Product Category, Month}.</li>
+      <li><strong>Measures</strong> — the aggregated values stored at that grain. Example: SUM(order_total), COUNT(order_id).</li>
+    </ul>
+    <p>The aggregate table has one column per grain dimension and one column per measure. For the example above, its schema would be: <code>region</code>, <code>product_category</code>, <code>month</code>, <code>sum_order_total</code>, <code>count_order_id</code>.</p>
+
+    <h2>The aggregate lifecycle</h2>
+    <p>Aggregates move through a defined set of states from creation to retirement. The flow is:</p>
+    <ol>
+      <li><strong>Miss detection</strong> — the Query Router logs each query that cannot be served by an existing aggregate. These misses are the raw input for the Optimizer.</li>
+      <li><strong>Optimizer scoring</strong> — the Optimizer periodically reviews the miss log and scores candidate aggregates by estimated query acceleration gain versus storage cost. High-scoring candidates are submitted to the Scheduler as build jobs.</li>
+      <li><strong>Build</strong> — the Scheduler executes a <code>CREATE TABLE AS SELECT ... GROUP BY ...</code> statement against the source. The aggregate enters the <strong>Building</strong> state during this period.</li>
+      <li><strong>Ready</strong> — the build completes successfully. The aggregate is registered with the Query Router and eligible to serve queries.</li>
+      <li><strong>Stale</strong> — source data has changed since the aggregate was last built. The Query Router continues to serve queries from the stale aggregate (depending on the workspace staleness policy) and the Scheduler queues a refresh.</li>
+      <li><strong>Refreshing</strong> — the Scheduler is rebuilding the aggregate. Queries continue to be routed to the previous version during this window.</li>
+      <li><strong>Retired</strong> — the Optimizer determined the aggregate has not been used within its configured usage window. The Scheduler drops the table and removes the routing registration.</li>
+    </ol>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>State</th>
+            <th>Queries routed to it</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Building</td>
+            <td>No</td>
+            <td>Initial build in progress. Not yet registered with the router.</td>
+          </tr>
+          <tr>
+            <td>Ready</td>
+            <td>Yes</td>
+            <td>Build complete and data is current. Serves queries normally.</td>
+          </tr>
+          <tr>
+            <td>Stale</td>
+            <td>Yes (by default)</td>
+            <td>Source data has changed. The aggregate will be refreshed on the next scheduled run. Whether stale aggregates serve queries depends on the workspace staleness policy.</td>
+          </tr>
+          <tr>
+            <td>Refreshing</td>
+            <td>Yes — previous version</td>
+            <td>A refresh build is running. Queries continue to hit the previous version until the new build completes.</td>
+          </tr>
+          <tr>
+            <td>Retired</td>
+            <td>No</td>
+            <td>Optimizer determined the aggregate is unused. Table has been dropped.</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    <p>This article will explain how Tessallite creates and manages pre-computed summary tables — their lifecycle from miss detection through creation, refresh, and retirement — and how they are matched to incoming queries.</p>
+
+    <h2>Manual vs automated aggregates</h2>
+    <p>You can define aggregates manually or let the Optimizer create them.</p>
+    <p><strong>Manual aggregates</strong> are defined in the Model Builder. You select the grain dimensions and the measures, then save. The Scheduler picks up the definition and builds the table on its next run. Manual aggregates give you precise control and are appropriate for known high-frequency query patterns.</p>
+    <p><strong>Automated aggregates</strong> are created by the Optimizer. You enable the AI Optimizer from the Model Builder and configure thresholds for miss frequency and storage budget. The Optimizer monitors query misses and creates, adjusts, and retires aggregates without manual intervention. Automated aggregates work well when query patterns are variable or unknown.</p>
+
+    <div class="callout-note">
+      <p>Manual and automated aggregates coexist in the same model. The Optimizer will not create a duplicate of a manually defined aggregate, but it may create additional aggregates at different grains.</p>
+    </div>
+
+    <h2>Refresh policy</h2>
+    <p>An aggregate becomes stale when data in its source tables changes. The Scheduler detects staleness by comparing the source table's last-modified timestamp against the aggregate's last-build timestamp. You configure the refresh schedule per model: either on a fixed interval (e.g., every hour) or triggered after a source ETL completes via the Scheduler API.</p>
+    <p>If an aggregate has not been refreshed within its expected window, the Health tab raises an "Aggregate refresh overdue" warning. Check the Scheduler job log for build errors.</p>
+
     <div class="related">
       <h2>Related</h2>
-      <ul><li><a href="query-routing.html">Query routing</a></li><li><a href="../modelling/configure-aggregates.html">Configure aggregates</a></li><li><a href="../modelling/run-a-refresh.html">Run a refresh</a></li></ul>
+      <ul>
+        <li><a href="dimensions-and-measures.html">Dimensions and measures</a></li>
+        <li><a href="query-routing.html">Query routing</a></li>
+        <li><a href="../modelling/configure-aggregates.html">Configure aggregates</a></li>
+        <li><a href="../modelling/run-a-refresh.html">Run a refresh</a></li>
+        <li><a href="../modelling/use-the-ai-optimiser.html">Use the AI Optimizer</a></li>
+      </ul>
     </div>
   </main>
+
   <nav class="page-nav">
-    <span class="page-nav-btn prev disabled"></span>
+    <a href="dimensions-and-measures.html" class="page-nav-btn prev">← Dimensions and Measures</a>
     <a href="../index.html" class="page-nav-btn home">Home</a>
-    <span class="page-nav-btn next disabled"></span>
+    <a href="query-routing.html" class="page-nav-btn next">Query Routing →</a>
   </nav>
+
   <footer class="site-footer">
     <p>Tessallite Help — <a href="../index.html">Back to contents</a></p>
   </footer>

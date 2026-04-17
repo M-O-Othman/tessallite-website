@@ -20,25 +20,102 @@
       <span class="audience-badge">Modeller</span>
       <span class="updated">Updated 2026-04-17</span>
     </div>
+
     <h1>Add Tables to a Model</h1>
-    <div class="stub-notice">
-      <strong>Coming soon — Wave 2</strong>
-      <p>This article has not yet been written. It will be published as part of the Wave 2 modelling walkthroughs.</p>
+
+    <h2>What this covers</h2>
+    <p>Before you can define dimensions, measures, or aggregates, you must add the source tables you intend to use into the model. This article explains how to navigate to the Model Builder, browse the schema, add tables, and choose the correct table type for each one.</p>
+
+    <h2>Before you start</h2>
+    <ul>
+      <li>A project must exist and its data source connection must be working. See <a href="create-a-project.html">Create a Project</a> and <a href="add-a-data-source.html">Add a Data Source</a>.</li>
+      <li>You must be signed in as a Modeller or Tenant Admin on the project.</li>
+    </ul>
+
+    <h2>Navigating to the Model Builder</h2>
+    <ol>
+      <li>Open the project from the workspace dashboard.</li>
+      <li>Click <strong>Model Builder</strong> in the project navigation. The Model Builder opens with three areas:
+        <ul>
+          <li><strong>Canvas</strong> — the central diagram showing tables and joins.</li>
+          <li><strong>Toolbelt</strong> — the left sidebar with action buttons.</li>
+          <li><strong>Drawer</strong> — the right panel showing properties of the selected object.</li>
+        </ul>
+      </li>
+    </ol>
+
+    <h2>Adding a table</h2>
+    <ol>
+      <li>In the Toolbelt, click <strong>Add Table</strong>. The Drawer opens showing the schema browser.</li>
+      <li>In the schema browser, expand a schema to see the tables it contains. The browser lists all schemas and tables accessible to the data source user.</li>
+      <li>Click a table name to select it. The Drawer shows the table's columns and a <strong>Table type</strong> selector.</li>
+      <li>Choose the correct table type (see the reference below).</li>
+      <li>Click <strong>Add to Model</strong>. The table appears as a node in the Canvas.</li>
+      <li>Repeat for each table you need in the model.</li>
+    </ol>
+
+    <h2>Table type reference</h2>
+    <p>Choosing the right type is important. The type determines how Tessallite constructs the aggregate grain — the combination of columns used when building pre-aggregated summary tables.</p>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Table type</th>
+            <th>When to use</th>
+            <th>Example</th>
+            <th>Included in aggregate grain?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>fact</code></td>
+            <td>The central transaction or event table. Every model must have exactly one fact table. This table drives the aggregate grain and typically contains numeric measures and foreign keys to dimension tables.</td>
+            <td><code>orders</code>, <code>page_views</code>, <code>sensor_readings</code></td>
+            <td>Yes — the fact table's key columns and measure columns form the base of every aggregate.</td>
+          </tr>
+          <tr>
+            <td><code>dim_aggregate</code></td>
+            <td>A dimension table that participates in the aggregate grain. Use this type when you want the aggregate tables to be pre-grouped by columns in this dimension — for example, by date or by product category.</td>
+            <td><code>dim_date</code>, <code>dim_product</code></td>
+            <td>Yes — columns from this table can be selected as grouping keys in aggregates.</td>
+          </tr>
+          <tr>
+            <td><code>dim_detail</code></td>
+            <td>A dimension table used only for filtering or labeling at query time. Its columns are not included in aggregate grain. Use this type for high-cardinality lookup tables where pre-aggregation at that level would be impractical.</td>
+            <td><code>dim_customer</code>, <code>dim_employee</code></td>
+            <td>No — queries that filter or group by columns from this table always fall through to raw data.</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    <p>This article will cover how to add source tables from a connected data source to a model, and how to set the table type (fact, dim_aggregate, or dim_detail).</p>
+
+    <div class="callout-note">
+      <p>A model must have exactly one <code>fact</code> table. If you mark a second table as <code>fact</code>, the Health tab will show a validation error and the model cannot be published until the conflict is resolved.</p>
+    </div>
+
+    <h2>What the Canvas shows after adding tables</h2>
+    <p>Each table appears as a card in the Canvas. The card shows the table name and a type badge (<code>fact</code>, <code>dim_aggregate</code>, or <code>dim_detail</code>). Tables with no join connecting them to another table are shown with a dashed border, indicating they are disconnected. A disconnected table is valid while you are still building the model, but the Health tab will flag it as a warning until all tables are joined into the schema.</p>
+    <p>Click a table card in the Canvas to open its properties in the Drawer, where you can change its type or remove it from the model.</p>
+
+    <h2>Removing a table</h2>
+    <p>Select the table in the Canvas to open it in the Drawer, then click <strong>Remove from Model</strong>. All joins, dimensions, and measures that reference columns in that table are also removed. This action cannot be undone — you must re-add the table and redefine any dependent objects if you remove a table by mistake.</p>
+
     <div class="related">
       <h2>Related</h2>
       <ul>
-        <li><a href="../concepts/projects-and-models.html">Projects and models</a></li>
-        <li><a href="../index.html">Back to contents</a></li>
+        <li><a href="../concepts/sources-tables-and-joins.html">Sources, Tables, and Joins</a></li>
+        <li><a href="define-joins.html">Define Joins</a></li>
+        <li><a href="create-a-project.html">Create a Project</a></li>
       </ul>
     </div>
   </main>
+
   <nav class="page-nav">
-    <span class="page-nav-btn prev disabled"></span>
+    <a href="add-a-data-source.html" class="page-nav-btn prev">← Add a Data Source</a>
     <a href="../index.html" class="page-nav-btn home">Home</a>
-    <span class="page-nav-btn next disabled"></span>
+    <a href="define-joins.html" class="page-nav-btn next">Define Joins →</a>
   </nav>
+
   <footer class="site-footer">
     <p>Tessallite Help — <a href="../index.html">Back to contents</a></p>
   </footer>

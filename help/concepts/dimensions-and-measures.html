@@ -12,7 +12,7 @@
   <header class="site-header">
     <a href="../index.html" class="logo">Tessallite Help</a>
     <nav class="breadcrumb">
-      <a href="../index.html">Home</a> / <span>Concepts</span> / <span>Dimensions and Measures</span>
+      <a href="../index.html">Home</a> / <a href="#">Concepts</a> / <span>Dimensions and Measures</span>
     </nav>
   </header>
   <main class="article">
@@ -21,21 +21,107 @@
       <span class="updated">Updated 2026-04-17</span>
     </div>
     <h1>Dimensions and Measures</h1>
-    <div class="stub-notice">
-      <strong>Coming soon — Wave 3</strong>
-      <p>This article has not yet been written. It will be published as part of the Wave 3 reference and integrations content.</p>
+
+    <h2>What this covers</h2>
+    <p>This article explains what dimensions and measures are, how they map to source columns, what role they play at query time, and the key distinction between additive and non-additive measures.</p>
+
+    <h2>Dimensions</h2>
+    <p>A dimension is a named grouping attribute. It is defined by pointing to a column in one of the model's source tables and giving it a logical name that BI tools and users will see. For example, you might define a dimension called <strong>Region</strong> that maps to <code>dim_store.region_code</code>, or a dimension called <strong>Product Category</strong> that maps to <code>dim_product.category_name</code>.</p>
+    <p>At query time, dimensions translate to <code>GROUP BY</code> clauses. When a BI tool issues a query grouped by Region, Tessallite maps that to <code>GROUP BY dim_store.region_code</code>.</p>
+    <p>Dimensions also define the <strong>grain</strong> of an aggregate. The grain is the set of dimensions at which the aggregate was pre-computed. A query can only be served by an aggregate if the aggregate grain is a superset of the dimensions requested by the query.</p>
+
+    <h2>Measures</h2>
+    <p>A measure is a named aggregation. It is defined by selecting an aggregation function and a source column, then giving the result a logical name. For example, <strong>Total Revenue</strong> might be defined as <code>SUM(orders.order_total)</code>, and <strong>Order Count</strong> as <code>COUNT(orders.order_id)</code>.</p>
+    <p>At query time, measures translate to aggregate expressions in the <code>SELECT</code> list. Every measure in a model must be explicitly named — anonymous expressions are not permitted. This ensures Tessallite can match query requests to specific aggregate columns without ambiguity.</p>
+    <p>Measures are exposed through the JDBC gateway as computed columns and through the XMLA gateway as measures in the OLAP cube.</p>
+
+    <h2>Aggregation types</h2>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Aggregation</th>
+            <th>Additive</th>
+            <th>Requires exact grain match</th>
+            <th>Example use</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>SUM</code></td>
+            <td>Yes</td>
+            <td>No</td>
+            <td>Total revenue, total quantity sold</td>
+          </tr>
+          <tr>
+            <td><code>COUNT</code></td>
+            <td>Yes</td>
+            <td>No</td>
+            <td>Number of orders, number of events</td>
+          </tr>
+          <tr>
+            <td><code>AVG</code></td>
+            <td>No — re-averaging averages is incorrect</td>
+            <td>Yes</td>
+            <td>Average order value, average session duration</td>
+          </tr>
+          <tr>
+            <td><code>MAX</code></td>
+            <td>Yes</td>
+            <td>No</td>
+            <td>Highest single-order value, latest event timestamp</td>
+          </tr>
+          <tr>
+            <td><code>MIN</code></td>
+            <td>Yes</td>
+            <td>No</td>
+            <td>Earliest date, lowest price observed</td>
+          </tr>
+          <tr>
+            <td><code>COUNT DISTINCT</code></td>
+            <td>No — distinct counts cannot be combined across partitions</td>
+            <td>Yes</td>
+            <td>Unique customers, unique SKUs sold</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    <p>This article will explain what dimensions and measures are, how they relate to physical columns in source tables, and how they are exposed to BI tools through the JDBC and XMLA gateways.</p>
+
+    <h2>Additive vs non-additive measures</h2>
+    <p>An additive measure can be correctly re-aggregated from a coarser grain. If an aggregate stores <code>SUM(order_total)</code> at the Region + Month grain, a query that requests the total for a full year can sum the monthly rows and get the correct answer. The router can serve a finer-grained query from a coarser aggregate for SUM, COUNT, MAX, and MIN.</p>
+    <p>A non-additive measure cannot be combined this way:</p>
+    <ul>
+      <li><strong>AVG</strong>: the average of a set of averages is not the overall average unless the group sizes are equal.</li>
+      <li><strong>COUNT DISTINCT</strong>: the union of distinct counts from two partitions can double-count values that appear in both.</li>
+    </ul>
+    <p>For non-additive measures, Tessallite requires an <strong>exact grain match</strong>. The aggregate must have been built at exactly the grain the query requests — no coarser. If no exact match exists, the query falls through to raw data.</p>
+
+    <div class="callout-warning">
+      <p>COUNT DISTINCT is the most common source of unexpected fallthrough to raw data. If a dashboard query includes a unique-user count and no aggregate at that exact grain exists, every execution hits raw data. Define an aggregate explicitly at the grain used by your most frequent COUNT DISTINCT queries.</p>
+    </div>
+
+    <h2>How dimensions and measures appear in the Model Builder</h2>
+    <p>In the Model Builder Canvas, each table node lists its defined dimensions and measures. The Toolbelt on the left allows you to add, rename, or remove them. The Drawer on the right shows the full definition of whichever object is selected — including the source column, the aggregation type, and the logical name.</p>
+    <p>The Summary Bar at the bottom of the canvas shows a count of total dimensions and measures in the model. This count is used during Health checks to verify that no measures are defined on non-numeric columns.</p>
+
     <div class="related">
       <h2>Related</h2>
-      <ul><li><a href="projects-and-models.html">Projects and models</a></li><li><a href="../modelling/define-dimensions.html">Define dimensions</a></li><li><a href="../modelling/define-measures.html">Define measures</a></li></ul>
+      <ul>
+        <li><a href="sources-tables-and-joins.html">Sources, tables, and joins</a></li>
+        <li><a href="aggregates.html">Aggregates</a></li>
+        <li><a href="query-routing.html">Query routing</a></li>
+        <li><a href="../modelling/define-dimensions.html">Define dimensions</a></li>
+        <li><a href="../modelling/define-measures.html">Define measures</a></li>
+      </ul>
     </div>
   </main>
+
   <nav class="page-nav">
-    <span class="page-nav-btn prev disabled"></span>
+    <a href="sources-tables-and-joins.html" class="page-nav-btn prev">← Sources, Tables, and Joins</a>
     <a href="../index.html" class="page-nav-btn home">Home</a>
-    <span class="page-nav-btn next disabled"></span>
+    <a href="aggregates.html" class="page-nav-btn next">Aggregates →</a>
   </nav>
+
   <footer class="site-footer">
     <p>Tessallite Help — <a href="../index.html">Back to contents</a></p>
   </footer>

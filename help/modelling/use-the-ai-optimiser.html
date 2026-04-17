@@ -21,23 +21,92 @@
       <span class="updated">Updated 2026-04-17</span>
     </div>
     <h1>Use the AI Optimiser</h1>
-    <div class="stub-notice">
-      <strong>Coming soon — Wave 2</strong>
-      <p>This article has not yet been written. It will be published as part of the Wave 2 modelling walkthroughs.</p>
+
+    <h2>What this covers</h2>
+    <p>The AI Optimiser analyzes query miss patterns against your model, scores potential aggregate configurations by estimated return on investment, and surfaces ranked recommendations. This article explains how to open the Optimiser, how to read the recommendation list, and how to act on each recommendation.</p>
+
+    <h2>How the Optimiser works</h2>
+    <p>Every time a query reaches the Query Router and no suitable aggregate exists to answer it, the miss is recorded in the query miss log. The Optimiser reads this log, groups misses by their grain (the combination of dimensions and measures requested), and scores each group by the estimated query time that could be saved if an aggregate existed for that grain. The result is a ranked list of candidates ordered from highest to lowest ROI.</p>
+
+    <div class="callout-note">
+      <p>The Optimiser requires data in the query miss log before it can make recommendations. At least some queries must have run against the model after it was published. If no queries have run yet, the recommendation list will be empty.</p>
     </div>
-    <p>This article will cover how to configure an AI provider in the Settings panel, run the AI-assisted optimiser, and review and apply its aggregate recommendations.</p>
+
+    <h2>Opening the AI Optimiser</h2>
+    <ol>
+      <li>Open your project in Model Builder.</li>
+      <li>In the Toolbelt on the right side of the screen, click <strong>Optimiser</strong>.</li>
+      <li>The AI Optimiser panel opens and displays the current recommendation list.</li>
+    </ol>
+
+    <h2>Reading the recommendation list</h2>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Column</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Grain / Dimensions</td>
+            <td>The set of dimension columns that define this aggregate's level of detail. A finer grain produces a larger aggregate covering more query patterns; a coarser grain produces a smaller aggregate with narrower coverage.</td>
+          </tr>
+          <tr>
+            <td>Measures</td>
+            <td>The numeric columns the Optimiser recommends pre-aggregating for this grain. These match the measures that appeared in missed queries.</td>
+          </tr>
+          <tr>
+            <td>Query hits</td>
+            <td>The number of times this query pattern was missed since the miss log was last reset. Higher values indicate a frequently recurring pattern.</td>
+          </tr>
+          <tr>
+            <td>ROI score</td>
+            <td>A dimensionless score combining query frequency and estimated time saved per query. Use this to decide which aggregates to build first.</td>
+          </tr>
+          <tr>
+            <td>Action</td>
+            <td>The available actions for this recommendation: Build, Schedule, or Dismiss.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Actions</h2>
+
+    <h3>Build</h3>
+    <p>Queues the aggregate for immediate construction. The aggregate appears in the Canvas with status <strong>Building</strong>. When the build completes, the status transitions to <strong>Ready</strong> and the aggregate becomes available for query routing. The recommendation is removed from the list once the build is queued.</p>
+
+    <h3>Schedule</h3>
+    <p>Adds the aggregate to the regular build cycle without triggering an immediate build. The aggregate is created in the Canvas with the workspace's default refresh schedule applied. You can adjust the schedule in the aggregate's Drawer or in the Scheduler panel.</p>
+
+    <h3>Dismiss</h3>
+    <p>Removes the recommendation from the list without creating an aggregate. The underlying miss pattern is not deleted — if the same query pattern continues to miss, the recommendation may reappear in a future scoring cycle.</p>
+
+    <h2>Re-scoring after acting on a recommendation</h2>
+    <p>After you Build, Schedule, or Dismiss a recommendation, the Optimiser re-scores the remaining candidates and updates the list. Aggregates you have already built or scheduled are excluded from future recommendations, ensuring rankings always reflect current aggregate coverage.</p>
+
+    <h2>Optimiser vs. manual configuration</h2>
+    <p>Use the Optimiser when you are not certain which queries are slow or which aggregates would have the most impact. The miss log tells you exactly what is being asked and what is not being served from cache.</p>
+    <p>Use manual aggregate configuration when you know the exact grain you need — for example, when a specific reporting query has a fixed structure and you want direct control over the aggregate definition, refresh schedule, and partitioning.</p>
+    <p>Both approaches can be used together. The Optimiser handles opportunistic coverage; manual configuration handles known, critical queries.</p>
+
     <div class="related">
       <h2>Related</h2>
       <ul>
-        <li><a href="../concepts/projects-and-models.html">Projects and models</a></li>
-        <li><a href="../index.html">Back to contents</a></li>
+        <li><a href="view-diagnostics.html">View Diagnostics</a></li>
+        <li><a href="manage-aggregate-schedules.html">Manage Aggregate Schedules</a></li>
+        <li><a href="configure-aggregates.html">Configure Aggregates</a></li>
+        <li><a href="../concepts/aggregates.html">Aggregates (concepts)</a></li>
       </ul>
     </div>
   </main>
+
   <nav class="page-nav">
-    <span class="page-nav-btn prev disabled"></span>
+    <a href="view-diagnostics.html" class="page-nav-btn prev">← View Diagnostics</a>
     <a href="../index.html" class="page-nav-btn home">Home</a>
-    <span class="page-nav-btn next disabled"></span>
+    <a href="manage-aggregate-schedules.html" class="page-nav-btn next">Manage Aggregate Schedules →</a>
   </nav>
   <footer class="site-footer">
     <p>Tessallite Help — <a href="../index.html">Back to contents</a></p>

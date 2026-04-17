@@ -21,20 +21,107 @@
       <span class="updated">Updated 2026-04-17</span>
     </div>
     <h1>Architecture Overview</h1>
-    <div class="stub-notice">
-      <strong>Coming soon — Wave 4</strong>
-      <p>This article has not yet been written. It will be published as part of the Wave 4 admin and system documentation.</p>
+
+    <h2>What this covers</h2>
+    <p>The six services that make up Tessallite, the internal database, how data flows through the platform, and where aggregates are physically stored.</p>
+
+    <h2>Services</h2>
+
+    <h3>gateway</h3>
+    <p>The public entry point for query traffic. Exposes two protocol endpoints: a PostgreSQL wire protocol listener on port 5433 for JDBC clients, and an XMLA listener on port 8080 for Excel and Power BI. Gateway translates incoming queries into an internal format and forwards them to query-router. It holds no query state between requests.</p>
+
+    <h3>query-router</h3>
+    <p>Receives translated queries from gateway. For each query, query-router asks model-service whether a pre-built aggregate can satisfy it. If a matching aggregate exists and is current, query-router rewrites the query to target that aggregate table in the user's source. Otherwise the original query goes directly to the raw source tables. Query-router records a miss in the model-service log whenever it falls back to the source.</p>
+
+    <h3>model-service</h3>
+    <p>The semantic layer. Stores the definitions of tables, joins, dimensions, measures, and aggregates. When query-router asks whether an aggregate can answer a query, model-service evaluates the request against registered definitions and responds with a routing decision. All model data is persisted in the internal PostgreSQL database.</p>
+
+    <h3>optimizer</h3>
+    <p>Reads the query miss log written by model-service. A miss is recorded each time query-router fell back to the raw data source because no aggregate matched. Optimizer scores candidate aggregates by return on investment — how many queries they would accelerate relative to the cost of building and refreshing them. Candidates exceeding the configured score threshold are surfaced as build recommendations in the frontend.</p>
+
+    <h3>scheduler</h3>
+    <p>Builds and refreshes aggregate tables in the user's target schema on their data source. Runs on a configurable cron schedule and can be triggered on demand from the frontend. Scheduler reads aggregate definitions from model-service, executes the build queries against the source, and records completion status in the internal database. It never writes user data into Tessallite's internal database.</p>
+
+    <h3>frontend</h3>
+    <p>Web interface served on port 3000. Used by System Admins, Workspace Admins, and Data Analysts for model building, aggregate management, connection setup, and platform monitoring. Communicates with model-service and optimizer via internal HTTP calls.</p>
+
+    <h2>Internal PostgreSQL database</h2>
+    <p>Tessallite runs its own PostgreSQL instance (port 5432, internal only) to store operational state. This database holds workspace metadata, semantic model definitions, aggregate build history, and the query miss log. It does not store any of the user's source data or the content of aggregate tables — those live in the user's own data source.</p>
+
+    <div class="callout-note">
+      <p>The internal PostgreSQL database is not exposed outside the container network. No BI tool or external application should connect to it directly.</p>
     </div>
-    <p>This article will describe the six services that make up Tessallite — Gateway, Query Router, Model Service, Optimizer, Scheduler, and Frontend — and how they communicate with each other and with external systems.</p>
+
+    <h2>Data flow</h2>
+    <ol>
+      <li>A BI tool sends a query to gateway via JDBC (port 5433) or XMLA (port 8080).</li>
+      <li>Gateway translates the query into an internal format and forwards it to query-router.</li>
+      <li>Query-router asks model-service whether any registered aggregate satisfies the query.</li>
+      <li>If an aggregate matches: query-router rewrites the query to target the aggregate table in the user's source, executes it, and returns results to the BI tool via gateway.</li>
+      <li>If no aggregate matches: query-router routes the query to the raw source tables, records a miss in the model-service log, and returns results via gateway.</li>
+    </ol>
+
+    <h2>Where aggregates live</h2>
+    <p>Aggregate tables are written to the user's own data source — in the target schema or dataset specified when configuring the connection. They are not stored in Tessallite's internal PostgreSQL. Tessallite only stores the definition and build status of each aggregate. You can inspect or query aggregate tables directly in your data warehouse alongside source tables.</p>
+
+    <h2>Stateless service design</h2>
+    <p>All six services keep no local state on disk. All persistent state lives in the internal PostgreSQL database. Any service can be stopped, restarted, or replaced at any time without data loss. Services can be scaled horizontally by running multiple instances behind a load balancer; the internal PostgreSQL remains a single instance and is the authoritative state store.</p>
+
+    <h2>Port summary</h2>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Service</th>
+            <th>Default port</th>
+            <th>Protocol</th>
+            <th>Used by</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>gateway (JDBC)</td>
+            <td><code>5433</code></td>
+            <td>PostgreSQL wire</td>
+            <td>BI tools via JDBC</td>
+          </tr>
+          <tr>
+            <td>gateway (XMLA)</td>
+            <td><code>8080</code></td>
+            <td>HTTP/XMLA</td>
+            <td>Excel, Power BI via XMLA</td>
+          </tr>
+          <tr>
+            <td>frontend</td>
+            <td><code>3000</code></td>
+            <td>HTTP</td>
+            <td>All users (web browser)</td>
+          </tr>
+          <tr>
+            <td>Internal PostgreSQL</td>
+            <td><code>5432</code></td>
+            <td>PostgreSQL</td>
+            <td>Services only — not exposed externally</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
     <div class="related">
       <h2>Related</h2>
-      <ul><li><a href="service-reference.html">Service reference</a></li><li><a href="../getting-started/how-tessallite-works.html">How Tessallite works</a></li></ul>
+      <ul>
+        <li><a href="deploy-local.html">Deploy Locally</a></li>
+        <li><a href="deploy-gcp.html">Deploy on GCP</a></li>
+        <li><a href="service-reference.html">Service Reference</a></li>
+        <li><a href="configure-environment-variables.html">Configure Environment Variables</a></li>
+      </ul>
     </div>
   </main>
   <nav class="page-nav">
-    <span class="page-nav-btn prev disabled"></span>
+    <a href="../admin/workspace-settings.html" class="page-nav-btn prev">← Workspace Settings</a>
     <a href="../index.html" class="page-nav-btn home">Home</a>
-    <span class="page-nav-btn next disabled"></span>
+    <a href="deploy-local.html" class="page-nav-btn next">Deploy Locally →</a>
   </nav>
   <footer class="site-footer">
     <p>Tessallite Help — <a href="../index.html">Back to contents</a></p>

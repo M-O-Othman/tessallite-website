@@ -21,23 +21,143 @@
       <span class="updated">Updated 2026-04-17</span>
     </div>
     <h1>Manage Aggregate Schedules</h1>
-    <div class="stub-notice">
-      <strong>Coming soon — Wave 2</strong>
-      <p>This article has not yet been written. It will be published as part of the Wave 2 modelling walkthroughs.</p>
+
+    <h2>What this covers</h2>
+    <p>Aggregate schedules control when the Scheduler service refreshes each aggregate. This article explains the two places where schedules are managed, how to write and use cron expressions, how to pause a schedule, and what the Stale status means.</p>
+
+    <h2>Two places to manage schedules</h2>
+
+    <h3>Option 1: Canvas → Drawer</h3>
+    <ol>
+      <li>In Model Builder, locate the aggregate in the Canvas.</li>
+      <li>Click the aggregate to select it.</li>
+      <li>In the Drawer that opens on the right, find the <strong>Refresh Schedule</strong> field.</li>
+      <li>Enter a cron expression or select a preset from the dropdown.</li>
+      <li>Click <strong>Save</strong>. The new schedule takes effect at the next scheduled run time.</li>
+    </ol>
+    <p>This method is convenient when you are already editing the aggregate in Model Builder.</p>
+
+    <h3>Option 2: Scheduler panel</h3>
+    <ol>
+      <li>From the workspace sidebar, click <strong>Scheduler</strong>.</li>
+      <li>The Scheduler panel opens, showing all aggregates across all models in the workspace.</li>
+      <li>Locate the aggregate by model name or aggregate name, then click its schedule field to edit it inline.</li>
+      <li>Click <strong>Save</strong>.</li>
+    </ol>
+    <p>Use the Scheduler panel when you need an overview of all refresh timings or want to manage schedules across multiple models without opening each model in the Canvas.</p>
+
+    <h2>Scheduler panel columns</h2>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Column</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Model</td>
+            <td>The model this aggregate belongs to.</td>
+          </tr>
+          <tr>
+            <td>Aggregate name</td>
+            <td>The name assigned to the aggregate in Model Builder.</td>
+          </tr>
+          <tr>
+            <td>Last refreshed</td>
+            <td>Timestamp of the most recent completed refresh run.</td>
+          </tr>
+          <tr>
+            <td>Next scheduled</td>
+            <td>When the Scheduler will next attempt a refresh, based on the current cron expression.</td>
+          </tr>
+          <tr>
+            <td>Status</td>
+            <td>Ready, Building, Stale, or Paused.</td>
+          </tr>
+          <tr>
+            <td>Actions</td>
+            <td>Run now, Pause / Resume, Edit schedule.</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    <p>This article will cover how to set up and manage scheduled aggregate refreshes from the Scheduler panel in the Model Builder.</p>
+
+    <h2>Cron expression reference</h2>
+    <p>Tessallite uses standard five-field cron syntax: <code>minute hour day-of-month month day-of-week</code>.</p>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Preset</th>
+            <th>Cron expression</th>
+            <th>Meaning</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Hourly</td>
+            <td><code>0 * * * *</code></td>
+            <td>Runs at the top of every hour.</td>
+          </tr>
+          <tr>
+            <td>Daily at 02:00</td>
+            <td><code>0 2 * * *</code></td>
+            <td>Runs once per day at 2:00 AM in the server's configured timezone.</td>
+          </tr>
+          <tr>
+            <td>Weekly on Sunday 03:00</td>
+            <td><code>0 3 * * 0</code></td>
+            <td>Runs once per week, Sunday at 3:00 AM.</td>
+          </tr>
+          <tr>
+            <td>Every 15 minutes</td>
+            <td><code>*/15 * * * *</code></td>
+            <td>Runs at :00, :15, :30, and :45 past every hour.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout-note">
+      <p>All times are evaluated in the UTC timezone unless the server's <code>SCHEDULER_TZ</code> environment variable is set to a different IANA timezone identifier.</p>
+    </div>
+
+    <h2>Pausing a schedule</h2>
+    <p>In the Scheduler panel, click the <strong>Active</strong> toggle next to an aggregate to switch it off. The aggregate retains its current data and continues to serve queries, but the Scheduler will not attempt any further refreshes until the toggle is switched back on.</p>
+    <p>A paused aggregate displays status <strong>Paused</strong> in the panel. The Next scheduled column shows <em>Paused</em> instead of a timestamp.</p>
+
+    <h2>Running a refresh immediately</h2>
+    <p>In the Scheduler panel, click <strong>Run now</strong> in the Actions column for the aggregate you want to refresh. The aggregate's status changes to <strong>Building</strong> for the duration of the run. This does not affect the regular schedule — the next scheduled run proceeds as normal.</p>
+
+    <h2>Viewing refresh history</h2>
+    <ol>
+      <li>In the Scheduler panel, click the aggregate name.</li>
+      <li>A history drawer opens showing the last 10 refresh runs.</li>
+      <li>Each entry shows the start time, duration, and outcome (Success or Failed).</li>
+      <li>For failed runs, an error message is shown. Click <strong>View log</strong> to see the full Scheduler log for that run.</li>
+    </ol>
+
+    <h2>Stale status</h2>
+    <p>An aggregate is marked <strong>Stale</strong> when its last successful refresh completed more than twice the schedule interval ago. For example, an aggregate scheduled to refresh every hour is marked Stale if it has not refreshed successfully in more than two hours.</p>
+    <p>Stale aggregates continue to serve queries using their existing data, but the data may be older than expected. Investigate the refresh history and Scheduler logs to identify the cause.</p>
+
     <div class="related">
       <h2>Related</h2>
       <ul>
-        <li><a href="../concepts/projects-and-models.html">Projects and models</a></li>
-        <li><a href="../index.html">Back to contents</a></li>
+        <li><a href="use-the-ai-optimiser.html">Use the AI Optimiser</a></li>
+        <li><a href="configure-aggregates.html">Configure Aggregates</a></li>
+        <li><a href="run-a-refresh.html">Run a Refresh</a></li>
+        <li><a href="../admin/workspace-settings.html">Workspace Settings</a></li>
       </ul>
     </div>
   </main>
+
   <nav class="page-nav">
-    <span class="page-nav-btn prev disabled"></span>
+    <a href="use-the-ai-optimiser.html" class="page-nav-btn prev">← Use the AI Optimiser</a>
     <a href="../index.html" class="page-nav-btn home">Home</a>
-    <span class="page-nav-btn next disabled"></span>
+    <a href="../admin/create-a-workspace.html" class="page-nav-btn next">Create a Workspace →</a>
   </nav>
   <footer class="site-footer">
     <p>Tessallite Help — <a href="../index.html">Back to contents</a></p>

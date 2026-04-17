@@ -12,7 +12,7 @@
   <header class="site-header">
     <a href="../index.html" class="logo">Tessallite Help</a>
     <nav class="breadcrumb">
-      <a href="../index.html">Home</a> / <span>Concepts</span> / <span>Sources, Tables, and Joins</span>
+      <a href="../index.html">Home</a> / <a href="#">Concepts</a> / <span>Sources, Tables, and Joins</span>
     </nav>
   </header>
   <main class="article">
@@ -21,21 +21,98 @@
       <span class="updated">Updated 2026-04-17</span>
     </div>
     <h1>Sources, Tables, and Joins</h1>
-    <div class="stub-notice">
-      <strong>Coming soon — Wave 3</strong>
-      <p>This article has not yet been written. It will be published as part of the Wave 3 reference and integrations content.</p>
+
+    <h2>What this covers</h2>
+    <p>This article explains what a source is in Tessallite, how tables are classified within a model, how joins connect them, and why these classifications directly affect query routing and aggregate building.</p>
+
+    <h2>Sources</h2>
+    <p>A source is the data warehouse or query engine that a project connects to. Tessallite supports three source types: <strong>PostgreSQL</strong>, <strong>Google BigQuery</strong>, and <strong>Hadoop/Spark Thrift Server</strong>. The source connection is configured at the workspace level and is shared by all models in that workspace.</p>
+    <p>When you open Model Builder and add a table to a model, you are selecting a table or view that exists in the connected source. Tessallite reads the schema from the source to populate column lists. The source itself is never modified — Tessallite only reads from it. Pre-computed aggregate tables are written to a separate target schema, which may be in the same source or a different one.</p>
+
+    <h2>The three table types</h2>
+    <p>Every table added to a model is assigned one of three types. The type tells Tessallite how the table participates in aggregation and query routing.</p>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Role</th>
+            <th>Participates in aggregate grain</th>
+            <th>Typical example</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>fact</code></td>
+            <td>The primary transaction table. Drives the aggregate grain. Each model must have exactly one fact table.</td>
+            <td>Yes — the fact table is the central table of every aggregate.</td>
+            <td><code>orders</code>, <code>sales_events</code>, <code>page_views</code></td>
+          </tr>
+          <tr>
+            <td><code>dim_aggregate</code></td>
+            <td>A dimension table whose columns may extend the aggregate grain. Joins to the fact table and its columns can be included in a grain definition.</td>
+            <td>Yes — dimensions drawn from a <code>dim_aggregate</code> table extend the grain and are included in the pre-computed summary.</td>
+            <td><code>dim_product</code>, <code>dim_date</code>, <code>dim_store</code></td>
+          </tr>
+          <tr>
+            <td><code>dim_detail</code></td>
+            <td>A dimension table used for filtering and labelling only. Its columns can be used in WHERE clauses and display names, but they cannot define an aggregate grain.</td>
+            <td>No — a query that groups by a <code>dim_detail</code> column cannot be served by a pre-computed aggregate and will fall through to raw data.</td>
+            <td><code>dim_customer_contact</code>, <code>dim_employee_notes</code></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    <p>This article will explain the three types of tables a model can include — fact, dim_aggregate, and dim_detail — and how join relationships connect them within a model.</p>
+
+    <div class="callout-note">
+      <p>Use <code>dim_detail</code> sparingly. Any dimension drawn from a <code>dim_detail</code> table bypasses aggregates entirely. If a column is frequently used for grouping, its source table should be classified as <code>dim_aggregate</code>.</p>
+    </div>
+
+    <h2>The fact table as primary table</h2>
+    <p>Every model must have exactly one <code>fact</code> table. This is the central table from which all aggregates are built. Every join in the model connects either directly or transitively back to the fact table. Tessallite uses the fact table as the anchor when generating the SQL that builds aggregate summary tables.</p>
+    <p>If a model contains no fact table, the Model Builder will surface a "Fact table missing" error in the Health tab and no aggregates can be built.</p>
+
+    <h2>Joins</h2>
+    <p>A join connects two tables within a model. Each join is defined by:</p>
+    <ul>
+      <li><strong>Left table and left column</strong> — the column on the driving side of the join.</li>
+      <li><strong>Right table and right column</strong> — the column being joined to.</li>
+      <li><strong>Join type</strong> — either <code>LEFT</code> or <code>INNER</code>.</li>
+    </ul>
+    <p>Use <code>INNER</code> when every row in the fact table is guaranteed to have a matching row in the dimension table. Use <code>LEFT</code> when the dimension is optional — rows without a match will still appear in query results, with NULL dimension values.</p>
+
+    <p>A join is expressed in the aggregate build SQL as:</p>
+    <pre><code>LEFT JOIN dim_product
+  ON orders.product_id = dim_product.product_id</code></pre>
+
+    <p>Joins are not transitive by default. If you join <code>orders</code> to <code>dim_product</code>, and you want to access a column from <code>dim_brand</code>, you must define a separate join from <code>dim_product</code> to <code>dim_brand</code>.</p>
+
+    <div class="callout-warning">
+      <p>If a column named in a join definition is later removed from the source schema, Tessallite will detect the discrepancy during its next schema sync and raise a "Join column not found" error in the Health tab. The affected joins must be updated or removed before aggregate builds will resume.</p>
+    </div>
+
+    <h2>Why table type matters for routing</h2>
+    <p>When the Query Router evaluates an incoming query, it checks whether a pre-computed aggregate can satisfy it. Part of that check is whether every GROUP BY column in the query is drawn from a <code>fact</code> or <code>dim_aggregate</code> table. A column from a <code>dim_detail</code> table is not tracked in any aggregate grain, so the router cannot confirm a match and the query falls through to raw data.</p>
+    <p>This means that classifying a frequently-grouped column's source table as <code>dim_detail</code> instead of <code>dim_aggregate</code> silently prevents aggregate acceleration for all queries that include that column.</p>
+
     <div class="related">
       <h2>Related</h2>
-      <ul><li><a href="projects-and-models.html">Projects and models</a></li><li><a href="../modelling/define-joins.html">Define joins</a></li></ul>
+      <ul>
+        <li><a href="projects-and-models.html">Projects and models</a></li>
+        <li><a href="dimensions-and-measures.html">Dimensions and measures</a></li>
+        <li><a href="../modelling/add-tables-to-a-model.html">Add tables to a model</a></li>
+        <li><a href="../modelling/define-joins.html">Define joins</a></li>
+      </ul>
     </div>
   </main>
+
   <nav class="page-nav">
-    <span class="page-nav-btn prev disabled"></span>
+    <a href="projects-and-models.html" class="page-nav-btn prev">← Projects and Models</a>
     <a href="../index.html" class="page-nav-btn home">Home</a>
-    <span class="page-nav-btn next disabled"></span>
+    <a href="dimensions-and-measures.html" class="page-nav-btn next">Dimensions and Measures →</a>
   </nav>
+
   <footer class="site-footer">
     <p>Tessallite Help — <a href="../index.html">Back to contents</a></p>
   </footer>

@@ -21,20 +21,72 @@
       <span class="updated">Updated 2026-04-17</span>
     </div>
     <h1>Manage Users</h1>
-    <div class="stub-notice">
-      <strong>Coming soon — Wave 4</strong>
-      <p>This article has not yet been written. It will be published as part of the Wave 4 admin and troubleshooting content.</p>
+
+    <h2>What this covers</h2>
+    <p>This article covers all user management tasks available to a Tenant Admin: viewing the user list, inviting new users, removing users, resetting passwords, and reading user details.</p>
+
+    <h2>Navigating to the user list</h2>
+    <ol>
+      <li>Sign in to your workspace.</li>
+      <li>In the workspace sidebar, click <strong>Admin</strong>.</li>
+      <li>Click the <strong>Users</strong> tab.</li>
+    </ol>
+    <p>The Users tab displays all users in the workspace with their email address, role, last-active timestamp, and project memberships.</p>
+
+    <h2>Inviting a user</h2>
+    <ol>
+      <li>On the Users tab, click <strong>Invite User</strong>.</li>
+      <li>Enter the user's email address.</li>
+      <li>Select the role to assign: Tenant Admin, Modeller, or Analyst.</li>
+      <li>Click <strong>Send Invitation</strong>.</li>
+    </ol>
+    <p>The user receives an email containing a one-time invitation link. The link is valid for 48 hours. On first sign-in, the user sets their own password. After that, the account is active and the invitation link cannot be used again.</p>
+
+    <h3>If the invitation expires</h3>
+    <p>Return to the Users tab. The invited user appears in the list with status <strong>Invitation expired</strong>. Click <strong>Resend</strong> next to their row. A new invitation link is generated and sent; the old link is invalidated.</p>
+
+    <h2>Removing a user</h2>
+    <ol>
+      <li>On the Users tab, find the user you want to remove.</li>
+      <li>Click <strong>Remove</strong> in that user's row.</li>
+      <li>Confirm the action in the dialog that appears.</li>
+    </ol>
+    <p>Removal takes effect immediately. All of the user's active sessions are invalidated. The user cannot sign in again unless re-invited. Their historical activity (query logs, model edits) is retained.</p>
+
+    <div class="callout-note">
+      <p>A Tenant Admin cannot remove another Tenant Admin. Only the System Admin can remove or demote a Tenant Admin. If you need to remove a co-admin, contact your System Admin.</p>
     </div>
-    <p>This article will cover how to invite users to a workspace, remove users, reset passwords, and view user activity from the Admin panel.</p>
+
+    <h2>Resetting a user's password</h2>
+    <ol>
+      <li>On the Users tab, click the user's name or email to open their detail view.</li>
+      <li>Click <strong>Reset Password</strong>.</li>
+      <li>Confirm in the dialog.</li>
+    </ol>
+    <p>The user receives an email with a password reset link. The link is valid for 24 hours. The user's current password remains active until they complete the reset — their sessions are not invalidated by initiating this action.</p>
+
+    <h2>Viewing user details</h2>
+    <p>Clicking a user's name opens a detail panel showing:</p>
+    <ul>
+      <li><strong>Last active</strong>: the timestamp of the user's most recent authenticated request.</li>
+      <li><strong>Assigned role</strong>: the workspace-level role currently in effect.</li>
+      <li><strong>Project memberships</strong>: the projects the user can access and their role within each.</li>
+    </ul>
+
     <div class="related">
       <h2>Related</h2>
-      <ul><li><a href="manage-roles.html">Manage roles</a></li><li><a href="../concepts/roles-and-permissions.html">Roles and permissions</a></li></ul>
+      <ul>
+        <li><a href="manage-roles.html">Manage Roles</a></li>
+        <li><a href="create-a-workspace.html">Create a Workspace</a></li>
+        <li><a href="../concepts/roles-and-permissions.html">Roles and Permissions (concepts)</a></li>
+      </ul>
     </div>
   </main>
+
   <nav class="page-nav">
-    <span class="page-nav-btn prev disabled"></span>
+    <a href="create-a-workspace.html" class="page-nav-btn prev">← Create a Workspace</a>
     <a href="../index.html" class="page-nav-btn home">Home</a>
-    <span class="page-nav-btn next disabled"></span>
+    <a href="manage-roles.html" class="page-nav-btn next">Manage Roles →</a>
   </nav>
   <footer class="site-footer">
     <p>Tessallite Help — <a href="../index.html">Back to contents</a></p>

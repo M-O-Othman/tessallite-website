@@ -21,20 +21,189 @@
       <span class="updated">Updated 2026-04-17</span>
     </div>
     <h1>API Reference</h1>
-    <div class="stub-notice">
-      <strong>Coming soon — Wave 3</strong>
-      <p>This article has not yet been written. It will be published as part of the Wave 3 reference and integrations content.</p>
+
+    <h2>What this covers</h2>
+    <p>REST API endpoint reference for Tessallite. All endpoints require HTTP Basic authentication unless stated otherwise. See <a href="api-authentication.html">API Authentication</a> for details on credentials and roles.</p>
+    <p>Base URL: <code>http://HOST:3000/api/v1</code></p>
+
+    <div class="callout-note">
+      <p>REST API endpoint paths are subject to change between major versions. Check the release notes when upgrading across major versions.</p>
     </div>
-    <p>This article will provide a complete reference for all Tessallite service API endpoints, including authentication, request and response formats, and example calls.</p>
+
+    <h2>Health</h2>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Method</th>
+            <th>Path</th>
+            <th>Auth required</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>GET</code></td>
+            <td><code>/health</code></td>
+            <td>No</td>
+            <td>Returns service health status. Response: <code>{"status":"ok","db_migration":"N"}</code>. Use this to verify the Frontend service is reachable.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Workspaces</h2>
+    <p>These endpoints require a System Admin account.</p>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Method</th>
+            <th>Path</th>
+            <th>Auth required</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>GET</code></td>
+            <td><code>/workspaces</code></td>
+            <td>System Admin</td>
+            <td>List all workspaces.</td>
+          </tr>
+          <tr>
+            <td><code>POST</code></td>
+            <td><code>/workspaces</code></td>
+            <td>System Admin</td>
+            <td>Create a workspace. Request body: <code>{"slug":"acme","display_name":"Acme Corp","admin_email":"admin@acme.com"}</code></td>
+          </tr>
+          <tr>
+            <td><code>GET</code></td>
+            <td><code>/workspaces/{slug}</code></td>
+            <td>System Admin</td>
+            <td>Get details for a specific workspace.</td>
+          </tr>
+          <tr>
+            <td><code>DELETE</code></td>
+            <td><code>/workspaces/{slug}</code></td>
+            <td>System Admin</td>
+            <td>Delete a workspace. This operation is irreversible and removes all projects, models, and aggregates in the workspace.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Projects</h2>
+    <p>These endpoints require a Tenant Admin or Modeller account.</p>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Method</th>
+            <th>Path</th>
+            <th>Auth required</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>GET</code></td>
+            <td><code>/workspaces/{slug}/projects</code></td>
+            <td>Tenant Admin or Modeller</td>
+            <td>List all projects in the workspace.</td>
+          </tr>
+          <tr>
+            <td><code>POST</code></td>
+            <td><code>/workspaces/{slug}/projects</code></td>
+            <td>Tenant Admin</td>
+            <td>Create a new project in the workspace.</td>
+          </tr>
+          <tr>
+            <td><code>GET</code></td>
+            <td><code>/workspaces/{slug}/projects/{id}</code></td>
+            <td>Tenant Admin or Modeller</td>
+            <td>Get details for a specific project.</td>
+          </tr>
+          <tr>
+            <td><code>DELETE</code></td>
+            <td><code>/workspaces/{slug}/projects/{id}</code></td>
+            <td>Tenant Admin</td>
+            <td>Delete a project and all its models and aggregates.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Aggregates and diagnostics</h2>
+    <p>These endpoints require a Modeller account or higher.</p>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Method</th>
+            <th>Path</th>
+            <th>Auth required</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>GET</code></td>
+            <td><code>/workspaces/{slug}/projects/{id}/aggregates</code></td>
+            <td>Modeller</td>
+            <td>List all aggregates for the project, including their current status (Ready, Building, Stale, Error).</td>
+          </tr>
+          <tr>
+            <td><code>POST</code></td>
+            <td><code>/workspaces/{slug}/projects/{id}/aggregates/{agg_id}/refresh</code></td>
+            <td>Modeller</td>
+            <td>Trigger an immediate refresh of the specified aggregate. The build runs asynchronously; poll the GET aggregates endpoint to check status.</td>
+          </tr>
+          <tr>
+            <td><code>GET</code></td>
+            <td><code>/workspaces/{slug}/projects/{id}/diagnostics</code></td>
+            <td>Modeller</td>
+            <td>Get model health diagnostics, including schema drift warnings, permission errors, and build failure details.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Model definition</h2>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Method</th>
+            <th>Path</th>
+            <th>Auth required</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>GET</code></td>
+            <td><code>/workspaces/{slug}/projects/{id}/model</code></td>
+            <td>Modeller</td>
+            <td>Get the model definition for a project: tables, joins, dimensions, and measures.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
     <div class="related">
       <h2>Related</h2>
-      <ul><li><a href="api-authentication.html">API authentication</a></li></ul>
+      <ul>
+        <li><a href="api-authentication.html">API Authentication</a></li>
+        <li><a href="supported-data-sources.html">Supported Data Sources</a></li>
+        <li><a href="../troubleshooting/common-errors.html">Common Errors</a></li>
+      </ul>
     </div>
   </main>
   <nav class="page-nav">
-    <span class="page-nav-btn prev disabled"></span>
+    <a href="api-authentication.html" class="page-nav-btn prev">← API Authentication</a>
     <a href="../index.html" class="page-nav-btn home">Home</a>
-    <span class="page-nav-btn next disabled"></span>
+    <a href="../troubleshooting/excel-connection-problems.html" class="page-nav-btn next">Excel Connection Problems →</a>
   </nav>
   <footer class="site-footer">
     <p>Tessallite Help — <a href="../index.html">Back to contents</a></p>

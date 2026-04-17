@@ -20,25 +20,166 @@
       <span class="audience-badge">Modeller</span>
       <span class="updated">Updated 2026-04-17</span>
     </div>
+
     <h1>Add a Data Source</h1>
-    <div class="stub-notice">
-      <strong>Coming soon — Wave 2</strong>
-      <p>This article has not yet been written. It will be published as part of the Wave 2 modelling walkthroughs.</p>
+
+    <h2>What this covers</h2>
+    <p>Each Tessallite project connects to exactly one data source. This article explains how to view or change the data source connection from the project Settings panel, describes the connection parameters for each supported source type, and lists common connection failure causes and remedies.</p>
+
+    <h2>Navigating to the data source settings</h2>
+    <ol>
+      <li>Open the project from the workspace dashboard.</li>
+      <li>Click the <strong>Settings</strong> tab at the top of the project page.</li>
+      <li>Locate the <strong>Data Source</strong> section. The current source type and connection parameters are displayed here.</li>
+      <li>To change the source type, select a new type from the <strong>Source type</strong> dropdown. Fill in the parameters for the new type.</li>
+      <li>Click <strong>Test Connection</strong> to verify the new parameters before saving.</li>
+      <li>Click <strong>Save</strong> to apply the change.</li>
+    </ol>
+
+    <div class="callout-warning">
+      <p>Changing the source type after tables have been added to the model will invalidate all table references. The model's Canvas will show errors on every table. You must remove all existing tables and re-add them from the new source before the model can be used.</p>
     </div>
-    <p>This article will cover how to connect a PostgreSQL, BigQuery, or Hadoop/Spark Thrift Server data source to a project from the Sources panel in the Model Builder.</p>
+
+    <h2>Connection parameter reference</h2>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Source type</th>
+            <th>Parameter</th>
+            <th>Required</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td rowspan="5"><strong>PostgreSQL</strong></td>
+            <td>Host</td>
+            <td>Yes</td>
+            <td>Hostname or IP of the PostgreSQL server. For Cloud SQL on GCP, use the private IP or Cloud SQL Auth Proxy address.</td>
+          </tr>
+          <tr>
+            <td>Port</td>
+            <td>Yes</td>
+            <td>Default is <code>5432</code>.</td>
+          </tr>
+          <tr>
+            <td>Database</td>
+            <td>Yes</td>
+            <td>The database name containing your schemas and tables.</td>
+          </tr>
+          <tr>
+            <td>User</td>
+            <td>Yes</td>
+            <td>Database user with SELECT access on the target schemas.</td>
+          </tr>
+          <tr>
+            <td>Password</td>
+            <td>Yes</td>
+            <td>Stored encrypted; never shown in plain text after saving.</td>
+          </tr>
+          <tr>
+            <td rowspan="3"><strong>BigQuery</strong></td>
+            <td>Project ID</td>
+            <td>Yes</td>
+            <td>The GCP project ID that owns the BigQuery dataset.</td>
+          </tr>
+          <tr>
+            <td>Dataset</td>
+            <td>Yes</td>
+            <td>The BigQuery dataset to expose. A project can only connect to one dataset at a time.</td>
+          </tr>
+          <tr>
+            <td>Service account JSON</td>
+            <td>Yes</td>
+            <td>Paste the full JSON key file content. The service account must have <code>bigquery.dataViewer</code> and <code>bigquery.jobUser</code> roles.</td>
+          </tr>
+          <tr>
+            <td rowspan="3"><strong>Hadoop / Spark Thrift Server</strong></td>
+            <td>Thrift Server host</td>
+            <td>Yes</td>
+            <td>Hostname or IP of the HiveServer2 or Spark Thrift Server endpoint.</td>
+          </tr>
+          <tr>
+            <td>Port</td>
+            <td>Yes</td>
+            <td>Default is <code>10000</code> for HiveServer2 and <code>10001</code> for Spark Thrift Server.</td>
+          </tr>
+          <tr>
+            <td>Database</td>
+            <td>Yes</td>
+            <td>The Hive or Spark database (schema) name.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>What the Test Connection button checks</h2>
+    <p>Clicking <strong>Test Connection</strong> asks the Tessallite gateway to attempt an authenticated connection to the source using the parameters you entered. It verifies:</p>
+    <ul>
+      <li>The host is reachable from the gateway's network.</li>
+      <li>The port is open and the database service is listening.</li>
+      <li>The credentials are accepted by the source.</li>
+      <li>For BigQuery: the service account JSON is valid and the account has sufficient permissions.</li>
+    </ul>
+    <p>A successful test confirms the gateway can authenticate. It does not run queries or validate that specific schemas or tables exist.</p>
+
+    <h2>Common connection failures</h2>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Error</th>
+            <th>Likely cause</th>
+            <th>Remedy</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Connection timed out</td>
+            <td>The host is not reachable from the gateway due to a network or firewall block.</td>
+            <td>Check that the gateway's outbound IP is allowed through the source's firewall or VPC rules.</td>
+          </tr>
+          <tr>
+            <td>Connection refused</td>
+            <td>The database service is not running on the specified port, or the port is wrong.</td>
+            <td>Verify the port number. Confirm the database service is running.</td>
+          </tr>
+          <tr>
+            <td>Authentication failed</td>
+            <td>Wrong username or password (PostgreSQL/Hadoop), or invalid service account key (BigQuery).</td>
+            <td>Re-enter credentials. For BigQuery, generate a new key in the GCP console and paste the updated JSON.</td>
+          </tr>
+          <tr>
+            <td>Database does not exist</td>
+            <td>The database name is misspelled or the user does not have access to it.</td>
+            <td>Confirm the database name and that the user has been granted access.</td>
+          </tr>
+          <tr>
+            <td>Permission denied</td>
+            <td>The user can connect but lacks SELECT permission on the target schema.</td>
+            <td>Grant SELECT on the relevant schemas and tables in the source database.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
     <div class="related">
       <h2>Related</h2>
       <ul>
-        <li><a href="../concepts/projects-and-models.html">Projects and models</a></li>
-        <li><a href="../index.html">Back to contents</a></li>
+        <li><a href="create-a-project.html">Create a Project</a></li>
+        <li><a href="add-tables-to-a-model.html">Add Tables to a Model</a></li>
+        <li><a href="../integrations/supported-data-sources.html">Supported Data Sources</a></li>
       </ul>
     </div>
   </main>
+
   <nav class="page-nav">
-    <span class="page-nav-btn prev disabled"></span>
+    <a href="create-a-project.html" class="page-nav-btn prev">← Create a Project</a>
     <a href="../index.html" class="page-nav-btn home">Home</a>
-    <span class="page-nav-btn next disabled"></span>
+    <a href="add-tables-to-a-model.html" class="page-nav-btn next">Add Tables to a Model →</a>
   </nav>
+
   <footer class="site-footer">
     <p>Tessallite Help — <a href="../index.html">Back to contents</a></p>
   </footer>

@@ -21,20 +21,157 @@
       <span class="updated">Updated 2026-04-17</span>
     </div>
     <h1>Manage Roles</h1>
-    <div class="stub-notice">
-      <strong>Coming soon — Wave 4</strong>
-      <p>This article has not yet been written. It will be published as part of the Wave 4 admin and troubleshooting content.</p>
+
+    <h2>What this covers</h2>
+    <p>This article explains the four Tessallite roles, how to change a user's workspace role, the difference between workspace-level and project-level access, and how to assign project-level permissions.</p>
+
+    <h2>Role overview</h2>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Role</th>
+            <th>Scope</th>
+            <th>Who assigns it</th>
+            <th>What they can do</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>System Admin</td>
+            <td>Installation-wide</td>
+            <td>Defined by environment variables at deployment; not assignable via UI.</td>
+            <td>Create workspaces, manage all workspace users, access the System Administration screen.</td>
+          </tr>
+          <tr>
+            <td>Tenant Admin</td>
+            <td>Workspace-wide</td>
+            <td>System Admin (initial); Tenant Admin (additional)</td>
+            <td>Invite and remove users, assign roles, configure workspace settings.</td>
+          </tr>
+          <tr>
+            <td>Modeller</td>
+            <td>Workspace-wide (with per-project access)</td>
+            <td>Tenant Admin</td>
+            <td>Create and edit models, define dimensions and measures, configure aggregates and schedules, view diagnostics.</td>
+          </tr>
+          <tr>
+            <td>Analyst / Viewer</td>
+            <td>Per project</td>
+            <td>Tenant Admin or Modeller (via project settings)</td>
+            <td>Connect BI tools via JDBC or XMLA, run queries, view query results.</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    <p>This article will cover how to assign and change user roles within projects — granting Modeller or Viewer access — and how role changes take effect.</p>
+
+    <h2>Role capabilities reference</h2>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Action</th>
+            <th>System Admin</th>
+            <th>Tenant Admin</th>
+            <th>Modeller</th>
+            <th>Analyst</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Create workspaces</td>
+            <td>Yes</td>
+            <td>No</td>
+            <td>No</td>
+            <td>No</td>
+          </tr>
+          <tr>
+            <td>Manage workspace users</td>
+            <td>No</td>
+            <td>Yes</td>
+            <td>No</td>
+            <td>No</td>
+          </tr>
+          <tr>
+            <td>Configure workspace settings</td>
+            <td>No</td>
+            <td>Yes</td>
+            <td>No</td>
+            <td>No</td>
+          </tr>
+          <tr>
+            <td>Create / edit models</td>
+            <td>No</td>
+            <td>No</td>
+            <td>Yes</td>
+            <td>No</td>
+          </tr>
+          <tr>
+            <td>Configure aggregates</td>
+            <td>No</td>
+            <td>No</td>
+            <td>Yes</td>
+            <td>No</td>
+          </tr>
+          <tr>
+            <td>Connect BI tools</td>
+            <td>No</td>
+            <td>No</td>
+            <td>Yes</td>
+            <td>Yes</td>
+          </tr>
+          <tr>
+            <td>Run queries</td>
+            <td>No</td>
+            <td>No</td>
+            <td>Yes</td>
+            <td>Yes</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Changing a user's workspace role</h2>
+    <ol>
+      <li>In the workspace sidebar, click <strong>Admin</strong>.</li>
+      <li>Click the <strong>Users</strong> tab.</li>
+      <li>Click the user's name to open their detail panel.</li>
+      <li>In the <strong>Role</strong> dropdown, select the new role.</li>
+      <li>Click <strong>Save</strong>.</li>
+    </ol>
+    <p>The change takes effect on the user's next sign-in. Existing active sessions continue with the old role until the user signs out and signs back in.</p>
+
+    <h2>Workspace-level vs. project-level access</h2>
+    <p>The Tenant Admin and Modeller roles are workspace-wide. A user with the Modeller role has modelling access across all projects in the workspace unless further restricted at the project level.</p>
+    <p>Analyst access is managed per project. A user with the Analyst role at the workspace level has no project access by default — they must be explicitly added to each project.</p>
+
+    <h2>Assigning project-level access</h2>
+    <ol>
+      <li>Open the project in Model Builder.</li>
+      <li>Click <strong>Settings</strong> in the project toolbar.</li>
+      <li>Click the <strong>Access</strong> tab.</li>
+      <li>Click <strong>Add User</strong>, enter the user's email, and select their project-level permission: <strong>Viewer</strong> or <strong>Modeller</strong>.</li>
+      <li>Click <strong>Save</strong>.</li>
+    </ol>
+
+    <div class="callout-note">
+      <p>A user's workspace role is the ceiling for their effective permissions. A Modeller cannot be granted Tenant Admin access at the project level. If a user needs a higher workspace role, change it from the Admin panel first.</p>
+    </div>
+
     <div class="related">
       <h2>Related</h2>
-      <ul><li><a href="manage-users.html">Manage users</a></li><li><a href="../concepts/roles-and-permissions.html">Roles and permissions</a></li></ul>
+      <ul>
+        <li><a href="manage-users.html">Manage Users</a></li>
+        <li><a href="workspace-settings.html">Workspace Settings</a></li>
+        <li><a href="../concepts/roles-and-permissions.html">Roles and Permissions (concepts)</a></li>
+      </ul>
     </div>
   </main>
+
   <nav class="page-nav">
-    <span class="page-nav-btn prev disabled"></span>
+    <a href="manage-users.html" class="page-nav-btn prev">← Manage Users</a>
     <a href="../index.html" class="page-nav-btn home">Home</a>
-    <span class="page-nav-btn next disabled"></span>
+    <a href="workspace-settings.html" class="page-nav-btn next">Workspace Settings →</a>
   </nav>
   <footer class="site-footer">
     <p>Tessallite Help — <a href="../index.html">Back to contents</a></p>

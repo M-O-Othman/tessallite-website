@@ -15,30 +15,136 @@
       <a href="../index.html">Home</a> / <span>Modelling</span> / <span>Configure Aggregates</span>
     </nav>
   </header>
+
   <main class="article">
     <div class="article-meta">
       <span class="audience-badge">Modeller</span>
       <span class="updated">Updated 2026-04-17</span>
     </div>
+
     <h1>Configure Aggregates</h1>
-    <div class="stub-notice">
-      <strong>Coming soon — Wave 2</strong>
-      <p>This article has not yet been written. It will be published as part of the Wave 2 modelling walkthroughs.</p>
+
+    <h2>What this covers</h2>
+    <p>An aggregate is a pre-computed summary table stored in the query target. When a BI query matches an available aggregate, Tessallite reads from the summary instead of scanning the full fact table. This article covers the two ways aggregates are created, the manual configuration workflow, aggregate properties, and how the grain controls which queries an aggregate can serve.</p>
+
+    <h2>Two ways aggregates are created</h2>
+    <p>Tessallite creates aggregates in two ways:</p>
+    <ul>
+      <li><strong>Manual configuration</strong> — You define the aggregate explicitly: you choose the name, grain, measures, and refresh schedule. Manual aggregates persist until you delete them.</li>
+      <li><strong>AI Optimizer auto-creation</strong> — The Optimizer analyses query patterns observed by the Gateway and creates aggregates automatically at grains it calculates will reduce the most query cost. Auto-created aggregates can be retired by the Optimizer if query patterns change. They are visible in the Canvas alongside manual aggregates.</li>
+    </ul>
+    <p>Both types coexist in the same model. Manual aggregates give you explicit control over high-priority query patterns; auto-created aggregates fill in the gaps based on actual usage.</p>
+
+    <h2>Aggregate properties</h2>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Property</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Name</td>
+            <td>Internal identifier for the aggregate. Used as the summary table name in the query target schema.</td>
+          </tr>
+          <tr>
+            <td>Grain (dimensions)</td>
+            <td>The set of dimensions that define the level of detail in the summary. Every distinct combination of dimension values becomes one row in the summary table.</td>
+          </tr>
+          <tr>
+            <td>Measures</td>
+            <td>The measures to include in the summary. Only measures defined in the model can be selected.</td>
+          </tr>
+          <tr>
+            <td>Refresh schedule</td>
+            <td>A cron expression or preset that controls when the Scheduler re-queries the source and overwrites the summary.</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    <p>This article will cover how to configure aggregate policies in the Aggregates panel, including grain selection, miss thresholds, and the aggregate cap.</p>
+
+    <h2>How the grain controls query matching</h2>
+    <p>The Query Router matches an incoming query to an aggregate when the query's requested dimensions are a subset of the aggregate's grain and the requested measures are all present in the aggregate. A query asking for revenue by country and month matches an aggregate whose grain includes country and month — even if the aggregate also includes a region dimension that the query does not use. The router selects the aggregate with the smallest grain that still covers the query.</p>
+    <p>For additive measures (SUM, COUNT, AVG, MAX, MIN), the router can re-aggregate from coarser summaries. For COUNT DISTINCT, the grain must match exactly.</p>
+
+    <h2>Cron schedule presets</h2>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Preset</th>
+            <th>Cron expression</th>
+            <th>When it runs</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Every hour</td>
+            <td><code>0 * * * *</code></td>
+            <td>At the start of every hour</td>
+          </tr>
+          <tr>
+            <td>Every 6 hours</td>
+            <td><code>0 */6 * * *</code></td>
+            <td>At 00:00, 06:00, 12:00, 18:00 UTC</td>
+          </tr>
+          <tr>
+            <td>Daily at 02:00</td>
+            <td><code>0 2 * * *</code></td>
+            <td>Once per day at 02:00 UTC</td>
+          </tr>
+          <tr>
+            <td>Weekly (Sunday 03:00)</td>
+            <td><code>0 3 * * 0</code></td>
+            <td>Every Sunday at 03:00 UTC</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>You can enter any valid cron expression in the schedule field if none of the presets match your requirements. All times are interpreted as UTC.</p>
+
+    <h2>Steps — manual aggregate configuration</h2>
+    <ol>
+      <li>Open the model in Model Builder. Confirm that a query target is set under <strong>Settings</strong> before proceeding. Aggregates cannot be built without a target.</li>
+      <li>Click <strong>Aggregates</strong> in the Toolbelt (left sidebar).</li>
+      <li>Click <strong>Add Aggregate</strong>. The Drawer (right panel) opens with a blank aggregate form.</li>
+      <li>Enter a <strong>Name</strong>. The name becomes the summary table name in the query target schema. Use something that reflects the grain, for example <code>daily_revenue_by_country</code>.</li>
+      <li>Select the <strong>Dimensions</strong> that define the grain. These are the columns by which the source data will be grouped. Every dimension selected here is a column in the summary table.</li>
+      <li>Select the <strong>Measures</strong> to include. You can select multiple measures. All selected measures will be computed and stored at the chosen grain.</li>
+      <li>Set the <strong>Refresh schedule</strong> using a preset or a custom cron expression.</li>
+      <li>Click <strong>Save</strong>. The aggregate is queued for an initial build by the Scheduler. It appears as a dashed node in the Canvas with a status of <strong>Building</strong>.</li>
+    </ol>
+
+    <div class="callout-note">
+      <p>The first build runs as soon as the Scheduler picks up the job, which is typically within one minute. If the node remains in Building state for more than five minutes, check the Health tab for Scheduler errors.</p>
+    </div>
+
+    <h2>Manual versus auto-created aggregates</h2>
+    <p>Manual aggregates are displayed in the Canvas with a solid border on their dashed outline. Auto-created aggregates show an Optimizer badge. Both respond to the same status indicators (Ready, Stale, Refreshing, Error). Manual aggregates are permanent — the Optimizer will not retire them. Auto-created aggregates may be removed by the Optimizer if the query patterns they serve drop off; you receive a notification in the Health tab when this occurs.</p>
+
     <div class="related">
       <h2>Related</h2>
       <ul>
-        <li><a href="../concepts/projects-and-models.html">Projects and models</a></li>
-        <li><a href="../index.html">Back to contents</a></li>
+        <li><a href="set-a-query-target.html">Set a Query Target</a></li>
+        <li><a href="run-a-refresh.html">Run a Refresh</a></li>
+        <li><a href="../concepts/aggregates.html">Aggregates (concept)</a></li>
+        <li><a href="use-the-ai-optimiser.html">Use the AI Optimiser</a></li>
+        <li><a href="manage-aggregate-schedules.html">Manage Aggregate Schedules</a></li>
       </ul>
     </div>
   </main>
+
   <nav class="page-nav">
-    <span class="page-nav-btn prev disabled"></span>
+    <a href="set-a-query-target.html" class="page-nav-btn prev">← Set a Query Target</a>
     <a href="../index.html" class="page-nav-btn home">Home</a>
-    <span class="page-nav-btn next disabled"></span>
+    <a href="run-a-refresh.html" class="page-nav-btn next">Run a Refresh →</a>
   </nav>
+
   <footer class="site-footer">
     <p>Tessallite Help — <a href="../index.html">Back to contents</a></p>
   </footer>

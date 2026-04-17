@@ -20,25 +20,101 @@
       <span class="audience-badge">Modeller</span>
       <span class="updated">Updated 2026-04-17</span>
     </div>
+
     <h1>Define Joins</h1>
-    <div class="stub-notice">
-      <strong>Coming soon — Wave 2</strong>
-      <p>This article has not yet been written. It will be published as part of the Wave 2 modelling walkthroughs.</p>
+
+    <h2>What this covers</h2>
+    <p>Joins tell Tessallite how tables relate to one another. Without joins, the query router cannot construct the SQL needed to pull dimension attributes into aggregate GROUP BY queries. This article covers the join creation flow, join properties, when to choose INNER vs LEFT, structural constraints, and how to edit or delete a join.</p>
+
+    <h2>Before you start</h2>
+    <ul>
+      <li>All tables involved in a join must already be added to the model. See <a href="add-tables-to-a-model.html">Add Tables to a Model</a>.</li>
+      <li>You must know the foreign key relationship: which column in one table corresponds to the primary key in the other.</li>
+    </ul>
+
+    <h2>Creating a join</h2>
+    <ol>
+      <li>Open the Model Builder for the project.</li>
+      <li>In the Toolbelt, click <strong>Add Join</strong>. Alternatively, drag from one table card to another in the Canvas — the Drawer opens with the join form pre-populated with the two tables.</li>
+      <li>In the Drawer, set the <strong>Left table</strong> and <strong>Left column</strong>. The left table is typically the fact table or the table on the many-side of the relationship.</li>
+      <li>Set the <strong>Right table</strong> and <strong>Right column</strong>. The right table is typically the dimension table on the one-side.</li>
+      <li>Choose the <strong>Join type</strong>: LEFT or INNER.</li>
+      <li>Click <strong>Save Join</strong>. A line appears in the Canvas connecting the two table cards, labeled with the join type.</li>
+    </ol>
+
+    <h2>Join properties</h2>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Property</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Left table</td>
+            <td>The table on the left side of the ON clause. Tessallite generates <code>LEFT_TABLE.left_column = RIGHT_TABLE.right_column</code> in the query.</td>
+          </tr>
+          <tr>
+            <td>Left column</td>
+            <td>The foreign key column in the left table.</td>
+          </tr>
+          <tr>
+            <td>Right table</td>
+            <td>The table being joined to. For star schemas this is typically a dimension table.</td>
+          </tr>
+          <tr>
+            <td>Right column</td>
+            <td>The primary key or join key column in the right table.</td>
+          </tr>
+          <tr>
+            <td>Join type</td>
+            <td>LEFT or INNER. Controls how unmatched rows are handled at query time.</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    <p>This article will cover how to create join relationships between tables in the Model Builder canvas, including join type selection and column mapping.</p>
+
+    <h2>Choosing INNER vs LEFT</h2>
+    <p>Use <strong>LEFT</strong> in almost all cases. A LEFT join preserves every row from the left (fact) table even when the right (dimension) table has no matching row. This prevents fact rows from being silently dropped from query results if a dimension record is missing or the foreign key is null.</p>
+    <p>Use <strong>INNER</strong> only when you are certain that every fact row has a matching dimension row and you want unmatched fact rows excluded. A misapplied INNER join is a common source of silent data loss — the query returns no error but produces totals lower than expected.</p>
+
+    <div class="callout-note">
+      <p>Every dimension table must be reachable from the fact table through a join path. A dimension table with no join connection to the fact table (directly or through another table) cannot be used in aggregate GROUP BY queries and will trigger a warning in the Health tab.</p>
+    </div>
+
+    <h2>Structural constraints</h2>
+    <p>Tessallite enforces the following constraints on the join graph:</p>
+    <ul>
+      <li><strong>Star or snowflake only.</strong> Joins must radiate outward from the fact table. Each dimension table connects to the fact table directly (star schema) or through another dimension table (snowflake schema). Cycles are not allowed.</li>
+      <li><strong>No fact-to-fact joins.</strong> A join between two tables marked as <code>fact</code> is not supported. If you need data from two fact tables, use two separate projects or pre-join them in the source database before modelling.</li>
+      <li><strong>One join per table pair.</strong> Only one join can exist between any two tables. If the relationship involves a composite key, define the join on the most selective column and handle the remaining key columns upstream in the source.</li>
+    </ul>
+    <p>The Health tab shows errors for any constraint violations. The model cannot be published while errors are present.</p>
+
+    <h2>Editing a join</h2>
+    <p>Click the join line in the Canvas to open it in the Drawer. Edit any property and click <strong>Save Join</strong> to apply the change.</p>
+
+    <h2>Deleting a join</h2>
+    <p>Click the join line in the Canvas to open it in the Drawer, then click <strong>Delete Join</strong>. Deleting a join disconnects the two tables. Dimensions or measures that rely on columns in the disconnected table will produce errors in the Health tab until the join is restored or those objects are removed.</p>
+
     <div class="related">
       <h2>Related</h2>
       <ul>
-        <li><a href="../concepts/projects-and-models.html">Projects and models</a></li>
-        <li><a href="../index.html">Back to contents</a></li>
+        <li><a href="add-tables-to-a-model.html">Add Tables to a Model</a></li>
+        <li><a href="define-dimensions.html">Define Dimensions</a></li>
+        <li><a href="../concepts/sources-tables-and-joins.html">Sources, Tables, and Joins</a></li>
       </ul>
     </div>
   </main>
+
   <nav class="page-nav">
-    <span class="page-nav-btn prev disabled"></span>
+    <a href="add-tables-to-a-model.html" class="page-nav-btn prev">← Add Tables to a Model</a>
     <a href="../index.html" class="page-nav-btn home">Home</a>
-    <span class="page-nav-btn next disabled"></span>
+    <a href="define-dimensions.html" class="page-nav-btn next">Define Dimensions →</a>
   </nav>
+
   <footer class="site-footer">
     <p>Tessallite Help — <a href="../index.html">Back to contents</a></p>
   </footer>

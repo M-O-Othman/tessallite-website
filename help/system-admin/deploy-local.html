@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Deploy Locally (Reference) — Tessallite Help</title>
+  <title>Deploy Locally — Tessallite Help</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../assets/help.css">
@@ -12,7 +12,7 @@
   <header class="site-header">
     <a href="../index.html" class="logo">Tessallite Help</a>
     <nav class="breadcrumb">
-      <a href="../index.html">Home</a> / <span>System Admin</span> / <span>Deploy Locally (Reference)</span>
+      <a href="../index.html">Home</a> / <span>System Admin</span> / <span>Deploy Locally</span>
     </nav>
   </header>
   <main class="article">
@@ -20,21 +20,190 @@
       <span class="audience-badge">System Admin</span>
       <span class="updated">Updated 2026-04-17</span>
     </div>
-    <h1>Deploy Locally (Reference)</h1>
-    <div class="stub-notice">
-      <strong>Coming soon — Wave 4</strong>
-      <p>This article has not yet been written. It will be published as part of the Wave 4 admin and system documentation.</p>
+    <h1>Deploy Locally</h1>
+
+    <h2>What this covers</h2>
+    <p>Detailed configuration reference for a local Docker Compose deployment. This complements the guided install article in Getting Started. It covers environment variable configuration, volume management, resource requirements, and debug logging.</p>
+
+    <h2>Requirements</h2>
+    <ul>
+      <li>Docker Desktop 24 or later with Compose v2.</li>
+      <li>Minimum 2 CPUs and 4 GB RAM for a development deployment. 4 CPUs and 8 GB RAM recommended for sustained use.</li>
+      <li>Ports 5433, 8080, and 3000 free on the host.</li>
+    </ul>
+
+    <h2>Starting and stopping</h2>
+    <p>From the directory containing your <code>docker-compose.yml</code>:</p>
+    <pre><code># Start all services in the background
+docker compose up -d
+
+# Check service status
+docker compose ps
+
+# Stream logs for a specific service
+docker compose logs -f query-router
+
+# Stop all services (data volumes preserved)
+docker compose down</code></pre>
+
+    <h2>Persistent data</h2>
+    <p>Tessallite uses one named volume for its internal PostgreSQL database:</p>
+    <ul>
+      <li><code>tessallite_pgdata</code> — stores workspace metadata, model definitions, aggregate build history, and the query miss log.</li>
+    </ul>
+    <p>This volume persists across <code>docker compose down</code> and <code>docker compose up</code> cycles. To delete it and all Tessallite data, use <code>docker compose down -v</code>. See the Teardown article for details.</p>
+
+    <h2>Environment variable configuration</h2>
+    <p>Create a <code>.env</code> file in the same directory as <code>docker-compose.yml</code>. Docker Compose reads this file automatically and passes the variables to each service.</p>
+    <pre><code>DB_HOST=postgres
+DB_PORT=5432
+DB_NAME=tessallite
+DB_USER=tessallite
+DB_PASS=changeme
+ADMIN_USER=admin
+ADMIN_PASS=changeme
+SESSION_SECRET=your-random-secret-here</code></pre>
+
+    <div class="callout-warning">
+      <p>Never commit <code>.env</code> to source control. Add it to <code>.gitignore</code> before your first commit. At minimum, change <code>DB_PASS</code>, <code>ADMIN_PASS</code>, and <code>SESSION_SECRET</code> from the example values before running in any shared environment.</p>
     </div>
-    <p>This article will provide a detailed technical reference for the local Docker Compose deployment — container configuration, volume mounts, network settings, and environment variable overrides — as a supplement to the guided deploy script covered in the Getting Started section.</p>
+
+    <p>You can also set variables directly in the <code>environment:</code> block of each service in <code>docker-compose.yml</code>, but the <code>.env</code> file approach keeps secrets out of the compose file.</p>
+
+    <h2>Environment variable reference</h2>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Variable</th>
+            <th>Service</th>
+            <th>Required</th>
+            <th>Default</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>DB_HOST</code></td>
+            <td>All except gateway</td>
+            <td>Yes</td>
+            <td><code>postgres</code></td>
+            <td>Hostname of internal PostgreSQL. In Docker Compose this is the service name <code>postgres</code>.</td>
+          </tr>
+          <tr>
+            <td><code>DB_PORT</code></td>
+            <td>All except gateway</td>
+            <td>No</td>
+            <td><code>5432</code></td>
+            <td>Port of internal PostgreSQL.</td>
+          </tr>
+          <tr>
+            <td><code>DB_NAME</code></td>
+            <td>All except gateway</td>
+            <td>No</td>
+            <td><code>tessallite</code></td>
+            <td>Database name in internal PostgreSQL.</td>
+          </tr>
+          <tr>
+            <td><code>DB_USER</code></td>
+            <td>All except gateway</td>
+            <td>Yes</td>
+            <td>—</td>
+            <td>PostgreSQL username.</td>
+          </tr>
+          <tr>
+            <td><code>DB_PASS</code></td>
+            <td>All except gateway</td>
+            <td>Yes</td>
+            <td>—</td>
+            <td>PostgreSQL password.</td>
+          </tr>
+          <tr>
+            <td><code>ADMIN_USER</code></td>
+            <td>frontend</td>
+            <td>Yes</td>
+            <td>—</td>
+            <td>System Admin username for the web UI.</td>
+          </tr>
+          <tr>
+            <td><code>ADMIN_PASS</code></td>
+            <td>frontend</td>
+            <td>Yes</td>
+            <td>—</td>
+            <td>System Admin password for the web UI.</td>
+          </tr>
+          <tr>
+            <td><code>SESSION_SECRET</code></td>
+            <td>frontend</td>
+            <td>Yes</td>
+            <td>—</td>
+            <td>Random string used to sign session tokens. Minimum 32 characters. No default — must be set.</td>
+          </tr>
+          <tr>
+            <td><code>GATEWAY_PORT_JDBC</code></td>
+            <td>gateway</td>
+            <td>No</td>
+            <td><code>5433</code></td>
+            <td>Host port for the JDBC listener.</td>
+          </tr>
+          <tr>
+            <td><code>GATEWAY_PORT_XMLA</code></td>
+            <td>gateway</td>
+            <td>No</td>
+            <td><code>8080</code></td>
+            <td>Host port for the XMLA listener.</td>
+          </tr>
+          <tr>
+            <td><code>FRONTEND_PORT</code></td>
+            <td>frontend</td>
+            <td>No</td>
+            <td><code>3000</code></td>
+            <td>Host port for the web UI.</td>
+          </tr>
+          <tr>
+            <td><code>OPTIMIZER_SCORE_THRESHOLD</code></td>
+            <td>optimizer</td>
+            <td>No</td>
+            <td><code>50</code></td>
+            <td>Minimum ROI score before optimizer creates a build recommendation.</td>
+          </tr>
+          <tr>
+            <td><code>SCHEDULER_MAX_CONCURRENT</code></td>
+            <td>scheduler</td>
+            <td>No</td>
+            <td><code>3</code></td>
+            <td>Maximum number of aggregate builds running simultaneously.</td>
+          </tr>
+          <tr>
+            <td><code>LOG_LEVEL</code></td>
+            <td>All</td>
+            <td>No</td>
+            <td><code>info</code></td>
+            <td>Log verbosity. One of: <code>debug</code>, <code>info</code>, <code>warn</code>, <code>error</code>.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Enabling debug logging</h2>
+    <p>Add the following line to your <code>.env</code> file to enable verbose logging across all services:</p>
+    <pre><code>LOG_LEVEL=debug</code></pre>
+    <p>Debug output is high volume. Use it for short-duration troubleshooting, then return to <code>info</code>.</p>
+
     <div class="related">
       <h2>Related</h2>
-      <ul><li><a href="../getting-started/install-local.html">Install locally</a></li><li><a href="configure-environment-variables.html">Configure environment variables</a></li><li><a href="teardown.html">Teardown</a></li></ul>
+      <ul>
+        <li><a href="architecture-overview.html">Architecture Overview</a></li>
+        <li><a href="configure-environment-variables.html">Configure Environment Variables</a></li>
+        <li><a href="../getting-started/install-local.html">Install Tessallite Locally</a></li>
+      </ul>
     </div>
   </main>
   <nav class="page-nav">
-    <span class="page-nav-btn prev disabled"></span>
+    <a href="architecture-overview.html" class="page-nav-btn prev">← Architecture Overview</a>
     <a href="../index.html" class="page-nav-btn home">Home</a>
-    <span class="page-nav-btn next disabled"></span>
+    <a href="deploy-gcp.html" class="page-nav-btn next">Deploy on GCP →</a>
   </nav>
   <footer class="site-footer">
     <p>Tessallite Help — <a href="../index.html">Back to contents</a></p>

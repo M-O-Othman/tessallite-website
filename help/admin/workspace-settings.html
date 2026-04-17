@@ -21,20 +21,97 @@
       <span class="updated">Updated 2026-04-17</span>
     </div>
     <h1>Workspace Settings</h1>
-    <div class="stub-notice">
-      <strong>Coming soon — Wave 4</strong>
-      <p>This article has not yet been written. It will be published as part of the Wave 4 admin and troubleshooting content.</p>
+
+    <h2>What this covers</h2>
+    <p>The Settings tab in the Admin panel controls workspace-level configuration: display name, aggregate scheduling defaults, query timeout, schema sync schedule, and session timeout. This article lists each setting, its default, and its effect. It also covers how to delete a workspace.</p>
+
+    <h2>Navigating to workspace settings</h2>
+    <ol>
+      <li>In the workspace sidebar, click <strong>Admin</strong>.</li>
+      <li>Click the <strong>Settings</strong> tab.</li>
+    </ol>
+
+    <h2>Settings reference</h2>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Setting</th>
+            <th>Description</th>
+            <th>Default</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Display name</td>
+            <td>The workspace label shown in the UI. Visible to all users in the workspace.</td>
+            <td>Set at creation</td>
+            <td>Can be changed at any time. Does not affect the slug or any connection strings.</td>
+          </tr>
+          <tr>
+            <td>Default aggregate schedule</td>
+            <td>The cron expression applied automatically to new aggregates unless an explicit schedule is set in the aggregate Drawer.</td>
+            <td><code>0 2 * * *</code> (daily at 2:00 AM)</td>
+            <td>Changing this value affects only aggregates created after the change. Existing aggregates keep their current schedule.</td>
+          </tr>
+          <tr>
+            <td>Query timeout</td>
+            <td>Seconds before a raw-source query (one that cannot be answered from an aggregate) is cancelled and an error is returned to the client.</td>
+            <td>300</td>
+            <td>Applies to new query connections. Queries already in flight are not affected until they are re-submitted.</td>
+          </tr>
+          <tr>
+            <td>Schema sync schedule</td>
+            <td>Cron expression for automatic schema sync, which re-reads source table column definitions and flags any schema drift in the Health tab.</td>
+            <td><code>0 1 * * *</code> (daily at 1:00 AM)</td>
+            <td>Schema sync does not modify the model automatically. It only detects drift and reports it as a Warning diagnostic.</td>
+          </tr>
+          <tr>
+            <td>Session timeout</td>
+            <td>Minutes of inactivity before a user is signed out automatically.</td>
+            <td>60</td>
+            <td>Takes effect for new sessions after saving. Existing sessions use the timeout value that was in effect when the session was established.</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    <p>This article will provide a reference for all options available in the workspace Settings panel — display name, data source defaults, and access configuration.</p>
+
+    <h2>Saving settings</h2>
+    <ol>
+      <li>Make the required changes on the Settings tab.</li>
+      <li>Click <strong>Save Settings</strong>.</li>
+    </ol>
+    <p>Changes apply immediately for new connections and new sessions. Active sessions continue under the settings that were in effect when they authenticated. If you need a changed timeout to apply to all users immediately, ask them to sign out and sign back in.</p>
+
+    <h2>Deleting the workspace</h2>
+    <p>The Settings tab includes a <strong>Danger Zone</strong> section at the bottom of the page. Workspace deletion is accessed from there.</p>
+
+    <div class="callout-warning">
+      <p><strong>Workspace deletion is irreversible.</strong> Deleting the workspace permanently removes all projects, models, aggregate metadata, and user records associated with it. Source data in your connected databases is not affected. There is no undo.</p>
+    </div>
+
+    <ol>
+      <li>In the Danger Zone section, click <strong>Delete Workspace</strong>.</li>
+      <li>A confirmation dialog appears. Type the workspace slug exactly as shown to confirm.</li>
+      <li>Click <strong>Confirm Delete</strong>.</li>
+    </ol>
+    <p>The workspace is removed immediately. All users lose access. The System Admin will see the workspace removed from the Workspaces tab in the System Administration screen.</p>
+
     <div class="related">
       <h2>Related</h2>
-      <ul><li><a href="create-a-workspace.html">Create a workspace</a></li><li><a href="../concepts/workspaces-and-tenants.html">Workspaces and tenants</a></li></ul>
+      <ul>
+        <li><a href="manage-roles.html">Manage Roles</a></li>
+        <li><a href="create-a-workspace.html">Create a Workspace</a></li>
+        <li><a href="../concepts/workspaces-and-tenants.html">Workspaces and Tenants (concepts)</a></li>
+      </ul>
     </div>
   </main>
+
   <nav class="page-nav">
-    <span class="page-nav-btn prev disabled"></span>
+    <a href="manage-roles.html" class="page-nav-btn prev">← Manage Roles</a>
     <a href="../index.html" class="page-nav-btn home">Home</a>
-    <span class="page-nav-btn next disabled"></span>
+    <a href="../system-admin/architecture-overview.html" class="page-nav-btn next">Architecture Overview →</a>
   </nav>
   <footer class="site-footer">
     <p>Tessallite Help — <a href="../index.html">Back to contents</a></p>

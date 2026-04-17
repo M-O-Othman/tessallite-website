@@ -21,20 +21,125 @@
       <span class="updated">Updated 2026-04-17</span>
     </div>
     <h1>Power BI Connection Guide</h1>
-    <div class="stub-notice">
-      <strong>Coming soon — Wave 3</strong>
-      <p>This article has not yet been written. It will be published as part of the Wave 3 reference and integrations content.</p>
+
+    <h2>What this covers</h2>
+    <p>Power BI Desktop can connect to Tessallite using two methods: the PostgreSQL connector (which uses the JDBC-equivalent connection on port 5433) or the Analysis Services XMLA connector (port 8080). Both methods are described here.</p>
+    <p>DirectQuery mode is recommended for both methods so that Power BI routes queries to Tessallite at report refresh time rather than downloading and caching data locally.</p>
+
+    <h2>Method 1 — PostgreSQL connector (port 5433)</h2>
+    <p>This method uses the same JDBC endpoint as DBeaver and Tableau. Power BI treats Tessallite as a standard PostgreSQL server.</p>
+    <ol>
+      <li>Open Power BI Desktop.</li>
+      <li>Click <strong>Get Data</strong> → <strong>Database</strong> → <strong>PostgreSQL database</strong> → <strong>Connect</strong>.</li>
+      <li>In the <strong>Server</strong> field, enter <code>HOST:5433</code> (include the port).</li>
+      <li>In the <strong>Database</strong> field, enter your workspace slug (e.g., <code>acme</code>).</li>
+      <li>Under <strong>Data Connectivity mode</strong>, select <strong>DirectQuery</strong>.</li>
+      <li>Click <strong>OK</strong>.</li>
+      <li>In the credentials dialog, select <strong>Database</strong> authentication.</li>
+      <li>Enter your Tessallite username (email address) and password.</li>
+      <li>Click <strong>Connect</strong>.</li>
+      <li>In the <strong>Navigator</strong>, select the tables or views to include in the report.</li>
+      <li>Click <strong>Load</strong> (to add to the model directly) or <strong>Transform Data</strong> (to open Power Query for additional shaping).</li>
+    </ol>
+
+    <h2>Method 2 — XMLA / Analysis Services connector (port 8080)</h2>
+    <p>This method connects to the XMLA endpoint and surfaces the Tessallite model as a multidimensional cube with dimensions and measures.</p>
+    <ol>
+      <li>Open Power BI Desktop.</li>
+      <li>Click <strong>Get Data</strong> → <strong>Online Services</strong> → <strong>Analysis Services</strong> → <strong>Connect</strong>.</li>
+      <li>In the <strong>Server</strong> field, enter the full XMLA URL: <code>http://HOST:8080/xmla</code></li>
+      <li>Select <strong>Connect live</strong> (recommended) or <strong>Import</strong>.</li>
+      <li>Click <strong>OK</strong>.</li>
+      <li>In the credentials dialog, select <strong>Basic</strong> authentication.</li>
+      <li>Enter your Tessallite username and password.</li>
+      <li>Click <strong>Connect</strong>.</li>
+      <li>Select the catalog (workspace slug) from the dropdown.</li>
+      <li>Select the model name.</li>
+      <li>Click <strong>OK</strong>.</li>
+    </ol>
+
+    <h2>DirectQuery vs Import mode</h2>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Mode</th>
+            <th>How it works</th>
+            <th>Recommendation</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>DirectQuery</td>
+            <td>Power BI sends SQL or MDX queries to Tessallite at report open and refresh time. Tessallite routes each query to the optimal source.</td>
+            <td>Recommended for large datasets and real-time data. Retains all acceleration benefits.</td>
+          </tr>
+          <tr>
+            <td>Import</td>
+            <td>Power BI downloads the full result set and caches it in the .pbix file. Queries run against the local cache, not Tessallite.</td>
+            <td>Suitable only for small, infrequently changing datasets. Loses live routing and acceleration benefits.</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    <p>This article will provide step-by-step instructions for connecting Power BI Desktop to Tessallite via XMLA, including dataset configuration and DirectQuery settings.</p>
+
+    <div class="callout-note">
+      <p>DirectQuery mode is required to benefit from Tessallite's aggregate routing. In Import mode, all acceleration happens during the import step only, and the cached data goes stale between refreshes.</p>
+    </div>
+
+    <h2>Power BI Gateway for scheduled refresh</h2>
+    <p>If the Tessallite Gateway is on a private network (not accessible from the internet), Power BI Service cannot reach it directly for scheduled refresh. In this case, install an <strong>on-premises data gateway</strong> on a machine that can reach the Tessallite host. Configure the gateway in Power BI Service and associate the dataset with it.</p>
+    <p>For Gateway setup, see the <a href="https://learn.microsoft.com/en-us/power-bi/connect-data/service-gateway-onprem" target="_blank" rel="noopener">Microsoft Power BI Gateway documentation</a>.</p>
+
+    <h2>Troubleshooting</h2>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Symptom</th>
+            <th>Likely cause</th>
+            <th>Resolution</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Cannot connect (PostgreSQL method)</td>
+            <td>Gateway not running or wrong host/port</td>
+            <td>Verify the Gateway service is running. Confirm SERVER field includes the port: <code>HOST:5433</code>.</td>
+          </tr>
+          <tr>
+            <td>Authentication failed</td>
+            <td>Wrong credentials</td>
+            <td>Use Tessallite email and password. Use <strong>Database</strong> auth type, not Windows.</td>
+          </tr>
+          <tr>
+            <td>Cannot connect (XMLA method)</td>
+            <td>Wrong URL or port 8080 not reachable</td>
+            <td>Verify URL is <code>http://HOST:8080/xmla</code>. Test with <code>curl -v http://HOST:8080/xmla</code>.</td>
+          </tr>
+          <tr>
+            <td>Scheduled refresh fails in Power BI Service</td>
+            <td>Tessallite host is on a private network</td>
+            <td>Install and configure an on-premises data gateway on a machine with network access to the Tessallite host.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
     <div class="related">
       <h2>Related</h2>
-      <ul><li><a href="../getting-started/connect-a-bi-tool.html">Connect a BI tool</a></li><li><a href="jdbc-connection-guide.html">JDBC connection guide</a></li></ul>
+      <ul>
+        <li><a href="jdbc-connection-guide.html">JDBC Connection Guide</a></li>
+        <li><a href="excel-xmla-connection-guide.html">Excel XMLA Connection Guide</a></li>
+        <li><a href="supported-data-sources.html">Supported Data Sources</a></li>
+        <li><a href="../troubleshooting/common-errors.html">Common Errors</a></li>
+      </ul>
     </div>
   </main>
   <nav class="page-nav">
-    <span class="page-nav-btn prev disabled"></span>
+    <a href="excel-xmla-connection-guide.html" class="page-nav-btn prev">← Excel XMLA Connection Guide</a>
     <a href="../index.html" class="page-nav-btn home">Home</a>
-    <span class="page-nav-btn next disabled"></span>
+    <a href="supported-data-sources.html" class="page-nav-btn next">Supported Data Sources →</a>
   </nav>
   <footer class="site-footer">
     <p>Tessallite Help — <a href="../index.html">Back to contents</a></p>

@@ -17,24 +17,87 @@
   </header>
   <main class="article">
     <div class="article-meta">
-      <span class="audience-badge">Tenant Admin</span>
+      <span class="audience-badge">System Admin</span>
       <span class="updated">Updated 2026-04-17</span>
     </div>
     <h1>Create a Workspace</h1>
-    <div class="stub-notice">
-      <strong>Coming soon — Wave 4</strong>
-      <p>This article has not yet been written. It will be published as part of the Wave 4 admin and troubleshooting content.</p>
+
+    <h2>What this covers</h2>
+    <p>Only the System Admin can create workspaces. This article explains where to do it, what fields are required, and what is provisioned after creation.</p>
+
+    <h2>Who can create a workspace</h2>
+    <p>Workspace creation is restricted to the System Admin. This account is configured by the environment variables <code>ADMIN_USER</code> and <code>ADMIN_PASS</code> set during deployment. Tenant Admins cannot create workspaces; they manage users and settings within an existing workspace.</p>
+
+    <h2>Steps to create a workspace</h2>
+    <ol>
+      <li>Open a browser and navigate to Tessallite on port <code>3000</code>.</li>
+      <li>Sign in using the <code>ADMIN_USER</code> and <code>ADMIN_PASS</code> credentials. The application opens directly to the System Administration screen.</li>
+      <li>Click the <strong>Workspaces</strong> tab.</li>
+      <li>Click <strong>New Workspace</strong>.</li>
+      <li>Fill in the workspace fields (see reference below).</li>
+      <li>Enter the email address of the initial Tenant Admin user. This user will receive an invitation link to activate their account.</li>
+      <li>Click <strong>Create</strong>.</li>
+    </ol>
+
+    <h2>Workspace fields</h2>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Field</th>
+            <th>Description</th>
+            <th>Constraints</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Display name</td>
+            <td>The label shown in the UI for this workspace. Can be changed at any time after creation.</td>
+            <td>Any text; maximum 80 characters.</td>
+          </tr>
+          <tr>
+            <td>Slug</td>
+            <td>A short identifier used as the JDBC database name and the XMLA catalog name. Analysts need this value to connect their BI tools.</td>
+            <td>Lowercase letters, numbers, and hyphens only. No spaces. Must be unique across the installation.</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    <p>This article will cover how to create a new workspace from the System Administration screen, including setting the slug, display name, and initial admin user.</p>
+
+    <div class="callout-warning">
+      <p><strong>The slug cannot be changed after the workspace is created.</strong> It is used as the JDBC database field and the XMLA catalog name for all analyst connections. Changing it would break existing BI tool connections. Choose it carefully before clicking Create.</p>
+    </div>
+
+    <h2>What the slug is used for</h2>
+    <p>When analysts connect BI tools to Tessallite:</p>
+    <ul>
+      <li><strong>JDBC connections</strong> (port 5433): the <em>Database</em> field must be set to the workspace slug.</li>
+      <li><strong>XMLA connections</strong> (port 8080): the <em>Catalog</em> field must be set to the workspace slug.</li>
+    </ul>
+    <p>Share the slug with Analysts so they can configure their connections correctly.</p>
+
+    <h2>What is provisioned after creation</h2>
+    <p>After you click Create, Tessallite provisions the following:</p>
+    <ul>
+      <li>An isolated PostgreSQL schema for workspace metadata (projects, models, aggregates, users).</li>
+      <li>An empty workspace dashboard, accessible by the assigned Tenant Admin once they accept their invitation and sign in.</li>
+      <li>An invitation email sent to the Tenant Admin's address. The link is valid for 48 hours. If it expires, re-send from the workspace's Users tab in the System Administration screen.</li>
+    </ul>
+
     <div class="related">
       <h2>Related</h2>
-      <ul><li><a href="../getting-started/first-time-setup.html">First-time setup</a></li><li><a href="../concepts/workspaces-and-tenants.html">Workspaces and tenants</a></li><li><a href="manage-users.html">Manage users</a></li></ul>
+      <ul>
+        <li><a href="manage-users.html">Manage Users</a></li>
+        <li><a href="../concepts/workspaces-and-tenants.html">Workspaces and Tenants (concepts)</a></li>
+        <li><a href="../getting-started/first-time-setup.html">First-Time Setup</a></li>
+      </ul>
     </div>
   </main>
+
   <nav class="page-nav">
-    <span class="page-nav-btn prev disabled"></span>
+    <a href="../modelling/manage-aggregate-schedules.html" class="page-nav-btn prev">← Manage Aggregate Schedules</a>
     <a href="../index.html" class="page-nav-btn home">Home</a>
-    <span class="page-nav-btn next disabled"></span>
+    <a href="manage-users.html" class="page-nav-btn next">Manage Users →</a>
   </nav>
   <footer class="site-footer">
     <p>Tessallite Help — <a href="../index.html">Back to contents</a></p>

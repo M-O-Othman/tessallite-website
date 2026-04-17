@@ -21,20 +21,161 @@
       <span class="updated">Updated 2026-04-17</span>
     </div>
     <h1>JDBC Connection Guide</h1>
-    <div class="stub-notice">
-      <strong>Coming soon — Wave 3</strong>
-      <p>This article has not yet been written. It will be published as part of the Wave 3 reference and integrations content.</p>
+
+    <h2>What this covers</h2>
+    <p>Tessallite exposes a PostgreSQL wire-protocol endpoint on port 5433. Any JDBC client that supports the standard PostgreSQL driver can connect to it — including DBeaver, Tableau, and any tool using the psycopg2 or JDBC PostgreSQL driver. No Tessallite-specific driver is required.</p>
+    <p>This article is a detailed connection reference. If you want a shorter walkthrough, see <a href="../getting-started/connect-a-bi-tool.html">Connect a BI Tool via JDBC</a>.</p>
+
+    <h2>Connection parameters</h2>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Parameter</th>
+            <th>Value</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Host</td>
+            <td>Hostname or IP of the Tessallite Gateway</td>
+            <td>Use <code>localhost</code> for local installs. Obtain from your System Admin for cloud deployments.</td>
+          </tr>
+          <tr>
+            <td>Port</td>
+            <td><code>5433</code></td>
+            <td>Fixed. Not the standard PostgreSQL port (5432).</td>
+          </tr>
+          <tr>
+            <td>Database</td>
+            <td>Workspace slug (e.g., <code>acme</code>)</td>
+            <td>Case-sensitive. This is not a real database name — it routes to the correct workspace. Obtain the slug from your Tenant Admin.</td>
+          </tr>
+          <tr>
+            <td>Username</td>
+            <td>Your Tessallite username (email address)</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Password</td>
+            <td>Your Tessallite password</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>SSL</td>
+            <td>Optional</td>
+            <td>Add <code>?sslmode=require</code> to the JDBC URL if the server requires SSL. Not required for local installs.</td>
+          </tr>
+          <tr>
+            <td>Driver class</td>
+            <td><code>org.postgresql.Driver</code></td>
+            <td>Standard PostgreSQL JDBC driver. No Tessallite-specific driver.</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    <p>This article will provide a detailed connection reference for all JDBC-compatible clients — Tableau, DBeaver, psycopg2, and any PostgreSQL-compatible tool — including connection string format, SSL options, and authentication.</p>
+
+    <h2>JDBC URL format</h2>
+    <pre><code>jdbc:postgresql://HOST:5433/WORKSPACE_SLUG</code></pre>
+    <p>Example with a real hostname and workspace slug:</p>
+    <pre><code>jdbc:postgresql://analytics.example.com:5433/acme</code></pre>
+    <p>With SSL required:</p>
+    <pre><code>jdbc:postgresql://analytics.example.com:5433/acme?sslmode=require</code></pre>
+
+    <div class="callout-note">
+      <p>The "database" field in your client must contain the workspace slug, not a real database name. If you enter anything else, the Gateway returns <code>FATAL: database "X" does not exist</code>.</p>
+    </div>
+
+    <h2>Connect with DBeaver</h2>
+    <ol>
+      <li>Open DBeaver.</li>
+      <li>Click <strong>New Database Connection</strong> (the plug icon in the toolbar, or Database menu).</li>
+      <li>Select <strong>PostgreSQL</strong> from the connection type list and click <strong>Next</strong>.</li>
+      <li>Fill in the fields:
+        <ul>
+          <li><strong>Host</strong>: your Gateway hostname</li>
+          <li><strong>Port</strong>: <code>5433</code></li>
+          <li><strong>Database</strong>: your workspace slug</li>
+          <li><strong>Username</strong>: your email address</li>
+          <li><strong>Password</strong>: your Tessallite password</li>
+        </ul>
+      </li>
+      <li>Click <strong>Test Connection</strong>. A "Connected" dialog confirms success.</li>
+      <li>Click <strong>Finish</strong>.</li>
+      <li>Expand the connection in the left panel. Each published model in the workspace appears as a schema, with its dimensions and measures listed as columns.</li>
+    </ol>
+
+    <h2>Connect with Tableau</h2>
+    <ol>
+      <li>Open Tableau Desktop.</li>
+      <li>In the <strong>Connect</strong> pane, under <strong>To a Server</strong>, select <strong>PostgreSQL</strong>.</li>
+      <li>Enter the Gateway hostname in the <strong>Server</strong> field.</li>
+      <li>Enter <code>5433</code> in the <strong>Port</strong> field.</li>
+      <li>Enter the workspace slug in the <strong>Database</strong> field.</li>
+      <li>Enter your credentials in <strong>Username</strong> and <strong>Password</strong>.</li>
+      <li>Click <strong>Sign In</strong>.</li>
+      <li>The data source pane populates with the available tables from the workspace model.</li>
+    </ol>
+
+    <h2>Driver note</h2>
+    <p>Tessallite uses the PostgreSQL wire protocol. You do not need a special driver. Use the standard <code>org.postgresql.Driver</code> (JDBC) or the <code>psycopg2</code> library (Python). Any tool that can connect to a standard PostgreSQL server on a custom port can connect to Tessallite without modification.</p>
+
+    <h2>Troubleshooting</h2>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Symptom</th>
+            <th>Likely cause</th>
+            <th>Resolution</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Connection refused on port 5433</td>
+            <td>Gateway not running or wrong host</td>
+            <td>Ask your System Admin to verify the Gateway service is up. Confirm the hostname is correct.</td>
+          </tr>
+          <tr>
+            <td><code>FATAL: database "X" does not exist</code></td>
+            <td>Wrong workspace slug in the Database field</td>
+            <td>Verify the slug with your Tenant Admin. Slug is case-sensitive.</td>
+          </tr>
+          <tr>
+            <td>Authentication failed</td>
+            <td>Wrong username or password</td>
+            <td>Confirm you are using your Tessallite email and password, not credentials for the underlying data source.</td>
+          </tr>
+          <tr>
+            <td>SSL error / SSL required</td>
+            <td>Server requires SSL, client not configured for it</td>
+            <td>Append <code>?sslmode=require</code> to the JDBC URL.</td>
+          </tr>
+          <tr>
+            <td>No tables visible after connecting</td>
+            <td>No published models in the workspace</td>
+            <td>A Modeller must create and publish at least one model before tables appear.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
     <div class="related">
       <h2>Related</h2>
-      <ul><li><a href="../getting-started/connect-a-bi-tool.html">Connect a BI tool</a></li><li><a href="supported-data-sources.html">Supported data sources</a></li></ul>
+      <ul>
+        <li><a href="../getting-started/connect-a-bi-tool.html">Connect a BI Tool via JDBC</a></li>
+        <li><a href="excel-xmla-connection-guide.html">Excel XMLA Connection Guide</a></li>
+        <li><a href="powerbi-connection-guide.html">Power BI Connection Guide</a></li>
+        <li><a href="supported-data-sources.html">Supported Data Sources</a></li>
+        <li><a href="../troubleshooting/common-errors.html">Common Errors</a></li>
+      </ul>
     </div>
   </main>
   <nav class="page-nav">
-    <span class="page-nav-btn prev disabled"></span>
+    <a href="../system-admin/upgrade.html" class="page-nav-btn prev">← Upgrade</a>
     <a href="../index.html" class="page-nav-btn home">Home</a>
-    <span class="page-nav-btn next disabled"></span>
+    <a href="excel-xmla-connection-guide.html" class="page-nav-btn next">Excel XMLA Connection Guide →</a>
   </nav>
   <footer class="site-footer">
     <p>Tessallite Help — <a href="../index.html">Back to contents</a></p>

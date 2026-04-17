@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Deploy on GCP (Reference) — Tessallite Help</title>
+  <title>Deploy on GCP — Tessallite Help</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../assets/help.css">
@@ -12,7 +12,7 @@
   <header class="site-header">
     <a href="../index.html" class="logo">Tessallite Help</a>
     <nav class="breadcrumb">
-      <a href="../index.html">Home</a> / <span>System Admin</span> / <span>Deploy on GCP (Reference)</span>
+      <a href="../index.html">Home</a> / <span>System Admin</span> / <span>Deploy on GCP</span>
     </nav>
   </header>
   <main class="article">
@@ -20,21 +20,104 @@
       <span class="audience-badge">System Admin</span>
       <span class="updated">Updated 2026-04-17</span>
     </div>
-    <h1>Deploy on GCP (Reference)</h1>
-    <div class="stub-notice">
-      <strong>Coming soon — Wave 4</strong>
-      <p>This article has not yet been written. It will be published as part of the Wave 4 admin and system documentation.</p>
+    <h1>Deploy on GCP</h1>
+
+    <h2>What this covers</h2>
+    <p>GCP-specific architecture for a production Tessallite deployment: Cloud Run services, Cloud SQL, load balancers, service account permissions, health check configuration, and instance scaling recommendations.</p>
+
+    <h2>Architecture on GCP</h2>
+    <p>Each Tessallite service runs as a separate Cloud Run service. The internal PostgreSQL database is replaced by a Cloud SQL for PostgreSQL instance. Two load balancers handle external traffic:</p>
+    <ul>
+      <li>An HTTPS Load Balancer terminates SSL and routes port 8080 (XMLA) and port 3000 (frontend) traffic to the corresponding Cloud Run services.</li>
+      <li>A TCP Load Balancer (or proxy arrangement — see below) handles port 5433 JDBC traffic for gateway.</li>
+    </ul>
+
+    <h2>JDBC and port 5433 on Cloud Run</h2>
+    <p>Cloud Run natively serves HTTP and HTTPS. It does not natively accept raw TCP connections on arbitrary ports such as 5433. Two options exist for JDBC access:</p>
+    <ul>
+      <li><strong>Option A (recommended for production):</strong> Deploy gateway to a Compute Engine VM or GKE node pool instead of Cloud Run. This gives a stable TCP endpoint on port 5433 with no protocol translation overhead.</li>
+      <li><strong>Option B (experimental):</strong> Use Cloud Run with a TCP proxy forwarding rule. This is not supported in all regions and carries no SLA from Google. Verify regional availability before adopting.</li>
+    </ul>
+    <p>The XMLA endpoint (port 8080) does not have this limitation and runs on Cloud Run without modification.</p>
+
+    <h2>Environment variable differences from local</h2>
+    <p>On GCP, the following variables differ from a local Docker Compose deployment:</p>
+    <ul>
+      <li><code>DB_HOST</code>: Set to the Cloud SQL private IP address, or to <code>127.0.0.1</code> if using the Cloud SQL Auth Proxy sidecar.</li>
+      <li><code>SESSION_SECRET</code>: Must be set. Store it in GCP Secret Manager and mount it as an environment variable in Cloud Run — do not embed it in the service definition.</li>
+      <li><code>DB_PASS</code>: Store in GCP Secret Manager. Mount via the Variables and Secrets tab in Cloud Run.</li>
+    </ul>
+
+    <h2>Cloud SQL connection</h2>
+    <p>Two methods for connecting Cloud Run services to Cloud SQL:</p>
+    <ul>
+      <li><strong>Cloud SQL Auth Proxy sidecar:</strong> Add the proxy as a sidecar container in the Cloud Run service. Set <code>DB_HOST=127.0.0.1</code>. The proxy handles authentication and encryption.</li>
+      <li><strong>Private IP:</strong> Connect Cloud Run to a VPC using Direct VPC Egress or Serverless VPC Access. Set <code>DB_HOST</code> to the Cloud SQL private IP. Requires the Cloud SQL instance to have a private IP assigned.</li>
+    </ul>
+
+    <h2>Service account permissions</h2>
+    <p>Create a dedicated service account for Tessallite services. Grant the following IAM roles:</p>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Role</th>
+            <th>Required by</th>
+            <th>Purpose</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>roles/cloudsql.client</code></td>
+            <td>All services except gateway</td>
+            <td>Authenticate to Cloud SQL</td>
+          </tr>
+          <tr>
+            <td><code>roles/run.invoker</code></td>
+            <td>All services</td>
+            <td>Allow inter-service HTTP calls within Cloud Run</td>
+          </tr>
+          <tr>
+            <td><code>roles/artifactregistry.reader</code></td>
+            <td>All services</td>
+            <td>Pull container images from Artifact Registry (if using private registry)</td>
+          </tr>
+          <tr>
+            <td><code>roles/secretmanager.secretAccessor</code></td>
+            <td>frontend, all services needing secrets</td>
+            <td>Read secrets from Secret Manager at startup</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    <p>This article will provide a detailed technical reference for the GCP Cloud Run deployment — Cloud Run service manifests, Cloud SQL configuration, Secret Manager setup, IAM bindings, and TCP load balancer configuration for JDBC — as a supplement to the guided deploy script.</p>
+
+    <h2>Health checks</h2>
+    <p>Each service exposes a health endpoint at <code>GET /api/health</code> on its HTTP port. Cloud Run readiness probes should target this path. A healthy response returns HTTP 200 with body <code>{"status":"ok"}</code>. Configure the probe with an initial delay of 10 seconds and a period of 30 seconds.</p>
+
+    <h2>Minimum instances</h2>
+    <p>Cloud Run scales to zero by default, which causes cold starts. Recommended minimums:</p>
+    <ul>
+      <li><strong>gateway:</strong> Set <code>--min-instances=1</code>. JDBC clients hold long-lived connections and cannot tolerate cold-start delays.</li>
+      <li><strong>All other services:</strong> Can run at minimum 0 for cost savings. Cold starts on internal HTTP calls are acceptable in most workloads.</li>
+    </ul>
+
+    <h2>Estimated cost</h2>
+    <p>For light usage (development or small team): Cloud SQL <code>db-f1-micro</code> plus Cloud Run on-demand pricing runs approximately $30–60 per month. Cost scales primarily with Cloud SQL instance size and query volume routed through gateway.</p>
+
     <div class="related">
       <h2>Related</h2>
-      <ul><li><a href="../getting-started/install-gcp.html">Install on GCP</a></li><li><a href="configure-environment-variables.html">Configure environment variables</a></li><li><a href="teardown.html">Teardown</a></li></ul>
+      <ul>
+        <li><a href="deploy-local.html">Deploy Locally</a></li>
+        <li><a href="configure-environment-variables.html">Configure Environment Variables</a></li>
+        <li><a href="../getting-started/install-gcp.html">Install on GCP</a></li>
+      </ul>
     </div>
   </main>
   <nav class="page-nav">
-    <span class="page-nav-btn prev disabled"></span>
+    <a href="deploy-local.html" class="page-nav-btn prev">← Deploy Locally</a>
     <a href="../index.html" class="page-nav-btn home">Home</a>
-    <span class="page-nav-btn next disabled"></span>
+    <a href="configure-environment-variables.html" class="page-nav-btn next">Configure Environment Variables →</a>
   </nav>
   <footer class="site-footer">
     <p>Tessallite Help — <a href="../index.html">Back to contents</a></p>

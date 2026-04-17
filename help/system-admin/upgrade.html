@@ -21,20 +21,95 @@
       <span class="updated">Updated 2026-04-17</span>
     </div>
     <h1>Upgrade</h1>
-    <div class="stub-notice">
-      <strong>Coming soon — Wave 4</strong>
-      <p>This article has not yet been written. It will be published as part of the Wave 4 admin and system documentation.</p>
+
+    <h2>What this covers</h2>
+    <p>How to upgrade a running Tessallite installation to a new version for both local (Docker Compose) and GCP deployments. Includes database backup, image update, health verification, and rollback procedure.</p>
+
+    <div class="callout-warning">
+      <p>Always back up the internal PostgreSQL database before upgrading. A new version may apply schema migrations that cannot be reversed automatically.</p>
     </div>
-    <p>This article will cover how to upgrade a running Tessallite installation to a new version — rebuilding container images, applying database migrations, and redeploying services without losing tenant data.</p>
+
+    <h2>Local upgrade (Docker Compose)</h2>
+
+    <ol>
+      <li>
+        <strong>Back up the internal database.</strong>
+        <pre><code>docker compose exec postgres pg_dump -U tessallite tessallite &gt; backup.sql</code></pre>
+        Store <code>backup.sql</code> in a location outside the Docker volume before continuing.
+      </li>
+      <li>
+        <strong>Pull the new images.</strong>
+        <pre><code>docker compose pull</code></pre>
+        This downloads updated images for all services without stopping the running containers.
+      </li>
+      <li>
+        <strong>Apply the new containers.</strong>
+        <pre><code>docker compose up -d</code></pre>
+        Docker Compose restarts each service with the new image. Services are restarted one at a time in dependency order. Brief gaps in availability may occur for individual services; gateway clients may need to reconnect.
+      </li>
+      <li>
+        <strong>Verify service health.</strong>
+        <pre><code>docker compose ps</code></pre>
+        All services should show status <code>Up</code>. If any service shows <code>Exit</code> or <code>Restarting</code>, check its logs:
+        <pre><code>docker compose logs -f SERVICE_NAME</code></pre>
+      </li>
+      <li>
+        <strong>Verify the database migration version.</strong>
+        <pre><code>curl http://localhost:3000/api/health</code></pre>
+        The response includes a <code>db_migration</code> field. Compare it to the expected migration version listed in the release notes for the new version.
+      </li>
+    </ol>
+
+    <h2>GCP upgrade (Cloud Run)</h2>
+
+    <ol>
+      <li>
+        <strong>Back up Cloud SQL.</strong> Create a manual backup before deploying new images:
+        <pre><code>gcloud sql backups create --instance=INSTANCE_NAME</code></pre>
+        Verify the backup appears in the Cloud SQL backups list before continuing.
+      </li>
+      <li>
+        <strong>Update each service image.</strong> For each Cloud Run service, deploy the new image tag:
+        <pre><code>gcloud run services update SERVICE_NAME \
+  --image IMAGE_REPOSITORY/SERVICE_NAME:NEW_TAG \
+  --region REGION</code></pre>
+        Cloud Run performs a zero-downtime rolling replacement: it starts instances of the new revision before terminating instances of the old revision. Repeat for each service: model-service first, then query-router, optimizer, scheduler, frontend, gateway.
+      </li>
+      <li>
+        <strong>Verify each service.</strong> Check the health endpoint for each service after its update:
+        <pre><code>curl https://SERVICE_URL/api/health</code></pre>
+        Confirm <code>{"status":"ok"}</code> is returned before updating the next service.
+      </li>
+      <li>
+        <strong>Verify the migration version</strong> on the frontend service:
+        <pre><code>curl https://FRONTEND_URL/api/health</code></pre>
+        Confirm the <code>db_migration</code> field matches the expected version in the release notes.
+      </li>
+    </ol>
+
+    <h2>Rollback</h2>
+    <p>If a service fails after upgrade:</p>
+    <ul>
+      <li><strong>Local:</strong> Edit <code>docker-compose.yml</code> to pin the previous image tag, run <code>docker compose up -d</code>, then restore the database:
+        <pre><code>docker compose exec -T postgres psql -U tessallite tessallite &lt; backup.sql</code></pre>
+      </li>
+      <li><strong>GCP:</strong> Roll back the Cloud Run revision to the previous version from the Cloud Console (Revisions tab &gt; select previous revision &gt; Send all traffic). Then restore Cloud SQL from the manual backup created in step 1.</li>
+    </ul>
+
     <div class="related">
       <h2>Related</h2>
-      <ul><li><a href="deploy-local.html">Deploy locally (reference)</a></li><li><a href="deploy-gcp.html">Deploy on GCP (reference)</a></li></ul>
+      <ul>
+        <li><a href="teardown.html">Teardown</a></li>
+        <li><a href="deploy-local.html">Deploy Locally</a></li>
+        <li><a href="deploy-gcp.html">Deploy on GCP</a></li>
+        <li><a href="../integrations/jdbc-connection-guide.html">JDBC Connection Guide</a></li>
+      </ul>
     </div>
   </main>
   <nav class="page-nav">
-    <span class="page-nav-btn prev disabled"></span>
+    <a href="teardown.html" class="page-nav-btn prev">← Teardown</a>
     <a href="../index.html" class="page-nav-btn home">Home</a>
-    <span class="page-nav-btn next disabled"></span>
+    <a href="../integrations/jdbc-connection-guide.html" class="page-nav-btn next">JDBC Connection Guide →</a>
   </nav>
   <footer class="site-footer">
     <p>Tessallite Help — <a href="../index.html">Back to contents</a></p>

@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 480" role="img" aria-label="Star schema diagram showing a fact table at the centre connected to dim_aggregate and dim_detail tables">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#006C35"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="480" fill="#FFFFFF"/>
+
+  <!-- ── FACT TABLE (centre) ── -->
+  <rect x="300" y="180" width="200" height="120" rx="6" fill="#F2F7F4" stroke="#006C35" stroke-width="2"/>
+  <rect x="300" y="180" width="200" height="32" rx="6" fill="#006C35"/>
+  <rect x="300" y="204" width="200" height="8" fill="#006C35"/>
+  <text x="400" y="202" font-family="Inter, sans-serif" font-size="13" font-weight="600" fill="#FFFFFF" text-anchor="middle">fact</text>
+  <text x="400" y="232" font-family="JetBrains Mono, monospace" font-size="12" fill="#333333" text-anchor="middle">orders</text>
+  <text x="400" y="252" font-family="JetBrains Mono, monospace" font-size="11" fill="#555555" text-anchor="middle">order_id  PK</text>
+  <text x="400" y="270" font-family="JetBrains Mono, monospace" font-size="11" fill="#555555" text-anchor="middle">product_id  FK</text>
+  <text x="400" y="288" font-family="JetBrains Mono, monospace" font-size="11" fill="#555555" text-anchor="middle">revenue</text>
+
+  <!-- ── DIM_AGGREGATE top-left ── -->
+  <rect x="60" y="60" width="180" height="110" rx="6" fill="#F2F7F4" stroke="#2E8B57" stroke-width="2"/>
+  <rect x="60" y="60" width="180" height="32" rx="6" fill="#2E8B57"/>
+  <rect x="60" y="84" width="180" height="8" fill="#2E8B57"/>
+  <text x="150" y="82" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#FFFFFF" text-anchor="middle">dim_aggregate</text>
+  <text x="150" y="112" font-family="JetBrains Mono, monospace" font-size="12" fill="#333333" text-anchor="middle">dim_product</text>
+  <text x="150" y="132" font-family="JetBrains Mono, monospace" font-size="11" fill="#555555" text-anchor="middle">product_id  PK</text>
+  <text x="150" y="150" font-family="JetBrains Mono, monospace" font-size="11" fill="#555555" text-anchor="middle">category</text>
+
+  <!-- Arrow: dim_product → fact -->
+  <line x1="240" y1="115" x2="298" y2="215" stroke="#006C35" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+  <text x="248" y="165" font-family="Inter, sans-serif" font-size="10" fill="#006C35" text-anchor="middle">extends grain</text>
+
+  <!-- ── DIM_AGGREGATE bottom-left ── -->
+  <rect x="60" y="310" width="180" height="110" rx="6" fill="#F2F7F4" stroke="#2E8B57" stroke-width="2"/>
+  <rect x="60" y="310" width="180" height="32" rx="6" fill="#2E8B57"/>
+  <rect x="60" y="334" width="180" height="8" fill="#2E8B57"/>
+  <text x="150" y="332" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#FFFFFF" text-anchor="middle">dim_aggregate</text>
+  <text x="150" y="362" font-family="JetBrains Mono, monospace" font-size="12" fill="#333333" text-anchor="middle">dim_date</text>
+  <text x="150" y="382" font-family="JetBrains Mono, monospace" font-size="11" fill="#555555" text-anchor="middle">date_id  PK</text>
+  <text x="150" y="400" font-family="JetBrains Mono, monospace" font-size="11" fill="#555555" text-anchor="middle">month, year</text>
+
+  <!-- Arrow: dim_date → fact -->
+  <line x1="240" y1="365" x2="298" y2="285" stroke="#006C35" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+  <text x="248" y="315" font-family="Inter, sans-serif" font-size="10" fill="#006C35" text-anchor="middle">extends grain</text>
+
+  <!-- ── DIM_DETAIL right ── -->
+  <rect x="560" y="185" width="200" height="110" rx="6" fill="#FFFBF0" stroke="#B8860B" stroke-width="2" stroke-dasharray="6 3"/>
+  <rect x="560" y="185" width="200" height="32" rx="6" fill="#B8860B"/>
+  <rect x="560" y="209" width="200" height="8" fill="#B8860B"/>
+  <text x="660" y="207" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#FFFFFF" text-anchor="middle">dim_detail</text>
+  <text x="660" y="237" font-family="JetBrains Mono, monospace" font-size="12" fill="#333333" text-anchor="middle">dim_customer</text>
+  <text x="660" y="257" font-family="JetBrains Mono, monospace" font-size="11" fill="#555555" text-anchor="middle">customer_id  PK</text>
+  <text x="660" y="277" font-family="JetBrains Mono, monospace" font-size="11" fill="#555555" text-anchor="middle">email, address</text>
+
+  <!-- Arrow: fact → dim_detail (dashed) -->
+  <line x1="500" y1="240" x2="558" y2="240" stroke="#B8860B" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#arrowhead)"/>
+  <text x="529" y="228" font-family="Inter, sans-serif" font-size="10" fill="#B8860B" text-anchor="middle">filter only</text>
+  <text x="529" y="240" font-family="Inter, sans-serif" font-size="10" fill="#B8860B" text-anchor="middle">no grain</text>
+
+  <!-- ── Legend ── -->
+  <rect x="30" y="430" width="14" height="14" rx="2" fill="#006C35"/>
+  <text x="50" y="442" font-family="Inter, sans-serif" font-size="11" fill="#333333">fact — one per model, drives aggregation</text>
+  <rect x="270" y="430" width="14" height="14" rx="2" fill="#2E8B57"/>
+  <text x="290" y="442" font-family="Inter, sans-serif" font-size="11" fill="#333333">dim_aggregate — participates in grain</text>
+  <rect x="510" y="430" width="14" height="14" rx="2" fill="#B8860B"/>
+  <text x="530" y="442" font-family="Inter, sans-serif" font-size="11" fill="#333333">dim_detail — filter/label only</text>
+</svg>

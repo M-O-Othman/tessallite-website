@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>System Configuration — Tessallite Help</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/help.css">
+</head>
+<body>
+  <header class="site-header">
+    <a href="../index.html" class="logo">Tessallite Help</a>
+    <nav class="breadcrumb">
+      <a href="../index.html">Home</a> / <span>System Admin</span> / <span>System Configuration</span>
+    </nav>
+  </header>
+  <main class="article">
+    <div class="article-meta">
+      <span class="audience-badge">System Admin</span>
+      <span class="updated">Updated 2026-04-18</span>
+    </div>
+    <h1>System Configuration</h1>
+
+    <img src="../assets/illustrations/settings-precedence-chain.svg" alt="Settings precedence chain — model overrides project overrides tenant overrides system, with the registry default as final fallback." class="illustration">
+
+    <figure class="screencap">
+      <img src="../assets/screencaps/system-configuration-tab.png" alt="System Admin — Configuration tab with sectioned settings accordions." loading="lazy">
+      <figcaption>System Admin — Configuration tab with sectioned settings accordions.</figcaption>
+    </figure>
+
+    <h2>What this covers</h2>
+    <p>The Configuration tab in System Admin lets you tune every platform-wide setting that used to be hardcoded in source: scheduler cadences, gateway timeouts, rate-limit binding, XMLA session cache, optimizer thresholds, result-row caps, schema-drift cadence, LLM provider routing, and frontend defaults. It also surfaces the read-only Bootstrap (env-only) panel so you can verify the values that came from the <code>.env</code> file at process start.</p>
+
+    <h2>Who can edit it</h2>
+    <p>Only the <strong>system_admin</strong> role can read or write here. Tenant admins, modelers, and viewers do not see the tab. Backend endpoints (<code>GET /api/v1/system/settings</code>, <code>PUT /api/v1/system/settings/{key}</code>) reject any other role.</p>
+
+    <h2>How values resolve</h2>
+    <p>Every setting on this page is the platform default. A tenant admin can override individual keys at the tenant level; a project admin can further override at the project level; modelers can override at the model level. When a query, scheduler job, or API handler asks for a setting, the resolver walks <strong>model → project → tenant → system → registry default</strong> and returns the first non-null value. A <code>null</code> stored at any level means &ldquo;explicitly unset, fall through&rdquo;.</p>
+
+    <h2>Editing a setting</h2>
+    <ol>
+      <li>Sign in as a system administrator and open System Admin → Configuration.</li>
+      <li>Use the search box at the top to filter by key, section, or description.</li>
+      <li>Find the setting you want to change. The default and the current value are displayed inline.</li>
+      <li>Edit the value, then click <strong>Save</strong>. <strong>Reset</strong> restores the registry default for that key.</li>
+    </ol>
+
+    <h2>Restart-required settings</h2>
+    <figure class="screencap">
+      <img src="../assets/screencaps/system-restart-banner.png" alt="Yellow restart-required banner with the How to restart link." loading="lazy">
+      <figcaption>Yellow restart-required banner with the How to restart link.</figcaption>
+    </figure>
+    <p>Some settings — scheduler cadences, gateway listen ports, the rate-limit binding, the XMLA session cache file, the Vite dev server, and the frontend default endpoint ports — can only take effect when the relevant service process restarts. Saving any of these flags appends an entry to the &ldquo;restart-pending&rdquo; list and shows a yellow banner at the top of the page listing the recently-changed keys.</p>
+    <p>The <strong>How to restart</strong> button on that banner opens a dialog with the docker-compose / systemd procedure. After restarting, return to the Configuration tab and click <strong>Mark all as applied</strong> to clear the banner.</p>
+
+    <h2>Bootstrap (env-only) panel</h2>
+    <figure class="screencap">
+      <img src="../assets/screencaps/bootstrap-env-panel.png" alt="System Configuration — read-only Bootstrap (env-only) panel." loading="lazy">
+      <figcaption>System Configuration — read-only Bootstrap (env-only) panel.</figcaption>
+    </figure>
+    <p>Scroll to the bottom of the Configuration tab for the read-only Bootstrap panel. Every value here comes from the host's <code>.env</code> file and is needed before the database is even reachable: the system DB DSN, the Fernet credential-encryption key, the JWT signing key, the system administrator's email and password, the gateway's JDBC and XMLA ports, the internal service URLs, and the CORS allow-list. Secrets are masked (<code>***** (32 chars)</code>) and the DSN's password is redacted, so a passing operator can verify what is in effect without exposing credentials.</p>
+    <p>To change any of these values, edit <code>.env</code> on the host and restart the affected service (or the whole stack with <code>docker compose restart</code>). See <a href="credentials-and-env.html">Credentials and the .env file</a> for the full procedure.</p>
+
+    <h2>Per-key reference</h2>
+    <p>The complete catalog of every system-level key, its type, default, restart flag, and description is generated from the registry at <code>docs/configuration-reference.md</code>. Regenerate after any registry change with:</p>
+    <pre><code>python tessallite/scripts/gen_config_reference.py</code></pre>
+
+    <div class="related">
+      <h2>Related</h2>
+      <ul>
+        <li><a href="credentials-and-env.html">Credentials and the .env file</a></li>
+        <li><a href="../admin/workspace-settings.html">Workspace settings (tenant level)</a></li>
+        <li><a href="../admin/project-settings.html">Project settings</a></li>
+        <li><a href="../admin/model-configuration.html">Model configuration</a></li>
+      </ul>
+    </div>
+  </main>
+
+  <nav class="page-nav">
+    <a href="configure-environment-variables.html" class="page-nav-btn prev">← Configure environment variables</a>
+    <a href="../index.html" class="page-nav-btn home">Home</a>
+    <a href="credentials-and-env.html" class="page-nav-btn next">Credentials and the .env file →</a>
+  </nav>
+  <footer class="site-footer">
+    <p>Tessallite Help — <a href="../index.html">Back to contents</a></p>
+  </footer>
+</body>
+</html>

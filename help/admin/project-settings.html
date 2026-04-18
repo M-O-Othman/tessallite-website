@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Settings — Tessallite Help</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/help.css">
+</head>
+<body>
+  <header class="site-header">
+    <a href="../index.html" class="logo">Tessallite Help</a>
+    <nav class="breadcrumb">
+      <a href="../index.html">Home</a> / <span>Admin</span> / <span>Project Settings</span>
+    </nav>
+  </header>
+  <main class="article">
+    <div class="article-meta">
+      <span class="audience-badge">Tenant Admin / Modeler</span>
+      <span class="updated">Updated 2026-04-18</span>
+    </div>
+    <h1>Project Settings</h1>
+
+    <figure class="screencap">
+      <img src="../assets/screencaps/project-settings-panel.png" alt="Project detail — Settings panel with override fields." loading="lazy">
+      <figcaption>Project detail — Settings panel with override fields.</figcaption>
+    </figure>
+
+    <h2>What this covers</h2>
+    <p>The Settings section on each Project page lets you override workspace-level defaults for a single project. Use it when one project needs a different source-DB fallback host, a different aggregate target schema, or a different default refresh cadence than the rest of the workspace.</p>
+
+    <h2>Who can edit it</h2>
+    <p>Tenant admins can edit any project in their workspace. Modelers can edit projects they have an access binding for. Viewers cannot see the section.</p>
+
+    <h2>How overrides work</h2>
+    <p>Every row on the Settings panel is a pure override. The placeholder shown in each input is the value that would be inherited from the tenant level. Save a new value to override; clear the field and save (or click <strong>Clear</strong>) to remove the override and fall back to the tenant default. The resolver walks <strong>model → project → tenant → system → registry default</strong> and returns the first non-null value, so a project override applies to every model in the project that does not itself override the same key.</p>
+
+    <h2>Editing a setting</h2>
+    <ol>
+      <li>Open <strong>Admin → Projects</strong> and select the project you want to configure.</li>
+      <li>Scroll past the Models and Access sections to the <strong>Settings</strong> section.</li>
+      <li>Find the key you want to override. The inherited value appears as the placeholder; the input is empty when the project has no override yet.</li>
+      <li>Type the new value and click <strong>Save</strong>. To remove an existing override, click <strong>Clear</strong> (only visible on overridden rows).</li>
+    </ol>
+
+    <h2>What you can override at the project level</h2>
+    <ul>
+      <li><strong>Source database fallbacks</strong> — host, port, database name used when a connection's stored values are missing.</li>
+      <li><strong>Aggregate target defaults</strong> — schema or dataset where new aggregate tables are created for this project.</li>
+      <li><strong>Default aggregate cron</strong> — the cron string applied to a new aggregate when no explicit schedule is provided.</li>
+    </ul>
+
+    <h2>Inheritance preview</h2>
+    <p>Each row's caption shows what is currently inherited (e.g. <em>inherits: <code>localhost</code></em>). When you save an override, the placeholder stays the same but the input now holds the override and the row is marked &ldquo;overrides tenant value&rdquo;. When you clear it, the input goes blank and the row inherits again.</p>
+
+    <div class="related">
+      <h2>Related</h2>
+      <ul>
+        <li><a href="workspace-settings.html">Workspace settings (tenant level)</a></li>
+        <li><a href="model-configuration.html">Model configuration</a></li>
+        <li><a href="../system-admin/system-configuration.html">System Configuration</a></li>
+      </ul>
+    </div>
+  </main>
+
+  <nav class="page-nav">
+    <a href="workspace-settings.html" class="page-nav-btn prev">← Workspace Settings</a>
+    <a href="../index.html" class="page-nav-btn home">Home</a>
+    <a href="model-configuration.html" class="page-nav-btn next">Model Configuration →</a>
+  </nav>
+  <footer class="site-footer">
+    <p>Tessallite Help — <a href="../index.html">Back to contents</a></p>
+  </footer>
+</body>
+</html>

@@ -1,58 +1,34 @@
-<svg viewBox="0 0 800 240" xmlns="http://www.w3.org/2000/svg" font-family="Inter, sans-serif" role="img" aria-labelledby="svg-title">
-  <title id="svg-title">JDBC connection flow from BI tool to Tessallite gateway to query router to data source</title>
-
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Pixodesk SVG (https://pixodesk.com) -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 240" text-rendering="geometricPrecision" shape-rendering="geometricPrecision">
   <defs>
-    <marker id="arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-      <path d="M0,0 L8,3 L0,6 Z" fill="#006C35"/>
+    <marker id="arrow" refX="8" refY="3" markerHeight="6" markerWidth="8" orient="auto">
+      <path fill="#006c35" d="M0,0L8,3L0,6L0,0z"/>
     </marker>
-    <marker id="arrow-left" markerWidth="8" markerHeight="6" refX="0" refY="3" orient="auto">
-      <path d="M8,0 L0,3 L8,6 Z" fill="#006C35"/>
+    <marker id="arrow-left" refY="3" markerHeight="6" markerWidth="8" orient="auto">
+      <path fill="#006c35" d="M8,0L0,3L8,6L8,0z"/>
     </marker>
   </defs>
-
-  <!-- Background -->
-  <rect width="800" height="240" fill="#FFFFFF"/>
-
-  <!-- Title -->
-  <text x="400" y="28" text-anchor="middle" fill="#006C35" font-size="14" font-weight="700">JDBC Connection</text>
-
-  <!-- Box 1: BI Tool -->
-  <rect x="30" y="75" width="120" height="50" fill="#F2F7F4" stroke="#006C35" stroke-width="1.5" rx="8"/>
-  <text x="90" y="97" text-anchor="middle" fill="#333333" font-size="13" font-weight="600">BI Tool</text>
-  <text x="90" y="113" text-anchor="middle" fill="#6B7280" font-size="10">Tableau · DBeaver · psycopg2</text>
-
-  <!-- Box 2: Tessallite Gateway -->
-  <rect x="225" y="75" width="150" height="50" fill="#EFF7F3" stroke="#006C35" stroke-width="2" rx="8"/>
-  <text x="300" y="97" text-anchor="middle" fill="#333333" font-size="13" font-weight="600">Tessallite Gateway</text>
-  <text x="300" y="113" text-anchor="middle" fill="#6B7280" font-size="11">localhost:5433</text>
-
-  <!-- Box 3: Query Router -->
-  <rect x="450" y="75" width="130" height="50" fill="#F2F7F4" stroke="#006C35" stroke-width="1.5" rx="8"/>
-  <text x="515" y="97" text-anchor="middle" fill="#333333" font-size="13" font-weight="600">Query Router</text>
-  <text x="515" y="113" text-anchor="middle" fill="#6B7280" font-size="10">semantic binding + routing</text>
-
-  <!-- Box 4: Data Source -->
-  <rect x="655" y="75" width="120" height="50" fill="#F2F7F4" stroke="#006C35" stroke-width="1.5" rx="8"/>
-  <text x="715" y="97" text-anchor="middle" fill="#333333" font-size="13" font-weight="600">Data Source</text>
-  <text x="715" y="113" text-anchor="middle" fill="#6B7280" font-size="10">PostgreSQL · BigQuery · Spark</text>
-
-  <!-- Forward arrow 1: BI Tool → Gateway -->
-  <line x1="152" y1="100" x2="223" y2="100" stroke="#006C35" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
-
-  <!-- Label above first arrow -->
-  <text x="188" y="91" text-anchor="middle" fill="#6B7280" font-size="11">PostgreSQL wire protocol</text>
-
-  <!-- Forward arrow 2: Gateway → Query Router -->
-  <line x1="377" y1="100" x2="448" y2="100" stroke="#006C35" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
-
-  <!-- Forward arrow 3: Query Router → Data Source -->
-  <line x1="582" y1="100" x2="653" y2="100" stroke="#006C35" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
-
-  <!-- Return arrow: Data Source → BI Tool (below boxes) -->
-  <line x1="653" y1="170" x2="152" y2="170" stroke="#006C35" stroke-width="2" fill="none" stroke-dasharray="5,3" marker-end="url(#arrow-left)"/>
-  <text x="400" y="163" text-anchor="middle" fill="#6B7280" font-size="11">Result set</text>
-
-  <!-- Vertical connectors from boxes to return arrow -->
-  <line x1="90" y1="125" x2="90" y2="170" stroke="#006C35" stroke-width="1" stroke-dasharray="3,3" fill="none"/>
-  <line x1="715" y1="125" x2="715" y2="170" stroke="#006C35" stroke-width="1" stroke-dasharray="3,3" fill="none"/>
+  <rect fill="#ffffff" width="800" height="240"/>
+  <text fill="#006c35" text-anchor="middle" font-size="14" font-weight="700" xml:space="preserve" x="400" y="28" data-gn-el-type="text" style="white-space:pre"><tspan>JDBC Connection</tspan></text>
+  <rect fill="#f2f7f4" stroke="#006c35" stroke-width="1.5" rx="8" ry="0" x="13.6861" y="75" width="136.3139" height="50"/>
+  <text fill="#333333" text-anchor="middle" font-size="13" font-weight="600" xml:space="preserve" x="90" y="97" data-gn-el-type="text" style="white-space:pre"><tspan>BI Tool</tspan></text>
+  <text fill="#6b7280" text-anchor="middle" font-size="10" xml:space="preserve" transform="translate(-10, 0)" x="90" y="113" data-gn-el-type="text" style="white-space:pre"><tspan>Tableau · DBeaver · psycopg2</tspan></text>
+  <rect fill="#eff7f3" stroke="#006c35" stroke-width="2" rx="8" ry="0" x="225" y="75" width="150" height="50"/>
+  <text fill="#333333" text-anchor="middle" font-size="13" font-weight="600" xml:space="preserve" x="300" y="97" data-gn-el-type="text" style="white-space:pre"><tspan>Tessallite Gateway</tspan></text>
+  <text fill="#6b7280" text-anchor="middle" font-size="11" xml:space="preserve" x="300" y="113" data-gn-el-type="text" style="white-space:pre"><tspan>localhost:5433</tspan></text>
+  <rect fill="#f2f7f4" stroke="#006c35" stroke-width="1.5" rx="8" ry="0" x="450" y="75" width="130" height="50"/>
+  <text fill="#333333" text-anchor="middle" font-size="13" font-weight="600" xml:space="preserve" x="515" y="97" data-gn-el-type="text" style="white-space:pre"><tspan>Query Router</tspan></text>
+  <text fill="#6b7280" text-anchor="middle" font-size="10" xml:space="preserve" x="515" y="113" data-gn-el-type="text" style="white-space:pre"><tspan>semantic binding + routing</tspan></text>
+  <rect fill="#f2f7f4" stroke="#006c35" stroke-width="1.5" rx="8" ry="0" x="655" y="75" width="120" height="50"/>
+  <text fill="#333333" text-anchor="middle" font-size="13" font-weight="600" xml:space="preserve" x="715" y="97" data-gn-el-type="text" style="white-space:pre"><tspan>Data Source</tspan></text>
+  <text fill="#6b7280" text-anchor="middle" font-size="10" xml:space="preserve" x="715" y="113" data-gn-el-type="text" style="white-space:pre"><tspan>PostgreSQL · BigQuery · Spark</tspan></text>
+  <path fill="none" stroke="#006c35" stroke-width="2" marker-end="url(#arrow)" d="M152,100L223,100"/>
+  <text fill="#6b7280" text-anchor="middle" font-size="11" xml:space="preserve" transform="translate(0, -28)" x="188" y="91" data-gn-el-type="text" style="white-space:pre"><tspan>PostgreSQL wire protocol</tspan></text>
+  <path fill="none" stroke="#006c35" stroke-width="2" marker-end="url(#arrow)" d="M377,100L448,100"/>
+  <path fill="none" stroke="#006c35" stroke-width="2" marker-end="url(#arrow)" d="M582,100L653,100"/>
+  <path fill="none" stroke="#006c35" stroke-width="2" stroke-dasharray="5 3" marker-mid="url(#arrow)" d="M714.5508,169.0773L403.6568,169.0773L89.6784,169.0773"/>
+  <text fill="#6b7280" text-anchor="middle" font-size="11" xml:space="preserve" transform="translate(9, -5)" x="400" y="163" data-gn-el-type="text" style="white-space:pre"><tspan>Result set</tspan></text>
+  <path fill="none" stroke="#006c35" stroke-dasharray="3 3" marker-start="url(#arrow-left)" d="M90,125L90,170"/>
+  <path fill="none" stroke="#006c35" stroke-dasharray="3 3" d="M715,125L715,170"/>
 </svg>

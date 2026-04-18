@@ -1,72 +1,49 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420" role="img" aria-label="Diagram showing how dimensions translate to GROUP BY clauses and measures translate to aggregate SELECT expressions">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Pixodesk SVG (https://pixodesk.com) -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420" text-rendering="geometricPrecision" shape-rendering="geometricPrecision">
   <defs>
-    <marker id="arr" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#006C35"/>
+    <marker id="arr" refX="10" refY="3.5" markerHeight="7" markerWidth="10" orient="auto">
+      <path fill="#006c35" d="M0,0L10,3.5L0,7"/>
     </marker>
   </defs>
-
-  <rect width="800" height="420" fill="#FFFFFF"/>
-
-  <!-- ── DIMENSIONS panel ── -->
-  <rect x="30" y="30" width="320" height="300" rx="6" fill="#F2F7F4" stroke="#006C35" stroke-width="2"/>
-  <rect x="30" y="30" width="320" height="40" rx="6" fill="#006C35"/>
-  <rect x="30" y="58" width="320" height="12" fill="#006C35"/>
-  <text x="190" y="57" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#FFFFFF" text-anchor="middle">Dimensions</text>
-  <text x="190" y="78" font-family="Inter, sans-serif" font-size="11" fill="#555555" text-anchor="middle">Grouping attributes — become GROUP BY</text>
-
-  <!-- Dimension row 1 -->
-  <rect x="50" y="100" width="280" height="48" rx="4" fill="#FFFFFF" stroke="#CCE5D8" stroke-width="1"/>
-  <text x="66" y="120" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#006C35">Region</text>
-  <text x="66" y="138" font-family="JetBrains Mono, monospace" font-size="11" fill="#555555">dim_store.region_code</text>
-
-  <!-- Dimension row 2 -->
-  <rect x="50" y="158" width="280" height="48" rx="4" fill="#FFFFFF" stroke="#CCE5D8" stroke-width="1"/>
-  <text x="66" y="178" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#006C35">Product Category</text>
-  <text x="66" y="196" font-family="JetBrains Mono, monospace" font-size="11" fill="#555555">dim_product.category_name</text>
-
-  <!-- Dimension row 3 -->
-  <rect x="50" y="216" width="280" height="48" rx="4" fill="#FFFFFF" stroke="#CCE5D8" stroke-width="1"/>
-  <text x="66" y="236" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#006C35">Order Month</text>
-  <text x="66" y="254" font-family="JetBrains Mono, monospace" font-size="11" fill="#555555">dim_date.month</text>
-
-  <!-- GROUP BY badge -->
-  <rect x="50" y="280" width="280" height="32" rx="4" fill="#E8F5EE" stroke="#006C35" stroke-width="1"/>
-  <text x="190" y="301" font-family="JetBrains Mono, monospace" font-size="12" fill="#006C35" text-anchor="middle">GROUP BY region_code, category_name, month</text>
-
-  <!-- ── MEASURES panel ── -->
-  <rect x="450" y="30" width="320" height="300" rx="6" fill="#F2F7F4" stroke="#006C35" stroke-width="2"/>
-  <rect x="450" y="30" width="320" height="40" rx="6" fill="#006C35"/>
-  <rect x="450" y="58" width="320" height="12" fill="#006C35"/>
-  <text x="610" y="57" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#FFFFFF" text-anchor="middle">Measures</text>
-  <text x="610" y="78" font-family="Inter, sans-serif" font-size="11" fill="#555555" text-anchor="middle">Named aggregations — become SELECT expressions</text>
-
-  <!-- Measure row 1 — SUM (additive) -->
-  <rect x="470" y="100" width="280" height="48" rx="4" fill="#FFFFFF" stroke="#CCE5D8" stroke-width="1"/>
-  <text x="486" y="120" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#006C35">Total Revenue</text>
-  <text x="486" y="138" font-family="JetBrains Mono, monospace" font-size="11" fill="#555555">SUM(orders.order_total)  · additive</text>
-
-  <!-- Measure row 2 — COUNT (additive) -->
-  <rect x="470" y="158" width="280" height="48" rx="4" fill="#FFFFFF" stroke="#CCE5D8" stroke-width="1"/>
-  <text x="486" y="178" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#006C35">Order Count</text>
-  <text x="486" y="196" font-family="JetBrains Mono, monospace" font-size="11" fill="#555555">COUNT(orders.order_id)  · additive</text>
-
-  <!-- Measure row 3 — COUNT DISTINCT (non-additive) -->
-  <rect x="470" y="216" width="280" height="48" rx="4" fill="#FFFBF0" stroke="#B8860B" stroke-width="1"/>
-  <text x="486" y="236" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#B8860B">Unique Customers</text>
-  <text x="486" y="254" font-family="JetBrains Mono, monospace" font-size="11" fill="#B8860B">COUNT DISTINCT(customer_id) · exact grain</text>
-
-  <!-- SELECT badge -->
-  <rect x="470" y="280" width="280" height="32" rx="4" fill="#E8F5EE" stroke="#006C35" stroke-width="1"/>
-  <text x="610" y="301" font-family="JetBrains Mono, monospace" font-size="12" fill="#006C35" text-anchor="middle">SELECT SUM(...), COUNT(...), COUNT(DISTINCT ...)</text>
-
-  <!-- ── Centre arrow ── -->
-  <line x1="352" y1="210" x2="448" y2="210" stroke="#006C35" stroke-width="1.5" marker-end="url(#arr)"/>
-  <text x="400" y="204" font-family="Inter, sans-serif" font-size="10" fill="#333333" text-anchor="middle">query</text>
-  <text x="400" y="218" font-family="Inter, sans-serif" font-size="10" fill="#333333" text-anchor="middle">time</text>
-
-  <!-- ── Legend ── -->
-  <rect x="30" y="365" width="12" height="12" rx="2" fill="#006C35"/>
-  <text x="48" y="376" font-family="Inter, sans-serif" font-size="11" fill="#333333">Additive — can be re-aggregated from coarser grain</text>
-  <rect x="350" y="365" width="12" height="12" rx="2" fill="#B8860B"/>
-  <text x="368" y="376" font-family="Inter, sans-serif" font-size="11" fill="#333333">Non-additive — requires exact grain match</text>
+  <rect fill="#ffffff" width="800" height="420"/>
+  <rect fill="#f2f7f4" stroke="#006c35" stroke-width="2" rx="6" ry="0" x="30" y="30" width="320" height="300"/>
+  <rect fill="#006c35" rx="6" ry="0" x="30" y="30" width="320" height="40"/>
+  <rect fill="#006c35" x="30" y="58" width="320" height="12"/>
+  <text fill="#ffffff" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" xml:space="preserve" x="190" y="57" data-gn-el-type="text" style="white-space:pre"><tspan>Dimensions</tspan></text>
+  <text fill="#555555" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" xml:space="preserve" transform="translate(0, 7)" x="190" y="78" data-gn-el-type="text" style="white-space:pre"><tspan>Grouping attributes — become GROUP BY</tspan></text>
+  <rect fill="#ffffff" stroke="#cce5d8" rx="4" ry="0" x="50" y="100" width="280" height="48"/>
+  <text fill="#006c35" font-family="Inter, sans-serif" font-size="12" font-weight="600" xml:space="preserve" x="66" y="120" data-gn-el-type="text" style="white-space:pre"><tspan>Region</tspan></text>
+  <text fill="#555555" font-family="JetBrains Mono, monospace" font-size="11" xml:space="preserve" x="66" y="138" data-gn-el-type="text" style="white-space:pre"><tspan>dim_store.region_code</tspan></text>
+  <rect fill="#ffffff" stroke="#cce5d8" rx="4" ry="0" x="50" y="158" width="280" height="48"/>
+  <text fill="#006c35" font-family="Inter, sans-serif" font-size="12" font-weight="600" xml:space="preserve" x="66" y="178" data-gn-el-type="text" style="white-space:pre"><tspan>Product Category</tspan></text>
+  <text fill="#555555" font-family="JetBrains Mono, monospace" font-size="11" xml:space="preserve" x="66" y="196" data-gn-el-type="text" style="white-space:pre"><tspan>dim_product.category_name</tspan></text>
+  <rect fill="#ffffff" stroke="#cce5d8" rx="4" ry="0" x="50" y="216" width="280" height="48"/>
+  <text fill="#006c35" font-family="Inter, sans-serif" font-size="12" font-weight="600" xml:space="preserve" x="66" y="236" data-gn-el-type="text" style="white-space:pre"><tspan>Order Month</tspan></text>
+  <text fill="#555555" font-family="JetBrains Mono, monospace" font-size="11" xml:space="preserve" x="66" y="254" data-gn-el-type="text" style="white-space:pre"><tspan>dim_date.month</tspan></text>
+  <rect fill="#e8f5ee" stroke="#006c35" rx="4" ry="0" x="50" y="280" width="280" height="32"/>
+  <text fill="#006c35" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" xml:space="preserve" transform="translate(3, 0)" x="190" y="301" data-gn-el-type="text" style="white-space:pre"><tspan>GROUP BY region_code, category_name,</tspan></text>
+  <rect fill="#f2f7f4" stroke="#006c35" stroke-width="2" rx="6" ry="0" x="450" y="30" width="320" height="300"/>
+  <rect fill="#006c35" rx="6" ry="0" x="450" y="30" width="320" height="40"/>
+  <rect fill="#006c35" x="450" y="58" width="320" height="12"/>
+  <text fill="#ffffff" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" xml:space="preserve" x="610" y="57" data-gn-el-type="text" style="white-space:pre"><tspan>Measures</tspan></text>
+  <text fill="#555555" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" xml:space="preserve" transform="translate(0, 7)" x="610" y="78" data-gn-el-type="text" style="white-space:pre"><tspan>Named aggregations — become SELECT expressions</tspan></text>
+  <rect fill="#ffffff" stroke="#cce5d8" rx="4" ry="0" x="470" y="100" width="280" height="48"/>
+  <text fill="#006c35" font-family="Inter, sans-serif" font-size="12" font-weight="600" xml:space="preserve" x="486" y="120" data-gn-el-type="text" style="white-space:pre"><tspan>Total Revenue</tspan></text>
+  <text fill="#555555" font-family="JetBrains Mono, monospace" font-size="11" xml:space="preserve" x="486" y="138" data-gn-el-type="text" style="white-space:pre"><tspan>SUM(orders.order_total) · additive</tspan></text>
+  <rect fill="#ffffff" stroke="#cce5d8" rx="4" ry="0" x="470" y="158" width="280" height="48"/>
+  <text fill="#006c35" font-family="Inter, sans-serif" font-size="12" font-weight="600" xml:space="preserve" x="486" y="178" data-gn-el-type="text" style="white-space:pre"><tspan>Order Count</tspan></text>
+  <text fill="#555555" font-family="JetBrains Mono, monospace" font-size="11" xml:space="preserve" x="486" y="196" data-gn-el-type="text" style="white-space:pre"><tspan>COUNT(orders.order_id) · additive</tspan></text>
+  <rect fill="#fffbf0" stroke="#b8860b" rx="4" ry="0" x="470" y="216" width="280" height="48"/>
+  <text fill="#b8860b" font-family="Inter, sans-serif" font-size="12" font-weight="600" xml:space="preserve" x="486" y="236" data-gn-el-type="text" style="white-space:pre"><tspan>Unique Customers</tspan></text>
+  <text fill="#b8860b" font-family="JetBrains Mono, monospace" font-size="11" xml:space="preserve" x="486" y="254" data-gn-el-type="text" style="white-space:pre"><tspan>COUNT DISTINCT(customer_id) · exact grain</tspan></text>
+  <rect fill="#e8f5ee" stroke="#006c35" rx="4" ry="0" x="470" y="280" width="280" height="32"/>
+  <text fill="#006c35" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" xml:space="preserve" transform="translate(3, 0)" x="610" y="301" data-gn-el-type="text" style="white-space:pre"><tspan>SELECT SUM(...), COUNT(DISTINCT ...)</tspan></text>
+  <path stroke="#006c35" stroke-width="1.5" marker-end="url(#arr)" d="M352,210L448,210"/>
+  <text fill="#333333" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" xml:space="preserve" x="400" y="204" data-gn-el-type="text" style="white-space:pre"><tspan>query</tspan></text>
+  <text fill="#333333" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" xml:space="preserve" x="400" y="218" data-gn-el-type="text" style="white-space:pre"><tspan>time</tspan></text>
+  <rect fill="#006c35" rx="2" ry="0" x="30" y="365" width="12" height="12"/>
+  <text fill="#333333" font-family="Inter, sans-serif" font-size="11" xml:space="preserve" x="48" y="376" data-gn-el-type="text" style="white-space:pre"><tspan>Additive — can be re-aggregated from coarser grain</tspan></text>
+  <rect fill="#b8860b" rx="2" ry="0" x="350" y="365" width="12" height="12"/>
+  <text fill="#333333" font-family="Inter, sans-serif" font-size="11" xml:space="preserve" x="368" y="376" data-gn-el-type="text" style="white-space:pre"><tspan>Non-additive — requires exact grain match</tspan></text>
 </svg>

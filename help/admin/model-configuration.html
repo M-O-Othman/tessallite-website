@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Model Configuration — Tessallite Help</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/help.css">
+</head>
+<body>
+  <header class="site-header">
+    <a href="../index.html" class="logo">Tessallite Help</a>
+    <nav class="breadcrumb">
+      <a href="../index.html">Home</a> / <span>Admin</span> / <span>Model Configuration</span>
+    </nav>
+  </header>
+  <main class="article">
+    <div class="article-meta">
+      <span class="audience-badge">Tenant Admin / Modeler</span>
+      <span class="updated">Updated 2026-04-18</span>
+    </div>
+    <h1>Model Configuration</h1>
+
+    <figure class="screencap">
+      <img src="../assets/screencaps/model-configuration-tab.png" alt="Model Builder — Settings panel, Configuration sub-tab." loading="lazy">
+      <figcaption>Model Builder — Settings panel, Configuration sub-tab.</figcaption>
+    </figure>
+
+    <h2>What this covers</h2>
+    <p>The Configuration sub-tab inside the Model Builder Settings panel lets you override per-model knobs: the default refresh cron applied to new aggregates on this model, the AI scheduler's cron / lookback window / max creates per run / confidence threshold, and the optimizer's per-model aggregate cap.</p>
+
+    <h2>Where to find it</h2>
+    <ol>
+      <li>Open the Model Builder for the model you want to configure.</li>
+      <li>Click the <strong>Settings</strong> icon in the toolbelt (right side).</li>
+      <li>Switch to the <strong>Configuration</strong> sub-tab (third tab after General and AI).</li>
+    </ol>
+    <p>The sub-tab is hidden when no model is open — model-level settings only make sense with a model in scope.</p>
+
+    <h2>Who can edit it</h2>
+    <p>Tenant admins can edit any model in their workspace. Modelers can edit models they have a project- or model-level access binding for. The backend rejects writes from any other role, so the Save button has no effect for unauthorised users even if the panel is visible.</p>
+
+    <h2>How overrides work</h2>
+    <p>Each row is an override. The placeholder shows the value currently inherited from the project level (which itself may inherit from tenant, system, and finally the registry default). Save a value to override; clear and save to remove the override and fall back upward.</p>
+    <p>Common reasons to override at the model level:</p>
+    <ul>
+      <li>A model with very large aggregates needs a less frequent refresh cron than the project default.</li>
+      <li>A model with frequent miss patterns benefits from a different AI scheduler cadence or a lower confidence threshold.</li>
+      <li>One particular model should run a higher per-model aggregate cap than the system default.</li>
+    </ul>
+
+    <h2>Available keys</h2>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>Key</th><th>What it controls</th></tr></thead>
+        <tbody>
+          <tr><td><code>aggregate.default_cron</code></td><td>Cron applied to a new aggregate on this model when no explicit schedule is provided.</td></tr>
+          <tr><td><code>ai_scheduler.cron</code></td><td>Cron at which the AI optimizer is invoked for this model.</td></tr>
+          <tr><td><code>ai_scheduler.lookback_hours</code></td><td>Hours of telemetry the optimizer considers when picking candidates.</td></tr>
+          <tr><td><code>ai_scheduler.max_creates_per_run</code></td><td>Maximum aggregates the optimizer is allowed to create per run.</td></tr>
+          <tr><td><code>ai_scheduler.confidence_threshold</code></td><td>Minimum confidence below which a recommendation is dropped.</td></tr>
+          <tr><td><code>ai_scheduler.auto_create_cap_per_sweep</code></td><td>Hard cap on aggregates auto-created per optimizer sweep for this model.</td></tr>
+          <tr><td><code>optimizer.max_aggregates</code></td><td>Per-model override of the platform-wide aggregate cap.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Inheritance preview</h2>
+    <p>Each row's caption shows the inherited value, e.g. <em>inherits: <code>0 2 * * *</code></em>. When you save a value, the row reads &ldquo;overrides project value&rdquo; and the new value is what the resolver returns for this model. Clearing the override returns the row to the inherited state immediately.</p>
+
+    <div class="related">
+      <h2>Related</h2>
+      <ul>
+        <li><a href="project-settings.html">Project settings</a></li>
+        <li><a href="workspace-settings.html">Workspace settings (tenant level)</a></li>
+        <li><a href="../modelling/manage-aggregate-schedules.html">Manage aggregate schedules</a></li>
+        <li><a href="../modelling/use-the-ai-optimiser.html">Use the AI optimiser</a></li>
+      </ul>
+    </div>
+  </main>
+
+  <nav class="page-nav">
+    <a href="project-settings.html" class="page-nav-btn prev">← Project Settings</a>
+    <a href="../index.html" class="page-nav-btn home">Home</a>
+    <a href="../system-admin/architecture-overview.html" class="page-nav-btn next">Architecture Overview →</a>
+  </nav>
+  <footer class="site-footer">
+    <p>Tessallite Help — <a href="../index.html">Back to contents</a></p>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 340" role="img" aria-label="Aggregate lifecycle state diagram showing states from miss detection through Building, Ready, Stale, Refreshing, and Retired">
+  <defs>
+    <marker id="arr" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#006C35"/>
+    </marker>
+    <marker id="arr-retire" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#B8860B"/>
+    </marker>
+  </defs>
+
+  <rect width="800" height="340" fill="#FFFFFF"/>
+
+  <!-- ── MISS box ── -->
+  <rect x="20" y="120" width="110" height="50" rx="6" fill="#F2F7F4" stroke="#006C35" stroke-width="1.5"/>
+  <text x="75" y="142" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#333333" text-anchor="middle">Query Miss</text>
+  <text x="75" y="159" font-family="Inter, sans-serif" font-size="10" fill="#555555" text-anchor="middle">Router logs miss</text>
+
+  <!-- Miss → Optimizer -->
+  <line x1="130" y1="145" x2="168" y2="145" stroke="#006C35" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- ── OPTIMIZER box ── -->
+  <rect x="170" y="120" width="120" height="50" rx="6" fill="#F2F7F4" stroke="#006C35" stroke-width="1.5"/>
+  <text x="230" y="142" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#333333" text-anchor="middle">Optimizer</text>
+  <text x="230" y="159" font-family="Inter, sans-serif" font-size="10" fill="#555555" text-anchor="middle">Scores &amp; queues build</text>
+
+  <!-- Optimizer → Building -->
+  <line x1="290" y1="145" x2="328" y2="145" stroke="#006C35" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- ── BUILDING box ── -->
+  <rect x="330" y="120" width="110" height="50" rx="6" fill="#F2F7F4" stroke="#006C35" stroke-width="1.5"/>
+  <text x="385" y="142" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#333333" text-anchor="middle">Building</text>
+  <text x="385" y="159" font-family="Inter, sans-serif" font-size="10" fill="#555555" text-anchor="middle">Not routable yet</text>
+
+  <!-- Building → Ready -->
+  <line x1="440" y1="145" x2="478" y2="145" stroke="#006C35" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="459" y="138" font-family="Inter, sans-serif" font-size="9" fill="#006C35" text-anchor="middle">success</text>
+
+  <!-- ── READY box (primary) ── -->
+  <rect x="480" y="108" width="110" height="72" rx="6" fill="#006C35" stroke="#006C35" stroke-width="2"/>
+  <text x="535" y="136" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF" text-anchor="middle">Ready</text>
+  <text x="535" y="154" font-family="Inter, sans-serif" font-size="10" fill="#CCE5D8" text-anchor="middle">Serving queries</text>
+  <text x="535" y="170" font-family="Inter, sans-serif" font-size="10" fill="#CCE5D8" text-anchor="middle">Data current</text>
+
+  <!-- Ready → Stale (down) -->
+  <line x1="535" y1="180" x2="535" y2="213" stroke="#006C35" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="548" y="200" font-family="Inter, sans-serif" font-size="9" fill="#555555">source updated</text>
+
+  <!-- ── STALE box ── -->
+  <rect x="480" y="215" width="110" height="50" rx="6" fill="#FFF8E8" stroke="#B8860B" stroke-width="1.5"/>
+  <text x="535" y="237" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#B8860B" text-anchor="middle">Stale</text>
+  <text x="535" y="254" font-family="Inter, sans-serif" font-size="10" fill="#B8860B" text-anchor="middle">Refresh queued</text>
+
+  <!-- Stale → Refreshing -->
+  <line x1="480" y1="240" x2="442" y2="240" stroke="#006C35" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- ── REFRESHING box ── -->
+  <rect x="330" y="215" width="110" height="50" rx="6" fill="#F2F7F4" stroke="#006C35" stroke-width="1.5"/>
+  <text x="385" y="237" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#333333" text-anchor="middle">Refreshing</text>
+  <text x="385" y="254" font-family="Inter, sans-serif" font-size="10" fill="#555555" text-anchor="middle">Old version served</text>
+
+  <!-- Refreshing → Ready (up, curved via waypoint) -->
+  <path d="M385 215 L385 185 L480 185 L480 180" fill="none" stroke="#006C35" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="430" y="180" font-family="Inter, sans-serif" font-size="9" fill="#006C35" text-anchor="middle">rebuild done</text>
+
+  <!-- ── RETIRED box ── -->
+  <rect x="640" y="120" width="120" height="50" rx="6" fill="#F9F0F0" stroke="#CC4444" stroke-width="1.5" stroke-dasharray="5 3"/>
+  <text x="700" y="142" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#CC4444" text-anchor="middle">Retired</text>
+  <text x="700" y="159" font-family="Inter, sans-serif" font-size="10" fill="#CC4444" text-anchor="middle">Table dropped</text>
+
+  <!-- Ready → Retired -->
+  <line x1="590" y1="145" x2="638" y2="145" stroke="#B8860B" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#arr-retire)"/>
+  <text x="614" y="138" font-family="Inter, sans-serif" font-size="9" fill="#B8860B" text-anchor="middle">unused</text>
+
+  <!-- ── Legend ── -->
+  <line x1="30" y1="302" x2="60" y2="302" stroke="#006C35" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="68" y="306" font-family="Inter, sans-serif" font-size="11" fill="#333333">Normal flow</text>
+  <line x1="200" y1="302" x2="230" y2="302" stroke="#B8860B" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#arr-retire)"/>
+  <text x="238" y="306" font-family="Inter, sans-serif" font-size="11" fill="#333333">Retirement (unused)</text>
+  <rect x="390" y="294" width="12" height="12" rx="2" fill="#006C35"/>
+  <text x="408" y="305" font-family="Inter, sans-serif" font-size="11" fill="#333333">Active — queries routed here</text>
+  <rect x="590" y="294" width="12" height="12" rx="2" fill="#FFF8E8" stroke="#B8860B" stroke-width="1"/>
+  <text x="608" y="305" font-family="Inter, sans-serif" font-size="11" fill="#333333">Stale — serves but due for refresh</text>
+</svg>

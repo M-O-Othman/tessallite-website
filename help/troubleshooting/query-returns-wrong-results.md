@@ -1,21 +1,72 @@
 ---
 title: "Query Returns Wrong Results"
 audience: analyst
-area: troubleshooting
+area: Troubleshooting
 updated: 2026-04-17
 ---
 
-> **Coming soon — Wave 3.** This article has not yet been written. It will be published as part of the Wave 3 reference and troubleshooting content.
+![Model Health tab — warning + error rows that explain wrong query results.](../assets/screencaps/health-tab-wrong-results.png)
 
-This article will cover common causes of incorrect query results — mismatched aggregate grain, stale data, invalid model objects, and dimension visibility issues — with steps to diagnose each case.
+## What this covers
+
+Diagnosing incorrect values returned by Tessallite queries. If values are wrong, the cause is almost always in the model definition, data freshness, or the underlying source data — not in the routing layer.
+
+---
+
+## Step 1 — Check the measure definition
+
+Open **Model Builder** and navigate to the measure returning unexpected values.
+
+- Verify the source column is correct. A column rename in the source table can produce wrong results if schema drift has not been detected.
+- Verify the aggregation type: SUM, COUNT, COUNT DISTINCT, AVG, MIN, MAX.
+- Check whether any filters are applied to the measure definition.
+
+---
+
+## Step 2 — Check for grain mismatch
+
+If a query asks for totals and an aggregate exists at a finer grain, Tessallite re-aggregates the pre-built summary. This is correct for additive measures but produces wrong results for COUNT DISTINCT.
+
+If the query uses COUNT DISTINCT and returns a value that is too high, no exact-grain aggregate exists for that query pattern. Ask your Modeller to build an aggregate at the exact grain required, or reformulate the query to match an existing aggregate grain.
+
+---
+
+## Step 3 — Check for stale data
+
+In Model Builder, check the status column for each aggregate:
+
+| Status | Meaning |
+|--------|---------|
+| Ready | Aggregate is current |
+| Stale | Source has changed since last build — run a refresh |
+| Building | Refresh in progress — wait for completion |
+| Error | Last build failed — see [Aggregates Not Building](aggregates-not-building.md) |
+
+---
+
+## Step 4 — Check for schema drift
+
+1. Open **Model Builder**.
+2. Select the project.
+3. Go to the **Health** tab.
+4. Look for "Schema drift detected" warnings.
+5. Update the model to reference the correct column, re-publish, and rebuild aggregates.
+
+---
+
+## Step 5 — Compare with a direct query
+
+Run the equivalent query directly against the source database (bypassing Tessallite). If the direct query also returns wrong values, the problem is in the source data. If the direct query returns correct values, return to Steps 1–4.
 
 ---
 
 ## Related
 
-- [Query routing](../concepts/query-routing.md)
-- [Common errors](common-errors.md)
+- [Query Routing](../concepts/query-routing.md)
+- [Aggregates Not Building](aggregates-not-building.md)
+- [Common Errors](common-errors.md)
+- [Excel Connection Problems](excel-connection-problems.md)
 
 ---
 
-← | [Home](../index.md) | →
+← [Excel Connection Problems](excel-connection-problems.md) | [Home](../index.md) | [Aggregates Not Building →](aggregates-not-building.md)

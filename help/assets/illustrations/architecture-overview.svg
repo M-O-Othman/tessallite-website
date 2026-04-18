@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" role="img" aria-label="Tessallite architecture diagram showing six services, the internal PostgreSQL database, and their connections to external BI tools and user data sources">
+  <defs>
+    <marker id="arr" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#006C35"/>
+    </marker>
+    <marker id="arr-ext" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#555555"/>
+    </marker>
+  </defs>
+
+  <rect width="800" height="520" fill="#FFFFFF"/>
+
+  <!-- ─── BI TOOLS (external, left) ─── -->
+  <rect x="20" y="180" width="120" height="60" rx="4" fill="#F5F5F5" stroke="#AAAAAA" stroke-width="1.5" stroke-dasharray="4 2"/>
+  <text x="80" y="207" font-family="Inter, sans-serif" font-size="11" font-weight="600" fill="#555555" text-anchor="middle">BI Tools</text>
+  <text x="80" y="224" font-family="JetBrains Mono, monospace" font-size="10" fill="#777777" text-anchor="middle">JDBC · XMLA</text>
+
+  <!-- ─── TESSALLITE PLATFORM BOX ─── -->
+  <rect x="160" y="30" width="480" height="440" rx="8" fill="#F2F7F4" stroke="#006C35" stroke-width="1.5"/>
+  <text x="400" y="55" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#006C35" text-anchor="middle">Tessallite Platform</text>
+
+  <!-- GATEWAY -->
+  <rect x="180" y="170" width="140" height="80" rx="6" fill="#FFFFFF" stroke="#006C35" stroke-width="2"/>
+  <text x="250" y="200" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#006C35" text-anchor="middle">gateway</text>
+  <text x="250" y="218" font-family="JetBrains Mono, monospace" font-size="10" fill="#555555" text-anchor="middle">JDBC :5433</text>
+  <text x="250" y="234" font-family="JetBrains Mono, monospace" font-size="10" fill="#555555" text-anchor="middle">XMLA :8080</text>
+
+  <!-- QUERY-ROUTER -->
+  <rect x="370" y="100" width="140" height="70" rx="6" fill="#FFFFFF" stroke="#006C35" stroke-width="2"/>
+  <text x="440" y="132" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#006C35" text-anchor="middle">query-router</text>
+  <text x="440" y="150" font-family="JetBrains Mono, monospace" font-size="10" fill="#555555" text-anchor="middle">routes queries</text>
+
+  <!-- MODEL-SERVICE -->
+  <rect x="370" y="220" width="140" height="70" rx="6" fill="#FFFFFF" stroke="#006C35" stroke-width="2"/>
+  <text x="440" y="252" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#006C35" text-anchor="middle">model-service</text>
+  <text x="440" y="270" font-family="JetBrains Mono, monospace" font-size="10" fill="#555555" text-anchor="middle">semantic layer</text>
+
+  <!-- OPTIMIZER -->
+  <rect x="180" y="340" width="140" height="70" rx="6" fill="#FFFFFF" stroke="#2E8B57" stroke-width="1.5"/>
+  <text x="250" y="372" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#2E8B57" text-anchor="middle">optimizer</text>
+  <text x="250" y="390" font-family="JetBrains Mono, monospace" font-size="10" fill="#555555" text-anchor="middle">scores candidates</text>
+
+  <!-- SCHEDULER -->
+  <rect x="370" y="340" width="140" height="70" rx="6" fill="#FFFFFF" stroke="#2E8B57" stroke-width="1.5"/>
+  <text x="440" y="372" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#2E8B57" text-anchor="middle">scheduler</text>
+  <text x="440" y="390" font-family="JetBrains Mono, monospace" font-size="10" fill="#555555" text-anchor="middle">builds aggregates</text>
+
+  <!-- FRONTEND -->
+  <rect x="555" y="220" width="70" height="80" rx="6" fill="#FFFFFF" stroke="#006C35" stroke-width="1.5"/>
+  <text x="590" y="260" font-family="Inter, sans-serif" font-size="11" font-weight="600" fill="#006C35" text-anchor="middle">frontend</text>
+  <text x="590" y="276" font-family="JetBrains Mono, monospace" font-size="9" fill="#555555" text-anchor="middle">:3000</text>
+
+  <!-- INTERNAL POSTGRES -->
+  <rect x="555" y="340" width="70" height="70" rx="6" fill="#EAF4FF" stroke="#4472CA" stroke-width="1.5"/>
+  <text x="590" y="372" font-family="Inter, sans-serif" font-size="10" font-weight="600" fill="#4472CA" text-anchor="middle">Postgres</text>
+  <text x="590" y="388" font-family="JetBrains Mono, monospace" font-size="9" fill="#4472CA" text-anchor="middle">internal</text>
+  <text x="590" y="402" font-family="JetBrains Mono, monospace" font-size="9" fill="#4472CA" text-anchor="middle">:5432</text>
+
+  <!-- ─── DATA SOURCE (external, right) ─── -->
+  <rect x="660" y="180" width="120" height="60" rx="4" fill="#F5F5F5" stroke="#AAAAAA" stroke-width="1.5" stroke-dasharray="4 2"/>
+  <text x="720" y="207" font-family="Inter, sans-serif" font-size="11" font-weight="600" fill="#555555" text-anchor="middle">Data Source</text>
+  <text x="720" y="224" font-family="JetBrains Mono, monospace" font-size="10" fill="#777777" text-anchor="middle">PG · BQ · Spark</text>
+
+  <!-- ─── ARROWS ─── -->
+  <!-- BI → gateway -->
+  <line x1="140" y1="210" x2="178" y2="210" stroke="#555555" stroke-width="1.5" marker-end="url(#arr-ext)"/>
+  <!-- gateway → query-router -->
+  <line x1="320" y1="195" x2="368" y2="155" stroke="#006C35" stroke-width="1.5" marker-end="url(#arr)"/>
+  <!-- query-router → model-service (down) -->
+  <line x1="440" y1="170" x2="440" y2="218" stroke="#006C35" stroke-width="1.5" marker-end="url(#arr)"/>
+  <!-- model-service → query-router (return path, dashed) -->
+  <line x1="430" y1="218" x2="430" y2="172" stroke="#006C35" stroke-width="1" stroke-dasharray="4 2" marker-end="url(#arr)"/>
+  <!-- model-service → optimizer -->
+  <path d="M 440 290 L 440 320 L 250 320 L 250 338" fill="none" stroke="#2E8B57" stroke-width="1.5" marker-end="url(#arr)"/>
+  <!-- model-service → scheduler -->
+  <line x1="440" y1="290" x2="440" y2="338" stroke="#2E8B57" stroke-width="1.5" marker-end="url(#arr)"/>
+  <!-- query-router → Data Source (hit) -->
+  <line x1="510" y1="135" x2="658" y2="205" stroke="#006C35" stroke-width="1.5" stroke-dasharray="6 2" marker-end="url(#arr)"/>
+  <!-- scheduler → Data Source (build) -->
+  <line x1="510" y1="375" x2="658" y2="225" stroke="#2E8B57" stroke-width="1.5" stroke-dasharray="6 2" marker-end="url(#arr)"/>
+  <!-- frontend → model-service -->
+  <line x1="555" y1="260" x2="512" y2="260" stroke="#006C35" stroke-width="1" stroke-dasharray="4 2" marker-end="url(#arr)"/>
+  <!-- model-service → Postgres -->
+  <line x1="555" y1="340" x2="512" y2="290" stroke="#4472CA" stroke-width="1.5" marker-end="url(#arr)"/>
+  <!-- optimizer → Postgres -->
+  <line x1="590" y1="340" x2="590" y2="300" stroke="#4472CA" stroke-width="1" stroke-dasharray="4 2"/>
+
+  <!-- ─── Port labels on arrows ─── -->
+  <text x="148" y="205" font-family="JetBrains Mono, monospace" font-size="9" fill="#555555">5433/8080</text>
+  <text x="690" y="168" font-family="JetBrains Mono, monospace" font-size="9" fill="#006C35" text-anchor="middle">raw / agg query</text>
+  <text x="690" y="285" font-family="JetBrains Mono, monospace" font-size="9" fill="#2E8B57" text-anchor="middle">build aggregate</text>
+
+  <!-- ─── Legend ─── -->
+  <line x1="30" y1="490" x2="60" y2="490" stroke="#006C35" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="68" y="494" font-family="Inter, sans-serif" font-size="10" fill="#333333">Query path</text>
+  <line x1="160" y1="490" x2="190" y2="490" stroke="#2E8B57" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="198" y="494" font-family="Inter, sans-serif" font-size="10" fill="#333333">Aggregate build path</text>
+  <line x1="340" y1="490" x2="370" y2="490" stroke="#4472CA" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="378" y="494" font-family="Inter, sans-serif" font-size="10" fill="#333333">Internal persistence</text>
+  <line x1="510" y1="490" x2="540" y2="490" stroke="#555555" stroke-width="1" stroke-dasharray="4 2" marker-end="url(#arr-ext)"/>
+  <text x="548" y="494" font-family="Inter, sans-serif" font-size="10" fill="#333333">External boundary</text>
+</svg>

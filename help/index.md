@@ -2,7 +2,7 @@
 title: "Tessallite Help"
 audience: all
 area: getting-started
-updated: 2026-04-17
+updated: 2026-04-22
 ---
 
 ## What this covers
@@ -15,112 +15,97 @@ This library documents Tessallite: how it works, how to connect BI tools, how to
 
 ### Analyst
 
-An analyst connects a BI tool — Excel, Power BI, Tableau, DBeaver, or a custom application — to Tessallite using JDBC or XMLA credentials. The analyst writes queries and builds reports. Tessallite is transparent to the analyst: it looks like a standard database. This library explains how to connect, what to expect from query results, and how to interpret differences in behaviour.
+Connects BI tools to Tessallite via JDBC or XMLA and queries data. Start with [What is Tessallite](getting-started/what-is-tessallite.md) and [Connect a BI tool](getting-started/connect-a-bi-tool.md).
 
 ### Modeller
 
-A modeller defines the semantic layer: dimensions, measures, joins, and aggregation rules. Models determine what analysts can query and how Tessallite builds its pre-aggregated summaries. This library explains how to create and publish models, how aggregations are managed, and what model changes affect downstream queries.
+Builds and maintains data models — defining dimensions, measures, joins, and aggregate policies. Start with [Projects and models](concepts/projects-and-models.md).
 
 ### Tenant Admin
 
-A tenant admin manages one workspace. This includes creating projects, managing users and roles, configuring data source connections, and monitoring usage within the workspace. This library explains workspace-level configuration, project management, and user administration.
+Manages users, roles, and settings for one workspace. Start with [Workspaces and tenants](concepts/workspaces-and-tenants.md) and [Roles and permissions](concepts/roles-and-permissions.md).
 
 ### System Admin
 
-A system admin manages the full Tessallite installation. This includes service configuration, multi-tenant provisioning, database management, scheduler control, and platform-level monitoring. This library explains installation, service startup, tenant provisioning, and system diagnostics.
+Deploys and operates the Tessallite platform. Start with [Install locally](getting-started/install-local.md) or [Install on GCP](getting-started/install-gcp.md).
 
 ---
 
-## Sections
-
-### Getting Started
-
-Introduction to Tessallite, what it does, and how to connect a BI tool for the first time. Start here if you are new to the platform.
-
-### Concepts
-
-Explanations of the core ideas: the semantic model, aggregations, workspaces, tenants, projects, and roles. Read this section before building models or administering the platform.
-
-### Modelling
-
-Step-by-step guidance for creating models: defining dimensions and measures, configuring joins, setting aggregation rules, and publishing changes.
-
-### Admin
-
-Workspace and project management. Covers user administration, role assignment, data source connection, and workspace-level monitoring.
-
-### System Admin
-
-Platform-level operations. Covers installation, service configuration, tenant provisioning, and system diagnostics.
-
-### Integrations
-
-Guides for connecting specific BI tools and data sources: PostgreSQL, BigQuery, Hadoop/Spark Thrift Server, Excel, Power BI, Tableau, DBeaver, and psycopg2.
-
-### Troubleshooting
-
-Diagnostic guidance for common problems: connection failures, query errors, aggregation misses, model validation errors, and service health issues.
-
----
-
-## Articles
-
-### Getting Started
+## Getting Started
 
 - [What is Tessallite](getting-started/what-is-tessallite.md)
 - [How Tessallite works](getting-started/how-tessallite-works.md)
+- [Install locally](getting-started/install-local.md)
+- [Install on GCP](getting-started/install-gcp.md)
+- [First-time setup](getting-started/first-time-setup.md)
 - [Connect a BI tool](getting-started/connect-a-bi-tool.md)
-- [Your first query](getting-started/your-first-query.md)
+- [Connect Excel](getting-started/connect-excel.md)
 
-### Concepts
+## Concepts
 
 - [Workspaces and tenants](concepts/workspaces-and-tenants.md)
 - [Projects and models](concepts/projects-and-models.md)
+- [Sources, tables, and joins](concepts/sources-tables-and-joins.md)
 - [Dimensions and measures](concepts/dimensions-and-measures.md)
-- [Aggregations and summaries](concepts/aggregations-and-summaries.md)
-- [Roles and permissions](concepts/roles-and-permissions.md)
+- [Aggregates](concepts/aggregates.md)
 - [Query routing](concepts/query-routing.md)
+- [Model health](concepts/model-health.md)
+- [Roles and permissions](concepts/roles-and-permissions.md)
 
-### Modelling
+## Modelling
 
-- [Create a model](modelling/create-a-model.md)
+- [Create a project](modelling/create-a-project.md)
+- [Add a data source](modelling/add-a-data-source.md)
+- [Add tables to a model](modelling/add-tables-to-a-model.md)
+- [Define joins](modelling/define-joins.md)
 - [Define dimensions](modelling/define-dimensions.md)
 - [Define measures](modelling/define-measures.md)
-- [Configure joins](modelling/configure-joins.md)
-- [Set aggregation rules](modelling/set-aggregation-rules.md)
-- [Publish a model](modelling/publish-a-model.md)
-- [Edit and version a model](modelling/edit-and-version-a-model.md)
+- [Set a query target](modelling/set-a-query-target.md)
+- [Configure aggregates](modelling/configure-aggregates.md)
+- [Configure pocket tables](modelling/configure-pocket-tables.md)
+- [Run a refresh](modelling/run-a-refresh.md)
+- [View model lineage](modelling/view-model-lineage.md)
+- [View diagnostics](modelling/view-diagnostics.md)
+- [Use the AI optimiser](modelling/use-the-ai-optimiser.md)
+- [Manage aggregate schedules](modelling/manage-aggregate-schedules.md)
+- [Save and version a model](modelling/save-and-version-a-model.md)
+- [Deploy a model](modelling/deploy-a-model.md)
+- [Export and import a model](modelling/export-and-import-a-model.md)
 
-### Admin
+## Admin
 
-- [Create a project](admin/create-a-project.md)
-- [Manage users and roles](admin/manage-users-and-roles.md)
-- [Connect a data source](admin/connect-a-data-source.md)
-- [Monitor workspace usage](admin/monitor-workspace-usage.md)
+- [Create a workspace](admin/create-a-workspace.md)
+- [Manage users](admin/manage-users.md)
+- [Manage roles](admin/manage-roles.md)
+- [Workspace settings](admin/workspace-settings.md)
+- [Project settings](admin/project-settings.md)
+- [Model configuration](admin/model-configuration.md)
 
-### System Admin
+## System Admin
 
-- [Install Tessallite](system-admin/install-tessallite.md)
-- [Configure services](system-admin/configure-services.md)
-- [Provision a tenant](system-admin/provision-a-tenant.md)
-- [Manage the scheduler](system-admin/manage-the-scheduler.md)
-- [Platform monitoring](system-admin/platform-monitoring.md)
+- [Architecture overview](system-admin/architecture-overview.md)
+- [Deploy locally (reference)](system-admin/deploy-local.md)
+- [Deploy on GCP (reference)](system-admin/deploy-gcp.md)
+- [Configure environment variables](system-admin/configure-environment-variables.md)
+- [System configuration](system-admin/system-configuration.md)
+- [Credentials and the .env file](system-admin/credentials-and-env.md)
+- [Service reference](system-admin/service-reference.md)
+- [Teardown](system-admin/teardown.md)
+- [Upgrade](system-admin/upgrade.md)
 
-### Integrations
+## Integrations
 
-- [Connect PostgreSQL](integrations/connect-postgresql.md)
-- [Connect BigQuery](integrations/connect-bigquery.md)
-- [Connect Hadoop / Spark Thrift Server](integrations/connect-hadoop-spark.md)
-- [Connect Excel via XMLA](integrations/connect-excel-xmla.md)
-- [Connect Power BI via XMLA](integrations/connect-powerbi-xmla.md)
-- [Connect Tableau via JDBC](integrations/connect-tableau-jdbc.md)
-- [Connect DBeaver via JDBC](integrations/connect-dbeaver-jdbc.md)
-- [Connect psycopg2](integrations/connect-psycopg2.md)
+- [JDBC connection guide](integrations/jdbc-connection-guide.md)
+- [Excel XMLA connection guide](integrations/excel-xmla-connection-guide.md)
+- [Power BI connection guide](integrations/powerbi-connection-guide.md)
+- [Supported data sources](integrations/supported-data-sources.md)
+- [API authentication](integrations/api-authentication.md)
+- [API reference](integrations/api-reference.md)
 
-### Troubleshooting
+## Troubleshooting
 
-- [Connection failures](troubleshooting/connection-failures.md)
-- [Query errors](troubleshooting/query-errors.md)
-- [Aggregation misses](troubleshooting/aggregation-misses.md)
-- [Model validation errors](troubleshooting/model-validation-errors.md)
-- [Service health](troubleshooting/service-health.md)
+- [Excel connection problems](troubleshooting/excel-connection-problems.md)
+- [Query returns wrong results](troubleshooting/query-returns-wrong-results.md)
+- [Aggregates not building](troubleshooting/aggregates-not-building.md)
+- [Service not starting](troubleshooting/service-not-starting.md)
+- [Common errors](troubleshooting/common-errors.md)

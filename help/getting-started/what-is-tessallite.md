@@ -92,3 +92,7 @@ The model also controls how Tessallite builds summaries. Tessallite uses the mod
 - [How Tessallite works](how-tessallite-works.md)
 - [Workspaces and tenants](../concepts/workspaces-and-tenants.md)
 - [Connect a BI tool](connect-a-bi-tool.md)
+
+---
+
+← [Home](../index.md) | [Home](../index.md) | [How Tessallite Works →](how-tessallite-works.md)

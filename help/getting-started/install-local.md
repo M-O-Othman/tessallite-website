@@ -62,3 +62,7 @@ To stop all containers, run `teardown.bat` (Windows) or `./teardown.sh` (Mac/Lin
 - [First-time setup](first-time-setup.md)
 - [Install on GCP](install-gcp.md)
 - [Service reference](../system-admin/service-reference.md)
+
+---
+
+← [How Tessallite Works](how-tessallite-works.md) | [Home](../index.md) | [Install on GCP →](install-gcp.md)

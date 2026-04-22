@@ -58,3 +58,7 @@ Run `teardown.bat` or `./teardown.sh` from `deploy/gcp/`. This removes Cloud Run
 - [Install locally](install-local.md)
 - [First-time setup](first-time-setup.md)
 - [Configure environment variables](../system-admin/configure-environment-variables.md)
+
+---
+
+← [Install Locally](install-local.md) | [Home](../index.md) | [First-Time Setup →](first-time-setup.md)

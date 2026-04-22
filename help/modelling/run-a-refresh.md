@@ -88,4 +88,4 @@ If a refresh fails, the aggregate status changes to **Error**. The Scheduler rec
 
 ---
 
-← [Configure Aggregates](configure-aggregates.md) | [Home](../index.md) | [View Model Lineage →](view-model-lineage.md)
+← [Configure Pocket Tables](configure-pocket-tables.md) | [Home](../index.md) | [View Model Lineage →](view-model-lineage.md)

@@ -101,3 +101,7 @@ Replace `<hostname>` with the gateway host and `<workspace-slug>` with your work
 - [Excel XMLA connection guide](../integrations/excel-xmla-connection-guide.md)
 - [Excel connection problems](../troubleshooting/excel-connection-problems.md)
 - [Connect a BI tool via JDBC](connect-a-bi-tool.md)
+
+---
+
+← [Connect a BI Tool](connect-a-bi-tool.md) | [Home](../index.md) | [Workspaces and Tenants →](../concepts/workspaces-and-tenants.md)

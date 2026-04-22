@@ -80,3 +80,7 @@ The slug is set when the System Admin creates the workspace. It cannot be modifi
 - [Roles and permissions](roles-and-permissions.md)
 - [Projects and models](projects-and-models.md)
 - [Create a workspace](../admin/create-a-workspace.md)
+
+---
+
+← [Connect Excel](../getting-started/connect-excel.md) | [Home](../index.md) | [Projects and Models →](projects-and-models.md)

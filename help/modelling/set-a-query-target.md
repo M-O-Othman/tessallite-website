@@ -73,4 +73,4 @@ If the Scheduler cannot connect to the query target when a refresh runs, the agg
 
 ---
 
-← [Define Measures](define-measures.md) | [Home](../index.md) | [Configure Aggregates →](configure-aggregates.md)
+← [Configure Calendar Table](configure-calendar-table.md) | [Home](../index.md) | [Configure Aggregates →](configure-aggregates.md)

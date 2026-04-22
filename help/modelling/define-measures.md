@@ -50,11 +50,11 @@ A measure is a named aggregation computed from a column in a fact table. Measure
 
 ## Additive versus non-additive measures
 
-An additive measure can be correctly re-aggregated from a coarser pre-aggregated summary. If Tessallite has a daily `SUM(revenue)` summary by country, it can answer a weekly query by summing those daily rows — the source warehouse is not touched.
+An additive measure can be correctly re-aggregated from a coarser pre-aggregated summary. If Tessallite has a daily `SUM(revenue)` summary by country, it can answer a weekly query by summing those daily rows — the data source is not touched.
 
 `COUNT DISTINCT` is non-additive. Summing distinct counts from a daily summary does not give the correct weekly distinct count because the same value may appear on multiple days. Tessallite requires an exact grain match to serve a `COUNT DISTINCT` measure from a pre-aggregated table. If no aggregate exists at the requested grain, the Query Router falls back to executing the query directly against the fact table.
 
-> **Note:** Plan your aggregates explicitly for every grain you expect to query if you use `COUNT DISTINCT` measures. Without a matching aggregate, those queries always hit the source warehouse at full cost.
+> **Note:** Plan your aggregates explicitly for every grain you expect to query if you use `COUNT DISTINCT` measures. Without a matching aggregate, those queries always hit the data source at full cost.
 
 ---
 
@@ -93,4 +93,4 @@ Open the measure in the Drawer and click **Delete**. Tessallite removes the meas
 
 ---
 
-← [Define Dimensions](define-dimensions.md) | [Home](../index.md) | [Set a Query Target →](set-a-query-target.md)
+← [Define Dimensions](define-dimensions.md) | [Home](../index.md) | [Configure Time Variants →](configure-time-variants.md)

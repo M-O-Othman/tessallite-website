@@ -144,11 +144,11 @@
     </div>
 
     <h2>Additive versus non-additive measures</h2>
-    <p>An additive measure can be correctly re-aggregated from a coarser pre-aggregated summary. If Tessallite has a daily <code>SUM(revenue)</code> summary by country, it can answer a weekly query by summing those daily rows — the source data warehouse is not touched.</p>
+    <p>An additive measure can be correctly re-aggregated from a coarser pre-aggregated summary. If Tessallite has a daily <code>SUM(revenue)</code> summary by country, it can answer a weekly query by summing those daily rows — the data source is not touched.</p>
     <p><code>COUNT DISTINCT</code> is non-additive. Summing distinct counts from a daily summary does not give the correct weekly distinct count, because the same value may appear on multiple days. Tessallite therefore requires an exact grain match to serve a <code>COUNT DISTINCT</code> measure from a pre-aggregated table. If no aggregate exists at precisely the requested grain, the Query Router falls back to executing the query directly against the fact table.</p>
 
     <div class="callout-note">
-      <p>Plan your aggregates explicitly for every grain you expect to query if you use <code>COUNT DISTINCT</code> measures. Without a matching aggregate, those queries always hit the source warehouse at full cost.</p>
+      <p>Plan your aggregates explicitly for every grain you expect to query if you use <code>COUNT DISTINCT</code> measures. Without a matching aggregate, those queries always hit the data source at full cost.</p>
     </div>
 
     <h2>Steps</h2>
@@ -186,7 +186,7 @@
   <nav class="page-nav">
     <a href="define-dimensions.html" class="page-nav-btn prev">← Define Dimensions</a>
     <a href="../index.html" class="page-nav-btn home">Home</a>
-    <a href="set-a-query-target.html" class="page-nav-btn next">Set a Query Target →</a>
+    <a href="configure-time-variants.html" class="page-nav-btn next">Configure Time Variants →</a>
   </nav>
 
   <footer class="site-footer">

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configure Calendar Table — Tessallite Help</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/help.css">
+</head>
+<body>
+  <header class="site-header">
+    <a href="../index.html" class="logo">Tessallite Help</a>
+    <nav class="breadcrumb">
+      <a href="../index.html">Home</a> / <span>Modelling</span> / <span>Configure Calendar Table</span>
+    </nav>
+  </header>
+
+  <main class="article">
+    <div class="article-meta">
+      <span class="audience-badge">Modeller</span>
+      <span class="updated">Updated 2026-04-22</span>
+    </div>
+
+    <h1>Configure Calendar Table</h1>
+
+    <h2>What this covers</h2>
+    <p>A calendar table holds one row per date with denormalised period columns — year, quarter, month, week, day. Period-aware time variants (<code>_ytd</code>, <code>_prior_year</code>, <code>_yoy_growth</code>, …) compute their period boundaries by joining the fact table to the calendar, not by date arithmetic on the fact's own timestamp. This article explains how to bind a calendar table to a data source and how to provision one if you don't already have it.</p>
+
+    <h2>Before you start</h2>
+    <ul>
+      <li>The data source must be added to the project. See <a href="add-a-data-source.html">Add a data source</a>.</li>
+      <li>You need either: (a) write access on the source, in which case Tessallite can auto-create the calendar table; or (b) an existing calendar table on the source that follows the standard column shape below.</li>
+    </ul>
+
+    <h2>Standard column shape</h2>
+    <table>
+      <thead><tr><th>Period</th><th>Column name</th></tr></thead>
+      <tbody>
+        <tr><td>Date</td><td><code>date_key</code></td></tr>
+        <tr><td>Year</td><td><code>year_no</code></td></tr>
+        <tr><td>Half</td><td><code>half_no</code></td></tr>
+        <tr><td>Quarter</td><td><code>quarter_no</code></td></tr>
+        <tr><td>Month</td><td><code>month_no</code></td></tr>
+        <tr><td>Week</td><td><code>week_no</code></td></tr>
+        <tr><td>Day of year</td><td><code>day_no</code></td></tr>
+      </tbody>
+    </table>
+    <p><code>date_key</code> is the only required column. Period columns are optional but a variant that needs a missing period column will be silently dropped from the catalog.</p>
+
+    <h2>Steps — auto-create</h2>
+    <ol>
+      <li>Open the <strong>Sources</strong> panel in Model Builder.</li>
+      <li>Click the data source row, then <strong>Calendar</strong>.</li>
+      <li>Click <strong>Auto-create</strong>.</li>
+      <li>Choose a <strong>start date</strong> and <strong>end date</strong> for the calendar range.</li>
+      <li>Click <strong>Generate</strong>. Tessallite emits the dialect-specific DDL (Postgres <code>generate_series</code>, BigQuery <code>GENERATE_DATE_ARRAY</code>, or Spark <code>sequence</code>/<code>explode</code>) and runs it against the source. The new table is registered with <code>autocreated = true</code> and bound automatically.</li>
+    </ol>
+
+    <h2>Steps — bind an existing table</h2>
+    <ol>
+      <li>Open <strong>Sources → Calendar</strong> as above.</li>
+      <li>Click <strong>Bind existing</strong>.</li>
+      <li>Enter the <strong>table name</strong> (schema-qualified if required by your source).</li>
+      <li>Confirm the column mapping. Tessallite probes the table for the standard column names; if any are missing or use different names, edit the mapping inline.</li>
+      <li>Click <strong>Bind</strong>. The catalog refreshes; period-aware variants on measures linked to this source's hierarchy now become admissible.</li>
+    </ol>
+
+    <h2>Unbinding</h2>
+    <p>Click <strong>Unbind</strong> in the Calendar panel. This removes the registration only — the physical table on the source is never dropped, even if Tessallite created it.</p>
+
+    <h2>Script-only mode</h2>
+    <p>If your security policy disallows write access from Tessallite, click <strong>Show DDL</strong> instead of <strong>Auto-create</strong> or <strong>Generate</strong>. Tessallite emits the DDL as text, you run it manually on the source, then return and <strong>Bind existing</strong>.</p>
+
+    <div class="related">
+      <h2>Related</h2>
+      <ul>
+        <li><a href="configure-time-variants.html">Configure Time Variants</a></li>
+        <li><a href="add-a-data-source.html">Add a data source</a></li>
+        <li><a href="set-a-query-target.html">Set a query target</a></li>
+      </ul>
+    </div>
+  </main>
+
+  <nav class="page-nav">
+    <a href="configure-time-variants.html" class="page-nav-btn prev">← Configure Time Variants</a>
+    <a href="../index.html" class="page-nav-btn home">Home</a>
+    <a href="set-a-query-target.html" class="page-nav-btn next">Set a Query Target →</a>
+  </nav>
+
+  <footer class="site-footer">
+    <p>Tessallite Help — <a href="../index.html">Back to contents</a></p>
+  </footer>
+</body>
+</html>

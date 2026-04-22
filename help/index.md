@@ -60,6 +60,8 @@ Deploys and operates the Tessallite platform. Start with [Install locally](getti
 - [Define joins](modelling/define-joins.md)
 - [Define dimensions](modelling/define-dimensions.md)
 - [Define measures](modelling/define-measures.md)
+- [Configure time variants](modelling/configure-time-variants.md)
+- [Configure calendar table](modelling/configure-calendar-table.md)
 - [Set a query target](modelling/set-a-query-target.md)
 - [Configure aggregates](modelling/configure-aggregates.md)
 - [Configure pocket tables](modelling/configure-pocket-tables.md)

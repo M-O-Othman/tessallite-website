@@ -103,3 +103,7 @@ Each model published in the workspace appears as a schema. Within each schema, t
 - [Connect Excel via XMLA](connect-excel.md)
 - [What is Tessallite](what-is-tessallite.md)
 - [JDBC connection guide](../integrations/jdbc-connection-guide.md)
+
+---
+
+← [First-Time Setup](first-time-setup.md) | [Home](../index.md) | [Connect Excel →](connect-excel.md)

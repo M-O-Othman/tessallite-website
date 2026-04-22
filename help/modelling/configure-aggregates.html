@@ -19,7 +19,7 @@
   <main class="article">
     <div class="article-meta">
       <span class="audience-badge">Modeller</span>
-      <span class="updated">Updated 2026-04-17</span>
+      <span class="updated">Updated 2026-04-22</span>
     </div>
 
     <h1>Configure Aggregates</h1>
@@ -113,21 +113,50 @@
 
     <p>You can enter any valid cron expression in the schedule field if none of the presets match your requirements. All times are interpreted as UTC.</p>
 
-    <h2>Steps — manual aggregate configuration</h2>
+    <h2>The Aggregate Drawer</h2>
+    <p>Manual aggregate work — both creation and editing — happens in the <strong>Aggregate Drawer</strong>: a right-anchored 720&nbsp;px panel with three tabs.</p>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr><th>Tab</th><th>Purpose</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Definition</td><td>Target, grain (dimensions), measures, include-quantiles toggle, status.</td></tr>
+          <tr><td>Schedule</td><td>Cron picker plus the <strong>Schedule enabled</strong> switch and the recent run history.</td></tr>
+          <tr><td>Advanced</td><td>Read-only metadata — physical table name, status, created timestamp, retired timestamp, estimated hit rate, creation reason, AI rationale, invalid reason.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>In edit mode the drawer header carries a <strong>Refresh now</strong> button that triggers an immediate full rebuild (the Scheduler endpoint runs the same job a cron tick would have run). Closing the drawer with unsaved changes prompts for confirmation.</p>
+
+    <h2>Authoring workflow (create)</h2>
     <ol>
-      <li>Open the model in Model Builder. Confirm that a query target is set under <strong>Settings</strong> before proceeding. Aggregates cannot be built without a target.</li>
-      <li>Click <strong>Aggregates</strong> in the Toolbelt (left sidebar).</li>
-      <li>Click <strong>Add Aggregate</strong>. The Drawer (right panel) opens with a blank aggregate form.</li>
-      <li>Enter a <strong>Name</strong>. The name becomes the summary table name in the query target schema. Use something that reflects the grain, for example <code>daily_revenue_by_country</code>.</li>
-      <li>Select the <strong>Dimensions</strong> that define the grain. These are the columns by which the source data will be grouped. Every dimension selected here is a column in the summary table.</li>
-      <li>Select the <strong>Measures</strong> to include. You can select multiple measures. All selected measures will be computed and stored at the chosen grain.</li>
-      <li>Set the <strong>Refresh schedule</strong> using a preset or a custom cron expression.</li>
-      <li>Click <strong>Save</strong>. The aggregate is queued for an initial build by the Scheduler. It appears as a dashed node in the Canvas with a status of <strong>Building</strong>.</li>
+      <li>Open the model in Model Builder. Confirm that a query target is set under <strong>Settings</strong> before proceeding — aggregates cannot be built without a target.</li>
+      <li>Click <strong>Aggregates</strong> in the Toolbelt.</li>
+      <li>Click <strong>New</strong>. The Aggregate Drawer opens on the <strong>Definition</strong> tab.</li>
+      <li>Pick a <strong>Target</strong> (where the summary table is stored).</li>
+      <li>Select the <strong>Grain (dimensions)</strong>. Every distinct combination of dimension values becomes one row in the summary table. Dimensions whose value is functionally equivalent to another dimension's value (a redundant partner) are disabled with a tooltip explaining why.</li>
+      <li>Select the <strong>Measures</strong> to include. The default aggregation function (<code>SUM</code>, <code>AVG</code>, etc.) shown next to each measure name is what will be computed at create time. Non-additive measures are flagged with a chip.</li>
+      <li>Optionally enable <strong>Include quantile columns (p25, p50, p75, p95)</strong>.</li>
+      <li>The <strong>Aggregate estimate</strong> card appears live as you change selections, showing the ROI score and any non-additive warnings.</li>
+      <li>Switch to the <strong>Schedule</strong> tab. Turn the <strong>Schedule enabled</strong> switch on, pick a cron expression with the picker, then click <strong>Save</strong>.</li>
+      <li>The aggregate is queued for an initial build by the Scheduler. The card shows status <strong>creating</strong> and transitions to <strong>active</strong> once the first refresh completes.</li>
     </ol>
 
     <div class="callout-note">
-      <p>The first build runs as soon as the Scheduler picks up the job, which is typically within one minute. If the node remains in Building state for more than five minutes, check the Health tab for Scheduler errors.</p>
+      <p>The first build runs as soon as the Scheduler picks up the job, typically within one minute. If the status stays in <strong>creating</strong> for more than five minutes, check the Diagnostics panel for Scheduler errors.</p>
     </div>
+
+    <h2>Edit mode</h2>
+    <p>Editing scope is intentionally narrow:</p>
+    <ul>
+      <li><strong>Editable</strong> — schedule (cron + enabled), status (active / retired), include-quantiles toggle, refresh-now trigger.</li>
+      <li><strong>Read-only</strong> — target, grain, measures. The drawer renders these as static chips with the note "<em>To change the shape, delete this aggregate and create a new one.</em>" Aggregate shape changes go through delete-and-recreate so the physical table identity matches the definition.</li>
+    </ul>
+    <p>The <strong>Definition</strong> tab shows the AI rationale card when the aggregate was created by the AI optimiser. The <strong>Advanced</strong> tab exposes the rest of the metadata.</p>
+    <p>The footer carries a <strong>Delete</strong> button (left) that asks for confirmation before retiring the aggregate and dropping its physical table.</p>
 
     <h2>Manual versus auto-created aggregates</h2>
     <p>Manual aggregates are displayed in the Canvas with a solid border on their dashed outline. Auto-created aggregates show an Optimizer badge. Both respond to the same status indicators (Ready, Stale, Refreshing, Error). Manual aggregates are permanent — the Optimizer will not retire them. Auto-created aggregates may be removed by the Optimizer if the query patterns they serve drop off; you receive a notification in the Health tab when this occurs.</p>
@@ -147,7 +176,7 @@
   <nav class="page-nav">
     <a href="set-a-query-target.html" class="page-nav-btn prev">← Set a Query Target</a>
     <a href="../index.html" class="page-nav-btn home">Home</a>
-    <a href="run-a-refresh.html" class="page-nav-btn next">Run a Refresh →</a>
+    <a href="configure-pocket-tables.html" class="page-nav-btn next">Configure Pocket Tables →</a>
   </nav>
 
   <footer class="site-footer">

@@ -110,3 +110,7 @@ A user with a higher role holds all capabilities of the roles below it in the hi
 - [Manage users](../admin/manage-users.md)
 - [Manage roles](../admin/manage-roles.md)
 - [Workspaces and tenants](workspaces-and-tenants.md)
+
+---
+
+← [Model Health](model-health.md) | [Home](../index.md) | [Create a Project →](../modelling/create-a-project.md)

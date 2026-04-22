@@ -55,3 +55,7 @@ A modeller defines dimensions — the ways data can be sliced — and measures �
 - [What is Tessallite](what-is-tessallite.md)
 - [Query routing](../concepts/query-routing.md)
 - [Dimensions and measures](../concepts/dimensions-and-measures.md)
+
+---
+
+← [What is Tessallite](what-is-tessallite.md) | [Home](../index.md) | [Install Locally →](install-local.md)

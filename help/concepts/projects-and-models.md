@@ -79,3 +79,7 @@ The table type affects how Tessallite builds aggregates and how the query router
 - [Define dimensions](../modelling/define-dimensions.md)
 - [Define measures](../modelling/define-measures.md)
 - [Create a project](../modelling/create-a-project.md)
+
+---
+
+← [Workspaces and Tenants](workspaces-and-tenants.md) | [Home](../index.md) | [Sources, Tables, and Joins →](sources-tables-and-joins.md)

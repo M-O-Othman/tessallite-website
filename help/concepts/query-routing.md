@@ -67,3 +67,7 @@ The grain of a query is the finest level of detail it requests. A query asking f
 - [How Tessallite works](../getting-started/how-tessallite-works.md)
 - [Configure aggregates](../modelling/configure-aggregates.md)
 - [View diagnostics](../modelling/view-diagnostics.md)
+
+---
+
+← [Aggregates](aggregates.md) | [Home](../index.md) | [Model Health →](model-health.md)

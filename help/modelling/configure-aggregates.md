@@ -2,7 +2,7 @@
 title: "Configure Aggregates"
 audience: modeller
 area: modelling
-updated: 2026-04-17
+updated: 2026-04-22
 ---
 
 ![Model Builder — Aggregates panel with new aggregate form.](../assets/screencaps/configure-aggregate-form.png)
@@ -54,18 +54,47 @@ You can enter any valid cron expression in the schedule field if none of the pre
 
 ---
 
-## Steps — manual aggregate configuration
+## The Aggregate Drawer
 
-1. Open the model in Model Builder. Confirm that a query target is set under **Settings** before proceeding. Aggregates cannot be built without a target.
-2. Click **Aggregates** in the Toolbelt (left sidebar).
-3. Click **Add Aggregate**. The Drawer (right panel) opens with a blank aggregate form.
-4. Enter a **Name**. The name becomes the summary table name in the query target schema. Use something that reflects the grain — for example, `daily_revenue_by_country`.
-5. Select the **Dimensions** that define the grain. These are the columns by which the source data will be grouped. Every dimension selected here is a column in the summary table.
-6. Select the **Measures** to include. You can select multiple measures. All selected measures will be computed and stored at the chosen grain.
-7. Set the **Refresh schedule** using a preset or a custom cron expression.
-8. Click **Save**. The aggregate is queued for an initial build by the Scheduler. It appears as a dashed node in the Canvas with a status of **Building**.
+Manual aggregate work — both creation and editing — happens in the **Aggregate Drawer**: a right-anchored 720 px panel with three tabs.
 
-> **Note:** The first build runs as soon as the Scheduler picks up the job, typically within one minute. If the node remains in Building state for more than five minutes, check the Health tab for Scheduler errors.
+| Tab | Purpose |
+|---|---|
+| Definition | Target, grain (dimensions), measures, include-quantiles toggle, status. |
+| Schedule | Cron picker plus the **Schedule enabled** switch and the recent run history. |
+| Advanced | Read-only metadata — physical table name, status, created timestamp, retired timestamp, estimated hit rate, creation reason, AI rationale, invalid reason. |
+
+In edit mode the drawer header carries a **Refresh now** button that triggers an immediate full rebuild (the Scheduler endpoint runs the same job a cron tick would have run). Closing the drawer with unsaved changes prompts for confirmation.
+
+---
+
+## Authoring workflow (create)
+
+1. Open the model in Model Builder. Confirm that a query target is set under **Settings** before proceeding — aggregates cannot be built without a target.
+2. Click **Aggregates** in the Toolbelt.
+3. Click **New**. The Aggregate Drawer opens on the **Definition** tab.
+4. Pick a **Target** (where the summary table is stored).
+5. Select the **Grain (dimensions)**. Every distinct combination of dimension values becomes one row in the summary table. Dimensions whose value is functionally equivalent to another dimension's value (a redundant partner) are disabled with a tooltip explaining why.
+6. Select the **Measures** to include. The default aggregation function (`SUM`, `AVG`, etc.) shown next to each measure name is what will be computed at create time. Non-additive measures are flagged with a chip.
+7. Optionally enable **Include quantile columns (p25, p50, p75, p95)**.
+8. The **Aggregate estimate** card appears live as you change selections, showing the ROI score and any non-additive warnings.
+9. Switch to the **Schedule** tab. Turn the **Schedule enabled** switch on, pick a cron expression with the picker, then click **Save**.
+10. The aggregate is queued for an initial build by the Scheduler. The card shows status **creating** and transitions to **active** once the first refresh completes.
+
+> The first build runs as soon as the Scheduler picks up the job, typically within one minute. If the status stays in **creating** for more than five minutes, check the Diagnostics panel for Scheduler errors.
+
+---
+
+## Edit mode
+
+Editing scope is intentionally narrow:
+
+- **Editable** — schedule (cron + enabled), status (active / retired), include-quantiles toggle, refresh-now trigger.
+- **Read-only** — target, grain, measures. The drawer renders these as static chips with the note "*To change the shape, delete this aggregate and create a new one.*" Aggregate shape changes go through delete-and-recreate so the physical table identity matches the definition.
+
+The **Definition** tab shows the AI rationale card when the aggregate was created by the AI optimiser. The **Advanced** tab exposes the rest of the metadata.
+
+The footer carries a **Delete** button (left) that asks for confirmation before retiring the aggregate and dropping its physical table.
 
 ---
 
@@ -85,4 +114,4 @@ Manual aggregates are displayed in the Canvas with a solid border on their dashe
 
 ---
 
-← [Set a Query Target](set-a-query-target.md) | [Home](../index.md) | [Run a Refresh →](run-a-refresh.md)
+← [Set a Query Target](set-a-query-target.md) | [Home](../index.md) | [Configure Pocket Tables →](configure-pocket-tables.md)

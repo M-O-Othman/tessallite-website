@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Export and Import a Model — Tessallite Help</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/help.css">
+</head>
+<body>
+  <header class="site-header">
+    <a href="../index.html" class="logo">Tessallite Help</a>
+    <nav class="breadcrumb">
+      <a href="../index.html">Home</a> / <span>Modelling</span> / <span>Export and Import a Model</span>
+    </nav>
+  </header>
+  <main class="article">
+    <div class="article-meta">
+      <span class="audience-badge">Modeller</span>
+      <span class="updated">Updated 2026-04-18</span>
+    </div>
+
+    <h1>Export and Import a Model</h1>
+
+    <figure class="screencap">
+      <img src="../assets/screencaps/explorer-import-button.png" alt="Explorer page showing Add Model and Import buttons." loading="lazy">
+      <figcaption>Explorer page showing Add Model and Import buttons.</figcaption>
+    </figure>
+
+    <h2>What this covers</h2>
+    <p>You can export any model as a single JSON file and import it into the same project, a different project in the same tenant, or a different tenant entirely. Connections never travel — credentials stay in the source database — so on import you pick local connections to rebind the model to. This article covers the export download, the import dialog, and how connections are remapped.</p>
+
+    <h2>Before you start</h2>
+    <ul>
+      <li>To export, you need access to the source model.</li>
+      <li>To import, you need access to the target project and at least one connection of each type referenced by the bundle (one Postgres connection per Postgres source, one BigQuery target per BigQuery target, etc.).</li>
+      <li>Connections must already exist in the target project. If you do not have them, create them via <strong>Connections</strong> before importing.</li>
+    </ul>
+
+    <h2>Exporting a model</h2>
+    <ol>
+      <li>Open the Model Builder for the model you want to export.</li>
+      <li>On the toolbar, click the <strong>Export</strong> button (down-arrow into tray icon).</li>
+      <li>Tessallite downloads a file named <code>{model_slug}.tessallite.json</code> to your browser's download folder.</li>
+      <li>The file is a single JSON document containing every per-model row — tables, columns, joins, hierarchies, dimensions, measures, aggregates, refresh policies, AI scheduler config, model settings, and the canvas layout.</li>
+    </ol>
+    <p>The file does <strong>not</strong> contain credentials, query history, miss logs, alerts, or anything stored at tenant, project, or system scope.</p>
+
+    <h2>Importing a model</h2>
+    <ol>
+      <li>From the Explorer, select the project you want to import into.</li>
+      <li>Click the <strong>Import</strong> button next to <strong>Add Model</strong>.</li>
+      <li>In the dialog, click <strong>Choose .tessallite.json file</strong> and pick the export file.</li>
+      <li>The dialog reads the bundle and shows the original model's slug and display name (you can override either) plus every connection referenced by the bundle, with the source's display name and connection type.</li>
+      <li>For each referenced connection, pick a local connection from the dropdown. Only connections of the matching type appear.</li>
+      <li>Optionally tick <strong>Deploy immediately after import</strong> to save v1 and deploy in one click.</li>
+      <li>Click <strong>Import</strong>. Tessallite creates a new model in the target project, rewrites every internal UUID, rebinds the connections, and (if you ticked Deploy) saves and deploys v1.</li>
+      <li>The Explorer navigates to the new model.</li>
+    </ol>
+    <p>If the source slug already exists in the target project, Tessallite auto-suffixes (<code>sales</code>, <code>sales-2</code>, <code>sales-3</code>).</p>
+
+    <h2>What is and is not in an export</h2>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>In the export</th>
+            <th>Not in the export</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Tables, columns, joins, hierarchies, UDAs</td><td>Connection credentials</td></tr>
+          <tr><td>Dimensions, measures</td><td>Source data, target data</td></tr>
+          <tr><td>Aggregate definitions and refresh policies</td><td>Query logs, miss logs, alerts</td></tr>
+          <tr><td>Per-model AI scheduler config and model settings</td><td>System / tenant / project settings</td></tr>
+          <tr><td>Canvas layout (table positions, viewport)</td><td>Deployed-version pointer (the import always starts undeployed)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Tips</h2>
+    <ul>
+      <li>Export is the supported way to move a model between environments (dev → staging → prod). The bundle is stable JSON, safe to commit to git.</li>
+      <li>Connection rebinding is mandatory. The importer refuses to proceed if any source or target has no mapping.</li>
+      <li>Re-imports do not merge — every import creates a brand-new model with a fresh slug and fresh internal UUIDs.</li>
+    </ul>
+
+    <div class="related">
+      <h2>Related</h2>
+      <ul>
+        <li><a href="save-and-version-a-model.html">Save and Version a Model</a></li>
+        <li><a href="deploy-a-model.html">Deploy a Model</a></li>
+        <li><a href="add-a-data-source.html">Add a Data Source</a></li>
+      </ul>
+    </div>
+  </main>
+
+  <nav class="page-nav">
+    <a href="deploy-a-model.html" class="page-nav-btn prev">← Deploy a Model</a>
+    <a href="../index.html" class="page-nav-btn home">Home</a>
+    <a href="../index.html" class="page-nav-btn next">Home →</a>
+  </nav>
+
+  <footer class="site-footer">
+    <p>Tessallite Help — <a href="../index.html">Back to contents</a></p>
+  </footer>
+</body>
+</html>

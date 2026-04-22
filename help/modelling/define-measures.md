@@ -30,6 +30,7 @@ A measure is a named aggregation computed from a column in a fact table. Measure
 | Source table | Yes | The fact table containing the column to aggregate. |
 | Source column | Yes | The column to aggregate. For COUNT, use the primary key column. |
 | Aggregation type | Yes | The SQL aggregation function to apply. |
+| Format | No | Presentation token controlling how Tessallite renders the value in the in-app Query panel. One of `currency`, `percent`, `percent_2dp`, `integer`, `decimal_0`, `decimal_1`, `decimal_2dp`, `decimal_3`, `decimal_4`, `decimal_5`, `decimal_6`. The token is stored on the measure and applied client-side; the underlying SQL value is unchanged. |
 | Description | No | Free-text note exposed to BI tools that support field descriptions. |
 
 ---

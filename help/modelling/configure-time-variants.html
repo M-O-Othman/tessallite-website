@@ -19,13 +19,13 @@
   <main class="article">
     <div class="article-meta">
       <span class="audience-badge">Modeller</span>
-      <span class="updated">Updated 2026-04-22</span>
+      <span class="updated">Updated 2026-04-23</span>
     </div>
 
     <h1>Configure Time Variants</h1>
 
     <h2>What this covers</h2>
-    <p>A time variant is a derived form of a base measure that answers a time-intelligence question without forcing the modeller to write a separate measure. Examples are year-to-date revenue, prior-quarter order count, and 12-month trailing average. Tessallite generates these as virtual measures that appear in the catalog alongside the base measure, named <code>&lt;base&gt;_&lt;variant&gt;</code> (for example <code>revenue_ytd</code>).</p>
+    <p>A time variant is a derived form of a base measure that answers a time-intelligence question without forcing the modeller to write a separate measure. Examples are year-to-date revenue, prior-quarter order count, and 12-month trailing average. In Tessallite each variant you tick on a base measure becomes its own first-class measure row in the catalog, named <code>&lt;base&gt;_&lt;variant&gt;</code> (for example <code>revenue_ytd</code>). The variant row inherits the base measure's source column, format, data type, default aggregation, and additivity at creation.</p>
 
     <h2>Before you start</h2>
     <ul>
@@ -57,30 +57,40 @@
     <p>Default <code>n</code> for <code>trailing_n</code> is 12; default <code>n</code> for <code>moving_avg_n</code> is 30. Both can be overridden per measure.</p>
 
     <h2>Admission rules</h2>
-    <p>A variant is published in the catalog only when <strong>all</strong> of the following are true for the measure's linked hierarchy:</p>
+    <p>A variant can be ticked on a base measure only when <strong>all</strong> of the following are true for the measure's linked hierarchy:</p>
     <ol>
-      <li><code>time_variants_enabled</code> is true on the measure.</li>
       <li>The variant's family appears in at least one level's <code>allowed_time_calcs</code>.</li>
       <li>The variant's required time unit (if any) is present as a level <code>time_unit</code> in the same hierarchy.</li>
       <li>If the variant is period-aware, the data source has a bound calendar table.</li>
     </ol>
-    <p>Variants that fail any rule are silently dropped — no query-time error and no validation error on measure save.</p>
+    <p>Variants that fail any rule are not offered for selection in the drawer.</p>
 
     <h2>Steps</h2>
     <ol>
-      <li>Open the measure in the Drawer (Toolbelt → Measures → click the measure name).</li>
-      <li>Tick <strong>Enable time variants</strong>.</li>
-      <li>(Optional) Set <strong>Trailing window N</strong> to override the 12-period default for <code>trailing_n</code>.</li>
-      <li>(Optional) Set <strong>Moving average N</strong> to override the 30-period default for <code>moving_avg_n</code>.</li>
-      <li>Click <strong>Save</strong>. The catalog list refreshes; admissible variants now appear under the measure as virtual entries.</li>
+      <li>Open the base measure in the Drawer (Toolbelt → Measures → click the measure name).</li>
+      <li>Under <strong>Time variants</strong>, tick the variants you want. For <code>trailing_n</code> and <code>moving_avg_n</code>, enter an <code>N</code> (defaults: 12 and 30).</li>
+      <li>Click <strong>Save</strong>. The catalog refreshes; each ticked variant appears as its own measure row beside the base, named <code>&lt;base&gt;_&lt;variant&gt;</code>.</li>
     </ol>
+    <p>To remove a variant, untick it and Save. The variant row is deleted; queries that referenced it will fail with an unknown-measure error.</p>
+    <p>To rename or re-format a variant row, open the variant directly. Source column, aggregation, and data type are inherited from the base and are not editable on the variant row — change them on the base.</p>
 
     <h2>How variants are computed</h2>
-    <p>Each variant is rewritten into a window function or correlated calendar lookup at query time. Postgres is the canonical authoring dialect; for BigQuery and Spark, Tessallite transpiles the canonical SQL via sqlglot. The rewriter does not duplicate the variant in storage — it is computed live unless the AI optimiser proposes a per-variant aggregate.</p>
+    <p>Each variant is rewritten into a window function or correlated calendar lookup at query time. Postgres is the canonical authoring dialect; for BigQuery and Spark, Tessallite transpiles the canonical SQL via sqlglot. The variant row is metadata only — it does not duplicate the value in storage unless the AI optimiser proposes a per-variant aggregate.</p>
 
     <div class="callout-note">
       <p>If a variant query is slow, run the AI optimiser. The optimiser scores per-variant aggregates the same way it scores base-measure aggregates and proposes pre-aggregated tables when the cost-benefit is positive. See <a href="use-the-ai-optimiser.html">Use the AI optimiser</a>.</p>
     </div>
+
+    <h2>Variants in pre-aggregates (limitation)</h2>
+    <p>The optimiser materialises only <strong>window-based</strong> variants in CTAS pre-aggregate tables: <code>lag</code>, <code>trailing_n</code>, and <code>moving_avg_n</code>. These are computed inside the aggregate using a window function over the per-grain rows.</p>
+    <p><strong>Period-aware variants are not materialised.</strong> Variants in this list always rewrite over the base measure's pre-aggregate (or the source) at query time:</p>
+    <ul>
+      <li><code>prior_year</code>, <code>prior_quarter</code>, <code>prior_month</code>, <code>prior_week</code></li>
+      <li><code>ytd</code>, <code>qtd</code>, <code>mtd</code>, <code>wtd</code></li>
+      <li><code>ytd_prior_year</code>, <code>yoy_growth</code>, <code>yoy_growth_pct</code></li>
+    </ul>
+    <p>These variants depend on a calendar-table JOIN whose validity moves with the calendar contents. Baking that JOIN into a CTAS would couple the aggregate to a specific calendar snapshot, so Tessallite refuses the materialisation by design. They still execute correctly via the rewriter — only the <em>pre-aggregate</em> path is closed.</p>
+    <p>A window-based variant additionally requires the aggregate's grain to contain a time dimension (used for <code>ORDER BY</code> in the window). If you create an aggregate at a non-time grain, only base measures and non-variant aggregations are materialised.</p>
 
     <div class="related">
       <h2>Related</h2>

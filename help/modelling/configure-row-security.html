@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configure Row Security — Tessallite Help</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/help.css">
+</head>
+<body>
+  <header class="site-header">
+    <a href="../index.html" class="logo">Tessallite Help</a>
+    <nav class="breadcrumb">
+      <a href="../index.html">Home</a> / <span>Modelling</span> / <span>Configure Row Security</span>
+    </nav>
+  </header>
+
+  <main class="article">
+    <div class="article-meta">
+      <span class="audience-badge">Modeller</span>
+      <span class="updated">Updated 2026-04-23</span>
+    </div>
+
+    <h1>Configure Row Security</h1>
+
+    <h2>What this covers</h2>
+    <p>Row security restricts which rows a user can see when they query a model. Rules are evaluated at query time by the Query Router: the planned SQL is wrapped in a security subquery that filters rows to the set the caller is authorised to see. This article covers the two rule shapes, how to author and test them, how the Router applies them at runtime, and the v1 limitations a modeller must know.</p>
+
+    <h2>When to use row security</h2>
+    <p>Use row security when two or more audiences share the same model but must not see each other's rows. Typical cases:</p>
+    <ul>
+      <li>A regional sales model shared by regional managers, where each manager should only see their own region.</li>
+      <li>A per-customer success model where every account-manager sees only their assigned accounts.</li>
+      <li>A &quot;self-service&quot; model where the caller should only see rows tagged with their own user identity.</li>
+    </ul>
+    <p>Row security is enforced by the Query Router for every read path — JDBC, XMLA, and REST — and cannot be bypassed by switching tool or query shape. The aggregate matcher and pocket matcher are disabled when any rule applies, so the filter always executes against the authoritative data.</p>
+
+    <h2>The two rule shapes</h2>
+    <p>A rule is one of two shapes. A model can mix shapes freely; every enabled rule that matches the caller is ANDed together at query time.</p>
+
+    <h3>Role predicate</h3>
+    <p>A rule authored in a small, restricted DSL, scoped to one or more named roles.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Field</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code>name</code></td><td>Human label for the rule.</td></tr>
+          <tr><td><code>dimension_path</code></td><td>The model dimension the rule filters on, e.g. <code>region.region_code</code>.</td></tr>
+          <tr><td><code>rule_type</code></td><td><code>role_predicate</code>.</td></tr>
+          <tr><td><code>predicate_expression</code></td><td>DSL string, e.g. <code>dimension_equals('region.region_code', 'NORTH')</code>.</td></tr>
+          <tr><td><code>applies_to_roles</code></td><td>List of role names. The rule fires only for callers whose JWT carries a matching <code>role</code> claim.</td></tr>
+          <tr><td><code>is_enabled</code></td><td>On/off switch. Disabled rules are ignored at query time.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Supported DSL forms:</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Form</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code>dimension_equals(path, value)</code></td><td>Equality against one dimension column.</td></tr>
+          <tr><td><code>in(path, v1, v2, …)</code></td><td>Set membership on one dimension column.</td></tr>
+          <tr><td><code>and(expr1, expr2, …)</code></td><td>All children must hold.</td></tr>
+          <tr><td><code>or(expr1, expr2, …)</code></td><td>Any child must hold.</td></tr>
+          <tr><td><code>not(expr)</code></td><td>Negation.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Anything outside this grammar is rejected at save time with a structured validation error — no free-form SQL can enter the predicate path.</p>
+
+    <h3>User mapping</h3>
+    <p>A rule backed by a mapping table in the same model. The caller's user identity is looked up in the mapping table and the set of allowed values for the security dimension is derived per-request.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Field</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code>name</code></td><td>Human label for the rule.</td></tr>
+          <tr><td><code>dimension_path</code></td><td>The model dimension the rule filters on.</td></tr>
+          <tr><td><code>rule_type</code></td><td><code>user_mapping</code>.</td></tr>
+          <tr><td><code>mapping_table_id</code></td><td>A <code>ModelTable</code> in the same model holding <code>(user_identity, allowed_value)</code> rows.</td></tr>
+          <tr><td><code>mapping_user_column</code></td><td>Physical column on the mapping table that stores the user identity.</td></tr>
+          <tr><td><code>mapping_value_column</code></td><td>Physical column on the mapping table that stores the allowed dimension value.</td></tr>
+          <tr><td><code>is_enabled</code></td><td>On/off switch.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Cross-model mapping tables are rejected at save time. This prevents a rule on model A from pulling allowed values out of a table that belongs to model B.</p>
+    <p>A user with multiple rows in the mapping table — e.g. one user mapped to two regions — sees the union of those values.</p>
+
+    <h2>Authoring workflow</h2>
+    <ol>
+      <li>Open the model in Model Builder.</li>
+      <li>Click <strong>Row Security</strong> in the Toolbelt.</li>
+      <li>Click <strong>New Rule</strong>. The drawer opens on a shape-adaptive form — picking <code>role_predicate</code> or <code>user_mapping</code> from the <strong>Rule type</strong> dropdown swaps the lower half of the form between the DSL editor + roles list and the mapping-table picker.</li>
+      <li>Fill in the fields and click <strong>Save</strong>. The server validates the DSL (for role predicates) or the mapping-table scope (for user-mapping rules) before accepting the rule.</li>
+      <li>Use <strong>Simulate as user</strong> to test the rule. Enter an email and a list of roles; the service compiles the rules against that principal and shows you the combined predicate that would be applied.</li>
+      <li>Toggle <strong>Enabled</strong> off to retire a rule without deleting it; queries ignore disabled rules.</li>
+    </ol>
+    <p>Edit mode preserves the rule shape — the <strong>Rule type</strong> field is read-only after creation. If the shape needs to change, delete and recreate the rule.</p>
+
+    <h2>How the Router applies rules</h2>
+    <p>For every read query, the Router:</p>
+    <ol>
+      <li>Resolves the caller's <code>Principal</code> from the JWT: <code>user_identity</code> from <code>sub</code> / <code>email</code>, and <code>roles</code> from the <code>role</code> claim (a single string is treated as a frozenset of one).</li>
+      <li>Compiles every enabled rule on the model whose shape matches the principal — role predicates whose <code>applies_to_roles</code> intersects the principal's roles, and every user-mapping rule.</li>
+      <li>If at least one rule compiles, the planned SQL is wrapped:
+        <pre><code>SELECT * FROM (&lt;original planned SQL&gt;) AS __ts_sec
+WHERE &lt;combined predicate&gt;</code></pre>
+      </li>
+      <li>The aggregate matcher and pocket matcher are skipped — the wrap executes against the source so the predicate is never evaluated over a pre-aggregated rollup that may have dropped the security dimension.</li>
+    </ol>
+    <p>When no rule matches the principal, the query runs as normal — the wrap is not applied and the aggregate / pocket fast paths remain available.</p>
+    <p>Callers with no JWT (internal service-to-service calls) pass <code>principal=None</code> and the wrap is not applied. Downstream gateway endpoints reject unauthenticated public traffic before it reaches the Router.</p>
+
+    <h2>v1 limitations</h2>
+    <ul>
+      <li><strong>Inner SELECT must project the security dimension column.</strong> The wrap references the dimension by its last path segment (e.g. <code>region.region_code</code> → <code>region_code</code>). If the inner query does not project that column, <code>is_query_compatible</code> returns false and the Router fails the query closed rather than emitting SQL that would reference an unprojected column. Workaround: ensure the model's <code>SELECT *</code> path for the fact table includes the security column, or add the column to the query grain.</li>
+      <li><strong>Aggregate and pocket fast paths are bypassed when any rule fires.</strong> Queries from audiences with active rules always execute against the source. If latency matters for those audiences, consider whether the rule can be expressed as a pre-filtered pocket owned per-audience instead.</li>
+      <li><strong>Roles are strings carried on the JWT.</strong> There is no central role registry in v1; the strings in <code>applies_to_roles</code> must match the exact <code>role</code> claim the IdP issues.</li>
+      <li><strong>One security dimension per rule.</strong> A rule filters on exactly one <code>dimension_path</code>. Compound rules are expressed by adding multiple rules, all ANDed together.</li>
+    </ul>
+
+    <h2>Demo and simulation</h2>
+    <p>The <code>acme-test</code> demo tenant seeds a working two-audience example out of the box:</p>
+    <ul>
+      <li><code>alice.north@acme.test</code> — role <code>region_manager_north</code>, sees only <code>NORTH</code> rows via a role-predicate rule.</li>
+      <li><code>bob.south@acme.test</code> — role <code>region_manager_south</code>, sees only <code>SOUTH</code> rows via the same role-predicate pattern.</li>
+      <li>A user-mapping rule backed by <code>demo_data.user_region_map</code> lets <code>carol.both@acme.test</code> see both <code>NORTH</code> and <code>SOUTH</code> (two mapping rows).</li>
+    </ul>
+    <p>Running <code>scripts/seed_acme_test_demo.py</code> prints a 30-day JWT for each of the two role audiences. Paste the token into the Query panel's <code>Authorization: Bearer &lt;token&gt;</code> header to see the rule fire end-to-end.</p>
+
+    <div class="related">
+      <h2>Related</h2>
+      <ul>
+        <li><a href="define-dimensions.html">Define dimensions</a></li>
+        <li><a href="configure-aggregates.html">Configure aggregates</a></li>
+        <li><a href="configure-pocket-tables.html">Configure pocket tables</a></li>
+        <li><a href="view-diagnostics.html">View diagnostics</a></li>
+      </ul>
+    </div>
+  </main>
+
+  <nav class="page-nav">
+    <a href="configure-pocket-tables.html" class="page-nav-btn prev">← Configure Pocket Tables</a>
+    <a href="../index.html" class="page-nav-btn home">Home</a>
+    <a href="run-a-refresh.html" class="page-nav-btn next">Run a Refresh →</a>
+  </nav>
+
+  <footer class="site-footer">
+    <p>Tessallite Help — <a href="../index.html">Back to contents</a></p>
+  </footer>
+</body>
+</html>

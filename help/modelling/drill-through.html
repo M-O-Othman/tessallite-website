@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Drill-through — Tessallite Help</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/help.css">
+</head>
+<body>
+  <header class="site-header">
+    <a href="../index.html" class="logo">Tessallite Help</a>
+    <nav class="breadcrumb">
+      <a href="../index.html">Home</a> / <span>Modelling</span> / <span>Drill-through</span>
+    </nav>
+  </header>
+
+  <main class="article">
+    <div class="article-meta">
+      <span class="audience-badge">Modeller</span>
+      <span class="updated">Updated 2026-04-23</span>
+    </div>
+
+    <h1>Drill-through</h1>
+
+    <h2>What this covers</h2>
+    <p>Drill-through returns the fact-table rows that contributed to a specific aggregated value. Tessallite exposes drill-through as a per-measure REST endpoint and as the cell-click action of the <a href="measure-query-panel.html">Measure Query Panel</a>.</p>
+
+    <h2>How drill-through works</h2>
+    <p>For every standard measure, Tessallite maintains a <code>drill_through_set</code> — a configuration object that records:</p>
+    <ul>
+      <li>The <strong>source fact table</strong> the measure aggregates (derived from the measure's source column or UDA).</li>
+      <li>The <strong>detail columns</strong> returned when drilling. If unset, every column of the fact table is returned.</li>
+      <li>Optional <strong>joined dimension ids</strong> (reserved).</li>
+      <li>An optional <strong>row-limit override</strong>.</li>
+    </ul>
+    <p>A set is created automatically when a measure is created; you do not need to configure it unless you want to restrict which columns are returned.</p>
+
+    <p>Drill-through is disabled on:</p>
+    <ul>
+      <li><strong>Calculated measures</strong> — they have no single source column.</li>
+      <li><strong>Composite or multi-fact measures</strong> — v1 requires exactly one source column per measure.</li>
+    </ul>
+
+    <h2>What you get back</h2>
+    <ul>
+      <li>A <code>columns</code> array — the column names and data types in the result page.</li>
+      <li>A <code>rows</code> array — each row is an array of values aligned with <code>columns</code>.</li>
+      <li>A <code>page</code> object — <code>cursor</code>, <code>next_cursor</code>, and <code>has_more</code> for opaque offset-based pagination.</li>
+      <li>The <code>fact_table</code> physical name for transparency.</li>
+    </ul>
+    <p>Rows are ordered by the first column in the result for stable pagination. Literal filter values are never concatenated into SQL — they are bound positionally so the endpoint is safe against injection.</p>
+
+    <h2>Calling the endpoint</h2>
+    <pre><code>POST /api/v1/measures/{measure_id}/drill-through
+{
+  "filters": [
+    { "column": "country", "op": "eq", "value": "DE" }
+  ],
+  "grouping_levels": [
+    { "column": "quarter", "op": "eq", "value": "2024-Q2" }
+  ],
+  "cursor": null,
+  "limit": 500
+}</code></pre>
+    <p><code>filters</code> and <code>grouping_levels</code> are both translated into <code>WHERE</code> predicates. The distinction is semantic only — grouping levels carry cell-position constraints (the dimension values that identify the pivot cell); filters carry any additional global constraints.</p>
+    <p>Supported operators: <code>eq</code>, <code>neq</code>, <code>gt</code>, <code>gte</code>, <code>lt</code>, <code>lte</code>, <code>like</code>, <code>ilike</code>, <code>in</code>, <code>between</code>, <code>is_null</code>, <code>is_not_null</code>.</p>
+
+    <h2>Pagination</h2>
+    <p><code>cursor</code> and <code>next_cursor</code> are opaque strings. Pass the <code>next_cursor</code> from the previous response back as <code>cursor</code> on the next call. The server over-fetches by one row to detect <code>has_more</code>; <code>next_cursor</code> is <code>null</code> when the result set is exhausted.</p>
+
+    <h2>v1 limitations</h2>
+    <table>
+      <thead><tr><th>Limitation</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>PostgreSQL sources only</td><td>BigQuery and Spark drill-through is reserved for a future phase.</td></tr>
+        <tr><td>No multi-fact joins</td><td>The drilled rows come from a single source fact table.</td></tr>
+        <tr><td>No dimension joins in the result (v1)</td><td>Dimension values are returned only if the fact table stores them directly.</td></tr>
+        <tr><td>Per-page limit clamped to 10 000 rows</td><td>Default page size is 1 000.</td></tr>
+      </tbody>
+    </table>
+    <p>Errors return a stable <code>error_code</code> in the response body — for example <code>DrillThroughUnsupportedCalculated</code>, <code>DrillThroughUnsupportedComposite</code>, <code>DrillThroughUnknownColumn</code>, or <code>DrillThroughConnectorUnsupported</code>. Clients should branch on the code, not the human-readable message.</p>
+
+    <div class="related">
+      <h2>Related</h2>
+      <ul>
+        <li><a href="measure-query-panel.html">Measure Query Panel</a></li>
+        <li><a href="calculated-measures.html">Calculated Measures</a></li>
+      </ul>
+    </div>
+  </main>
+
+  <nav class="page-nav">
+    <a href="../querying/live-vs-aggregate.html" class="page-nav-btn prev">← Live vs Aggregate</a>
+    <a href="../index.html" class="page-nav-btn home">Home</a>
+    <a href="set-a-query-target.html" class="page-nav-btn next">Set a Query Target →</a>
+  </nav>
+
+  <footer class="site-footer">
+    <p>Tessallite Help — <a href="../index.html">Back to contents</a></p>
+  </footer>
+</body>
+</html>

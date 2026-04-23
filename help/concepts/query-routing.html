@@ -18,7 +18,7 @@
   <main class="article">
     <div class="article-meta">
       <span class="audience-badge">Modeller</span>
-      <span class="updated">Updated 2026-04-17</span>
+      <span class="updated">Updated 2026-04-23</span>
     </div>
     <h1>Query Routing</h1>
 
@@ -75,6 +75,11 @@
         </tbody>
       </table>
     </div>
+
+    <h2>Route badge and force-live toggle</h2>
+    <p>The Query panel shows a badge on every executed query so you can see which path served it. The badge reads <code>aggregate</code>, <code>pocket</code>, or <code>live (source)</code>. Hovering the badge reveals the routing reason — the same text the <code>/explain</code> endpoint returns — so you do not need a second round-trip to understand why a query took its path.</p>
+    <p>The <strong>Force Live</strong> toggle, sitting next to the Execute button, forces the next query to bypass the aggregate and pocket matchers and run directly against the source. Use it when you need to verify raw-source behaviour or compare pre-computed results against the underlying data. Row security is still applied — the force-live switch does not grant access to rows the principal would otherwise be filtered away from.</p>
+    <p>Force Live is a per-query flag. It resets to off on panel reload and never becomes the default for a model.</p>
 
     <div class="related">
       <h2>Related</h2>

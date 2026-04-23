@@ -13,6 +13,20 @@ A measure is a named aggregation computed from a column in a fact table. Measure
 
 ---
 
+## The three kinds of measures
+
+Tessallite recognises three kinds. From the BI tool's point of view they all look the same — a named numeric value you can drop into a query. Internally they differ in *where the SQL expression comes from*.
+
+| Kind | Source | When to use |
+|---|---|---|
+| **Plain measure** | A column reference plus an aggregation, e.g. `SUM(amount)`. | The most common case. Use when the value lives in a column and you want a standard aggregation over it. |
+| **User-defined attribute (UDA) measure** | A modeler-authored expression plus an aggregation, e.g. `SUM(price * quantity * (1 + tax_rate))`. The expression is stored on the model and inlined into queries. | Use when the value is a calculation across columns that doesn't change between queries. |
+| **Variant measure** | A time-intelligence transformation of another measure — for example, the year-to-date of `revenue`, or the prior-year of `orders`. The SQL is generated per query because the partitioning depends on the dimensions in the grain. | Use when you want the same measure shifted across time without re-defining it. See [Configure Time Variants](configure-time-variants.md). |
+
+This page covers plain measures. UDA measures are configured under **User-Defined Attributes** in the Toolbelt. Variant measures are configured under **Time Variants** on a base measure.
+
+---
+
 ## Before you start
 
 - You must have a model open in Model Builder with at least one fact table added to the canvas.

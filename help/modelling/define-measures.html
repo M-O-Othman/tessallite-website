@@ -32,6 +32,32 @@
     <h2>What this covers</h2>
     <p>A measure is a named aggregation computed from a column in a fact table. Measures are the numeric values BI tools query — revenue, order count, average session duration, and so on. This article explains what constitutes a measure, how to define one in Model Builder, and the impact of choosing additive versus non-additive aggregation types on query routing.</p>
 
+    <h2>The three kinds of measures</h2>
+    <p>Tessallite recognises three kinds. From the BI tool's point of view they all look the same — a named numeric value you can drop into a query. Internally they differ in <em>where the SQL expression comes from</em>.</p>
+    <table>
+      <thead>
+        <tr><th>Kind</th><th>Source</th><th>When to use</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Plain measure</strong></td>
+          <td>A column reference plus an aggregation, e.g. <code>SUM(amount)</code>.</td>
+          <td>The most common case. Use when the value lives in a column and you want a standard aggregation over it.</td>
+        </tr>
+        <tr>
+          <td><strong>User-defined attribute (UDA) measure</strong></td>
+          <td>A modeler-authored expression plus an aggregation, e.g. <code>SUM(price * quantity * (1 + tax_rate))</code>. The expression is stored on the model and inlined into queries.</td>
+          <td>Use when the value is a calculation across columns that doesn't change between queries.</td>
+        </tr>
+        <tr>
+          <td><strong>Variant measure</strong></td>
+          <td>A time-intelligence transformation of another measure — for example, the year-to-date of <code>revenue</code>, or the prior-year of <code>orders</code>. The SQL is generated per query because the partitioning depends on the dimensions in the grain.</td>
+          <td>Use when you want the same measure shifted across time without re-defining it. See <a href="configure-time-variants.html">Configure Time Variants</a>.</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>This page covers plain measures. UDA measures are configured under <strong>User-Defined Attributes</strong> in the Toolbelt. Variant measures are configured under <strong>Time Variants</strong> on a base measure.</p>
+
     <h2>Before you start</h2>
     <ul>
       <li>You must have a model open in Model Builder with at least one fact table added to the canvas.</li>

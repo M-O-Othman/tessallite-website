@@ -74,4 +74,4 @@ If your security policy disallows write access from Tessallite, click **Show DDL
 
 ---
 
-← [Configure Time Variants](configure-time-variants.md) | [Home](../index.md) | [Set a Query Target →](set-a-query-target.md)
+← [Configure Time Variants](configure-time-variants.md) | [Home](../index.md) | [Calculated Measures →](calculated-measures.md)

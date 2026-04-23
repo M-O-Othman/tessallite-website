@@ -156,4 +156,4 @@ The **Advanced** tab (edit mode only) is read-only metadata: physical table name
 
 ---
 
-← [Configure Aggregates](configure-aggregates.md) | [Home](../index.md) | [Run a Refresh →](run-a-refresh.md)
+← [Configure Aggregates](configure-aggregates.md) | [Home](../index.md) | [Configure Row Security →](configure-row-security.md)

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live vs Aggregate — Tessallite Help</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/help.css">
+</head>
+<body>
+  <header class="site-header">
+    <a href="../index.html" class="logo">Tessallite Help</a>
+    <nav class="breadcrumb">
+      <a href="../index.html">Home</a> / <span>Querying</span> / <span>Live vs Aggregate</span>
+    </nav>
+  </header>
+
+  <main class="article">
+    <div class="article-meta">
+      <span class="audience-badge">Modeller</span>
+      <span class="updated">Updated 2026-04-23</span>
+    </div>
+
+    <h1>Live vs Aggregate</h1>
+
+    <h2>What this covers</h2>
+    <p>Every query you execute from the Query Panel or the Measure Query Panel takes one of three paths. This page explains what the paths are, how the Route badge identifies the one that served your query, and when to use the Force Live toggle to bypass the matchers.</p>
+
+    <h2>The three routes</h2>
+    <ul>
+      <li><strong>aggregate</strong> — the query was served from a pre-computed aggregate. Fast; suitable for dashboards and summary views.</li>
+      <li><strong>pocket</strong> — the query was matched against a pocket table (a curator-registered derived table). Used when the shape of the query matches a known derived result.</li>
+      <li><strong>live (source)</strong> — the query ran directly against the source fact table. Used when no aggregate or pocket matches, or when Force Live is on.</li>
+    </ul>
+    <p>The route is chosen by the query router. The routing conditions are covered in <a href="../concepts/query-routing.html">Query Routing</a>.</p>
+
+    <h2>The Route badge</h2>
+    <p>Every executed query shows a Route badge above the result grid. The badge text names the route. Hover the badge to see the routing reason — the same explanation the <code>/explain</code> endpoint returns — so you do not need a second request to understand why a particular path was chosen.</p>
+    <p>Three chips sit next to the Route badge:</p>
+    <ul>
+      <li><strong>rows</strong> — the number of rows returned.</li>
+      <li><strong>ms</strong> — end-to-end execution time.</li>
+      <li><strong>bytes</strong> — bytes scanned, when the executor reports it.</li>
+    </ul>
+    <p>The badge, its tooltip, and the three chips appear on both the Query Panel and the Measure Query Panel so the information is consistent across the two surfaces.</p>
+
+    <h2>The Force Live toggle</h2>
+    <p>The <strong>Force Live</strong> toggle, next to the Execute button, forces the next query to skip aggregate and pocket matching and run directly against the source. Use it when you need to:</p>
+    <ul>
+      <li>Verify that the raw source agrees with a pre-computed aggregate.</li>
+      <li>Compare a recent source change against the aggregate that has not yet been refreshed.</li>
+      <li>Reproduce a reported discrepancy by running the same query both ways.</li>
+    </ul>
+    <p>Force Live is a per-query flag. It resets to off on panel reload; it never becomes the default for a model.</p>
+    <p><strong>Row security is always enforced.</strong> Force Live changes which table the query reads from, not which rows the caller is allowed to see. Every live query is still wrapped with the same row-security predicate that applies to aggregate and pocket routes.</p>
+
+    <h2>When to use which</h2>
+    <table>
+      <thead>
+        <tr><th>Goal</th><th>Use</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Build a dashboard that reads a known slice</td><td>let the router pick; aggregate is preferred</td></tr>
+        <tr><td>Investigate a single value that looks wrong</td><td>run the query with Force Live; compare the Route badge reason against the aggregate route</td></tr>
+        <tr><td>Confirm a pocket table is doing its job</td><td>run the query normally, check the badge reads <code>pocket</code></td></tr>
+        <tr><td>Test behaviour of a query before aggregates exist</td><td>Force Live; the miss will be logged and the Optimizer may propose an aggregate</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Related</h2>
+    <ul>
+      <li><a href="../concepts/query-routing.html">Query Routing</a></li>
+      <li><a href="../modelling/measure-query-panel.html">Measure Query Panel</a></li>
+      <li><a href="../modelling/drill-through.html">Drill-through</a></li>
+    </ul>
+  </main>
+
+  <nav class="page-nav">
+    <a href="../modelling/measure-query-panel.html" class="page-nav-btn prev">← Measure Query Panel</a>
+    <a href="../index.html" class="page-nav-btn home">Home</a>
+    <a href="../modelling/drill-through.html" class="page-nav-btn next">Drill-through →</a>
+  </nav>
+
+  <footer class="site-footer">
+    <p>Tessallite Help — <a href="../index.html">Back to contents</a></p>
+  </footer>
+</body>
+</html>

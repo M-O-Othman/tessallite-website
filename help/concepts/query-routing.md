@@ -2,7 +2,7 @@
 title: "Query Routing"
 audience: modeller
 area: concepts
-updated: 2026-04-17
+updated: 2026-04-23
 ---
 
 ## What this covers
@@ -59,6 +59,16 @@ The grain of a query is the finest level of detail it requests. A query asking f
 | All requested measures present in aggregate | Yes |
 | All filter columns are part of the aggregate grain | Yes |
 | Exact grain match | Only for non-additive measures (COUNT DISTINCT) |
+
+---
+
+## Route badge and force-live toggle
+
+The Query panel shows a badge on every executed query so you can see which path served it. The badge reads `aggregate`, `pocket`, or `live (source)`. Hovering the badge reveals the routing reason — the same text the `/explain` endpoint returns — so you do not need a second round-trip to understand why a query took its path.
+
+The **Force Live** toggle, sitting next to the Execute button, forces the next query to bypass the aggregate and pocket matchers and run directly against the source. Use it when you need to verify raw-source behaviour or compare pre-computed results against the underlying data. Row security is still applied — the force-live switch does not grant access to rows the principal would otherwise be filtered away from.
+
+Force Live is a per-query flag. It resets to off on panel reload and never becomes the default for a model.
 
 ---
 

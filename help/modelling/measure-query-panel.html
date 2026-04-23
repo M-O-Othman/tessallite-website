@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Measure Query Panel — Tessallite Help</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/help.css">
+</head>
+<body>
+  <header class="site-header">
+    <a href="../index.html" class="logo">Tessallite Help</a>
+    <nav class="breadcrumb">
+      <a href="../index.html">Home</a> / <span>Modelling</span> / <span>Measure Query Panel</span>
+    </nav>
+  </header>
+
+  <main class="article">
+    <div class="article-meta">
+      <span class="audience-badge">Modeller</span>
+      <span class="updated">Updated 2026-04-23</span>
+    </div>
+
+    <h1>Measure Query Panel</h1>
+
+    <h2>What this covers</h2>
+    <p>The Measure Query Panel is a minimal in-app pivot surface for sanity-checking a measure against one or two dimensions without leaving Tessallite. It is not a full BI canvas — it is a one-measure, one-row-dimension, one-column-dimension grid. Cells are clickable and open the <a href="drill-through.html">drill-through</a> drawer.</p>
+    <p>Use it to confirm that a newly defined measure aggregates correctly before exposing it to a BI tool.</p>
+
+    <h2>Before you start</h2>
+    <ul>
+      <li>The model must have at least one deployed measure and, typically, at least one dimension.</li>
+      <li>Calculated measures render in the picker but their cells cannot be drilled in v1.</li>
+    </ul>
+
+    <h2>Steps</h2>
+    <ol>
+      <li>Open a model in Model Builder and click the <strong>Measure Query</strong> icon in the Toolbelt.</li>
+      <li>Pick a <strong>Measure</strong>.</li>
+      <li>Optionally pick a <strong>Row dimension</strong> and a <strong>Column dimension</strong>. Either may be left as <code>(none)</code>.</li>
+      <li>Click <strong>Run</strong>. Tessallite synthesises the SQL, sends it through the Query Router, and renders the result as a pivot grid.</li>
+      <li>Click any cell to open the drill-through drawer with the fact rows that contributed to that cell.</li>
+    </ol>
+
+    <h2>Scope and limitations</h2>
+    <table>
+      <thead><tr><th>Feature</th><th>v1</th><th>Future</th></tr></thead>
+      <tbody>
+        <tr><td>Single measure per view</td><td>Yes</td><td>Multi-measure layout deferred to the Phase 6 canvas.</td></tr>
+        <tr><td>One row dimension, one column dimension</td><td>Yes</td><td>Multi-dimension nesting is out of scope.</td></tr>
+        <tr><td>Global filters</td><td>No</td><td>Use the Query panel for ad-hoc WHERE clauses.</td></tr>
+        <tr><td>Subtotals and totals</td><td>No</td><td>Deferred.</td></tr>
+        <tr><td>CSV export</td><td>No</td><td>Separate concern.</td></tr>
+        <tr><td>Saved views</td><td>No</td><td>Deferred.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="related">
+      <h2>Related</h2>
+      <ul>
+        <li><a href="drill-through.html">Drill-through</a></li>
+        <li><a href="calculated-measures.html">Calculated measures</a></li>
+      </ul>
+    </div>
+  </main>
+
+  <nav class="page-nav">
+    <a href="calculated-measures.html" class="page-nav-btn prev">← Calculated Measures</a>
+    <a href="../index.html" class="page-nav-btn home">Home</a>
+    <a href="../querying/live-vs-aggregate.html" class="page-nav-btn next">Live vs Aggregate →</a>
+  </nav>
+
+  <footer class="site-footer">
+    <p>Tessallite Help — <a href="../index.html">Back to contents</a></p>
+  </footer>
+</body>
+</html>

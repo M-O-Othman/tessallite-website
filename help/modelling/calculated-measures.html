@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculated Measures — Tessallite Help</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/help.css">
+</head>
+<body>
+  <header class="site-header">
+    <a href="../index.html" class="logo">Tessallite Help</a>
+    <nav class="breadcrumb">
+      <a href="../index.html">Home</a> / <span>Modelling</span> / <span>Calculated Measures</span>
+    </nav>
+  </header>
+
+  <main class="article">
+    <div class="article-meta">
+      <span class="audience-badge">Modeller</span>
+      <span class="updated">Updated 2026-04-23</span>
+    </div>
+
+    <h1>Calculated Measures</h1>
+
+    <h2>What this covers</h2>
+    <p>A calculated measure is a measure whose value is an expression over other measures rather than an aggregation of a column. Use calculated measures to combine existing measures into ratios, margins, growth percentages, and other derived numerics without writing SQL in every BI tool.</p>
+    <p>This page covers the expression syntax, the aggregation-mode choice, validation rules, and what happens when a referenced measure is deleted or renamed.</p>
+
+    <h2>Before you start</h2>
+    <ul>
+      <li>At least one standard measure must exist in the model. Calculated measures reference other measures by name.</li>
+      <li>Decide whether the expression should be evaluated once at aggregation time (expression-as-written) or row-by-row and then aggregated (per-row-then-aggregate). The two can produce different values and are not interchangeable.</li>
+    </ul>
+
+    <h2>Expression syntax</h2>
+    <p>Calculated-measure expressions are a small DSL, not SQL. Supported constructs:</p>
+    <table>
+      <thead><tr><th>Construct</th><th>Example</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Reference another measure</td><td><code>measure("sales")</code></td><td>Use the measure's <code>name</code>, not <code>display_name</code>.</td></tr>
+        <tr><td>Safe division</td><td><code>safe_div(measure("margin"), measure("sales"))</code></td><td>Returns <code>NULL</code> when the denominator is zero.</td></tr>
+        <tr><td>Safe ratio</td><td><code>safe_ratio(measure("a"), measure("b"))</code></td><td>Alias for <code>safe_div</code>.</td></tr>
+        <tr><td>Arithmetic</td><td><code>measure("a") + measure("b")</code>, <code>measure("a") * 1.1</code></td><td>Operators: <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, unary minus, parentheses.</td></tr>
+        <tr><td>Numeric literals</td><td><code>0.5</code>, <code>100</code>, <code>1e-3</code></td><td>Only numeric literals; no string or date literals.</td></tr>
+      </tbody>
+    </table>
+    <p>Only measures may be referenced with <code>measure("…")</code>. Columns, dimensions, and UDAs are not referenced directly — wrap them in a plain measure first.</p>
+
+    <h2>Aggregation mode</h2>
+    <p>Every calculated measure has a <code>calc_agg_mode</code>. It determines when the expression is evaluated relative to the <code>GROUP BY</code>:</p>
+    <table>
+      <thead><tr><th>Mode</th><th>Meaning</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td><code>expression_as_written</code></td><td>Evaluate the expression once, using the aggregated values of the referenced measures.</td><td><code>safe_div(SUM(margin), SUM(sales))</code> — overall margin percentage.</td></tr>
+        <tr><td><code>per_row_then_aggregate</code></td><td>Evaluate the expression for every input row, then aggregate with the default aggregation.</td><td><code>SUM(margin / sales)</code> — sum of per-row margin ratios.</td></tr>
+      </tbody>
+    </table>
+    <p>The two modes usually produce different numbers. Pick the one that matches the business question; the mode is stored on the measure so the rewriter always uses the same evaluation strategy.</p>
+
+    <h2>Validation rules</h2>
+    <ul>
+      <li>The expression is parsed when you save the measure. Unknown function names, unknown referenced measures, and syntax errors are reported inline.</li>
+      <li>A calculated measure may reference other calculated measures. The validator detects cycles (<code>A → B → A</code>) and rejects them at save time.</li>
+      <li>Deleting or renaming a referenced base measure marks every calculated measure that used it as <code>invalid</code>. Invalid measures are hidden from the catalogue; fix the reference and the measure re-enables automatically.</li>
+      <li>A calculated measure does not have a single <code>source_column_id</code>, so <a href="drill-through.html">drill-through</a> is disabled on calculated measures in v1.</li>
+    </ul>
+
+    <h2>Steps</h2>
+    <ol>
+      <li>Open a model in Model Builder and click <strong>Measures</strong> in the Toolbelt.</li>
+      <li>Click <strong>Add Measure</strong> and set <strong>Measure type</strong> to <strong>Calculated</strong>.</li>
+      <li>Enter a <strong>Name</strong> and <strong>Display name</strong>.</li>
+      <li>Write the expression in the <strong>Expression</strong> field. The form validates as you type; referenced measures are shown as chips below the editor.</li>
+      <li>Choose a <strong>Calc aggregation mode</strong>.</li>
+      <li>Optionally set a <strong>Format</strong> (for example <code>percent_2dp</code> for a ratio).</li>
+      <li>Click <strong>Save</strong>.</li>
+    </ol>
+
+    <div class="related">
+      <h2>Related</h2>
+      <ul>
+        <li><a href="define-measures.html">Define Measures</a></li>
+        <li><a href="measure-query-panel.html">Measure Query Panel</a></li>
+        <li><a href="drill-through.html">Drill-through</a></li>
+      </ul>
+    </div>
+  </main>
+
+  <nav class="page-nav">
+    <a href="configure-calendar-table.html" class="page-nav-btn prev">← Configure Calendar Table</a>
+    <a href="../index.html" class="page-nav-btn home">Home</a>
+    <a href="measure-query-panel.html" class="page-nav-btn next">Measure Query Panel →</a>
+  </nav>
+
+  <footer class="site-footer">
+    <p>Tessallite Help — <a href="../index.html">Back to contents</a></p>
+  </footer>
+</body>
+</html>

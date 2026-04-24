@@ -63,6 +63,7 @@ Deploys and operates the Tessallite platform. Start with [Install locally](getti
 - [Configure time variants](modelling/configure-time-variants.md)
 - [Configure calendar table](modelling/configure-calendar-table.md)
 - [Calculated measures](modelling/calculated-measures.md)
+- [Model canvas tour](modelling/model-canvas-tour.md)
 - [Measure query panel](modelling/measure-query-panel.md)
 - [Live vs aggregate (Route badge, Force Live)](querying/live-vs-aggregate.md)
 - [Drill-through](modelling/drill-through.md)

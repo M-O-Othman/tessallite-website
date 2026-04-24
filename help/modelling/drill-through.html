@@ -19,40 +19,57 @@
   <main class="article">
     <div class="article-meta">
       <span class="audience-badge">Modeller</span>
-      <span class="updated">Updated 2026-04-23</span>
+      <span class="updated">Updated 2026-04-24</span>
     </div>
 
     <h1>Drill-through</h1>
 
-    <h2>What this covers</h2>
-    <p>Drill-through returns the fact-table rows that contributed to a specific aggregated value. Tessallite exposes drill-through as a per-measure REST endpoint and as the cell-click action of the <a href="measure-query-panel.html">Measure Query Panel</a>.</p>
+    <h2>Why drill-through matters</h2>
+    <p>Every number on every dashboard is a question waiting to be asked. "Revenue for EMEA in Q2 is €4.8M — great, but which orders made up that number?" Without drill-through, answering that question is an IT ticket, a SQL session, and a three-day wait. With drill-through, it's one click.</p>
+    <p>Drill-through in Tessallite is the bridge from a single aggregated cell to the raw fact-table rows behind it. It answers three questions a business reader always has and should not need to re-ask:</p>
+    <ol>
+      <li><strong>Which rows actually contributed to this number?</strong> (The auditability question.)</li>
+      <li><strong>Are any of those rows wrong or surprising?</strong> (The trust question.)</li>
+      <li><strong>Can I export just the rows behind this cell?</strong> (The "build the follow-up deck" question.)</li>
+    </ol>
+    <p>This page explains how drill-through is configured per measure, what exactly comes back when you click a cell, how pagination works so you never freeze the browser on a 10-million-row export, the decomposed drawer used for calculated measures, and the current limits the modeller needs to know.</p>
 
-    <h2>How drill-through works</h2>
-    <p>For every standard measure, Tessallite maintains a <code>drill_through_set</code> — a configuration object that records:</p>
+    <h2>How drill-through is configured</h2>
+    <p>Drill-through is <strong>not a separate feature you enable</strong>. Every standard measure gets a <strong>drill-through set</strong> automatically the moment it is saved. The set is a tiny configuration object attached to the measure that records four things:</p>
+    <table>
+      <thead><tr><th>Field</th><th>What it controls</th><th>Default</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Source fact table</strong></td><td>The fact table the measure aggregates — Tessallite derives this from the measure's source column or UDA.</td><td>Auto-detected; read-only on the form.</td></tr>
+        <tr><td><strong>Detail columns</strong></td><td>Which columns of the fact table are returned when drilling.</td><td>Every column of the fact table.</td></tr>
+        <tr><td><strong>Joined dimension ids</strong></td><td>Reserved for a future phase — joins human-readable dimension text into the drilled rows.</td><td>Empty (reserved).</td></tr>
+        <tr><td><strong>Row-limit override</strong></td><td>Caps the page size at a custom value; otherwise the global default applies.</td><td>Unset (default 1 000, cap 10 000).</td></tr>
+      </tbody>
+    </table>
+    <p>The reason configuration exists — even though the default "every column" works out of the box — is that fact tables often carry columns you do not want every drill-through consumer to see: internal IDs, PII, audit timestamps that confuse rather than help. Restricting the detail column set narrows what a business reader sees without changing the underlying query.</p>
+
+    <figure>
+      <img src="../assets/screencaps/drill-through-config-drawer.png" alt="The Drill-through configuration sub-drawer, showing the detail-columns multi-select and row-limit override.">
+      <figcaption>Figure 1 — Drill-through configuration on a measure. Leave it at default for "every column". Tighten the detail-columns list when the fact has PII or noise columns. Full description: <a href="../assets/screencaps/drill-through-config-drawer.txt">drill-through-config-drawer.txt</a>.</figcaption>
+    </figure>
+
+    <h2>What comes back when you click a cell</h2>
+    <p>A drill-through call returns a structured response the frontend renders as a table:</p>
     <ul>
-      <li>The <strong>source fact table</strong> the measure aggregates (derived from the measure's source column or UDA).</li>
-      <li>The <strong>detail columns</strong> returned when drilling. If unset, every column of the fact table is returned.</li>
-      <li>Optional <strong>joined dimension ids</strong> (reserved).</li>
-      <li>An optional <strong>row-limit override</strong>.</li>
+      <li><strong><code>columns</code></strong> — the ordered list of column names and their data types. The frontend uses the type to right-align numerics and parse dates.</li>
+      <li><strong><code>rows</code></strong> — each row is an array of values aligned with <code>columns</code>. Values come back typed (numbers as numbers, not strings) so the browser does not re-parse them.</li>
+      <li><strong><code>page</code></strong> — three opaque pagination fields: <code>cursor</code> (where the current page starts), <code>next_cursor</code> (what to send for the next page), <code>has_more</code> (is there another page).</li>
+      <li><strong><code>fact_table</code></strong> — the physical name of the fact table rows came from. This is surfaced for transparency — there is no magic middleware reassembling rows from three sources.</li>
     </ul>
-    <p>A set is created automatically when a measure is created; you do not need to configure it unless you want to restrict which columns are returned.</p>
+    <p>Rows are ordered by the first column in the result, always. This is not cosmetic: stable ordering is what makes cursor-based pagination safe. If the ordering drifted between calls, page two could repeat or skip rows from page one.</p>
+    <p>Literal filter values are <strong>never</strong> concatenated into SQL. Every value is bound as a parameter, which means the endpoint is immune to SQL injection even on a fact table with a column named <code>"; DROP TABLE orders; --</code>.</p>
 
-    <p>Drill-through is disabled on:</p>
-    <ul>
-      <li><strong>Calculated measures</strong> — they have no single source column.</li>
-      <li><strong>Composite or multi-fact measures</strong> — v1 requires exactly one source column per measure.</li>
-    </ul>
+    <figure>
+      <img src="../assets/screencaps/drill-through-drawer.png" alt="The Drill-through drawer showing 25 rows of order-line detail behind a single cell, with pagination, scanned-row count, and a Route badge.">
+      <figcaption>Figure 2 — A drill-through result in the in-app drawer. Rows are typed, the Route badge explains which engine served them, and pagination lets the analyst walk a result set without freezing the browser. Full description: <a href="../assets/screencaps/drill-through-drawer.txt">drill-through-drawer.txt</a>.</figcaption>
+    </figure>
 
-    <h2>What you get back</h2>
-    <ul>
-      <li>A <code>columns</code> array — the column names and data types in the result page.</li>
-      <li>A <code>rows</code> array — each row is an array of values aligned with <code>columns</code>.</li>
-      <li>A <code>page</code> object — <code>cursor</code>, <code>next_cursor</code>, and <code>has_more</code> for opaque offset-based pagination.</li>
-      <li>The <code>fact_table</code> physical name for transparency.</li>
-    </ul>
-    <p>Rows are ordered by the first column in the result for stable pagination. Literal filter values are never concatenated into SQL — they are bound positionally so the endpoint is safe against injection.</p>
-
-    <h2>Calling the endpoint</h2>
+    <h2>Calling the endpoint directly</h2>
+    <p>The in-app drawer is the common path, but drill-through is also a stable REST endpoint so a notebook, a Slack bot, or an MCP agent can call it without a UI.</p>
     <pre><code>POST /api/v1/measures/{measure_id}/drill-through
 {
   "filters": [
@@ -64,29 +81,89 @@
   "cursor": null,
   "limit": 500
 }</code></pre>
-    <p><code>filters</code> and <code>grouping_levels</code> are both translated into <code>WHERE</code> predicates. The distinction is semantic only — grouping levels carry cell-position constraints (the dimension values that identify the pivot cell); filters carry any additional global constraints.</p>
-    <p>Supported operators: <code>eq</code>, <code>neq</code>, <code>gt</code>, <code>gte</code>, <code>lt</code>, <code>lte</code>, <code>like</code>, <code>ilike</code>, <code>in</code>, <code>between</code>, <code>is_null</code>, <code>is_not_null</code>.</p>
+    <p><code>filters</code> and <code>grouping_levels</code> both become <code>WHERE</code> predicates. The distinction is semantic:</p>
+    <ul>
+      <li><strong><code>grouping_levels</code></strong> carries the coordinates of the cell you clicked — the dimension values that identify the pivot position. In a pivot with <code>region</code> on rows and <code>quarter</code> on columns, a click on the EMEA / Q2 cell posts <code>grouping_levels: [{region: "EMEA"}, {quarter: "2024-Q2"}]</code>.</li>
+      <li><strong><code>filters</code></strong> carries any additional global constraints the caller wants to impose on top — for example, a slicer that is set to "only completed orders".</li>
+    </ul>
+    <p>Keeping these separate in the payload (rather than collapsing both into one filter list) matters because the Query Router can validate grouping levels against the model's dimensions before executing — a drill with <code>grouping_levels: [{not_a_real_dimension: "x"}]</code> fails with a structured error instead of reaching the database.</p>
+    <p><strong>Supported operators</strong> for both: <code>eq</code>, <code>neq</code>, <code>gt</code>, <code>gte</code>, <code>lt</code>, <code>lte</code>, <code>like</code>, <code>ilike</code>, <code>in</code>, <code>between</code>, <code>is_null</code>, <code>is_not_null</code>.</p>
 
     <h2>Pagination</h2>
-    <p><code>cursor</code> and <code>next_cursor</code> are opaque strings. Pass the <code>next_cursor</code> from the previous response back as <code>cursor</code> on the next call. The server over-fetches by one row to detect <code>has_more</code>; <code>next_cursor</code> is <code>null</code> when the result set is exhausted.</p>
+    <p>Drill-through uses opaque cursor pagination, not offset pagination. This is a deliberate choice.</p>
+    <p>Offset pagination (<code>OFFSET 10000 LIMIT 1000</code>) scans every skipped row on every request — the tenth page scans ten pages of rows before returning one. Cursor pagination uses the last row of the previous page as the <code>WHERE</code> anchor for the next page, so every page costs the same regardless of how deep the analyst has walked.</p>
+    <p>Use it like this:</p>
+    <ol>
+      <li>First call: <code>cursor: null, limit: 500</code>. The response comes back with <code>next_cursor: "&lt;opaque-string&gt;"</code> and <code>has_more: true</code>.</li>
+      <li>Second call: pass the <code>next_cursor</code> from the previous response back as <code>cursor</code>.</li>
+      <li>Keep going until the response returns <code>next_cursor: null</code> and <code>has_more: false</code>.</li>
+    </ol>
+    <p>The cursor is opaque by design. Do not try to parse it — its shape is implementation detail and will change when the underlying ordering strategy changes.</p>
+    <p>The per-page limit is clamped at 10 000 rows. The default is 1 000. If you need more than that in one shot, consider whether you really need every row in the browser — drill-through is for investigation, not bulk export. For bulk export, see the CSV/JSON export buttons on the Measure Query Panel grid.</p>
+
+    <h2>Drill-through on calculated measures</h2>
+    <p>Calculated measures have no single source column, so a straightforward drill-through query would not know which fact table to scan. Since Phase 6 (2026-04-24), clicking a calculated-measure cell opens a <strong>decomposed drill drawer</strong> that handles this by running one drill-through per referenced base measure and stacking the mini-panels.</p>
+    <p>The drawer shows:</p>
+    <ol>
+      <li>A read-only <strong>calculated-value card</strong> at the top with the cell's value and the raw expression, so you can always see what you are drilling into.</li>
+      <li>One <strong>mini drill-panel per referenced base measure</strong>. Each panel is a self-contained drill-through surface with its own 50-row pagination — so you can walk the numerator rows and the denominator rows independently without one disturbing the other.</li>
+    </ol>
+    <p>This trades "one table of rows" for "one table per base measure". In exchange, analysts can answer the follow-up question that otherwise requires running two separate queries: "what are the rows behind the numerator, and what are the rows behind the denominator, for exactly this cell?"</p>
+
+    <figure>
+      <img src="../assets/screencaps/drill-through-calc-decomposed.png" alt="The decomposed drill drawer for a calculated measure, showing the calculated value on top and two stacked mini drill-panels — one per referenced base measure.">
+      <figcaption>Figure 3 — A calculated measure's decomposed drill drawer. The numerator and denominator panels paginate independently. Full description: <a href="../assets/screencaps/drill-through-calc-decomposed.txt">drill-through-calc-decomposed.txt</a>.</figcaption>
+    </figure>
+
+    <h2>When drill-through is not available</h2>
+    <p>Drill-through is deliberately <strong>not</strong> offered for:</p>
+    <ul>
+      <li><strong>Composite or multi-fact measures</strong> — a v1 simplification. A measure that aggregates across two joined fact tables has no single "source fact" to drill into; the composite drill-through case will be specified in a future phase.</li>
+      <li><strong>Measures on source systems not yet supported for drill-through</strong> — PostgreSQL is supported in v1. BigQuery and Spark drill-through are reserved for a later connector pass. The measure will still return aggregated values normally; only drill-through is off.</li>
+    </ul>
+    <p>When drill-through is off, the cell is still clickable in the Measure Query Panel but the drawer opens with a structured error. The error payload includes a stable <code>error_code</code> (<code>DrillThroughUnsupportedComposite</code>, <code>DrillThroughConnectorUnsupported</code>, etc.) so an integration can branch on code rather than parsing the message string.</p>
+
+    <h2>Worked example — trace a suspicious revenue number</h2>
+    <p><strong>Context.</strong> A dashboard shows EMEA Q2 revenue at €4.8M. Finance thinks it should be closer to €5.2M. The analyst wants to find the missing ~€400K without waiting for IT.</p>
+    <p><strong>Steps.</strong></p>
+    <ol>
+      <li>Open the <a href="measure-query-panel.html">Measure Query Panel</a>. Pick <code>Revenue</code> as the measure, <code>region</code> on rows, <code>quarter</code> on columns. Click <strong>Run</strong>.</li>
+      <li>Click the cell at row <code>EMEA</code>, column <code>2024-Q2</code>. The drill-through drawer opens with the 312 order lines that contributed.</li>
+      <li>Click the Route badge tooltip. It says <code>aggregate · rev_by_region_quarter</code>. So the dashboard reads the aggregate, and the drill-through reads from the source — if they disagree, one of the two is stale.</li>
+      <li>Sort the drawer by <code>order_date</code> descending. The most recent row is 2024-03-31. Orders from the final three days of Q2 (2024-06-28, 29, 30) are missing.</li>
+      <li>Run the same query with <strong>Force Live</strong> on (see <a href="../querying/live-vs-aggregate.html">Live vs Aggregate</a>). The number reads €5.2M — the aggregate is behind. Now the conversation is "refresh the aggregate" rather than "investigate a data bug".</li>
+    </ol>
+    <p>Drill-through did not fix the problem. It made the problem visible in under a minute.</p>
 
     <h2>v1 limitations</h2>
     <table>
-      <thead><tr><th>Limitation</th><th>Notes</th></tr></thead>
+      <thead><tr><th>Limitation</th><th>Impact</th><th>Workaround</th></tr></thead>
       <tbody>
-        <tr><td>PostgreSQL sources only</td><td>BigQuery and Spark drill-through is reserved for a future phase.</td></tr>
-        <tr><td>No multi-fact joins</td><td>The drilled rows come from a single source fact table.</td></tr>
-        <tr><td>No dimension joins in the result (v1)</td><td>Dimension values are returned only if the fact table stores them directly.</td></tr>
-        <tr><td>Per-page limit clamped to 10 000 rows</td><td>Default page size is 1 000.</td></tr>
+        <tr><td>PostgreSQL sources only</td><td>BigQuery / Spark cells do not drill yet</td><td>Query the source directly for those connectors; v1 still aggregates correctly</td></tr>
+        <tr><td>No multi-fact joins in drill</td><td>The drilled rows come from a single source fact</td><td>Drill each measure separately for cross-fact investigations</td></tr>
+        <tr><td>No dimension joins in drilled rows</td><td>The fact table must already store the dimension value as a column to see it</td><td>Add the dimension column to the fact via ETL, or query the dimension table separately</td></tr>
+        <tr><td>Per-page limit ≤ 10 000</td><td>Very large drills are paginated, not one-shot</td><td>Use the page-aware API, or export the underlying pivot via CSV</td></tr>
       </tbody>
     </table>
-    <p>Errors return a stable <code>error_code</code> in the response body — for example <code>DrillThroughUnsupportedCalculated</code>, <code>DrillThroughUnsupportedComposite</code>, <code>DrillThroughUnknownColumn</code>, or <code>DrillThroughConnectorUnsupported</code>. Clients should branch on the code, not the human-readable message.</p>
+    <p>Errors carry stable codes — <code>DrillThroughUnsupportedCalculated</code> (now obsolete in the UI since Phase 6 uses the decomposed drawer, still returned by the raw API), <code>DrillThroughUnsupportedComposite</code>, <code>DrillThroughUnknownColumn</code>, <code>DrillThroughConnectorUnsupported</code>. Integrations should branch on the code, not the human-readable message.</p>
+
+    <h2>Troubleshooting</h2>
+    <table>
+      <thead><tr><th>Symptom</th><th>Likely cause</th><th>Fix</th></tr></thead>
+      <tbody>
+        <tr><td>Cell click returns "DrillThroughUnknownColumn"</td><td>A grouping-level column is not projected by the fact table's detail-columns set</td><td>Add the column to detail columns, or rebuild the calculated measure to reference a fact that does project it</td></tr>
+        <tr><td>Drill panel shows zero rows on a non-zero cell</td><td>The cell was served from an aggregate that rolls up a now-deleted source row; live re-run returns zero</td><td>Refresh the aggregate, or use Force Live to confirm source state</td></tr>
+        <tr><td>Drilling on a calculated measure shows only one mini-panel</td><td>The calculated expression references only one base measure</td><td>Expected — decomposition produces one panel per <em>distinct</em> referenced base measure</td></tr>
+        <tr><td>"DrillThroughConnectorUnsupported" for a BigQuery measure</td><td>v1 only supports PostgreSQL drill-through</td><td>Query the source directly for now; tracked for a later phase</td></tr>
+      </tbody>
+    </table>
 
     <div class="related">
       <h2>Related</h2>
       <ul>
         <li><a href="measure-query-panel.html">Measure Query Panel</a></li>
         <li><a href="calculated-measures.html">Calculated Measures</a></li>
+        <li><a href="../querying/live-vs-aggregate.html">Live vs Aggregate</a></li>
       </ul>
     </div>
   </main>

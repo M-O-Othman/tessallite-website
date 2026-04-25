@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Predictive Aggregates — Tessallite Help</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/help.css">
+</head>
+<body>
+  <header class="site-header">
+    <a href="../index.html" class="logo">Tessallite Help</a>
+    <nav class="breadcrumb">
+      <a href="../index.html">Home</a> / <span>Modelling</span> / <span>Predictive Aggregates</span>
+    </nav>
+  </header>
+
+  <main class="article">
+    <div class="article-meta">
+      <span class="audience-badge">Modeller</span>
+      <span class="updated">Updated 2026-04-25</span>
+    </div>
+
+    <h1>Predictive Aggregates</h1>
+
+    <h2>What this covers</h2>
+    <p>Predictive aggregates are aggregates Tessallite builds <em>before</em> any query is observed, using <strong>table statistics</strong> collected from the source — row counts, distinct counts, null ratios, top-N values, and join selectivity. This article explains how the predictor works, the four moving parts the modeller controls (storage budget, eviction policy, approval gate, feedback loop), and how predictive aggregates coexist with manual and demand-defined ones.</p>
+
+    <h2>When to use predictive aggregates</h2>
+    <p>A new model has no observed workload — no query log, no miss patterns, nothing for the AI optimiser to learn from. The first BI user pays the cold-path cost against the source. Predictive aggregates close that gap: Tessallite samples the source on deploy, scores plausible aggregates by expected speed-up per unit of storage, and builds the top-K within the model's budget.</p>
+    <p>Predictive aggregates are <strong>Postgres-only in v1</strong>. BigQuery and Spark equivalents are deferred to Phase 9.x; non-Postgres models keep relying on demand-defined aggregates.</p>
+
+    <h2>The four moving parts</h2>
+
+    <h3>1. Source statistics</h3>
+    <p>When you click <strong>Deploy</strong>, the optimiser samples each connected source and writes:</p>
+    <ul>
+      <li><code>source_statistics</code> — per-table row count and last refresh timestamps</li>
+      <li><code>source_column_statistics</code> — per-column distinct count, null ratio, top-N values</li>
+      <li><code>source_join_statistics</code> — per-declared-join selectivity (rows out / rows in)</li>
+    </ul>
+    <p>Probes are bounded — <code>INFORMATION_SCHEMA</code>, <code>pg_stats</code>, and small <code>TABLESAMPLE</code> queries on Postgres. No full table scans.</p>
+    <p>You can recompute on demand from the <strong>Connections</strong> page (per-source freshness chip + <strong>Recompute</strong> button) or set a per-source cadence (<code>daily</code> / <code>weekly</code> / <code>monthly</code>). The <strong>Statistics inspector</strong> tab in the OptimizerPanel shows the raw numbers.</p>
+
+    <h3>2. The scorer</h3>
+    <p><code>services/optimizer/src/advisor/predictive_scorer.py</code> is a pure function. Given the statistics + your model metadata (measures, hierarchies, declared joins), it ranks every plausible aggregate (measure × hierarchy level × optional top-N filter) by:</p>
+    <pre><code>expected_hit_rate × row_reduction
+─────────────────────────────────
+   build_cost × storage_cost</code></pre>
+    <p>Each candidate ships with a rationale string ("scores high because it cuts 100M rows to 5K and three measures share its grain"). No ML in v1 — composable with future ML later.</p>
+
+    <h3>3. Auto-build on deploy (queued, async)</h3>
+    <p>Top-K candidates within the storage budget enqueue as build tasks through the same CTAS path that manual and AI-optimiser aggregates use. The deploy click does not block on builds. Predicted aggregates are tagged <code>creation_reason='predictive'</code> so they remain visually distinct in every panel.</p>
+
+    <h3>4. The feedback loop</h3>
+    <p>A nightly sweep (<code>predictive_feedback_sweep</code>, runs at the configured <code>scheduler.predictive_feedback_hour</code>) walks every active tenant and does two things:</p>
+    <ul>
+      <li><strong>Validate.</strong> Predictive aggregates that hit at least <code>predictive.validation_min_hits</code> queries in the last <code>predictive.evaluation_window_days</code> are stamped <code>predictive_validated_at = now</code> and emit a <code>validated</code> lifecycle event. The <code>creation_reason</code> is intentionally <strong>not</strong> changed — a validated predictive aggregate keeps its <code>predictive</code> label.</li>
+      <li><strong>Retire.</strong> Predictive aggregates older than <code>predictive.unused_retire_days</code> that have <strong>never</strong> hit a query are flipped to <code>status='retired'</code> and emit a <code>retired_unused</code> event.</li>
+    </ul>
+
+    <h2>Storage budget</h2>
+    <p>Each model carries a dual-axis budget in <strong>Settings → Configuration</strong>:</p>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr><th>Setting</th><th>Default</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>predictive_storage_budget_bytes</code></td><td>null (unlimited)</td><td>Hard cap on total bytes occupied by predictive aggregates for this model.</td></tr>
+          <tr><td><code>predictive_storage_budget_count</code></td><td>null (unlimited)</td><td>Hard cap on the number of predictive aggregates.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Either or both may be null. The build orchestrator computes estimated bytes <em>before</em> DDL, not after, so the budget is enforced cleanly.</p>
+
+    <h2>Eviction policy</h2>
+    <p>When a build pushes the model over budget, the per-model <code>predictive_eviction_policy</code> decides which aggregate to drop:</p>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr><th>Policy</th><th>Behaviour</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>predicted_first</code></td><td>Drop the oldest unvalidated predictive aggregate first. Validated ones survive longer.</td></tr>
+          <tr><td><code>lru</code></td><td>Drop the predictive aggregate that has gone the longest without a hit.</td></tr>
+          <tr><td><code>validated_survives</code></td><td><strong>Recommended default for production.</strong> Never evict an aggregate that has been validated by the feedback loop.</td></tr>
+          <tr><td><code>never_evict</code></td><td>Refuse to build new predictive aggregates if the model is already at budget. The build worker fails the queued task with a clear reason.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Manual and AI-optimiser aggregates are never touched by predictive eviction.</p>
+
+    <h2>Approval gate (what-if preview)</h2>
+    <p><code>predictive_requires_approval</code> defaults <strong>true</strong> on a fresh model. After a deploy, the <strong>PreviewPanel</strong> lists every candidate the scorer proposed with rank, score, rationale, and estimated bytes. The modeller approves, rejects, or defers each one. Only approved candidates spend storage.</p>
+    <p>Set the flag false to auto-approve everything within budget — appropriate once you trust the predictor on your model shape.</p>
+
+    <h2>Settings reference</h2>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr><th>Key</th><th>Level</th><th>Default</th><th>Restart</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>scheduler.predictive_feedback_hour</code></td><td>system</td><td><code>6</code></td><td>yes</td></tr>
+          <tr><td><code>predictive.evaluation_window_days</code></td><td>system / tenant / model</td><td><code>7</code></td><td>no</td></tr>
+          <tr><td><code>predictive.validation_min_hits</code></td><td>system / tenant / model</td><td><code>3</code></td><td>no</td></tr>
+          <tr><td><code>predictive.unused_retire_days</code></td><td>system / tenant / model</td><td><code>14</code></td><td>no</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="related">
+      <h2>Related</h2>
+      <ul>
+        <li><a href="configure-aggregates.html">Configure Aggregates</a></li>
+        <li><a href="aggregate-lifecycle.html">Aggregate Lifecycle</a></li>
+        <li><a href="cold-start-latency.html">Cold-start Latency</a></li>
+        <li><a href="../concepts/aggregates.html">Aggregates (concept)</a></li>
+        <li><a href="use-the-ai-optimiser.html">Use the AI Optimiser</a></li>
+      </ul>
+    </div>
+  </main>
+
+  <nav class="page-nav">
+    <a href="configure-aggregates.html" class="page-nav-btn prev">← Configure Aggregates</a>
+    <a href="../index.html" class="page-nav-btn home">Home</a>
+    <a href="aggregate-lifecycle.html" class="page-nav-btn next">Aggregate Lifecycle →</a>
+  </nav>
+
+  <footer class="site-footer">
+    <p>Tessallite Help — <a href="../index.html">Back to contents</a></p>
+  </footer>
+</body>
+</html>

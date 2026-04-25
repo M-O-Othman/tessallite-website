@@ -73,4 +73,4 @@ If the Scheduler cannot connect to the query target when a refresh runs, the agg
 
 ---
 
-← [Drill-through](drill-through.md) | [Home](../index.md) | [Configure Aggregates →](configure-aggregates.md)
+← [Curate drill-through](curate-drill-through.md) | [Home](../index.md) | [Configure Aggregates →](configure-aggregates.md)

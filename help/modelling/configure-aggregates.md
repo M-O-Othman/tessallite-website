@@ -114,4 +114,4 @@ Manual aggregates are displayed in the Canvas with a solid border on their dashe
 
 ---
 
-← [Set a Query Target](set-a-query-target.md) | [Home](../index.md) | [Configure Pocket Tables →](configure-pocket-tables.md)
+← [Set a Query Target](set-a-query-target.md) | [Home](../index.md) | [Predictive Aggregates →](predictive-aggregates.md)

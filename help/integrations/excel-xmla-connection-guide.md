@@ -21,7 +21,7 @@ Detailed connection reference for Microsoft Excel connecting to Tessallite via t
 | Authentication | HTTP Basic | Tessallite username and password. |
 | Catalog | Workspace slug (e.g., `acme`) | Case-sensitive. Obtain from your Tenant Admin. |
 | Protocol | XMLA 1.1 | Standard Analysis Services protocol. |
-| Cube / Perspective | Model name | Selected from the catalog browser after connecting. |
+| Cube / Persona | Model name | Selected from the catalog browser after connecting. |
 
 ---
 

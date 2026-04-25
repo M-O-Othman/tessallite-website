@@ -25,12 +25,12 @@ Drill-through is **not a separate feature you enable**. Every standard measure g
 
 | Field | What it controls | Default |
 |---|---|---|
-| **Source fact table** | The fact table the measure aggregates — Tessallite derives this from the measure's source column or UDA. | Auto-detected; read-only on the form. |
-| **Detail columns** | Which columns of the fact table are returned when drilling. | Every column of the fact table. |
-| **Joined dimension ids** | Reserved for a future phase — joins human-readable dimension text into the drilled rows. | Empty (reserved). |
+| **Source fact table** | The fact table the measure aggregates. Modellers can override with a finer-grained sibling table; Tessallite asks them to pick a join path back to the original fact when more than one exists. | Auto-detected from the measure. |
+| **Detail columns** | Which columns of the source table are returned when drilling. | Every column of the source table. |
+| **Joined dimensions** | LEFT-JOINs human-readable dimension columns into the drilled rows (display-prefixed: `customer__name`, `product__category`). | Empty. |
 | **Row-limit override** | Caps the page size at a custom value; otherwise the global default applies. | Unset (default 1 000, cap 10 000). |
 
-The reason configuration exists — even though the default "every column" works out of the box — is that fact tables often carry columns you do not want every drill-through consumer to see: internal IDs, PII, audit timestamps that confuse rather than help. Restricting the detail column set narrows what a business reader sees without changing the underlying query.
+The reason configuration exists — even though the default "every column" works out of the box — is that fact tables often carry columns you do not want every drill-through consumer to see: internal IDs, PII, audit timestamps that confuse rather than help. The full curation workflow, with all four controls and worked business examples, is documented in [Curate drill-through](curate-drill-through.md).
 
 ![The Drill-through configuration sub-drawer, showing the detail-columns multi-select and row-limit override.](../assets/screencaps/drill-through-config-drawer.png)
 
@@ -126,7 +126,7 @@ This trades "one table of rows" for "one table per base measure". In exchange, a
 Drill-through is deliberately **not** offered for:
 
 - **Composite or multi-fact measures** — a v1 simplification. A measure that aggregates across two joined fact tables has no single "source fact" to drill into; the composite drill-through case will be specified in a future phase.
-- **Measures on source systems not yet supported for drill-through** — PostgreSQL is supported in v1. BigQuery and Spark drill-through are reserved for a later connector pass. The measure will still return aggregated values normally; only drill-through is off.
+- **Measures on source systems Tessallite does not yet bind** — PostgreSQL, BigQuery, and Spark / HiveServer2 are all supported as of Phase 8. Other connectors (Snowflake, Databricks SQL Warehouses, etc.) are reserved for later passes; the measure will still return aggregated values normally on those, only drill-through is off.
 
 When drill-through is off, the cell is still clickable in the Measure Query Panel but the drawer opens with a structured error. The error payload includes a stable `error_code` (`DrillThroughUnsupportedComposite`, `DrillThroughConnectorUnsupported`, etc.) so an integration can branch on code rather than parsing the message string.
 
@@ -152,12 +152,11 @@ Drill-through did not fix the problem. It made the problem visible in under a mi
 
 | Limitation | Impact | Workaround |
 |---|---|---|
-| PostgreSQL sources only | BigQuery / Spark cells do not drill yet | Query the source directly for those connectors; v1 still aggregates correctly |
-| No multi-fact joins in drill | The drilled rows come from a single source fact | Drill each measure separately for cross-fact investigations |
-| No dimension joins in drilled rows | The fact table must already store the dimension value as a column to see it | Add the dimension column to the fact via ETL, or query the dimension table separately |
+| Connector coverage | PostgreSQL, BigQuery, and Spark are supported. Other warehouses are not bound to drill-through yet. | For unsupported connectors, query the source directly; aggregation still works |
+| No multi-fact joins in drill | The drilled rows come from a single source fact (possibly with the override + join-path expansion documented in [Curate drill-through](curate-drill-through.md)) | Drill each measure separately for cross-fact investigations |
 | Per-page limit ≤ 10 000 | Very large drills are paginated, not one-shot | Use the page-aware API, or export the underlying pivot via CSV |
 
-Errors carry stable codes — `DrillThroughUnsupportedCalculated` (now obsolete in the UI since Phase 6 uses the decomposed drawer, still returned by the raw API), `DrillThroughUnsupportedComposite`, `DrillThroughUnknownColumn`, `DrillThroughConnectorUnsupported`. Integrations should branch on the code, not the human-readable message.
+Errors carry stable codes — `DrillThroughUnsupportedCalculated` (now obsolete in the UI since Phase 6 uses the decomposed drawer, still returned by the raw API), `DrillThroughUnsupportedComposite`, `DrillThroughUnknownColumn`, `DrillThroughConnectorUnsupported`, plus the curation-side codes documented in [Curate drill-through](curate-drill-through.md). Integrations should branch on the code, not the human-readable message.
 
 ---
 
@@ -168,16 +167,17 @@ Errors carry stable codes — `DrillThroughUnsupportedCalculated` (now obsolete 
 | Cell click returns "DrillThroughUnknownColumn" | A grouping-level column is not projected by the fact table's detail-columns set | Add the column to detail columns, or rebuild the calculated measure to reference a fact that does project it |
 | Drill panel shows zero rows on a non-zero cell | The cell was served from an aggregate that rolls up a now-deleted source row; live re-run returns zero | Refresh the aggregate, or use Force Live to confirm source state |
 | Drilling on a calculated measure shows only one mini-panel | The calculated expression references only one base measure | Expected — decomposition produces one panel per *distinct* referenced base measure |
-| "DrillThroughConnectorUnsupported" for a BigQuery measure | v1 only supports PostgreSQL drill-through | Query the source directly for now; tracked for a later phase |
+| "DrillThroughConnectorUnsupported" on a non-PG / BQ / Spark source | The connector is not bound to drill-through yet | Query the source directly for now; tracked for a later phase |
 
 ---
 
 ## Related
 
+- [Curate drill-through](curate-drill-through.md) — the modeller-side curation workflow
 - [Measure Query Panel](measure-query-panel.md)
 - [Calculated Measures](calculated-measures.md)
 - [Live vs Aggregate](../querying/live-vs-aggregate.md)
 
 ---
 
-← [Live vs Aggregate](../querying/live-vs-aggregate.md) | [Home](../index.md) | [Set a Query Target →](set-a-query-target.md)
+← [Live vs Aggregate](../querying/live-vs-aggregate.md) | [Home](../index.md) | [Curate drill-through →](curate-drill-through.md)

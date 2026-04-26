@@ -83,4 +83,4 @@ The slug is set when the System Admin creates the workspace. It cannot be modifi
 
 ---
 
-← [Connect Excel](../getting-started/connect-excel.md) | [Home](../index.md) | [Projects and Models →](projects-and-models.md)
+← [Demo tenant: acme-demo](../getting-started/acme-demo-tenant.md) | [Home](../index.md) | [Projects and Models →](projects-and-models.md)

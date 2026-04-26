@@ -43,7 +43,7 @@ To change any of these values, edit `.env` on the host and restart the affected 
 
 ## Per-key reference
 
-The complete catalog of every system-level key, its type, default, restart flag, and description is generated from the registry at `docs/configuration-reference.md`. Regenerate after any registry change with:
+The complete catalog of every system-level key, its type, default, restart flag, and description is generated from the registry at `docs/guides/guides_configuration-reference.md`. Regenerate after any registry change with:
 
 ```
 python tessallite/scripts/gen_config_reference.py

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dimension Aliases — Tessallite Help</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/help.css">
+</head>
+<body>
+  <header class="site-header">
+    <a href="../index.html" class="logo">Tessallite Help</a>
+    <nav class="breadcrumb">
+      <a href="../index.html">Home</a> / <span>Modelling</span> / <span>Dimension Aliases</span>
+    </nav>
+  </header>
+
+  <main class="article">
+    <div class="article-meta">
+      <span class="audience-badge">Modeller</span>
+      <span class="updated">Updated 2026-04-26</span>
+    </div>
+
+    <h1>Dimension Aliases</h1>
+
+    <h2>What this covers</h2>
+    <p>A <strong>dimension alias</strong> lets the same physical dimension table appear in a model under more than one role. The classic case: an order has both a <em>merchant city</em> and a <em>payment city</em>, but both columns join to the same <code>cities</code> table. With aliases you register the table twice — once as <code>merchant_city</code>, once as <code>payment_city</code> — and joins, dimensions, and queries can target each role independently. This article explains what an alias is, how to create and edit one, and how aliases interact with the calendar and with time-variant measures.</p>
+
+    <h2>Before you start</h2>
+    <ul>
+      <li>The source must already be added to the project. See <a href="add-a-data-source.html">Add a data source</a>.</li>
+      <li>The physical table you want to alias must be added to the model at least once. See <a href="add-tables-to-a-model.html">Add tables to a model</a>.</li>
+    </ul>
+
+    <h2>What an alias is</h2>
+    <p>Every <code>ModelTable</code> in a model carries an <code>alias</code> field — a short, lowercase identifier such as <code>merchant_city</code>. The alias is the natural key the rest of the model uses to refer to that table. Two <code>ModelTable</code> rows can share the same <code>physical_name</code> but each must have a distinct alias, and joins, dimensions, and the catalog all key off the alias rather than the physical name.</p>
+    <p>If you only ever use a dimension once, the alias is just the table's display identifier. The mechanism becomes load-bearing only when you need the same physical table in two or more roles.</p>
+
+    <h2>Create a second alias</h2>
+    <ol>
+      <li>Open the <strong>Sources</strong> panel in Model Builder.</li>
+      <li>Expand the source whose dimension you want to reuse.</li>
+      <li>On the dimension row (any non-fact table), click the <strong>Create alias</strong> icon (the clone icon next to the edit icon).</li>
+      <li>Enter a new <strong>Alias</strong> — lowercase, digits, underscores; must be unique within the model. The default <strong>Display name</strong> mirrors the alias and is what BI tools show; edit it if you want a friendlier label.</li>
+      <li>Click <strong>Create</strong>. A new <code>ModelTable</code> row is added pointing at the same physical table.</li>
+    </ol>
+    <p>Aliases are independent: each carries its own <strong>display name</strong>, <strong>description</strong>, and join configuration. The original table stays unchanged.</p>
+
+    <h2>Edit an existing alias</h2>
+    <p>Click the <strong>Edit</strong> icon on any non-fact table row in the Sources panel to open <strong>Edit table</strong>. The dialog exposes:</p>
+    <ul>
+      <li><strong>Alias</strong> — rename the alias. Downstream joins, dimensions, and measures keep working because they reference the row's id, not its alias string.</li>
+      <li><strong>Display name</strong> — the label shown to BI tools and in the Builder.</li>
+      <li><strong>Type</strong> — fact, dim_aggregate, or dim_detail.</li>
+    </ul>
+    <p>Only changed fields are written; leaving a field untouched skips that update.</p>
+
+    <h2>Joining each alias independently</h2>
+    <p>After creating a second alias, open the <strong>Joins</strong> panel. Each alias appears as its own node, picking up the alias label rather than the physical name. Add a join from the fact table to each alias, mapping the appropriate fact column — for example, <code>fact.merchant_city_id → merchant_city.city_id</code> and <code>fact.payment_city_id → payment_city.city_id</code>. Dimensions on each alias then group and filter independently in queries.</p>
+
+    <h2>How aliases appear in the catalog</h2>
+    <p>The published catalog namespaces dimension and column names by alias, so a query that asks for <code>merchant_city.name</code> resolves only on the merchant role and a query that asks for <code>payment_city.name</code> resolves only on the payment role. This applies to the Measure Query panel, the Pivot grid, the Excel/JDBC interfaces, and aggregates.</p>
+
+    <h2>Calendar tables are also aliases</h2>
+    <p>A calendar table is a <code>ModelTable</code> alias whose <code>calendar_table_id</code> is set. Auto-create or Bind on the Sources panel provisions both the calendar registration and a companion alias in one step. Multiple calendars per source are allowed — for instance, a fiscal calendar and a Gregorian calendar — and each lives as its own alias.</p>
+    <p>If a model has more than one calendar alias, each <strong>time-variant measure</strong> picks which one it uses. See the next section.</p>
+
+    <h2>Pinning a calendar on a time-variant measure</h2>
+    <ol>
+      <li>Open <strong>Measures</strong>, pick a base measure, and click <strong>Edit</strong>.</li>
+      <li>Scroll to <strong>Time variants</strong>. The section shows a <strong>Calendar alias</strong> picker listing every <code>ModelTable</code> in the model with a calendar binding.</li>
+      <li>Pick the alias the measure should use. Period-aware variants (<code>_ytd</code>, <code>_qtd</code>, <code>_mtd</code>, <code>_prior_year</code>, <code>_yoy_growth</code>, …) are required to have one — the picker is starred when any such variant is enabled.</li>
+      <li>Tick the variants you need and save. All variants of this measure inherit the same calendar alias from the base.</li>
+    </ol>
+    <p>If no alias has a calendar binding the panel shows the <em>"Period-aware time variants need a calendar alias"</em> hint instead of the picker; provision a calendar from the Sources panel first.</p>
+
+    <h2>Naming conventions</h2>
+    <ul>
+      <li>Use lowercase, digits, and underscores — same rules as snake_case identifiers. Avoid spaces and punctuation.</li>
+      <li>Prefer role-prefixed names: <code>merchant_city</code>, <code>payment_city</code>, <code>order_date</code>, <code>ship_date</code>. Do not embed the physical table name in the alias.</li>
+      <li>Calendar aliases are auto-sequenced: <code>calendar</code>, <code>calendar_2</code>, <code>calendar_fiscal</code>, etc. Override at create time if you want a domain-specific name.</li>
+      <li>The <strong>display name</strong> is the human label — feel free to title-case it (<code>Merchant City</code>); the alias stays in snake_case.</li>
+    </ul>
+
+    <h2>What happens when you delete an alias</h2>
+    <p>Deleting a <code>ModelTable</code> alias removes only that role from the model. The underlying physical table is never altered, and other aliases of the same physical table remain. Joins, dimensions, and measures attached to the deleted alias are removed with it — open Health to confirm there are no orphaned references before you publish.</p>
+
+    <h2>Troubleshooting</h2>
+    <ul>
+      <li><strong>"Alias must be unique"</strong> — pick a name that is not already used by another <code>ModelTable</code> in this model.</li>
+      <li><strong>Dim picker still shows one entry after creating an alias</strong> — refresh the model; the catalog rebuilds on the next save.</li>
+      <li><strong>Calendar picker is missing on a time-variant measure</strong> — no <code>ModelTable</code> in the model has a calendar binding. Open the Sources panel and click the calendar icon to provision one.</li>
+      <li><strong>Period-aware variant rejected on save</strong> — the chosen calendar alias is missing one of the period columns the variant requires (e.g. <code>quarter_no</code> for <code>_qtd</code>). Edit the calendar's column mapping or pick a different alias.</li>
+    </ul>
+
+    <div class="related">
+      <h2>Related</h2>
+      <ul>
+        <li><a href="define-dimensions.html">Define Dimensions</a></li>
+        <li><a href="define-joins.html">Define Joins</a></li>
+        <li><a href="define-measures.html">Define Measures</a></li>
+        <li><a href="configure-calendar-table.html">Configure Calendar Table</a></li>
+        <li><a href="configure-time-variants.html">Configure Time Variants</a></li>
+      </ul>
+    </div>
+  </main>
+
+  <nav class="page-nav">
+    <a href="define-dimensions.html" class="page-nav-btn prev">&larr; Define Dimensions</a>
+    <a href="../index.html" class="page-nav-btn home">Home</a>
+    <a href="define-measures.html" class="page-nav-btn next">Define Measures &rarr;</a>
+  </nav>
+
+  <footer class="site-footer">
+    <p>Tessallite Help — <a href="../index.html">Back to contents</a></p>
+  </footer>
+</body>
+</html>

@@ -19,7 +19,7 @@
   <main class="article">
     <div class="article-meta">
       <span class="audience-badge">Modeller</span>
-      <span class="updated">Updated 2026-04-22</span>
+      <span class="updated">Updated 2026-04-26</span>
     </div>
 
     <h1>Configure Calendar Table</h1>
@@ -30,7 +30,8 @@
     <h2>Before you start</h2>
     <ul>
       <li>The data source must be added to the project. See <a href="add-a-data-source.html">Add a data source</a>.</li>
-      <li>You need either: (a) write access on the source, in which case Tessallite can auto-create the calendar table; or (b) an existing calendar table on the source that follows the standard column shape below.</li>
+      <li>You need either: (a) write access on the source — opt in by setting <code>write_access: true</code> in the project connection's config, see <a href="#auto-create-requires-write-access">Auto-create requires <code>write_access</code></a> below — in which case Tessallite can run the DDL and auto-create the calendar; or (b) an existing calendar table on the source that follows the standard column shape below.</li>
+      <li>Auto-create with in-process execution is wired for <strong>PostgreSQL</strong> sources today. BigQuery and Spark sources still emit the DDL on Generate but can't run it for you yet — use <strong>Get script</strong> + <strong>Bind existing</strong> for those.</li>
     </ul>
 
     <h2>Standard column shape</h2>
@@ -51,11 +52,19 @@
     <h2>Steps — auto-create</h2>
     <ol>
       <li>Open the <strong>Sources</strong> panel in Model Builder.</li>
-      <li>Click the data source row, then <strong>Calendar</strong>.</li>
-      <li>Click <strong>Auto-create</strong>.</li>
+      <li>On the data source row, click the <strong>calendar icon</strong> (📅). The icon shows blue once a calendar is bound.</li>
+      <li>Switch to the <strong>Auto-create</strong> tab.</li>
+      <li>Set <strong>Table name</strong> (e.g. <code>calendar</code>). If you leave the name unqualified, Tessallite prefixes it with the connection's <code>schema</code> setting — <code>acme_demo_src.calendar</code> rather than <code>public.calendar</code>. To pin a different schema, type it explicitly: <code>my_schema.calendar</code>.</li>
       <li>Choose a <strong>start date</strong> and <strong>end date</strong> for the calendar range.</li>
-      <li>Click <strong>Generate</strong>. Tessallite emits the dialect-specific DDL (Postgres <code>generate_series</code>, BigQuery <code>GENERATE_DATE_ARRAY</code>, or Spark <code>sequence</code>/<code>explode</code>) and runs it against the source. The new table is registered with <code>autocreated = true</code> and bound automatically.</li>
+      <li>Click <strong>Generate</strong>. Tessallite emits the dialect-specific DDL (Postgres <code>generate_series</code>, BigQuery <code>GENERATE_DATE_ARRAY</code>, or Spark <code>sequence</code>/<code>explode</code>) and — for PostgreSQL — runs it against the source. The new table is registered with <code>autocreated = true</code> and bound automatically.</li>
     </ol>
+
+    <h3 id="auto-create-requires-write-access">Auto-create requires <code>write_access</code></h3>
+    <p>The Generate button only runs DDL when the project connection has <code>write_access: true</code> in its config. This is a deliberate opt-in so Tessallite can never write to a source the operator hasn't explicitly approved. If the flag is off, Generate returns the DDL in the error payload and asks you to use the script + bind path.</p>
+    <p>To flip the flag on a connection: edit it through <strong>Connections → Edit</strong> (when the UI control ships) or set it directly in the tenant DB:</p>
+    <pre><code>UPDATE "&lt;tenant-slug&gt;_meta".project_connections
+SET    config = config || '{"write_access": true}'::jsonb
+WHERE  display_name = '&lt;your source connection name&gt;';</code></pre>
 
     <h2>Steps — bind an existing table</h2>
     <ol>
@@ -70,7 +79,29 @@
     <p>Click <strong>Unbind</strong> in the Calendar panel. This removes the registration only — the physical table on the source is never dropped, even if Tessallite created it.</p>
 
     <h2>Script-only mode</h2>
-    <p>If your security policy disallows write access from Tessallite, click <strong>Show DDL</strong> instead of <strong>Auto-create</strong> or <strong>Generate</strong>. Tessallite emits the DDL as text, you run it manually on the source, then return and <strong>Bind existing</strong>.</p>
+    <p>If your security policy disallows write access from Tessallite, switch to the <strong>Get script</strong> tab, click <strong>Show DDL</strong>, copy the output, and run it on your source. Then come back, switch to <strong>Bind existing</strong>, and bind the table. Same outcome as auto-create, with you in control of the write.</p>
+
+    <h2>Using the calendar in the model</h2>
+    <p>Binding a calendar table doesn't change any measure on its own — it unlocks <strong>period-aware time variants</strong> on existing measures:</p>
+    <ol>
+      <li>Open <strong>Measures</strong>, pick the base measure (e.g. <code>revenue</code>), and click <strong>Edit</strong>.</li>
+      <li>Scroll to the <strong>Time variants</strong> section. Toggle the variants you want — the period-aware ones (<code>_ytd</code>, <code>_qtd</code>, <code>_mtd</code>, <code>_prior_year</code>, <code>_yoy_growth</code>) need a calendar bound to the source the measure ultimately reads. Pure-window variants (<code>_lag_n</code>, <code>_trailing_n</code>, <code>_moving_avg_n</code>) do not.</li>
+      <li>Save. Each enabled variant becomes its own measure (<code>revenue_ytd</code>, <code>revenue_prior_year</code>, …) so client tools can reference them directly.</li>
+    </ol>
+    <p>If a period-aware variant is greyed out or rejected on save, the binding is missing or one of the period columns the variant needs (e.g. <code>quarter_no</code> for <code>_qtd</code>) isn't mapped.</p>
+
+    <h2>Troubleshooting</h2>
+    <ul>
+      <li><strong>"Calendar operation failed"</strong> — the dialog used to swallow the server detail; recent builds surface the real reason inline. Common causes:
+        <ul>
+          <li><code>write_access</code> is off on the connection (auto-create only). Set the flag or use the script + bind path.</li>
+          <li>Source is BigQuery / Spark — auto-create executor isn't wired yet. Use Get script + Bind existing.</li>
+          <li>DDL ran but the source rejected it (permissions, schema doesn't exist, name collision). The error message shows the underlying SQL exception.</li>
+        </ul>
+      </li>
+      <li><strong>Generate succeeded but a time variant still doesn't show</strong> — check the variant uses a period column you actually have. <code>_yoy_growth</code> needs <code>year_no</code>; <code>_qtd</code> needs <code>quarter_no</code>; missing optional columns silently drop the variant from the catalog.</li>
+      <li><strong>Calendar already exists with a different shape</strong> — bind the existing table instead, then edit the column mapping inline (see Bind existing).</li>
+    </ul>
 
     <div class="related">
       <h2>Related</h2>

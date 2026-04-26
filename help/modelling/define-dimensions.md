@@ -93,4 +93,4 @@ If the source column is renamed or dropped after the dimension is defined, the d
 
 ---
 
-← [Define Joins](define-joins.md) | [Home](../index.md) | [Define Measures →](define-measures.md)
+← [Define Joins](define-joins.md) | [Home](../index.md) | [Dimension Aliases →](dimension-aliases.md)

@@ -107,4 +107,4 @@ Open the measure in the Drawer and click **Delete**. Tessallite removes the meas
 
 ---
 
-← [Define Dimensions](define-dimensions.md) | [Home](../index.md) | [Configure Time Variants →](configure-time-variants.md)
+← [Dimension Aliases](dimension-aliases.md) | [Home](../index.md) | [Configure Time Variants →](configure-time-variants.md)

@@ -40,6 +40,7 @@ Deploys and operates the Tessallite platform. Start with [Install locally](getti
 - [First-time setup](getting-started/first-time-setup.md)
 - [Connect a BI tool](getting-started/connect-a-bi-tool.md)
 - [Connect Excel](getting-started/connect-excel.md)
+- [Demo tenant: acme-demo](getting-started/acme-demo-tenant.md)
 
 ## Concepts
 
@@ -59,6 +60,7 @@ Deploys and operates the Tessallite platform. Start with [Install locally](getti
 - [Add tables to a model](modelling/add-tables-to-a-model.md)
 - [Define joins](modelling/define-joins.md)
 - [Define dimensions](modelling/define-dimensions.md)
+- [Dimension aliases](modelling/dimension-aliases.md)
 - [Define measures](modelling/define-measures.md)
 - [Configure time variants](modelling/configure-time-variants.md)
 - [Configure calendar table](modelling/configure-calendar-table.md)

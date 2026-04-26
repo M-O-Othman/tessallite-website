@@ -65,7 +65,7 @@ The Settings tab also exposes tenant-level defaults for resources that span ever
 | Aggregate target | `agg_target.default_schema`, `agg_target.default_dataset`, `agg_target.default_database` | Default schema (PostgreSQL), dataset (BigQuery), and database (Spark) where new aggregate tables are created when a target does not specify one. |
 | Spark Thrift | `spark.thrift_port`, `spark.thrift_database`, `spark.thrift_auth_mode` | Defaults applied when a Spark connection's stored credentials omit these fields. |
 
-These tenant-level rows can be further overridden at the project or model level — see [Project settings](project-settings.md) and [Model configuration](model-configuration.md). The full per-key catalog lives in `docs/configuration-reference.md`.
+These tenant-level rows can be further overridden at the project or model level — see [Project settings](project-settings.md) and [Model configuration](model-configuration.md). The full per-key catalog lives in `docs/guides/guides_configuration-reference.md`.
 
 ## Seed defaults button
 

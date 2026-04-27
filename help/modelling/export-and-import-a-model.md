@@ -77,4 +77,4 @@ If the source slug already exists in the target project, Tessallite auto-suffixe
 
 ---
 
-← [Deploy a Model](deploy-a-model.md) | [Home](../index.md) | [Home →](../index.md)
+← [Deploy a Model](deploy-a-model.md) | [Home](../index.md) | [Export and Import a Project →](export-and-import-a-project.md)

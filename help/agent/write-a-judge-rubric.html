@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Write a judge rubric — Tessallite Help</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/help.css">
+</head>
+<body>
+  <header class="site-header">
+    <a href="../index.html" class="logo">Tessallite Help</a>
+    <nav class="breadcrumb">
+      <a href="../index.html">Home</a> / <a href="#">Conversational Agent</a> / <span>Write a judge rubric</span>
+    </nav>
+  </header>
+  <main class="article">
+    <div class="article-meta">
+      <span class="audience-badge">Tenant Admin</span>
+      <span class="updated">Updated 2026-04-26</span>
+    </div>
+    <h1>Write a judge rubric</h1>
+
+    <h2>What this covers</h2>
+    <p>The judge is a second LLM that scores every answer the agent produces against a rubric. This article explains why the judge exists, how a rubric is shaped, how to write sections that the judge can act on consistently, and how to calibrate the rubric using the metrics the platform already records.</p>
+
+    <h2>Why a judge</h2>
+    <p>A grounded LLM still drifts. It can pick the wrong measure, misread a clarifying question as a refusal, or narrate a number with a confident phrasing that the data does not support. The judge runs after the answer has been formed and either signs it off (<em>pass</em>), flags a minor gap (<em>warn</em>), or blocks it (<em>fail</em>). Two products fall out: a real-time guardrail and a continuously updating quality signal visible on the dashboard.</p>
+
+    <h2>What a rubric is</h2>
+    <p>A rubric is a JSON document with a name and a list of <em>sections</em>. Each section is a focused criterion the judge applies to the answer. The agent service ships with a default rubric so projects work out-of-the-box; you author a tenant-specific rubric when the defaults do not match your domain.</p>
+    <p>Each section has three optional fields: a title (used as the metric key), a body paragraph the judge reads as guidance, and a list of pass/fail bullets. A good section names one concern.</p>
+    <p><img src="../assets/screencaps/agent-judge-rubric.png" alt="Judge sub-tab — rubric editor with the section list and the per-section body / bullets fields."></p>
+
+    <h2>What makes a section easy to judge</h2>
+    <p>LLMs evaluate answers more consistently when the criterion is framed as a small number of binary tests. Three patterns work well:</p>
+    <ul>
+      <li><strong>Must contain.</strong> "Every numeric answer that quotes revenue must include the currency."</li>
+      <li><strong>Must not contain.</strong> "Phrases like 'I think', 'this is probably' must not appear."</li>
+      <li><strong>Must justify.</strong> "Every aggregated number must be paired with the time window."</li>
+    </ul>
+    <p>Avoid sections that ask the judge to evaluate tone, novelty, or insight — they produce verdicts that drift across runs.</p>
+
+    <h2>How the judge maps a rubric to a verdict</h2>
+    <p>The judge LLM is told to read the answer plus the rubric and return one JSON object with a verdict (<code>pass</code>/<code>warn</code>/<code>fail</code>), a one-paragraph reasoning, and a per-section metrics map. The verdict aggregates across sections; the reasoning paragraph is what users see when <em>Judge block visibility</em> is set to transparent.</p>
+
+    <h2>Calibrating the rubric</h2>
+    <p>Calibration tightens sections until verdicts match what an admin would say if reviewing each answer by hand. Open <em>Project Agent → Metrics → Recent calibration</em>; for each row, check whether you would have agreed with the judge. If not, edit the rubric — tighten the body, add a bullet, or split an over-broad section. Re-run <em>Run eval</em> to catch regressions. Three rounds of calibration are usually enough to push pass-rate above 80 % on a well-modelled project.</p>
+
+    <h2>Choosing async vs sync mode</h2>
+    <p><em>Async</em> is the default. The user latency is unchanged; the verdict appears later in the trace drawer. Use this for internal tooling. <em>Sync</em> runs the judge before the answer is delivered — required for external surfaces or regulated domains, but it adds the judge call's wall time to user-visible latency. Pick the cheapest, fastest LLM you can stomach for the judge.</p>
+
+    <h2>Common pitfalls</h2>
+    <ul>
+      <li><strong>Sections that overlap.</strong> Each section should be one concern.</li>
+      <li><strong>Vague bullets.</strong> "The answer should be useful." is unjudgeable. Replace with binary tests.</li>
+      <li><strong>Long bodies, no bullets.</strong> The judge over-weights the closing sentence.</li>
+      <li><strong>Sync mode with a slow judge.</strong> User latency suffers.</li>
+      <li><strong>Skipping calibration.</strong> Reserve an admin half-hour each week to walk <em>Recent calibration</em>.</li>
+    </ul>
+
+    <div class="related">
+      <h2>Related</h2>
+      <ul>
+        <li><a href="configure-agent.html">Configure your project agent</a></li>
+        <li><a href="glossary-alias-map.html">Author the glossary alias map</a></li>
+        <li><a href="cross-model-recipes.html">Cross-model calculation recipes</a></li>
+      </ul>
+    </div>
+  </main>
+
+  <nav class="page-nav">
+    <a href="glossary-alias-map.html" class="page-nav-btn prev">← Author the glossary alias map</a>
+    <a href="../index.html" class="page-nav-btn home">Home</a>
+    <a href="cross-model-recipes.html" class="page-nav-btn next">Cross-model calculation recipes →</a>
+  </nav>
+
+  <footer class="site-footer">
+    <p>Tessallite Help — <a href="../index.html">Back to contents</a></p>
+  </footer>
+</body>
+</html>

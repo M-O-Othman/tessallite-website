@@ -86,6 +86,14 @@ Deploys and operates the Tessallite platform. Start with [Install locally](getti
 - [Save and version a model](modelling/save-and-version-a-model.md)
 - [Deploy a model](modelling/deploy-a-model.md)
 - [Export and import a model](modelling/export-and-import-a-model.md)
+- [Export and import a project](modelling/export-and-import-a-project.md)
+
+## Conversational Agent
+
+- [Configure your project agent](agent/configure-agent.md)
+- [Author the glossary alias map](agent/glossary-alias-map.md)
+- [Write a judge rubric](agent/write-a-judge-rubric.md)
+- [Cross-model calculation recipes](agent/cross-model-recipes.md)
 
 ## Admin
 

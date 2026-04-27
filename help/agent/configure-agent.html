@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configure your project agent — Tessallite Help</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/help.css">
+</head>
+<body>
+  <header class="site-header">
+    <a href="../index.html" class="logo">Tessallite Help</a>
+    <nav class="breadcrumb">
+      <a href="../index.html">Home</a> / <a href="#">Conversational Agent</a> / <span>Configure your project agent</span>
+    </nav>
+  </header>
+  <main class="article">
+    <div class="article-meta">
+      <span class="audience-badge">Tenant Admin</span>
+      <span class="updated">Updated 2026-04-27</span>
+    </div>
+    <h1>Configure your project agent</h1>
+
+    <h2>What this covers</h2>
+    <p>Every Tessallite project can carry an embedded conversational agent. The agent answers questions in natural language by translating them into queries against the project's published models. This article explains what the agent is, when it is the right tool, and how to configure it.</p>
+
+    <h2>What the agent is, and what it is not</h2>
+    <p>The agent is a thin orchestration layer sitting on top of two LLM calls and the existing semantic engine. The first LLM (the <em>answer model</em>) reads the project policy plus the user's question, then emits a structured tool call: either a query plan, a clarification, or a refusal. The semantic engine validates and executes the query plan against the allow-listed models. A narration step turns the rows into prose. A second LLM (the <em>judge</em>) scores the final answer against a rubric.</p>
+    <p>The agent is <strong>not</strong> a free-form chatbot. It cannot invent measures, query unpublished models, return rows that violate row-level security, or act outside the project policy. Every answer is grounded in a deterministic query — the LLM chooses <em>what</em> to ask, the engine controls <em>how</em> the data is returned.</p>
+
+    <h2>When to enable the agent — and when not to</h2>
+    <p>Enable it when:</p>
+    <ul>
+      <li>The project's models are well-modelled, with crisp measure and dimension names, and at least one published target so the engine can route queries.</li>
+      <li>A defined audience (tenant users, embedded API callers, or both) needs natural-language access without writing JDBC clients.</li>
+      <li>You can dedicate a few hours to writing the project brief, the glossary, and the judge rubric.</li>
+    </ul>
+    <p>Hold off when:</p>
+    <ul>
+      <li>The model is mid-migration. The agent will hallucinate plausible answers from a half-published catalogue and erode user trust.</li>
+      <li>You cannot articulate which questions are in-scope.</li>
+      <li>You want a generative writing assistant. The agent only narrates verified data.</li>
+    </ul>
+
+    <h2>The configuration surface</h2>
+    <p>Configuration lives in the <strong>project drawer</strong>, opened from <em>Tenant Administration &rarr; Projects</em> by clicking the gear icon on the project row. The drawer carries nine tabs; seven of them drive the agent. Each agent tab carries one <strong>Save</strong> button at the bottom that persists the entire agent record in a single call to <code>PUT /api/v1/projects/{id}/agent/config</code>.</p>
+    <figure class="screencap">
+      <img src="../assets/screencaps/agent-config.png" alt="Conversational agent — Identity &amp; Tone tab on the seed acme-demo project." loading="lazy">
+      <figcaption>Conversational agent — Identity &amp; Tone tab on the seed acme-demo project.</figcaption>
+    </figure>
+
+    <h3>General</h3>
+    <ul>
+      <li><strong>Enable conversational agent.</strong> Master switch. Off by default. Enabling requires a non-empty project brief, a non-empty safety policy, at least one allow-listed model, and a selected judge rubric.</li>
+      <li><strong>Display name.</strong> Shown above the chat panel.</li>
+      <li><strong>Agent role.</strong> Free-text label ("data analyst", "controller", "merchandiser").</li>
+      <li><strong>Default locale.</strong> BCP-47 tag (e.g. <code>en-GB</code>).</li>
+    </ul>
+
+    <h3>Identity &amp; Tone</h3>
+    <ul>
+      <li><strong>Project brief.</strong> A short paragraph the answer LLM sees first. Two to four sentences.</li>
+      <li><strong>Tone preset.</strong> Professional or Friendly.</li>
+      <li><strong>Tone overrides.</strong> Small additions to the preset.</li>
+      <li><strong>Brand guidelines.</strong> Lines beginning <code>banned:</code> strip the matching phrase; lines beginning <code>voice:</code> append a footer.</li>
+      <li><strong>Disclosure text.</strong> Always appended to the final answer (legal disclaimers).</li>
+    </ul>
+
+    <h3>Knowledge</h3>
+    <ul>
+      <li><strong>Manage recipes.</strong> Opens the recipe editor. Recipes are reusable cross-model query plans.</li>
+      <li><strong>Per-model context.</strong> For each allow-listed model, an <em>Edit context</em> button opens the per-model context dialog.</li>
+    </ul>
+
+    <h3>Safety</h3>
+    <ul>
+      <li><strong>Safety policy.</strong> One forbidden topic per line. Matched case-insensitively as a substring.</li>
+      <li><strong>Content rules.</strong> Free text surfaced to the LLM as guidance.</li>
+    </ul>
+
+    <h3>LLM &amp; Judge</h3>
+    <ul>
+      <li><strong>Allow-list checkboxes.</strong> Tick each model the agent may query.</li>
+      <li><strong>Answer LLM / Judge LLM.</strong> Pickers bound to the project's LLM Configurations tab.</li>
+      <li><strong>Judge mode.</strong> Async (background) or Sync (block until verdict).</li>
+      <li><strong>Judge rubric.</strong> A reference to a rubric defined in this project.</li>
+      <li><strong>Judge block visibility.</strong> Transparent or Opaque.</li>
+      <li><strong>Visibility toggles.</strong> Show thought process, semantic query, physical query, enable feedback.</li>
+    </ul>
+
+    <h3>Webhook</h3>
+    <ul>
+      <li><strong>Webhook URL.</strong> Optional outbound URL fired on each agent turn.</li>
+    </ul>
+
+    <h3>Retention</h3>
+    <ul>
+      <li><strong>Conversation retention (days).</strong> How long turns and traces are kept. Default 30 days.</li>
+    </ul>
+
+    <h3>Models and routing</h3>
+    <p>The allow-list and per-model context live on the project drawer. Set the allow-list on the <em>LLM &amp; Judge</em> tab and edit per-model context from the <em>Knowledge</em> tab.</p>
+    <figure class="screencap">
+      <img src="../assets/screencaps/agent-models.png" alt="Project drawer — LLM &amp; Judge tab with allow-list and model pickers." loading="lazy">
+      <figcaption>Project drawer — LLM &amp; Judge tab with allow-list and model pickers.</figcaption>
+    </figure>
+
+    <h2>A worked example: enabling the agent on the demo project</h2>
+    <p>This walkthrough assumes the bundled <code>acme-demo</code> tenant.</p>
+    <ol>
+      <li>Sign in as an admin and open <em>Tenant Administration &rarr; Projects</em>.</li>
+      <li>On the <code>project1</code> row, click the gear icon to open the project drawer.</li>
+      <li><em>LLM Configurations</em> tab: confirm there is at least one bundle (e.g. "OpenAI &middot; gpt-4o"). Add one if the list is empty.</li>
+      <li><em>LLM &amp; Judge</em> tab: tick the checkboxes for <code>modelx</code> and <code>modely</code>. Pick the OpenAI bundle as Answer LLM and Judge LLM. Pick the bundled "Acme finance rubric"; leave mode on Async; visibility on Transparent.</li>
+      <li><em>Identity &amp; Tone</em> tab: set the display name to "Acme Insights"; paste a one-paragraph project brief. Add <code>banned: just kidding</code> and <code>voice: Acme Insights — figures live as of last refresh.</code></li>
+      <li><em>Safety</em> tab: add at least one line to the safety policy (e.g. "individual employee salaries").</li>
+      <li><em>General</em> tab: switch <em>Enable conversational agent</em> on.</li>
+      <li>Click <strong>Save</strong>. Navigate to the Explorer and click <em>Chat</em>. Send "What were sales last month?". You should see a streamed answer with route badge, citations, and judge verdict.</li>
+    </ol>
+
+    <h2>Common pitfalls</h2>
+    <ul>
+      <li><strong>Empty allow-list.</strong> The agent refuses every question. Tick at least one model.</li>
+      <li><strong>Project brief stuffed with model details.</strong> Keep the brief short; put per-model context in the glossary.</li>
+      <li><strong>Safety-policy lines that match common words.</strong> Use specific multi-word phrases.</li>
+      <li><strong>Sync judge with a slow LLM.</strong> Sync adds judge latency to user-visible latency.</li>
+      <li><strong>Brand guidelines treated as prose.</strong> Only <code>banned:</code> and <code>voice:</code> are mechanically enforced.</li>
+    </ul>
+
+    <h2>Operating the agent</h2>
+    <p>Three feedback loops keep the agent healthy:</p>
+    <ul>
+      <li><strong>Per-turn user feedback.</strong> Up/down votes. Track the ratio in Metrics.</li>
+      <li><strong>Judge calibration.</strong> Review the <em>Recent calibration</em> table weekly.</li>
+      <li><strong>Eval runs.</strong> <em>Metrics &rarr; Run eval</em> after every meaningful change to the brief, glossary, or rubric.</li>
+    </ul>
+
+    <div class="related">
+      <h2>Related</h2>
+      <ul>
+        <li><a href="glossary-alias-map.html">Author the glossary alias map</a></li>
+        <li><a href="write-a-judge-rubric.html">Write a judge rubric</a></li>
+        <li><a href="cross-model-recipes.html">Cross-model calculation recipes</a></li>
+      </ul>
+    </div>
+  </main>
+
+  <nav class="page-nav">
+    <a href="../index.html" class="page-nav-btn prev">&larr; Home</a>
+    <a href="../index.html" class="page-nav-btn home">Home</a>
+    <a href="glossary-alias-map.html" class="page-nav-btn next">Author the glossary alias map &rarr;</a>
+  </nav>
+
+  <footer class="site-footer">
+    <p>Tessallite Help &mdash; <a href="../index.html">Back to contents</a></p>
+  </footer>
+</body>
+</html>

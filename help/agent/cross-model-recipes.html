@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cross-model calculation recipes — Tessallite Help</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/help.css">
+</head>
+<body>
+  <header class="site-header">
+    <a href="../index.html" class="logo">Tessallite Help</a>
+    <nav class="breadcrumb">
+      <a href="../index.html">Home</a> / <a href="#">Conversational Agent</a> / <span>Cross-model calculation recipes</span>
+    </nav>
+  </header>
+  <main class="article">
+    <div class="article-meta">
+      <span class="audience-badge">Modeller</span>
+      <span class="updated">Updated 2026-04-26</span>
+    </div>
+    <h1>Cross-model calculation recipes</h1>
+
+    <h2>What this covers</h2>
+    <p>A <em>recipe</em> is a multi-step calculation the agent can run against more than one model in a single turn. Recipes solve the class of analytical questions whose answer requires combining numbers from different fact tables. This article explains when a recipe is the right tool, how the recipe spec is shaped, how the engine executes it, and how to author recipes that the agent picks up reliably.</p>
+
+    <h2>Why recipes exist</h2>
+    <p>The semantic engine answers single-model questions: one fact table, one set of measures and dimensions, one time window. Some questions are inherently multi-model — a ratio across facts, a funnel across facts, a re-baselining. Without a recipe the LLM would have to ask each query separately and stitch the results in narration; in practice that path is unreliable. A recipe gives the engine a deterministic plan to execute and the LLM a single result to narrate.</p>
+
+    <h2>What a recipe is</h2>
+    <p>A recipe is a small JSON document a modeller authors. It has: a name and description (read by the answer LLM), parameters the user's question fills in, an ordered list of single-model steps, an optional combine expression, and free-form notes the judge reads as a hint about good output. Recipes live under <em>Tenant Administration → Projects → &lt;project&gt; → Conversational agent → Recipes</em>.</p>
+    <p><img src="../assets/screencaps/agent-recipes.png" alt="Recipes sub-tab — recipe list with the inline editor open, showing parameters, steps, and combine expression."></p>
+
+    <h2>When to write a recipe</h2>
+    <p>Write a recipe when the answer requires data from two or more facts that share at least one dimension, the combine is stable, and users ask the question often enough to merit a single-shot answer. Do not write a recipe when a single-model query already answers the question, when the combine logic is bespoke per question, or when dimensions diverge across facts at incompatible grains.</p>
+
+    <h2>Anatomy of a recipe</h2>
+    <p>A working example computes inventory turnover by dividing COGS by average inventory.</p>
+    <pre><code>{
+  "name": "Inventory turnover",
+  "description": "Inventory turnover is COGS divided by average inventory over the same window.",
+  "parameters": [
+    { "name": "window", "description": "Time window.", "resolves_to_glossary_entity": true }
+  ],
+  "steps": [
+    { "name": "cogs", "model_id": "...", "measures": ["cogs"], "dimensions": [],
+      "filters": [{"name": "order_date", "op": "in_window", "value": "{window}"}], "limit": 1 },
+    { "name": "avg_inventory", "model_id": "...", "measures": ["avg_inventory"], "dimensions": [],
+      "filters": [{"name": "snapshot_date", "op": "in_window", "value": "{window}"}], "limit": 1 }
+  ],
+  "combine": "cogs / avg_inventory",
+  "notes": "Express as a unitless ratio with two decimal places. Mention the window."
+}</code></pre>
+
+    <h2>How the LLM picks a recipe</h2>
+    <p>The answer LLM is shown the description and parameters of every recipe in the project. When the user's question matches a recipe's description well, the LLM emits a <code>run_recipe</code> tool call instead of a <code>query</code> tool call. Two practical implications: descriptions matter (write them in the words your users use), and overlapping recipes confuse the LLM (merge or sharpen them).</p>
+
+    <h2>Common pitfalls</h2>
+    <ul>
+      <li><strong>Mismatched grains.</strong> Daily and monthly facts combined without re-grain produce numbers that look right but are off by an order of magnitude.</li>
+      <li><strong>Hard-coded time windows.</strong> Use a parameter instead.</li>
+      <li><strong>Combines that hide divisions by zero.</strong> Add a note in the recipe so narration handles it.</li>
+      <li><strong>Recipes that wrap a single query.</strong> Use a query.</li>
+      <li><strong>Forgetting to allow-list both models.</strong> A recipe referencing a non-allow-listed model refuses at execution time.</li>
+    </ul>
+
+    <h2>Operating recipes</h2>
+    <p>After authoring, exercise the recipe from <em>Chat</em>, watch the judge verdict on <em>Recent calibration</em>, and add the question to the per-model glossary's <em>Example questions</em> so the eval runner exercises the recipe path on every run.</p>
+
+    <div class="related">
+      <h2>Related</h2>
+      <ul>
+        <li><a href="configure-agent.html">Configure your project agent</a></li>
+        <li><a href="glossary-alias-map.html">Author the glossary alias map</a></li>
+        <li><a href="write-a-judge-rubric.html">Write a judge rubric</a></li>
+      </ul>
+    </div>
+  </main>
+
+  <nav class="page-nav">
+    <a href="write-a-judge-rubric.html" class="page-nav-btn prev">← Write a judge rubric</a>
+    <a href="../index.html" class="page-nav-btn home">Home</a>
+    <a href="../index.html" class="page-nav-btn next">Home →</a>
+  </nav>
+
+  <footer class="site-footer">
+    <p>Tessallite Help — <a href="../index.html">Back to contents</a></p>
+  </footer>
+</body>
+</html>

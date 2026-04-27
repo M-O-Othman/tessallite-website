@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Author the glossary alias map — Tessallite Help</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/help.css">
+</head>
+<body>
+  <header class="site-header">
+    <a href="../index.html" class="logo">Tessallite Help</a>
+    <nav class="breadcrumb">
+      <a href="../index.html">Home</a> / <a href="#">Conversational Agent</a> / <span>Author the glossary alias map</span>
+    </nav>
+  </header>
+  <main class="article">
+    <div class="article-meta">
+      <span class="audience-badge">Modeller</span>
+      <span class="updated">Updated 2026-04-26</span>
+    </div>
+    <h1>Author the glossary alias map</h1>
+
+    <h2>What this covers</h2>
+    <p>The glossary alias map is the per-model context the agent reads alongside the project brief. It teaches the answer LLM how a model is shaped, what its measures actually mean, and how to disambiguate the abbreviations users type. This article explains the parts of the glossary, why each part matters for answer quality, and how to write entries that hold up under real questions.</p>
+
+    <h2>Why a glossary</h2>
+    <p>An LLM is a pattern matcher; without grounding it picks the most-likely-looking measure even when wrong. Every business invents its own shorthand — <em>gross</em>, <em>NMV</em>, <em>take rate</em> — and analysts type that shorthand into the chat box. The glossary closes both gaps. For each allow-listed model, the modeller writes a short overview, lists the analytical questions the model is good at, and supplies a disambiguation table for the abbreviations real users send.</p>
+
+    <h2>The four parts</h2>
+    <p>Each glossary entry is per-model. Open <em>Project Agent → Models</em> and pick a model to edit.</p>
+
+    <h3>1. Model overview</h3>
+    <p>Two to four sentences describing what the model is. Avoid cataloguing measures here — the engine already exposes those. Describe the <em>grain</em>, the <em>time window</em>, and the <em>use case</em>. A good overview answers "what is this model for, and what is it not for".</p>
+
+    <h3>2. Analytical capabilities</h3>
+    <p>Free-form prose. List the kinds of questions this model can answer well. Be specific about scope: a sentence noting what the model <em>cannot</em> answer is as valuable as listing what it can.</p>
+
+    <h3>3. Abbreviation conflict rules</h3>
+    <p>The most directly load-bearing field. List each business term that is ambiguous in your context, and the rule for resolving it. Two patterns work well — defaults ("By default, <em>revenue</em> means net revenue") and discriminators ("When the user says <em>gross</em>, prefer the gross-revenue measure"). If a term is unambiguous, do not add a rule for it.</p>
+
+    <h3>4. Example questions</h3>
+    <p>Five to ten worked examples. Each entry pairs a question with a short note on how it should decompose: which measure, which dimension, which time window. The agent uses these as in-context exemplars; the eval runner uses them as a regression suite.</p>
+
+    <h2>Auto-derived sections</h2>
+    <p>Three sections are populated automatically and surface in the same panel: an aggregates summary, a calendar alias list, and a dimension alias list. These are read-only — they are derived from the published model. Click <em>Refresh derived</em> after every meaningful model edit.</p>
+
+    <h2>How the LLM uses the glossary</h2>
+    <p>When a question lands, the prompt assembler concatenates: the project brief, then for each allow-listed model the four glossary parts plus the auto-derived sections, then the tool spec, then any conversation history, then the user message. The LLM emits a tool call. A long, accurate glossary noticeably reduces clarify and refuse rates.</p>
+
+    <h2>Common pitfalls</h2>
+    <ul>
+      <li><strong>Long overviews.</strong> A six-paragraph overview crowds out the example questions. Two to four sentences is the right length.</li>
+      <li><strong>Generic example questions.</strong> "Show me the data" teaches nothing. Each example should name a measure, a dimension, and a time window.</li>
+      <li><strong>Abbreviation rules for unambiguous terms.</strong> They cost tokens and add no value.</li>
+      <li><strong>Not refreshing derived sections after a model change.</strong> The auto-derived calendar/dimension lists are a snapshot.</li>
+      <li><strong>Forgetting cross-model rules.</strong> If two models share a term that means different things, write the rule on <em>both</em> model glossaries.</li>
+    </ul>
+
+    <div class="related">
+      <h2>Related</h2>
+      <ul>
+        <li><a href="configure-agent.html">Configure your project agent</a></li>
+        <li><a href="write-a-judge-rubric.html">Write a judge rubric</a></li>
+        <li><a href="cross-model-recipes.html">Cross-model calculation recipes</a></li>
+      </ul>
+    </div>
+  </main>
+
+  <nav class="page-nav">
+    <a href="configure-agent.html" class="page-nav-btn prev">← Configure your project agent</a>
+    <a href="../index.html" class="page-nav-btn home">Home</a>
+    <a href="write-a-judge-rubric.html" class="page-nav-btn next">Write a judge rubric →</a>
+  </nav>
+
+  <footer class="site-footer">
+    <p>Tessallite Help — <a href="../index.html">Back to contents</a></p>
+  </footer>
+</body>
+</html>

@@ -100,7 +100,7 @@
 
     <h2>What the Canvas shows after adding tables</h2>
     <p>Each table appears as a card in the Canvas. The card shows the table name and a type badge (<code>fact</code>, <code>dim_aggregate</code>, or <code>dim_detail</code>). Tables with no join connecting them to another table are shown with a dashed border, indicating they are disconnected. A disconnected table is valid while you are still building the model, but the Health tab will flag it as a warning until all tables are joined into the schema.</p>
-    <p>Click a table card in the Canvas to open its properties in the Drawer, where you can change its type or remove it from the model.</p>
+    <p>Click a table-node header on the Canvas to focus the matching row in the <strong>Sources</strong> panel — the source expands and the row is briefly highlighted. From there, the <strong>Edit</strong> pencil opens the unified table editor (General · Columns · Attributes) where you can change the type, rename the alias, edit columns, and manage user-defined attributes. See <a href="dimension-aliases.html">Dimension Aliases</a> for the full editor walkthrough.</p>
 
     <h2>Removing a table</h2>
     <p>Select the table in the Canvas to open it in the Drawer, then click <strong>Remove from Model</strong>. All joins, dimensions, and measures that reference columns in that table are also removed. This action cannot be undone — you must re-add the table and redefine any dependent objects if you remove a table by mistake.</p>

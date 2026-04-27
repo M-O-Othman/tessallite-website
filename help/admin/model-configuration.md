@@ -1,55 +1,85 @@
-# Model Configuration
+---
+title: "Model Configuration"
+audience: tenant-admin
+area: Admin
+updated: 2026-04-27
+---
 
-**Audience:** Tenant Admin / Modeler · **Updated:** 2026-04-18
+# Model Configuration
 
 ![Model Builder — Settings panel, Configuration sub-tab.](../assets/screencaps/model-configuration-tab.png)
 
 ## What this covers
 
-The Configuration sub-tab inside the Model Builder Settings panel lets you override per-model knobs: the default refresh cron applied to new aggregates on this model, the AI scheduler's cron / lookback window / max creates per run / confidence threshold, and the optimizer's per-model aggregate cap.
+The Configuration sub-tab inside the Model Builder Settings panel lets you override per-model knobs that only make sense for an individual model. It is laid out as five focused tabs — Aggregates, AI Optimizer, Pocket, Predictive, Limits — so a modeller can tune the parts of the cube that matter without scanning a wall of unrelated settings.
 
 ## Where to find it
 
 1. Open the Model Builder for the model you want to configure.
 2. Click the **Settings** icon in the toolbelt (right side).
-3. Switch to the **Configuration** sub-tab (third tab after General and AI).
-
-The sub-tab is hidden when no model is open — model-level settings only make sense with a model in scope.
-
-## Who can edit it
-
-Tenant admins can edit any model in their workspace. Modelers can edit models they have a project- or model-level access binding for. The backend rejects writes from any other role, so the Save button has no effect for unauthorised users even if the panel is visible.
+3. Switch to the **Configuration** sub-tab. It is the last tab in the Settings panel and is only available while a model is open.
 
 ## How overrides work
 
-Each row is an override. The placeholder shows the value currently inherited from the project level (which itself may inherit from tenant, system, and finally the registry default). Save a value to override; clear and save to remove the override and fall back upward.
+Every row is a pure override. The placeholder shows the value currently inherited from the project level, which itself may fall back to system defaults. Save a value to override; leave the field blank and click **Save**, or click **Clear**, to remove the override and inherit again. The resolver walks **model → project → system → registry default** and returns the first non-null value, so a model override only applies to that single model.
 
-Common reasons to override at the model level:
+## The five tabs
 
-- A model with very large aggregates needs a less frequent refresh cron than the project default.
-- A model with frequent miss patterns benefits from a different AI scheduler cadence or a lower confidence threshold.
-- One particular model should run a higher per-model aggregate cap than the system default.
+### Aggregates
 
-## Available keys
+Per-model defaults for the materialised aggregate pipeline:
 
-| Key | What it controls |
-|---|---|
-| `aggregate.default_cron` | Cron applied to a new aggregate on this model when no explicit schedule is provided. |
-| `ai_scheduler.cron` | Cron at which the AI optimizer is invoked for this model. |
-| `ai_scheduler.lookback_hours` | Hours of telemetry the optimizer considers when picking candidates. |
-| `ai_scheduler.max_creates_per_run` | Maximum aggregates the optimizer is allowed to create per run. |
-| `ai_scheduler.confidence_threshold` | Minimum confidence below which a recommendation is dropped. |
-| `ai_scheduler.auto_create_cap_per_sweep` | Hard cap on aggregates auto-created per optimizer sweep for this model. |
-| `optimizer.max_aggregates` | Per-model override of the platform-wide aggregate cap. |
+- **Default aggregate cron** — applied to a new aggregate on this model when no explicit schedule is set.
+- **Refresh window and timeout** — bounds the scheduler's per-aggregate run.
+
+Override these when a single model has unusually heavy aggregates that need a slower cadence than the project's other models.
+
+### AI Optimizer
+
+Knobs for the optimiser sweep that proposes new aggregates on this model:
+
+- **Cron** — when the optimiser runs.
+- **Lookback hours** — how far back the optimiser reads telemetry to pick candidates.
+- **Max creates per run** and **auto-create cap per sweep** — upper bounds on what the optimiser can materialise unattended.
+- **Confidence threshold** — recommendations below this are dropped.
+
+Override these when a model has a different signal density than the project default — high-traffic models often want a tighter cron and a higher cap; low-traffic models can run with a longer lookback.
+
+### Pocket
+
+Pocket-table behaviour for this model:
+
+- Tenant-scoping defaults, refresh cadence, and the allowed refresh policies.
+
+Override only when the model has a tenant-shape that differs from the project's other models.
+
+### Predictive
+
+Predictive-aggregate generation for this model — promotion thresholds, retention horizon, and which models seed candidates. Override per-model when the model's measure set or query mix justifies a different policy.
+
+### Limits
+
+Per-model ceilings (aggregate count, row count, retention). All limits default to "no cap"; leaving the field blank means the system enforces no model-specific limit. Override when one model needs a stricter quota for cost or compliance reasons.
 
 ## Inheritance preview
 
-Each row's caption shows the inherited value, e.g. *inherits: `0 2 * * *`*. When you save a value, the row reads "overrides project value" and the new value is what the resolver returns for this model. Clearing the override returns the row to the inherited state immediately.
+Each row's caption reads *Inherits: `<value>`* and shows the value the resolver would return if the override were cleared. When you save a value, the row gets an "Overridden" chip and the input now drives the resolver. Clearing returns the row to the inherited state immediately — there is no soft-delete, no draft state.
+
+## Best practices
+
+- **Override late.** Start with project-level defaults. Only push a setting to the model level when telemetry shows the model behaves differently from its peers.
+- **Document why.** When an override survives a code review, leave a one-line note in the model's description so the next modeller does not "tidy it up" to match the project default.
+- **Watch for drift.** If three or four models in the same project carry the same override, lift it to the project level and clear the per-model rows.
+
+## Common pitfalls
+
+- **Treating limits as recommendations.** A blank limit means *no cap*, not "use the system default". If you want a default cap, set it at the project or system level.
+- **Setting an aggregate cron that conflicts with the optimiser.** A model whose `aggregate.default_cron` runs at the same minute as `ai_scheduler.cron` can starve the scheduler of capacity. Stagger them.
+- **Tuning the confidence threshold without a baseline.** The threshold is meaningful only against a stable telemetry base. If you have just published the model, leave it inherited until you have a week of usage data.
 
 ## Related
 
 - [Project settings](project-settings.md)
-- [Workspace settings (tenant level)](workspace-settings.md)
 - [Manage aggregate schedules](../modelling/manage-aggregate-schedules.md)
 - [Use the AI optimiser](../modelling/use-the-ai-optimiser.md)
 

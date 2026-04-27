@@ -2,7 +2,7 @@
 title: "Add Tables to a Model"
 audience: modeller
 area: modelling
-updated: 2026-04-17
+updated: 2026-04-26
 ---
 
 ![Model Builder — Add table from source schema browser.](../assets/screencaps/model-builder-add-table.png)
@@ -51,7 +51,7 @@ Choosing the right type determines how Tessallite constructs the aggregate grain
 
 Each table appears as a card showing the table name and type badge. Tables with no join are shown with a dashed border and flagged as a warning in the Health tab until all tables are joined.
 
-Click a table card to open its properties in the Drawer, where you can change its type or remove it from the model.
+Click a table-node header to focus the matching row in the **Sources** panel — the source expands and the row is briefly highlighted. From there, the **Edit** pencil opens the unified table editor (General · Columns · Attributes) where you can change the type, rename the alias, edit columns, and manage user-defined attributes. See [Dimension Aliases](dimension-aliases.md) for the full editor walkthrough.
 
 ---
 

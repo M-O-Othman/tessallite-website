@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent log screen — Tessallite Help</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/help.css">
+</head>
+<body>
+  <header class="site-header">
+    <a href="../index.html" class="logo">Tessallite Help</a>
+    <nav class="breadcrumb">
+      <a href="../index.html">Home</a> / <a href="#">Conversational Agent</a> / <span>Agent log screen</span>
+    </nav>
+  </header>
+  <main class="article">
+    <div class="article-meta">
+      <span class="audience-badge">Admin</span>
+      <span class="updated">Updated 2026-04-28</span>
+    </div>
+    <h1>Agent log screen</h1>
+
+    <h2>What this covers</h2>
+    <p>The agent log screen is a full-trace audit viewer for every conversational agent turn in a project. It lets tenant administrators and project modellers inspect what happened during any agent interaction: the user's question, the LLM's reasoning, the queries it chose, the answers it produced, how the judge evaluated those answers, and how tokens were spent. This article explains the purpose of the log screen, how to enable it, how to read the trace data, and how to use it effectively for quality assurance and troubleshooting.</p>
+
+    <h2>Why the log screen exists</h2>
+    <p>The conversational agent sits between users and the data layer. When an answer is wrong, slow, or refused, someone needs to understand why. The chat interface shows the outcome, but not the machinery behind it. The log screen exposes that machinery: every decision the agent made, every query it ran, every judgement it received.</p>
+    <p>Common use cases: answer quality review after enabling the agent for a new team, judge calibration by examining fail and warn verdicts, token cost investigation after a usage spike, and user support when a specific question produced a surprising answer.</p>
+
+    <h2>Enabling the log screen</h2>
+    <p>The log screen is controlled by a project-level toggle. Open <em>Tenant Administration</em>, select the project, click the gear icon, and navigate to <em>Setup</em> under the Conversational Agent section. The main agent toggle must be on. Below it, switch <strong>Agent log screen enabled</strong> on and click <strong>Save</strong>.</p>
+    <p>After saving and closing the configuration drawer, a history icon appears in the project header bar next to the chat icon. Clicking it opens the log screen in a new browser tab. Disabling the toggle hides the entry point but does not delete any trace data.</p>
+
+    <h2>Reading the log table</h2>
+    <p>The table shows one row per agent turn, ordered by conversation (most recently active first) and then by turn position within each conversation. Summary columns include timestamp, user, question (truncated), status (ok, refused, error), judge verdict (pass, warn, fail), query route, result row count, input/output token counts, and latency.</p>
+    <p>Click any row to expand it. The expanded view splits into two columns:</p>
+    <ul>
+      <li><strong>Left column — the agent's work:</strong> prompt sent to the LLM (the full system prompt and user message payload), the raw LLM response (unprocessed text before tool-call parsing), thought process, LLM plan, semantic query, physical SQL, and the prose answer.</li>
+      <li><strong>Right column — evaluation and feedback:</strong> citations, judge reasoning, judge metrics, guardrail actions, and user feedback (thumbs-up/down and comments).</li>
+    </ul>
+
+    <h2>Using the filters</h2>
+    <p>The filter bar at the top narrows the table. <strong>From/To</strong> sets a date range. <strong>User</strong> filters by caller identity. <strong>Question contains</strong> does a substring search on the user's message. Click <strong>Search</strong> to apply; the record count updates. Filters combine with AND logic, and pagination resets to page one after each search.</p>
+
+    <h2>Best practices</h2>
+    <ul>
+      <li><strong>Review early and often.</strong> The first days after enabling the agent for a new audience reveal misinterpretation patterns quickly — wrong dimension mappings, aggregate grain mismatches, ambiguous business terms.</li>
+      <li><strong>Triage by judge verdict.</strong> Fail verdicts need investigation. Warn verdicts need a judgment call on rubric strictness. Pass verdicts still deserve spot checks for rubric blind spots.</li>
+      <li><strong>Compare semantic query to physical SQL.</strong> When the answer is wrong, the gap between intent and execution is usually visible here. A correct semantic query with wrong SQL points to the rewriting layer or a stale aggregate. A wrong semantic query points to the LLM's interpretation — check the glossary, model context, or example questions.</li>
+      <li><strong>Watch token usage.</strong> High token counts on simple questions may indicate verbose model context, LLM over-reasoning, or excessive judge output.</li>
+      <li><strong>Combine with the judge rubric.</strong> The log screen shows what the judge scored; the rubric controls how it scores. Consistent mismatches between human judgement and judge verdicts signal that the rubric needs revision.</li>
+    </ul>
+
+    <div class="related">
+      <h2>Related</h2>
+      <ul>
+        <li><a href="configure-agent.html">Configure your project agent</a></li>
+        <li><a href="write-a-judge-rubric.html">Write a judge rubric</a></li>
+        <li><a href="cross-model-recipes.html">Cross-model calculation recipes</a></li>
+      </ul>
+    </div>
+  </main>
+
+  <nav class="page-nav">
+    <a href="cross-model-recipes.html" class="page-nav-btn prev">&larr; Cross-model calculation recipes</a>
+    <a href="../index.html" class="page-nav-btn home">Home</a>
+    <a href="../index.html" class="page-nav-btn next">Home &rarr;</a>
+  </nav>
+
+  <footer class="site-footer">
+    <p>Tessallite Help &mdash; <a href="../index.html">Back to contents</a></p>
+  </footer>
+</body>
+</html>

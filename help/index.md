@@ -94,6 +94,7 @@ Deploys and operates the Tessallite platform. Start with [Install locally](getti
 - [Author the glossary alias map](agent/glossary-alias-map.md)
 - [Write a judge rubric](agent/write-a-judge-rubric.md)
 - [Cross-model calculation recipes](agent/cross-model-recipes.md)
+- [Agent log screen](agent/agent-log-screen.md)
 
 ## Admin
 

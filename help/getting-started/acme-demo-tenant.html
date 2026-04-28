@@ -55,9 +55,7 @@
     <ol>
       <li><code>tessallite/scripts/reset_acme_demo_tenant.py</code> — drops + recreates the tenant.</li>
       <li><code>tessallite/scripts/load_acme_demo_schemas.sh</code> — recreates <code>acme_demo_src</code> + <code>acme_demo_target</code>.</li>
-      <li><code>tessallite/scripts/seed_acme_demo.py --stage topology</code> — project + connections.</li>
-      <li><code>tessallite/scripts/bootstrap_acme_demo_models.py</code> — both models via ORM.</li>
-      <li><code>tessallite/scripts/export_acme_demo_models.py</code> — exports both to JSON.</li>
+      <li><code>tessallite/scripts/seed_acme_demo_project.py</code> — imports project + connection + models from the project export bundle.</li>
     </ol>
     <p>Re-running against an unchanged codebase produces zero diff.</p>
 

@@ -9,7 +9,7 @@ updated: 2026-04-26
 
 A *recipe* is a multi-step calculation the agent can run against more than one model in a single turn. Recipes solve the class of analytical questions whose answer requires combining numbers from different fact tables — questions a single semantic query cannot answer. This article explains when a recipe is the right tool, how the recipe spec is shaped, how the engine executes it, and how to author recipes that the agent picks up reliably.
 
-[Previous: Write a judge rubric](write-a-judge-rubric.md) — [Home](../index.md)
+[Previous: Write a judge rubric](write-a-judge-rubric.md) — [Home](../index.md) — Next: [Agent log screen](agent-log-screen.md)
 
 ---
 
@@ -134,4 +134,4 @@ After authoring a recipe, exercise it:
 - [Author the glossary alias map](glossary-alias-map.md)
 - [Write a judge rubric](write-a-judge-rubric.md)
 
-[Previous: Write a judge rubric](write-a-judge-rubric.md) — [Home](../index.md)
+[Previous: Write a judge rubric](write-a-judge-rubric.md) — [Home](../index.md) — Next: [Agent log screen](agent-log-screen.md)

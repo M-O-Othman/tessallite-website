@@ -137,4 +137,4 @@ Once enabled, the agent earns its keep through three feedback loops:
 - [Write a judge rubric](write-a-judge-rubric.md)
 - [Cross-model calculation recipes](cross-model-recipes.md)
 
-← [Export and Import a Project](../modelling/export-and-import-a-project.md) | [Home](../index.md) | [Author the glossary alias map →](glossary-alias-map.md)
+← [Table Auto-Analysis](../modelling/table-auto-analysis.md) | [Home](../index.md) | [Author the glossary alias map →](glossary-alias-map.md)

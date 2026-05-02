@@ -119,4 +119,4 @@ Filters are combined with AND logic. Pagination resets to page one after each se
 - [Write a judge rubric](write-a-judge-rubric.md)
 - [Cross-model calculation recipes](cross-model-recipes.md)
 
-[Previous: Cross-model calculation recipes](cross-model-recipes.md) — [Home](../index.md)
+[Previous: Cross-model calculation recipes](cross-model-recipes.md) — [Home](../index.md) — [Next: Agent Session Memory](session-memory.md)

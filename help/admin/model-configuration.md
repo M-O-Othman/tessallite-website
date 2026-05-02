@@ -85,4 +85,4 @@ Each row's caption reads *Inherits: `<value>`* and shows the value the resolver 
 
 ---
 
-[← Project Settings](project-settings.md) · [Home](../index.md) · [Architecture Overview →](../system-admin/architecture-overview.md)
+[← Project Settings](project-settings.md) · [Home](../index.md) · [Audit Log →](audit-log.md)

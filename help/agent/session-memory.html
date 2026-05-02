@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent Session Memory — Tessallite Help</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/help.css">
+</head>
+<body>
+  <header class="site-header">
+    <a href="../index.html" class="logo">Tessallite Help</a>
+    <nav class="breadcrumb">
+      <a href="../index.html">Home</a> / <span>Conversational Agent</span> / <span>Session Memory</span>
+    </nav>
+  </header>
+  <main class="article">
+    <div class="article-meta">
+      <span class="audience-badge">Tenant Admin</span>
+      <span class="updated">Updated 2026-05-01</span>
+    </div>
+    <h1>Agent Session Memory</h1>
+
+    <h2>What this covers</h2>
+    <p>The conversational agent maintains a history of turns (question-answer pairs) within each conversation. This page explains how session memory works, how the history depth setting affects prompt construction, and how to manage conversation data through stats and purge controls.</p>
+
+    <h2>How session memory works</h2>
+    <p>Each conversation is stored as a sequence of turns. A turn consists of the user&rsquo;s question and the agent&rsquo;s response (answer text, citations, thought process, and metadata). When a new question arrives, the agent includes prior turns in the LLM prompt so the model has conversational context &mdash; handling follow-ups, resolving pronouns, and maintaining coherence.</p>
+    <p>More history means a larger prompt, which consumes more tokens and increases latency. The session history depth setting controls this trade-off.</p>
+
+    <h2>Session history depth</h2>
+    <p>The <code>session_history_depth</code> setting (default: 20) controls how many recent turns include the full agent response in the prompt. Older turns appear in a compressed form: only the user&rsquo;s question is included, prefixed with <code>[earlier question]</code>.</p>
+    <p>For a conversation with 30 turns and a depth of 20: turns 1&ndash;10 show only the user&rsquo;s question; turns 11&ndash;30 show both the question and the agent&rsquo;s response.</p>
+
+    <h3>Choosing a depth</h3>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>Scenario</th><th>Suggested depth</th></tr></thead>
+        <tbody>
+          <tr><td>Short, focused Q&amp;A sessions</td><td>10&ndash;20</td></tr>
+          <tr><td>Long analytical conversations</td><td>30&ndash;50</td></tr>
+          <tr><td>High-throughput API usage</td><td>5&ndash;10</td></tr>
+          <tr><td>Models with very long responses</td><td>5&ndash;15</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Configuring</h3>
+    <ol>
+      <li>Open <em>Tenant Administration &gt; Projects</em>.</li>
+      <li>Click the gear icon on the project row.</li>
+      <li>Navigate to the <strong>Advanced</strong> tab under agent settings.</li>
+      <li>Set the <strong>Session history depth</strong> value (range: 1&ndash;100).</li>
+      <li>Click <strong>Save</strong>.</li>
+    </ol>
+
+    <h2>Conversation stats</h2>
+    <p>The Advanced tab displays the total number of conversations and the date of the oldest conversation for the project.</p>
+
+    <h2>Purging conversations</h2>
+    <h3>Purge by age</h3>
+    <p>Enter a number of days and click <strong>Purge</strong>. Every conversation whose last activity is older than the specified number of days is permanently deleted.</p>
+    <h3>Delete all</h3>
+    <p>Click <strong>Delete All Conversations</strong> and type <code>DELETE ALL</code> to confirm. Every conversation for the project is permanently removed.</p>
+    <p>Both actions are hard deletes &mdash; the data cannot be recovered.</p>
+
+    <h2>Relationship to retention</h2>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>Mechanism</th><th>Trigger</th><th>Granularity</th></tr></thead>
+        <tbody>
+          <tr><td>Retention setting</td><td>Automatic (daily scheduler job)</td><td>Conversations older than configured days</td></tr>
+          <tr><td>Manual purge</td><td>On-demand (admin clicks button)</td><td>By age threshold or all</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Best practices</h2>
+    <ul>
+      <li><strong>Set retention for ongoing cleanup.</strong> Manual purges are for one-off situations.</li>
+      <li><strong>Start with default depth.</strong> 20 turns covers most conversational patterns.</li>
+      <li><strong>Purge test data before production launch.</strong> Test conversations skew stats and waste storage.</li>
+    </ul>
+
+    <div class="related">
+      <h2>Related</h2>
+      <ul>
+        <li><a href="configure-agent.html">Configure your project agent</a></li>
+        <li><a href="agent-log-screen.html">Agent log screen</a></li>
+      </ul>
+    </div>
+  </main>
+
+  <nav class="page-nav">
+    <a href="agent-log-screen.html" class="page-nav-btn prev">&larr; Agent Log Screen</a>
+    <a href="../index.html" class="page-nav-btn home">Home</a>
+  </nav>
+  <footer class="site-footer">
+    <p>Tessallite Help &mdash; <a href="../index.html">Back to contents</a></p>
+  </footer>
+</body>
+</html>

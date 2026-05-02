@@ -87,6 +87,7 @@ Deploys and operates the Tessallite platform. Start with [Install locally](getti
 - [Deploy a model](modelling/deploy-a-model.md)
 - [Export and import a model](modelling/export-and-import-a-model.md)
 - [Export and import a project](modelling/export-and-import-a-project.md)
+- [Parameterized filters](modelling/parameterized-filters.md)
 
 ## Conversational Agent
 
@@ -95,6 +96,7 @@ Deploys and operates the Tessallite platform. Start with [Install locally](getti
 - [Write a judge rubric](agent/write-a-judge-rubric.md)
 - [Cross-model calculation recipes](agent/cross-model-recipes.md)
 - [Agent log screen](agent/agent-log-screen.md)
+- [Agent session memory](agent/session-memory.md)
 
 ## Admin
 
@@ -104,6 +106,9 @@ Deploys and operates the Tessallite platform. Start with [Install locally](getti
 - [Workspace settings](admin/workspace-settings.md)
 - [Project settings](admin/project-settings.md)
 - [Model configuration](admin/model-configuration.md)
+- [Audit log](admin/audit-log.md)
+- [SSO configuration](admin/sso-configuration.md)
+- [Webhooks](admin/webhooks.md)
 
 ## System Admin
 

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Model-Scoped RBAC — Tessallite Help</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/help.css">
+</head>
+<body>
+  <header class="site-header">
+    <a href="../index.html" class="logo">Tessallite Help</a>
+    <nav class="breadcrumb">
+      <a href="../index.html">Home</a> / <span>Administration</span> / <span>Model-Scoped RBAC</span>
+    </nav>
+  </header>
+  <main class="article">
+    <div class="article-meta">
+      <span class="audience-badge">Tenant Admin</span>
+      <span class="updated">Updated 2026-05-02</span>
+    </div>
+    <h1>Model-Scoped RBAC</h1>
+
+    <h2>What this covers</h2>
+    <p>Model-scoped RBAC lets you grant a user a different access level on a specific model than they have at the project level.</p>
+
+    <h2>The binding hierarchy</h2>
+    <p>Access is determined by checking bindings in this order:</p>
+    <ol>
+      <li><strong>Model-scoped binding</strong> &mdash; takes precedence for operations on that specific model.</li>
+      <li><strong>Project-scoped binding</strong> &mdash; used when no model-scoped binding exists.</li>
+      <li><strong>Bootstrap rule</strong> &mdash; a <code>tenant_admin</code> user can access any model even with no explicit binding.</li>
+    </ol>
+    <p>If none match, the request is rejected with HTTP 403.</p>
+
+    <h2>Why model-scoped bindings exist</h2>
+    <p>The typical use case is a project with multiple models where different teams own different models:</p>
+    <ul>
+      <li>Data Engineering needs <code>modeler</code> rights on the raw-data model but <code>viewer</code> only on the marketing attribution model.</li>
+      <li>An external partner can be granted <code>viewer</code> on one model without access to the rest of the project.</li>
+      <li>A model under active development can be scoped to <code>modeler</code>-only access while other models remain available to viewers.</li>
+    </ul>
+
+    <h2>Creating a model-scoped binding</h2>
+    <ol>
+      <li>Open <strong>Tenant Administration &rsaquo; Projects &rsaquo; [your project] &rsaquo; Access</strong>.</li>
+      <li>Locate the user row and click the model-scope icon.</li>
+      <li>Select the target model and the role to grant.</li>
+      <li>Save.</li>
+    </ol>
+    <p>Or via API:</p>
+    <pre><code>POST /api/v1/projects/{project_id}/access
+{
+  "user_id": "&lt;uuid&gt;",
+  "role": "modeler",
+  "model_id": "&lt;uuid&gt;"
+}</code></pre>
+
+    <h2>Revoking a binding</h2>
+    <pre><code>DELETE /api/v1/projects/{project_id}/access/{binding_id}</code></pre>
+    <p>The user retains their project-level binding for other models.</p>
+
+    <h2>Interaction with row security and personas</h2>
+    <p>Model-scoped bindings control which CRUD operations a user can perform on model metadata. Row security and persona restrictions apply independently and are not affected by the binding level.</p>
+
+    <h2>Roles reference</h2>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>Role</th><th>What it permits</th></tr></thead>
+        <tbody>
+          <tr><td><code>viewer</code></td><td>Read metadata, run queries, view diagnostics</td></tr>
+          <tr><td><code>modeler</code></td><td>Viewer rights plus create/edit/delete dimensions, measures, aggregates, rules</td></tr>
+          <tr><td><code>admin</code></td><td>Modeler rights plus manage connections, targets, deploy/undeploy</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="related-links">
+      <h2>Related</h2>
+      <ul>
+        <li><a href="manage-roles.html">Manage Roles</a></li>
+        <li><a href="../modelling/configure-row-security.html">Configure Row Security</a></li>
+        <li><a href="project-settings.html">Project Settings</a></li>
+      </ul>
+    </div>
+  </main>
+
+  <nav class="page-nav">
+    <a href="security-audit-trail.html" class="page-nav-btn prev">&larr; Security Audit Trail</a>
+    <a href="../index.html" class="page-nav-btn home">Home</a>
+    <a href="scheduler-sla.html" class="page-nav-btn next">Scheduler SLA Declarations &rarr;</a>
+  </nav>
+  <footer class="site-footer">
+    <p>Tessallite Help &mdash; <a href="../index.html">Back to contents</a></p>
+  </footer>
+</body>
+</html>

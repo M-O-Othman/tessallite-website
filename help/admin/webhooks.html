@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Webhooks — Tessallite Help</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/help.css">
+</head>
+<body>
+  <header class="site-header">
+    <a href="../index.html" class="logo">Tessallite Help</a>
+    <nav class="breadcrumb">
+      <a href="../index.html">Home</a> / <span>Admin</span> / <span>Webhooks</span>
+    </nav>
+  </header>
+  <main class="article">
+    <div class="article-meta">
+      <span class="audience-badge">Tenant Admin</span>
+      <span class="updated">Updated 2026-05-01</span>
+    </div>
+    <h1>Webhooks</h1>
+
+    <h2>What this covers</h2>
+    <p>Tessallite can push notifications to external systems when significant events occur &mdash; a model is deployed, a user is created, or a setting changes. This page explains the webhook system: which events are available, how to create and manage endpoints, how to verify payload signatures, and how to handle delivery failures.</p>
+
+    <h2>When to use webhooks</h2>
+    <p>Webhooks are the right tool when an external system needs to react to something that happened inside Tessallite: CI/CD pipelines, audit systems, notification channels (Slack, Teams, PagerDuty), or data catalogs that sync model metadata.</p>
+
+    <h2>Event types</h2>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>Event</th><th>Fired when</th></tr></thead>
+        <tbody>
+          <tr><td><code>model.published</code></td><td>A model is deployed to a version.</td></tr>
+          <tr><td><code>model.undeployed</code></td><td>A model&rsquo;s deploy pointer is cleared.</td></tr>
+          <tr><td><code>model.deleted</code></td><td>A model is permanently deleted.</td></tr>
+          <tr><td><code>user.created</code></td><td>A new user account is created.</td></tr>
+          <tr><td><code>user.deleted</code></td><td>A user account is deleted.</td></tr>
+          <tr><td><code>settings.changed</code></td><td>A tenant, project, or model setting is saved.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Creating an endpoint</h2>
+    <ol>
+      <li>Navigate to <em>Admin &gt; Webhooks</em>.</li>
+      <li>Click <strong>New Endpoint</strong>.</li>
+      <li>Enter a name, the destination URL, and select which event types to subscribe to.</li>
+      <li>Click <strong>Save</strong>. Tessallite generates an HMAC-SHA256 signing secret.</li>
+    </ol>
+
+    <h2>Payload and signature</h2>
+    <p>Each delivery is a <code>POST</code> with a JSON body containing <code>event_type</code>, <code>timestamp</code>, <code>actor</code>, and a <code>detail</code> object. The request includes an <code>X-Tessallite-Signature</code> header:</p>
+    <pre><code>t=1746105000,v1=5d41402abc4b2a76b9719d911017c592...</code></pre>
+    <p>Verify by computing <code>HMAC-SHA256(signing_secret, t + "." + raw_body)</code> and comparing to <code>v1</code>.</p>
+    <p>Maximum payload size is 64 KB.</p>
+
+    <h2>Delivery and retry</h2>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>Attempt</th><th>Delay after failure</th></tr></thead>
+        <tbody>
+          <tr><td>1st</td><td>immediate</td></tr>
+          <tr><td>2nd</td><td>10 seconds</td></tr>
+          <tr><td>3rd</td><td>60 seconds</td></tr>
+          <tr><td>4th (final)</td><td>300 seconds</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>A 2xx response is success. After all retries are exhausted, the delivery moves to the dead-letter queue (DLQ).</p>
+
+    <h2>Managing endpoints</h2>
+    <ul>
+      <li><strong>Active toggle</strong> &mdash; disable an endpoint without deleting it.</li>
+      <li><strong>Test delivery</strong> &mdash; send a synthetic <code>webhook.test</code> event.</li>
+      <li><strong>Rotate secret</strong> &mdash; generate a new signing secret (immediate, requires confirmation).</li>
+      <li><strong>Delivery history</strong> &mdash; per-endpoint log with status, response code, and timestamp.</li>
+      <li><strong>DLQ tab</strong> &mdash; failed deliveries with retry and delete actions.</li>
+    </ul>
+
+    <h2>Best practices</h2>
+    <ul>
+      <li><strong>Always verify signatures.</strong> Without verification, fake events can be sent to your endpoint.</li>
+      <li><strong>Respond quickly.</strong> Return a 2xx within 5 seconds. Process asynchronously.</li>
+      <li><strong>Use event filters.</strong> Subscribe only to the events you need.</li>
+      <li><strong>Monitor the DLQ.</strong> A growing DLQ means your endpoint is failing.</li>
+      <li><strong>Rotate secrets on team changes.</strong></li>
+    </ul>
+
+    <div class="related">
+      <h2>Related</h2>
+      <ul>
+        <li><a href="audit-log.html">Audit Log</a></li>
+        <li><a href="workspace-settings.html">Workspace Settings</a></li>
+      </ul>
+    </div>
+  </main>
+
+  <nav class="page-nav">
+    <a href="sso-configuration.html" class="page-nav-btn prev">&larr; SSO Configuration</a>
+    <a href="../index.html" class="page-nav-btn home">Home</a>
+    <a href="security-audit-trail.html" class="page-nav-btn next">Security Audit Trail &rarr;</a>
+  </nav>
+  <footer class="site-footer">
+    <p>Tessallite Help &mdash; <a href="../index.html">Back to contents</a></p>
+  </footer>
+</body>
+</html>

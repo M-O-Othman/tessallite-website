@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Parameterized Filters — Tessallite Help</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/help.css">
+</head>
+<body>
+  <header class="site-header">
+    <a href="../index.html" class="logo">Tessallite Help</a>
+    <nav class="breadcrumb">
+      <a href="../index.html">Home</a> / <span>Modelling</span> / <span>Parameterized Filters</span>
+    </nav>
+  </header>
+  <main class="article">
+    <div class="article-meta">
+      <span class="audience-badge">Modeller</span>
+      <span class="updated">Updated 2026-05-01</span>
+    </div>
+    <h1>Parameterized Filters</h1>
+
+    <h2>What this covers</h2>
+    <p>A parameterized filter is a named placeholder in a model&rsquo;s query predicates that is resolved to a concrete value at query time. This page explains what parameters are, when to use them, how to define them, how values are resolved, and how BI tools pass parameter values through JDBC session variables.</p>
+
+    <h2>What parameters solve</h2>
+    <p>Many analytical models include filters that vary by user, session, or audience. Without parameters, the modeller must hard-code a default (inflexible), define separate models per filter value (duplication), or rely on downstream tools to append WHERE clauses (inconsistent). Parameters give the modeller a single declaration point for each variable filter.</p>
+
+    <h2>Parameter types</h2>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>Type</th><th>Example value</th><th>SQL expansion</th></tr></thead>
+        <tbody>
+          <tr><td><code>string</code></td><td><code>"APAC"</code></td><td><code>= 'APAC'</code></td></tr>
+          <tr><td><code>number</code></td><td><code>42</code></td><td><code>= 42</code></td></tr>
+          <tr><td><code>multi_value</code></td><td><code>["US", "GB", "DE"]</code></td><td><code>IN ('US', 'GB', 'DE')</code></td></tr>
+          <tr><td><code>date_range</code></td><td><code>{"from": "2025-01-01", "to": "2025-12-31"}</code></td><td><code>BETWEEN '2025-01-01' AND '2025-12-31'</code></td></tr>
+          <tr><td><code>boolean</code></td><td><code>true</code></td><td><code>= TRUE</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Defining a parameter</h2>
+    <ol>
+      <li>Open a model in Model Builder.</li>
+      <li>Click the <strong>Parameters</strong> icon in the toolbelt.</li>
+      <li>Click <strong>Add Parameter</strong>.</li>
+      <li>Fill in: name (must start with <code>@</code>), display name, type, default value, allowed values, and description.</li>
+      <li>Click <strong>Save</strong>.</li>
+    </ol>
+
+    <h2>Resolution order</h2>
+    <p>When a query references a parameter, the value is resolved from three sources (highest precedence first):</p>
+    <ol>
+      <li><strong>Persona default filter</strong> &mdash; if the query is bound to a persona that defines a filter for this parameter.</li>
+      <li><strong>JDBC session variable</strong> &mdash; set via <code>SET app.&lt;param_name&gt; = &lt;value&gt;</code> in the session.</li>
+      <li><strong>Model default value</strong> &mdash; the default defined on the parameter.</li>
+    </ol>
+    <p>If no value is available from any source and the parameter has no default, the query fails with a clear error naming the unresolved parameter.</p>
+
+    <h2>JDBC session variables</h2>
+    <p>BI tools connected via JDBC can set parameter values per session:</p>
+    <pre><code>SET app.region = 'APAC';
+SET app.date_start = '2025-01-01';
+SELECT * FROM sales WHERE region = @region;</code></pre>
+    <p>The <code>app.</code> prefix is required. Session variables persist for the lifetime of the JDBC connection and are cleared on disconnect.</p>
+
+    <h2>Worked example</h2>
+    <p>A modeller defines <code>@region</code> (string, default <code>"ALL"</code>) and <code>@report_date</code> (date_range). A DBeaver user runs <code>SET app.region = 'EMEA'</code> then queries &mdash; the engine resolves <code>@region</code> to <code>'EMEA'</code> from the session variable. A different user connects via a persona with <code>default_filters: {"region": "APAC"}</code> and gets <code>'APAC'</code> &mdash; the persona filter takes precedence.</p>
+
+    <h2>Best practices</h2>
+    <ul>
+      <li><strong>Use parameters for values that vary by audience.</strong> If every user sees the same filter, a regular WHERE clause is simpler.</li>
+      <li><strong>Set sensible defaults.</strong> A parameter without a default requires every caller to supply a value.</li>
+      <li><strong>Constrain with allowed values.</strong> For <code>string</code> and <code>multi_value</code> types, an allowed-values list prevents unexpected filter values.</li>
+      <li><strong>Name consistently.</strong> Adopt a convention like <code>@report_date_start</code>, <code>@region_filter</code>.</li>
+    </ul>
+
+    <div class="related">
+      <h2>Related</h2>
+      <ul>
+        <li><a href="configure-personas.html">Configure Personas</a></li>
+        <li><a href="define-dimensions.html">Define Dimensions</a></li>
+        <li><a href="../integrations/jdbc-connection-guide.html">JDBC Connection Guide</a></li>
+      </ul>
+    </div>
+  </main>
+
+  <nav class="page-nav">
+    <a href="export-and-import-a-project.html" class="page-nav-btn prev">&larr; Export and Import a Project</a>
+    <a href="../index.html" class="page-nav-btn home">Home</a>
+    <a href="data-quality-rules.html" class="page-nav-btn next">Data Quality Rules &rarr;</a>
+  </nav>
+  <footer class="site-footer">
+    <p>Tessallite Help &mdash; <a href="../index.html">Back to contents</a></p>
+  </footer>
+</body>
+</html>

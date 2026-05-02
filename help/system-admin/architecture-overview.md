@@ -92,4 +92,4 @@ All six services keep no local state. All persistent state lives in the internal
 
 ---
 
-← [Model Configuration](../admin/model-configuration.md) | [Home](../index.md) | [Deploy Locally →](deploy-local.md)
+← [Scheduler SLA Declarations](../admin/scheduler-sla.md) | [Home](../index.md) | [Deploy Locally →](deploy-local.md)

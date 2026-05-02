@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scheduler SLA Declarations — Tessallite Help</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/help.css">
+</head>
+<body>
+  <header class="site-header">
+    <a href="../index.html" class="logo">Tessallite Help</a>
+    <nav class="breadcrumb">
+      <a href="../index.html">Home</a> / <span>Administration</span> / <span>Scheduler SLA Declarations</span>
+    </nav>
+  </header>
+  <main class="article">
+    <div class="article-meta">
+      <span class="audience-badge">Tenant Admin</span>
+      <span class="updated">Updated 2026-05-02</span>
+    </div>
+    <h1>Scheduler SLA Declarations</h1>
+
+    <h2>What this covers</h2>
+    <p>SLA declarations let you set a maximum allowed duration for aggregate refresh jobs. When a refresh exceeds the declared duration, the SLA monitor records a breach and fires a webhook.</p>
+
+    <h2>Why SLA declarations matter</h2>
+    <p>Refresh jobs run on a schedule and are mostly unattended. Without declared SLAs, a job that takes 4 hours instead of 30 minutes will not surface any alert. Users discover the problem only when dashboards show stale data.</p>
+    <p>An SLA declaration adds a policy layer: &ldquo;this job should complete in under N minutes; if it does not, notify the on-call channel.&rdquo;</p>
+
+    <h2>Defining an SLA</h2>
+    <ol>
+      <li>Open the Scheduler panel.</li>
+      <li>Switch to the <strong>SLA Declarations</strong> tab.</li>
+      <li>Click <strong>Add SLA</strong>.</li>
+      <li>Fill in the schedule name, max duration in minutes, and an optional webhook URL.</li>
+      <li>Save.</li>
+    </ol>
+    <p>Or via API:</p>
+    <pre><code>POST /api/v1/scheduler/sla
+{
+  "schedule_id": "&lt;uuid&gt;",
+  "max_duration_minutes": 30,
+  "webhook_url": "https://hooks.example.com/sla-breach"
+}</code></pre>
+
+    <h2>How the monitor works</h2>
+    <p>The SLA monitor runs as an hourly sweep. On each run it:</p>
+    <ol>
+      <li>Finds all refresh jobs running or completed within the last 24 hours.</li>
+      <li>For each job with an SLA, checks whether <code>started_at + max_duration_minutes</code> has been exceeded.</li>
+      <li>Records a breach if the deadline has passed and the job is still running, or if it completed after the deadline.</li>
+      <li>Fires the configured webhook if one is set.</li>
+    </ol>
+
+    <h2>Breach webhook payload</h2>
+    <pre><code>{
+  "event": "sla_breach",
+  "schedule_id": "&lt;uuid&gt;",
+  "schedule_name": "Daily main refresh",
+  "sla_id": "&lt;uuid&gt;",
+  "max_duration_minutes": 30,
+  "actual_duration_minutes": 47,
+  "started_at": "2026-05-02T03:00:00Z",
+  "detected_at": "2026-05-02T04:00:00Z"
+}</code></pre>
+
+    <h2>Retry behaviour</h2>
+    <p>If the webhook call fails, the monitor retries up to 3 times with exponential backoff. Failed deliveries are visible in the SLA Declarations tab under <strong>Webhook delivery log</strong>.</p>
+
+    <h2>Limits</h2>
+    <ul>
+      <li>One SLA per schedule. A second SLA on the same schedule overwrites the first.</li>
+      <li>The monitor sweep runs hourly. Breaches between sweep runs are recorded on the next run.</li>
+      <li>Webhook delivery is best-effort; it is not a guaranteed delivery channel.</li>
+    </ul>
+
+    <div class="related-links">
+      <h2>Related</h2>
+      <ul>
+        <li><a href="../modelling/manage-aggregate-schedules.html">Manage Aggregate Schedules</a></li>
+        <li><a href="../modelling/run-a-refresh.html">Run a Refresh</a></li>
+        <li><a href="webhooks.html">Webhooks</a></li>
+      </ul>
+    </div>
+  </main>
+
+  <nav class="page-nav">
+    <a href="rbac-model-scoped.html" class="page-nav-btn prev">&larr; Model-Scoped RBAC</a>
+    <a href="../index.html" class="page-nav-btn home">Home</a>
+    <a href="../system-admin/architecture-overview.html" class="page-nav-btn next">Architecture Overview &rarr;</a>
+  </nav>
+  <footer class="site-footer">
+    <p>Tessallite Help &mdash; <a href="../index.html">Back to contents</a></p>
+  </footer>
+</body>
+</html>

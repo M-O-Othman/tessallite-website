@@ -68,4 +68,4 @@ The Lineage view displays a read-only directed graph showing how data flows thro
 
 ---
 
-← [Run a Refresh](run-a-refresh.md) | [Home](../index.md) | [View Diagnostics →](view-diagnostics.md)
+← [Data Preview](data-preview.md) | [Home](../index.md) | [View Diagnostics →](view-diagnostics.md)

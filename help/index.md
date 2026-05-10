@@ -41,6 +41,7 @@ Deploys and operates the Tessallite platform. Start with [Install locally](getti
 - [Connect a BI tool](getting-started/connect-a-bi-tool.md)
 - [Connect Excel](getting-started/connect-excel.md)
 - [Demo tenant: acme-demo](getting-started/acme-demo-tenant.md)
+- [Welcome wizard](getting-started/welcome-wizard.md)
 
 ## Concepts
 
@@ -52,6 +53,7 @@ Deploys and operates the Tessallite platform. Start with [Install locally](getti
 - [Query routing](concepts/query-routing.md)
 - [Model health](concepts/model-health.md)
 - [Roles and permissions](concepts/roles-and-permissions.md)
+- [Calendar types](concepts/calendar-types.md)
 
 ## Modelling
 
@@ -64,6 +66,8 @@ Deploys and operates the Tessallite platform. Start with [Install locally](getti
 - [Define measures](modelling/define-measures.md)
 - [Configure time variants](modelling/configure-time-variants.md)
 - [Configure calendar table](modelling/configure-calendar-table.md)
+- [Associate calendar with dimensions](modelling/associate-calendar-with-dimensions.md)
+- [Multi-calendar best practices](modelling/multi-calendar-best-practices.md)
 - [Calculated measures](modelling/calculated-measures.md)
 - [Model canvas tour](modelling/model-canvas-tour.md)
 - [Measure query panel](modelling/measure-query-panel.md)
@@ -77,8 +81,12 @@ Deploys and operates the Tessallite platform. Start with [Install locally](getti
 - [Cold-start latency](modelling/cold-start-latency.md)
 - [Configure pocket tables](modelling/configure-pocket-tables.md)
 - [Configure row security](modelling/configure-row-security.md)
+- [Data tags](modelling/data-tags.md)
+- [Column-level security](modelling/column-level-security.md)
 - [Configure personas](modelling/configure-personas.md)
 - [Run a refresh](modelling/run-a-refresh.md)
+- [Impact analysis](modelling/impact-analysis.md)
+- [Data preview](modelling/data-preview.md)
 - [View model lineage](modelling/view-model-lineage.md)
 - [View diagnostics](modelling/view-diagnostics.md)
 - [Use the AI optimiser](modelling/use-the-ai-optimiser.md)
@@ -130,6 +138,7 @@ Deploys and operates the Tessallite platform. Start with [Install locally](getti
 - [Supported data sources](integrations/supported-data-sources.md)
 - [API authentication](integrations/api-authentication.md)
 - [API reference](integrations/api-reference.md)
+- [Headless API](integrations/headless-api.md)
 
 ## Troubleshooting
 

@@ -85,4 +85,4 @@ pytest tests/e2e/test_acme_demo_modely.py
 
 ---
 
-← [Connect Excel](connect-excel.md) | [Home](../index.md) | [Workspaces and Tenants →](../concepts/workspaces-and-tenants.md)
+← [Connect Excel](connect-excel.md) | [Home](../index.md) | [Welcome Wizard →](welcome-wizard.md)

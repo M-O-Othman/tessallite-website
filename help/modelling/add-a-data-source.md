@@ -2,7 +2,7 @@
 title: "Add a Data Source"
 audience: modeller
 area: modelling
-updated: 2026-04-17
+updated: 2026-05-04
 ---
 
 ![Model Builder — data source settings panel.](../assets/screencaps/data-source-settings.png)
@@ -42,9 +42,11 @@ Each Tessallite project connects to exactly one data source. This article explai
 
 | Parameter | Required | Notes |
 |---|---|---|
-| Project ID | Yes | The GCP project ID that owns the BigQuery dataset. |
-| Dataset | Yes | The BigQuery dataset to expose. One dataset per project. |
-| Service account JSON | Yes | Full JSON key file. Account must have `bigquery.dataViewer` and `bigquery.jobUser` roles. |
+| Project ID | Yes | The GCP project ID that owns the BigQuery dataset (e.g. `my-gcp-project`). This is stored in the connection credentials and used to qualify table names as `project_id.dataset.table_name`. |
+| Service account JSON | Yes | Full JSON key file. Account must have `bigquery.dataViewer` and `bigquery.jobUser` roles. For calendar auto-create, the account also needs `bigquery.dataEditor`. |
+| Allow Tessallite to run DDL | No | Checkbox under connection settings. Required for calendar auto-create. Without it, you must run the DDL manually and bind the table. |
+
+When adding a BigQuery source to a model, the **Dataset** field specifies which BigQuery dataset to expose. Tessallite uses the project ID from the connection credentials and the dataset from the source configuration to build fully qualified table references: `project_id.dataset.table_name`. Identifiers with hyphens (common in GCP project IDs like `my-company-prod`) are automatically backtick-quoted in generated SQL.
 
 ### Hadoop / Spark Thrift Server
 
@@ -78,6 +80,17 @@ A successful test does not validate that specific schemas or tables exist.
 | Authentication failed | Wrong credentials or expired service account key. | Re-enter credentials. For BigQuery, generate a new key in the GCP console. |
 | Database does not exist | Misspelled database name or user lacks access. | Confirm the database name and access grant. |
 | Permission denied | User can connect but lacks SELECT on target schema. | Grant SELECT on the relevant schemas and tables. |
+
+---
+
+## Schema search and filter
+
+The table list in the Sources panel includes a search field that filters tables and columns as you type. This is useful when your source has hundreds of tables and you need to find a specific one.
+
+- **Search by table name:** Type part of the table name (e.g. `order`) to show only tables whose names contain the search term.
+- **Search by column name:** The search also matches column names within tables. A table appears in the filtered list if any of its columns match the search term.
+- **Match count indicator:** The count next to the search field shows how many tables match the current filter.
+- **Clear search:** Click the X button or clear the text to return to the full table list.
 
 ---
 

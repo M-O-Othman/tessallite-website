@@ -108,16 +108,17 @@
 
     <h2>Calendar tables are also aliases</h2>
     <p>A calendar table is a <code>ModelTable</code> alias whose <code>calendar_table_id</code> is set. Auto-create or Bind on the Sources panel provisions both the calendar registration and a companion alias in one step. Multiple calendars per source are allowed — for instance, a fiscal calendar and a Gregorian calendar — and each lives as its own alias.</p>
-    <p>If a model has more than one calendar alias, each <strong>time-variant measure</strong> picks which one it uses (see below).</p>
+    <p>Calendar tables are <strong>optional</strong> for time variants. Period boundaries are now computed from SQL expressions derived from the hierarchy's calendar type. Calendar tables remain useful for retail 4-4-5 periods, dense date enumeration, and custom period definitions. See <a href="configure-time-variants.html">Configure Time Variants</a>.</p>
 
-    <h3>Pinning a calendar on a time-variant measure</h3>
+    <h3>Pinning a calendar alias on a time-variant measure</h3>
+    <p>If your model uses calendar tables (rather than expression-based period boundaries), you can pin a specific calendar alias on a measure:</p>
     <ol>
       <li>Open <strong>Measures</strong>, pick a base measure, and click <strong>Edit</strong>.</li>
-      <li>Scroll to <strong>Time variants</strong>. The section shows a <strong>Calendar alias</strong> picker listing every <code>ModelTable</code> in the model with a calendar binding.</li>
-      <li>Pick the alias the measure should use. Period-aware variants (<code>_ytd</code>, <code>_qtd</code>, <code>_mtd</code>, <code>_prior_year</code>, <code>_yoy_growth</code>, …) are required to have one — the picker is starred when any such variant is enabled.</li>
-      <li>Tick the variants you need and save. All variants of this measure inherit the same calendar alias from the base.</li>
+      <li>Scroll to <strong>Time variants</strong>. If calendar tables exist in the model, a <strong>Calendar alias</strong> picker lists every <code>ModelTable</code> with a calendar binding.</li>
+      <li>Pick the alias the measure should use. When a calendar alias is selected, the query router uses the calendar table's pre-computed columns instead of expression-based boundaries.</li>
+      <li>Tick the variants you need and save.</li>
     </ol>
-    <p>If no alias has a calendar binding the panel shows the <em>"Period-aware time variants need a calendar alias"</em> hint instead of the picker; provision a calendar from the Sources panel first.</p>
+    <p>If no calendar alias is selected, the system derives period boundaries from the linked hierarchy's calendar type. Both paths produce correct results — the calendar table path is for backward compatibility and advanced use cases.</p>
 
     <h2>Naming conventions and best practices</h2>
     <ul>
@@ -136,7 +137,7 @@
       <li><strong>Reusing an old alias name from a deleted alias.</strong> The catalog rebuilds on save — refresh the model after delete-then-recreate so downstream caches see the new id, not the old one.</li>
       <li><strong>Editing the wrong alias.</strong> When two aliases share a physical name, they appear under the same source in the Sources panel. The display name is your visual cue; the alias string is the authoritative identifier in tooltips and the catalog.</li>
       <li><strong>Treating aliases as a renaming shortcut.</strong> Two aliases of the same physical table double the catalog's column count; keep aliases for genuine roles, not for cosmetic variation.</li>
-      <li><strong>Period-aware variants without a calendar alias.</strong> The variants save but routing falls through to live every time. Always pin a calendar alias when enabling period-aware variants.</li>
+      <li><strong>Period-aware variants without a calendar type.</strong> If the linked hierarchy has no calendar type set and no calendar alias is pinned, period-boundary variants will be ineligible. Set a calendar type on the hierarchy, or pin a calendar alias if using calendar tables.</li>
     </ul>
 
     <h2>What happens when you delete an alias</h2>

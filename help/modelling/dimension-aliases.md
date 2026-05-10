@@ -109,16 +109,18 @@ If you forget to add the second join, the catalog still publishes the second ali
 
 A calendar table is a `ModelTable` alias whose `calendar_table_id` is set. Auto-create or Bind on the Sources panel provisions both the calendar registration and a companion alias in one step. Multiple calendars per source are allowed — for instance, a fiscal calendar and a Gregorian calendar — and each lives as its own alias.
 
-If a model has more than one calendar alias, each **time-variant measure** picks which one it uses (see below).
+Calendar tables are **optional** for time variants. Period boundaries are now computed from SQL expressions derived from the hierarchy's calendar type. Calendar tables remain useful for retail 4-4-5 periods, dense date enumeration, and custom period definitions. See [Configure Time Variants](configure-time-variants.md).
 
-### Pinning a calendar on a time-variant measure
+### Pinning a calendar alias on a time-variant measure
+
+If your model uses calendar tables (rather than expression-based period boundaries), you can pin a specific calendar alias on a measure:
 
 1. Open **Measures**, pick a base measure, and click **Edit**.
-2. Scroll to **Time variants**. The section shows a **Calendar alias** picker listing every `ModelTable` in the model with a calendar binding.
-3. Pick the alias the measure should use. Period-aware variants (`_ytd`, `_qtd`, `_mtd`, `_prior_year`, `_yoy_growth`, …) are required to have one — the picker is starred when any such variant is enabled.
-4. Tick the variants you need and save. All variants of this measure inherit the same calendar alias from the base.
+2. Scroll to **Time variants**. If calendar tables exist in the model, a **Calendar alias** picker lists every `ModelTable` with a calendar binding.
+3. Pick the alias the measure should use. When a calendar alias is selected, the query router uses the calendar table's pre-computed columns instead of expression-based boundaries.
+4. Tick the variants you need and save.
 
-If no alias has a calendar binding the panel shows the *"Period-aware time variants need a calendar alias"* hint instead of the picker; provision a calendar from the Sources panel first.
+If no calendar alias is selected, the system derives period boundaries from the linked hierarchy's calendar type. Both paths produce correct results — the calendar table path is for backward compatibility and advanced use cases.
 
 ---
 

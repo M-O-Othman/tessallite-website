@@ -18,7 +18,7 @@
   <main class="article">
     <div class="article-meta">
       <span class="audience-badge">Modeller</span>
-      <span class="updated">Updated 2026-04-17</span>
+      <span class="updated">Updated 2026-05-04</span>
     </div>
 
     <h1>Add a Data Source</h1>
@@ -84,20 +84,23 @@
             <td>Stored encrypted; never shown in plain text after saving.</td>
           </tr>
           <tr>
-            <td rowspan="3"><strong>BigQuery</strong></td>
+            <td rowspan="4"><strong>BigQuery</strong></td>
             <td>Project ID</td>
             <td>Yes</td>
-            <td>The GCP project ID that owns the BigQuery dataset.</td>
-          </tr>
-          <tr>
-            <td>Dataset</td>
-            <td>Yes</td>
-            <td>The BigQuery dataset to expose. A project can only connect to one dataset at a time.</td>
+            <td>The GCP project ID that owns the BigQuery dataset (e.g. <code>my-gcp-project</code>). This is stored in the connection credentials and used to qualify table names as <code>project_id.dataset.table_name</code>.</td>
           </tr>
           <tr>
             <td>Service account JSON</td>
             <td>Yes</td>
-            <td>Paste the full JSON key file content. The service account must have <code>bigquery.dataViewer</code> and <code>bigquery.jobUser</code> roles.</td>
+            <td>Paste the full JSON key file content. The service account must have <code>bigquery.dataViewer</code> and <code>bigquery.jobUser</code> roles. For calendar auto-create, the account also needs <code>bigquery.dataEditor</code>.</td>
+          </tr>
+          <tr>
+            <td>Allow Tessallite to run DDL</td>
+            <td>No</td>
+            <td>Checkbox under connection settings. Required for calendar auto-create. Without it, you must run the DDL manually and bind the table.</td>
+          </tr>
+          <tr>
+            <td colspan="3" style="font-size: 0.85em; padding-top: 0.5em;">When adding a BigQuery source to a model, the <strong>Dataset</strong> field specifies which BigQuery dataset to expose. Tessallite uses the project ID from the connection credentials and the dataset from the source configuration to build fully qualified table references: <code>project_id.dataset.table_name</code>. Identifiers with hyphens (common in GCP project IDs like <code>my-company-prod</code>) are automatically backtick-quoted in generated SQL.</td>
           </tr>
           <tr>
             <td rowspan="3"><strong>Hadoop / Spark Thrift Server</strong></td>
@@ -180,9 +183,9 @@
   </main>
 
   <nav class="page-nav">
-    <a href="create-a-project.html" class="page-nav-btn prev">← Create a Project</a>
+    <a href="create-a-project.html" class="page-nav-btn prev">&larr; Create a Project</a>
     <a href="../index.html" class="page-nav-btn home">Home</a>
-    <a href="add-tables-to-a-model.html" class="page-nav-btn next">Add Tables to a Model →</a>
+    <a href="add-tables-to-a-model.html" class="page-nav-btn next">Add Tables to a Model &rarr;</a>
   </nav>
 
   <footer class="site-footer">

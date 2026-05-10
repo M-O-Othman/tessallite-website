@@ -2,7 +2,7 @@
 title: "View Diagnostics"
 audience: modeller
 area: Modelling
-updated: 2026-04-17
+updated: 2026-05-04
 ---
 
 ![Model Builder — Health tab.](../assets/screencaps/model-health-tab.png)
@@ -55,6 +55,28 @@ Click any row in the diagnostic list. The Canvas scrolls to and highlights the a
 ## Resolving errors before building aggregates
 
 Any Error-severity diagnostic blocks the aggregate build process for the affected objects. Resolve all Errors first, save the model, then proceed to build or schedule aggregates.
+
+---
+
+## Source statistics (BigQuery and Spark)
+
+Tessallite collects column-level statistics from your data sources to inform aggregate design and model health. The statistics collector works differently depending on the source type:
+
+| Source type | Statistics method | Precision |
+|---|---|---|
+| PostgreSQL | `pg_stats` system catalog (no extra query) | Exact (from ANALYZE) |
+| BigQuery | `INFORMATION_SCHEMA.COLUMN_FIELD_PATHS` + `APPROX_COUNT_DISTINCT` | Approximate cardinality (HyperLogLog) |
+| Spark / Hive | `DESCRIBE EXTENDED` + `ANALYZE TABLE COMPUTE STATISTICS` | Exact (from COMPUTE STATISTICS) |
+
+**What statistics are collected:**
+- Row count per table
+- Cardinality (distinct value count) per column
+- NULL percentage per column
+- Min/max values for numeric and date columns
+
+**How to trigger a refresh:** Statistics are collected automatically during schema sync. For non-PostgreSQL sources, you can also trigger a manual refresh from the table's Drawer by clicking **Refresh Statistics**.
+
+**Precision differences:** BigQuery uses `APPROX_COUNT_DISTINCT`, which is based on HyperLogLog and may differ from the exact count by up to 1-2% for high-cardinality columns. PostgreSQL and Spark provide exact counts. The statistics panel displays an "(approx)" label next to BigQuery cardinality values.
 
 ---
 

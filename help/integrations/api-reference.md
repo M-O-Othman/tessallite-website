@@ -2,7 +2,7 @@
 title: "API Reference"
 audience: modeller
 area: Integrations
-updated: 2026-04-17
+updated: 2026-05-04
 ---
 
 ## What this covers
@@ -69,12 +69,30 @@ Modeller or higher.
 
 ---
 
+## Headless API (query-router)
+
+JSON-in, JSON-out query interface for non-SQL clients. Base URL for headless: `http://HOST:3000/query-router/api/v1/headless`.
+
+| Method | Path | Auth required | Description |
+|--------|------|---------------|-------------|
+| `POST` | `/query` | JWT | Execute a semantic query. Body: `{project_id, model_id, measures, dimensions, filters, limit, offset, order_by}`. Returns `{columns, rows, total_rows, query_id}`. |
+| `GET` | `/models` | JWT | List all models accessible to the caller's tenant. |
+| `GET` | `/models/{model_id}/measures` | JWT | List measures in a model with name, display_name, format, aggregation_type, variant_kind. |
+| `GET` | `/models/{model_id}/dimensions` | JWT | List dimensions in a model with name, display_name, is_time_dim. |
+
+Rate limit: 100 requests/minute per tenant (configurable via `HEADLESS_RATE_LIMIT` env var). Returns `429 Too Many Requests` when exceeded. All responses include the `X-RateLimit-Remaining` header.
+
+See [Headless API](headless-api.md) for full documentation with worked examples.
+
+---
+
 ## Related
 
 - [API Authentication](api-authentication.md)
+- [Headless API](headless-api.md)
 - [Supported Data Sources](supported-data-sources.md)
 - [Common Errors](../troubleshooting/common-errors.md)
 
 ---
 
-← [API Authentication](api-authentication.md) | [Home](../index.md) | [Excel Connection Problems →](../troubleshooting/excel-connection-problems.md)
+← [API Authentication](api-authentication.md) | [Home](../index.md) | [Headless API →](headless-api.md)

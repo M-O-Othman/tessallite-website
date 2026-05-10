@@ -2,7 +2,7 @@
 title: "Measure Query Panel"
 audience: modeller
 area: modelling
-updated: 2026-04-24
+updated: 2026-05-06
 ---
 
 ## Why this panel exists
@@ -25,7 +25,7 @@ This page walks through what the panel can and cannot do, how the three dropdown
 
 - The model must have at least one deployed measure. Calculated measures are welcome — the panel handles drill-through for them specially (see below).
 - At least one dimension is typical but not required — a "just the measure" query collapses to a single-cell result, which is a useful sanity check for "does the measure return anything at all?".
-- If the measure is time-aware and you want to add variants (YTD, YoY, etc.), the model must have a configured calendar table. See [Configure Calendar Table](configure-calendar-table.md).
+- If the measure is time-aware and you want to add variants (YTD, YoY, etc.), the measure must be linked to a time hierarchy with a calendar type configured. A calendar table is not required — period boundaries are computed from SQL expressions. See [Configure Time Variants](configure-time-variants.md).
 
 ---
 
@@ -87,17 +87,43 @@ See [Live vs Aggregate](../querying/live-vs-aggregate.md) for a full walkthrough
 
 ---
 
-## One-click variants
+## One-click variants (the variant button)
 
-A measure that knows about time (measures with a configured time grain) grows a **+ Variant** button on the Measure dropdown. Clicking it reveals a row of chip options — YTD, MTD, QTD, PY, MoM, QoQ, YoY, LTM — each of which becomes a first-class measure column when clicked. No SQL, no new measure definition, no calculated-measure wrestle.
+Next to the Measure dropdown and the format button sits a small icon button: a function symbol (f) with a tiny plus sign (+). This is the **Add time variant** button. It lets you create time-intelligence variants of the selected measure — YTD, prior year, trailing average, year-over-year growth — directly from the pivot context without switching to the Measures panel.
+
+### How it works
+
+1. Select a measure in the Measure dropdown.
+2. Click the variant button (f+). A popover opens listing all 14 canonical variant kinds.
+3. Each variant shows one of three states:
+   - **Eligible**: displays the suggested name (e.g. `revenue_ytd`). Click to create the variant immediately.
+   - **Not eligible**: displays the specific reason in amber text — for example, "This measure is not linked to a time hierarchy." The popover includes a link to the Configure Time Variants help page.
+   - **Already added**: greyed out. The variant measure already exists in the catalog.
+4. For parametric variants (`trailing_n` and `moving_avg_n`), a number field appears where you enter the window size N. Defaults are 12 and 30 respectively.
+5. Clicking an eligible row creates a new measure in the catalog. The measure dropdown refreshes and the new variant can be selected for querying.
+
+### Prerequisites
+
+The variant button works on any base measure, but eligibility depends on the model configuration. If no variants are eligible, the popover shows a summary alert explaining the first blocking prerequisite and a link to the help documentation.
+
+The full prerequisite chain is:
+
+- **Base measure exists** — variant rows are derived from an existing measure.
+- **Time hierarchy created** with levels that have the correct time units and allowed time calculations.
+- **Measure linked to the hierarchy** — this is the step most often missed. Without the link, the system has no way to know which time capabilities apply to the measure.
+- **Calendar type configured on the hierarchy** (for period-boundary variants only) — YTD, prior year, quarter-to-date, and year-over-year variants need a calendar type (standard, fiscal, hijri, or iso) set on the linked time hierarchy. A physical calendar table is not required.
+
+See [Configure Time Variants](configure-time-variants.md) for the full setup walkthrough and troubleshooting table.
 
 ![The Measure Query Panel showing a row of time-variant chips expanded below the Measure dropdown, with a variant column added to the grid.](../assets/screencaps/measure-query-panel-variants.png)
 
-*Figure 2 — One-click variants. Each chip adds a measure column. The tooltip on each chip spells out the exact formula so analysts can audit what "YoY" means in this model. Full description: [measure-query-panel-variants.txt](../assets/screencaps/measure-query-panel-variants.txt).*
+*Figure 2 — The variant popover. Each row shows a variant kind with its eligibility status and reason. Full description: [measure-query-panel-variants.txt](../assets/screencaps/measure-query-panel-variants.txt).*
 
-Under the hood, the variant is rewritten to a SQL expression using the model's calendar table — Tessallite does not create persistent measures for variants, so the measure catalog stays clean. If a modeller uses the same variant frequently enough to want it catalogued, it can be promoted to a named calculated measure via the Measures panel.
+### What happens under the hood
 
-**A modelling note.** Variants only make sense on additive measures. A "Gross margin % YoY" is a ratio of ratios and almost always misleading — Tessallite will let you compute it, but the chip tooltips show the raw formula so the analyst can see what they are asking for.
+Each variant you create becomes a first-class measure row in the catalog, named `<base>_<variant>` (for example `revenue_ytd`). The variant row inherits the base measure's source column, aggregation, format, and data type. At query time, the query router rewrites the variant into a window function using SQL expressions derived from the hierarchy's calendar type. If a calendar table is present, the system uses it for backward compatibility. No data is duplicated in storage.
+
+**A modelling note.** Variants only make sense on additive measures. A "Gross margin % YoY" is a ratio of ratios and almost always misleading — Tessallite will let you compute it, but the variant tooltip shows the raw formula so the analyst can see what they are asking for.
 
 ---
 
@@ -106,6 +132,23 @@ Under the hood, the variant is rewritten to a SQL expression using the model's c
 Slicer chips sit below the Route badge and function as global `WHERE` predicates on the whole grid. Each chip is one predicate — `region in (EMEA, APAC)`, `year = 2024`, `channel != marketplace` — and every chip is AND'd. A click on a chip's body opens an edit popover; a click on the X removes the chip.
 
 The design intent is that slicers carry **global context** and the row / column dropdowns carry **what you are slicing by**. Mixing the two is the most common first-week mistake for a business user — they put a single-value dimension on rows, see one row, and wonder why. The slicer bar is always at the bottom so "what's constraining my result" is one glance away.
+
+### Filter types
+
+The slicer supports multiple filter modes depending on the dimension type and selected operator:
+
+| Filter mode | Operators | UI control | Best for |
+|---|---|---|---|
+| Multi-value | `in`, `not in` | Autocomplete with type-ahead search | Categorical dimensions (region, product) |
+| Single-value comparison | `eq`, `ne`, `gt`, `gte`, `lt`, `lte` | Text field | Numeric or string comparisons |
+| Date range | `between`, `eq`, `gt`, `gte`, `lt`, `lte` | Native date picker | Date/timestamp dimensions |
+| Null check | `is null`, `is not null` | (no value input) | Finding missing data |
+
+**Date-aware slicers.** When you add a slicer on a date dimension (`is_time_dim = true`), the operator defaults to `between` and the value inputs are date pickers. This is faster than scrolling through thousands of date value chips.
+
+**Type-ahead search.** Multi-value slicers on text dimensions include a search field. Type at least 2 characters and the autocomplete filters the value list after a 300ms debounce. This makes slicing on high-cardinality dimensions (e.g. product SKU, customer name) practical.
+
+**Numeric range filters.** For numeric dimensions, operators like `gt`, `gte`, `lt`, `lte` let you define range filters (e.g. "order_amount > 1000"). Combine two slicers for a range: `order_amount >= 100` AND `order_amount <= 500`.
 
 ---
 
@@ -186,7 +229,8 @@ The whole loop takes under two minutes. The measure is then safe to expose to a 
 | "Run" button greyed out | No measure selected | Pick a measure; dimensions alone are not a query |
 | Grid empty after Run | Slicer chips exclude every row | Check the chip row below the Route badge; remove the offending chip |
 | Cell values look right but totals look wrong | Subtotals off while dimension nesting on | Enable the subtotals toggle |
-| Variant chip missing on a time-aware measure | Calendar table not configured on the model | Run through [Configure Calendar Table](configure-calendar-table.md) |
+| Variant button shows all items as "not eligible" | Missing prerequisite: no time hierarchy, measure not linked to one, or no calendar type on the hierarchy | Check the reason text in the popover. See [Configure Time Variants](configure-time-variants.md) for the full prerequisite chain. |
+| Period-boundary variants show as "not eligible" | The linked time hierarchy has no calendar type configured | Edit the hierarchy in the Hierarchies panel and set a calendar type (standard, fiscal, hijri, or iso). See [Configure Time Variants](configure-time-variants.md). |
 | Cell click on calculated measure errors | Very old frontend cache | Hard-refresh; Phase 6 shipped the decomposed drawer |
 
 ---

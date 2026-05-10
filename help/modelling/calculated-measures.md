@@ -162,4 +162,4 @@ A minimal, copyable recipe for the single most-requested calculated measure.
 
 ---
 
-← [Configure Calendar Table](configure-calendar-table.md) | [Home](../index.md) | [Model Canvas Tour →](model-canvas-tour.md)
+← [Multi-Calendar Best Practices](multi-calendar-best-practices.md) | [Home](../index.md) | [Model Canvas Tour →](model-canvas-tour.md)

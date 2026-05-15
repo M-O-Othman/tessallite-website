@@ -168,4 +168,4 @@ All endpoints require `tenant_admin` role.
 
 ---
 
-[← SSO Configuration](sso-configuration.md) | [Home](../index.md) | [Security Audit Trail →](security-audit-trail.md)
+← [SSO Group Mappings](group-mappings.md) | [Home](../index.md) | [Security Audit Trail →](security-audit-trail.md)

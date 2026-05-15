@@ -2,12 +2,12 @@
 title: "Tessallite Help"
 audience: all
 area: getting-started
-updated: 2026-04-22
+updated: 2026-05-15
 ---
 
 ## What this covers
 
-This library documents Tessallite: how it works, how to connect BI tools, how to build models, and how to administer the platform. It covers all roles and all supported data sources.
+This library documents Tessallite: what it is, how to connect BI tools, how to build models, how the conversational agent works, and how to administer the platform. It covers the full product surface, from the Workspace Explorer and Model Builder to system configuration, BI integrations, and troubleshooting.
 
 ---
 
@@ -15,135 +15,146 @@ This library documents Tessallite: how it works, how to connect BI tools, how to
 
 ### Analyst
 
-Connects BI tools to Tessallite via JDBC or XMLA and queries data. Start with [What is Tessallite](getting-started/what-is-tessallite.md) and [Connect a BI tool](getting-started/connect-a-bi-tool.md).
+Connects BI tools to Tessallite via JDBC, XMLA, or the headless API and queries deployed models. Start with [What is Tessallite](getting-started/what-is-tessallite.md), [Workspace Explorer](getting-started/workspace-explorer.md), and [Connect a BI tool](getting-started/connect-a-bi-tool.md).
 
 ### Modeller
 
-Builds and maintains data models — defining dimensions, measures, joins, and aggregate policies. Start with [Projects and models](concepts/projects-and-models.md).
+Builds and maintains semantic models: sources, joins, dimensions, measures, calendars, aggregates, pockets, security, lineage, and diagnostics. Start with [Projects and models](concepts/projects-and-models.md) and [Model canvas tour](modelling/model-canvas-tour.md).
 
 ### Tenant Admin
 
-Manages users, roles, and settings for one workspace. Start with [Workspaces and tenants](concepts/workspaces-and-tenants.md) and [Roles and permissions](concepts/roles-and-permissions.md).
+Manages users, roles, SSO, webhooks, project settings, audit views, and agent configuration for one workspace. Start with [Manage users](admin/manage-users.md), [Project settings](admin/project-settings.md), and [SSO group mappings](admin/group-mappings.md).
 
 ### System Admin
 
-Deploys and operates the Tessallite platform. Start with [Install locally](getting-started/install-local.md) or [Install on GCP](getting-started/install-gcp.md).
+Deploys and operates the Tessallite platform. Start with [Architecture overview](system-admin/architecture-overview.md), [Deploy locally](system-admin/deploy-local.md), or [System configuration](system-admin/system-configuration.md).
 
 ---
 
 ## Getting Started
 
 - [What is Tessallite](getting-started/what-is-tessallite.md)
-- [How Tessallite works](getting-started/how-tessallite-works.md)
-- [Install locally](getting-started/install-local.md)
-- [Install on GCP](getting-started/install-gcp.md)
-- [First-time setup](getting-started/first-time-setup.md)
-- [Connect a BI tool](getting-started/connect-a-bi-tool.md)
-- [Connect Excel](getting-started/connect-excel.md)
+- [How Tessallite Works](getting-started/how-tessallite-works.md)
+- [First-Time Setup](getting-started/first-time-setup.md)
+- [Welcome Wizard](getting-started/welcome-wizard.md)
+- [Workspace Explorer](getting-started/workspace-explorer.md)
 - [Demo tenant: acme-demo](getting-started/acme-demo-tenant.md)
-- [Welcome wizard](getting-started/welcome-wizard.md)
+- [Install Tessallite Locally](getting-started/install-local.md)
+- [Deploy Tessallite to Google Cloud Platform](getting-started/install-gcp.md)
+- [Connect a BI Tool via JDBC](getting-started/connect-a-bi-tool.md)
+- [Connect Excel via XMLA](getting-started/connect-excel.md)
 
-## Concepts
+## Core Concepts
 
-- [Workspaces and tenants](concepts/workspaces-and-tenants.md)
-- [Projects and models](concepts/projects-and-models.md)
-- [Sources, tables, and joins](concepts/sources-tables-and-joins.md)
-- [Dimensions and measures](concepts/dimensions-and-measures.md)
+- [Workspaces and Tenants](concepts/workspaces-and-tenants.md)
+- [Projects and Models](concepts/projects-and-models.md)
+- [Sources, Tables, and Joins](concepts/sources-tables-and-joins.md)
+- [Dimensions and Measures](concepts/dimensions-and-measures.md)
 - [Aggregates](concepts/aggregates.md)
-- [Query routing](concepts/query-routing.md)
-- [Model health](concepts/model-health.md)
-- [Roles and permissions](concepts/roles-and-permissions.md)
-- [Calendar types](concepts/calendar-types.md)
+- [Query Routing](concepts/query-routing.md)
+- [Model Health](concepts/model-health.md)
+- [Roles and Permissions](concepts/roles-and-permissions.md)
+- [Calendar Types](concepts/calendar-types.md)
 
 ## Modelling
 
-- [Create a project](modelling/create-a-project.md)
-- [Add a data source](modelling/add-a-data-source.md)
-- [Add tables to a model](modelling/add-tables-to-a-model.md)
-- [Define joins](modelling/define-joins.md)
-- [Define dimensions](modelling/define-dimensions.md)
-- [Dimension aliases](modelling/dimension-aliases.md)
-- [Define measures](modelling/define-measures.md)
-- [Configure time variants](modelling/configure-time-variants.md)
-- [Configure calendar table](modelling/configure-calendar-table.md)
-- [Associate calendar with dimensions](modelling/associate-calendar-with-dimensions.md)
-- [Multi-calendar best practices](modelling/multi-calendar-best-practices.md)
-- [Calculated measures](modelling/calculated-measures.md)
-- [Model canvas tour](modelling/model-canvas-tour.md)
-- [Measure query panel](modelling/measure-query-panel.md)
-- [Live vs aggregate (Route badge, Force Live)](querying/live-vs-aggregate.md)
+- [Create a Project](modelling/create-a-project.md)
+- [Add a Data Source](modelling/add-a-data-source.md)
+- [Add Tables to a Model](modelling/add-tables-to-a-model.md)
+- [Table Auto-Analysis](modelling/table-auto-analysis.md)
+- [Model Canvas Tour](modelling/model-canvas-tour.md)
+- [Define Joins](modelling/define-joins.md)
+- [Define Dimensions](modelling/define-dimensions.md)
+- [Dimension Aliases](modelling/dimension-aliases.md)
+- [Define Measures](modelling/define-measures.md)
+- [Calculated Measures](modelling/calculated-measures.md)
+- [Configure Time Variants](modelling/configure-time-variants.md)
+- [Configure Calendar Table](modelling/configure-calendar-table.md)
+- [Associate Calendar with Dimensions](modelling/associate-calendar-with-dimensions.md)
+- [Multi-Calendar Best Practices](modelling/multi-calendar-best-practices.md)
+- [Measure Query Panel](modelling/measure-query-panel.md)
+- [Live vs Aggregate](querying/live-vs-aggregate.md)
 - [Drill-through](modelling/drill-through.md)
 - [Curate drill-through](modelling/curate-drill-through.md)
-- [Set a query target](modelling/set-a-query-target.md)
-- [Configure aggregates](modelling/configure-aggregates.md)
-- [Predictive aggregates](modelling/predictive-aggregates.md)
-- [Aggregate lifecycle](modelling/aggregate-lifecycle.md)
-- [Cold-start latency](modelling/cold-start-latency.md)
-- [Configure pocket tables](modelling/configure-pocket-tables.md)
-- [Configure row security](modelling/configure-row-security.md)
-- [Data tags](modelling/data-tags.md)
-- [Column-level security](modelling/column-level-security.md)
-- [Configure personas](modelling/configure-personas.md)
-- [Run a refresh](modelling/run-a-refresh.md)
-- [Impact analysis](modelling/impact-analysis.md)
-- [Data preview](modelling/data-preview.md)
-- [View model lineage](modelling/view-model-lineage.md)
-- [View diagnostics](modelling/view-diagnostics.md)
-- [Use the AI optimiser](modelling/use-the-ai-optimiser.md)
-- [Manage aggregate schedules](modelling/manage-aggregate-schedules.md)
-- [Save and version a model](modelling/save-and-version-a-model.md)
-- [Deploy a model](modelling/deploy-a-model.md)
-- [Export and import a model](modelling/export-and-import-a-model.md)
-- [Export and import a project](modelling/export-and-import-a-project.md)
-- [Parameterized filters](modelling/parameterized-filters.md)
+- [Set a Query Target](modelling/set-a-query-target.md)
+- [Configure Aggregates](modelling/configure-aggregates.md)
+- [Predictive Aggregates](modelling/predictive-aggregates.md)
+- [Aggregate Lifecycle](modelling/aggregate-lifecycle.md)
+- [Cold-start Latency](modelling/cold-start-latency.md)
+- [Configure Pocket Tables](modelling/configure-pocket-tables.md)
+- [Run a Refresh](modelling/run-a-refresh.md)
+- [Manage Aggregate Schedules](modelling/manage-aggregate-schedules.md)
+- [Use the AI Optimiser](modelling/use-the-ai-optimiser.md)
+- [Usage Analytics](modelling/usage-analytics.md)
+- [Configure Row Security](modelling/configure-row-security.md)
+- [Data Tags](modelling/data-tags.md)
+- [Column-Level Security](modelling/column-level-security.md)
+- [Configure Personas](modelling/configure-personas.md)
+- [Parameterized Filters](modelling/parameterized-filters.md)
+- [Data Quality Rules](modelling/data-quality-rules.md)
+- [Impact Analysis](modelling/impact-analysis.md)
+- [Data Preview](modelling/data-preview.md)
+- [Schema Changes](modelling/schema-changes.md)
+- [View Model Lineage](modelling/view-model-lineage.md)
+- [View Diagnostics](modelling/view-diagnostics.md)
+- [Save and Version a Model](modelling/save-and-version-a-model.md)
+- [Deploy a Model](modelling/deploy-a-model.md)
+- [Export and Import a Model](modelling/export-and-import-a-model.md)
+- [Export and Import a Project](modelling/export-and-import-a-project.md)
 
 ## Conversational Agent
 
+- [Agent Chat](agent/agent-chat.md)
 - [Configure your project agent](agent/configure-agent.md)
+- [Project-Level Personas](agent/project-personas.md)
 - [Author the glossary alias map](agent/glossary-alias-map.md)
 - [Write a judge rubric](agent/write-a-judge-rubric.md)
 - [Cross-model calculation recipes](agent/cross-model-recipes.md)
 - [Agent log screen](agent/agent-log-screen.md)
-- [Agent session memory](agent/session-memory.md)
+- [Agent Session Memory](agent/session-memory.md)
 
 ## Admin
 
-- [Create a workspace](admin/create-a-workspace.md)
-- [Manage users](admin/manage-users.md)
-- [Manage roles](admin/manage-roles.md)
-- [Workspace settings](admin/workspace-settings.md)
-- [Project settings](admin/project-settings.md)
-- [Model configuration](admin/model-configuration.md)
-- [Audit log](admin/audit-log.md)
-- [SSO configuration](admin/sso-configuration.md)
+- [Create a Workspace](admin/create-a-workspace.md)
+- [Manage Users](admin/manage-users.md)
+- [Manage Roles](admin/manage-roles.md)
+- [Model-Scoped RBAC](admin/rbac-model-scoped.md)
+- [Workspace Settings](admin/workspace-settings.md)
+- [Project Settings](admin/project-settings.md)
+- [Model Configuration](admin/model-configuration.md)
+- [Audit Log](admin/audit-log.md)
+- [SSO Configuration](admin/sso-configuration.md)
+- [SSO Group Mappings](admin/group-mappings.md)
 - [Webhooks](admin/webhooks.md)
+- [Security Audit Trail](admin/security-audit-trail.md)
+- [Scheduler SLA Declarations](admin/scheduler-sla.md)
 
 ## System Admin
 
-- [Architecture overview](system-admin/architecture-overview.md)
-- [Deploy locally (reference)](system-admin/deploy-local.md)
-- [Deploy on GCP (reference)](system-admin/deploy-gcp.md)
-- [Configure environment variables](system-admin/configure-environment-variables.md)
-- [System configuration](system-admin/system-configuration.md)
-- [Credentials and the .env file](system-admin/credentials-and-env.md)
-- [Service reference](system-admin/service-reference.md)
+- [Architecture Overview](system-admin/architecture-overview.md)
+- [Deploy Locally](system-admin/deploy-local.md)
+- [Deploy on GCP](system-admin/deploy-gcp.md)
+- [Configure Environment Variables](system-admin/configure-environment-variables.md)
+- [System Configuration](system-admin/system-configuration.md)
+- [Credentials and the .env File](system-admin/credentials-and-env.md)
+- [Service Reference](system-admin/service-reference.md)
 - [Teardown](system-admin/teardown.md)
 - [Upgrade](system-admin/upgrade.md)
 
 ## Integrations
 
-- [JDBC connection guide](integrations/jdbc-connection-guide.md)
-- [Excel XMLA connection guide](integrations/excel-xmla-connection-guide.md)
-- [Power BI connection guide](integrations/powerbi-connection-guide.md)
-- [Supported data sources](integrations/supported-data-sources.md)
-- [API authentication](integrations/api-authentication.md)
-- [API reference](integrations/api-reference.md)
+- [JDBC Connection Guide](integrations/jdbc-connection-guide.md)
+- [Excel XMLA Connection Guide](integrations/excel-xmla-connection-guide.md)
+- [Power BI Connection Guide](integrations/powerbi-connection-guide.md)
+- [Supported Data Sources](integrations/supported-data-sources.md)
+- [API Authentication](integrations/api-authentication.md)
+- [API Reference](integrations/api-reference.md)
 - [Headless API](integrations/headless-api.md)
 
 ## Troubleshooting
 
-- [Excel connection problems](troubleshooting/excel-connection-problems.md)
-- [Query returns wrong results](troubleshooting/query-returns-wrong-results.md)
-- [Aggregates not building](troubleshooting/aggregates-not-building.md)
-- [Service not starting](troubleshooting/service-not-starting.md)
-- [Common errors](troubleshooting/common-errors.md)
+- [Excel Connection Problems](troubleshooting/excel-connection-problems.md)
+- [Query Returns Wrong Results](troubleshooting/query-returns-wrong-results.md)
+- [Aggregates Not Building](troubleshooting/aggregates-not-building.md)
+- [Service Not Starting](troubleshooting/service-not-starting.md)
+- [Common Errors](troubleshooting/common-errors.md)

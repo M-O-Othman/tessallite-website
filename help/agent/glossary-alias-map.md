@@ -9,7 +9,6 @@ updated: 2026-04-26
 
 The glossary alias map is the per-model context the agent reads alongside the project brief. It teaches the answer LLM how a model is shaped, what its measures actually mean, and how to disambiguate the abbreviations users type. This article explains the parts of the glossary, why each part matters for answer quality, and how to write entries that hold up under real questions.
 
-[Previous: Configure your project agent](configure-agent.md) — [Home](../index.md) — Next: [Write a judge rubric](write-a-judge-rubric.md)
 
 ---
 
@@ -113,4 +112,6 @@ The bundled `modelx` in the demo tenant ships with a minimal glossary. Here is a
 - [Write a judge rubric](write-a-judge-rubric.md)
 - [Cross-model calculation recipes](cross-model-recipes.md)
 
-[Previous: Configure your project agent](configure-agent.md) — [Home](../index.md) — Next: [Write a judge rubric](write-a-judge-rubric.md)
+---
+
+← [Project-Level Personas](project-personas.md) | [Home](../index.md) | [Write a judge rubric →](write-a-judge-rubric.md)

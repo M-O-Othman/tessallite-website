@@ -187,4 +187,4 @@ Under one minute. The modeller has the shape, the coverage, and the one open que
 
 ---
 
-← [Calculated Measures](calculated-measures.md) | [Home](../index.md) | [Measure Query Panel →](measure-query-panel.md)
+← [Table Auto-Analysis](table-auto-analysis.md) | [Home](../index.md) | [Define Joins →](define-joins.md)

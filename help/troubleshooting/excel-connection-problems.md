@@ -59,4 +59,4 @@ Any HTTP response (even a server-side error) confirms the port is reachable. A t
 
 ---
 
-← [API Reference](../integrations/api-reference.md) | [Home](../index.md) | [Query Returns Wrong Results →](query-returns-wrong-results.md)
+← [Headless API](../integrations/headless-api.md) | [Home](../index.md) | [Query Returns Wrong Results →](query-returns-wrong-results.md)

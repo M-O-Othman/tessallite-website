@@ -101,4 +101,4 @@ Each rule keeps a violation history. Click the expand button on a rule row to se
 
 ---
 
-← [Parameterized Filters](parameterized-filters.md) | [Home](../index.md) | [Table Auto-Analysis →](table-auto-analysis.md)
+← [Parameterized Filters](parameterized-filters.md) | [Home](../index.md) | [Impact Analysis →](impact-analysis.md)

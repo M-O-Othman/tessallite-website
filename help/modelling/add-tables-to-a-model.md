@@ -69,4 +69,4 @@ Select the table in the Canvas, then click **Remove from Model** in the Drawer. 
 
 ---
 
-← [Add a Data Source](add-a-data-source.md) | [Home](../index.md) | [Define Joins →](define-joins.md)
+← [Add a Data Source](add-a-data-source.md) | [Home](../index.md) | [Table Auto-Analysis →](table-auto-analysis.md)

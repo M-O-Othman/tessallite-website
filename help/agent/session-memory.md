@@ -129,4 +129,4 @@ The `conversation_retention_days` setting on the Retention tab controls automati
 
 ---
 
-[← Agent Log Screen](agent-log-screen.md) | [Home](../index.md)
+← [Agent log screen](agent-log-screen.md) | [Home](../index.md) | [Create a Workspace →](../admin/create-a-workspace.md)

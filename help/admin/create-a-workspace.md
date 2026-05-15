@@ -67,4 +67,4 @@ Share the slug with Analysts so they can configure their connections correctly.
 
 ---
 
-← [Manage Aggregate Schedules](../modelling/manage-aggregate-schedules.md) | [Home](../index.md) | [Manage Users →](manage-users.md)
+← [Agent Session Memory](../agent/session-memory.md) | [Home](../index.md) | [Manage Users →](manage-users.md)

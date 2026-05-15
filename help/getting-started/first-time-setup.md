@@ -67,4 +67,4 @@ Skip this part if the deploy script already created a tenant user — the script
 
 ---
 
-← [Install on GCP](install-gcp.md) | [Home](../index.md) | [Connect a BI Tool →](connect-a-bi-tool.md)
+← [How Tessallite Works](how-tessallite-works.md) | [Home](../index.md) | [Welcome Wizard →](welcome-wizard.md)

@@ -85,4 +85,4 @@ pytest tests/e2e/test_acme_demo_modely.py
 
 ---
 
-← [Connect Excel](connect-excel.md) | [Home](../index.md) | [Welcome Wizard →](welcome-wizard.md)
+← [Workspace Explorer](workspace-explorer.md) | [Home](../index.md) | [Install Tessallite Locally →](install-local.md)

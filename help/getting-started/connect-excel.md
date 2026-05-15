@@ -40,7 +40,7 @@ Connecting Microsoft Excel to a Tessallite workspace via the XMLA endpoint, sele
 4. In the **Password** field, enter your Tessallite password.
 5. Click **Next**.
 
-![Excel Data Connection Wizard — server name and credentials fields.](../assets/screencaps/connect-excel-wizard.txt)
+![Excel Data Connection Wizard — server name and credentials fields.](../assets/screencaps/connect-excel-wizard.png)
 
 ---
 
@@ -53,7 +53,7 @@ Connecting Microsoft Excel to a Tessallite workspace via the XMLA endpoint, sele
 3. Select the catalogue you want to connect to. For most purposes, select the plain name.
 4. Click **Next**, then click **Finish**.
 
-![Excel Data Connection Wizard — catalogue selection showing 'orders' and 'orders_technical'.](../assets/screencaps/connect-excel-catalogue.txt)
+![Excel Data Connection Wizard — catalogue selection showing model and persona catalogues.](../assets/screencaps/connect-excel-catalogue.png)
 
 ---
 
@@ -104,4 +104,4 @@ Replace `<hostname>` with the gateway host and `<workspace-slug>` with your work
 
 ---
 
-← [Connect a BI Tool](connect-a-bi-tool.md) | [Home](../index.md) | [Demo tenant: acme-demo →](acme-demo-tenant.md)
+← [Connect a BI Tool via JDBC](connect-a-bi-tool.md) | [Home](../index.md) | [Workspaces and Tenants →](../concepts/workspaces-and-tenants.md)

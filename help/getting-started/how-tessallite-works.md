@@ -58,4 +58,4 @@ A modeller defines dimensions — the ways data can be sliced — and measures �
 
 ---
 
-← [What is Tessallite](what-is-tessallite.md) | [Home](../index.md) | [Install Locally →](install-local.md)
+← [What is Tessallite](what-is-tessallite.md) | [Home](../index.md) | [First-Time Setup →](first-time-setup.md)

@@ -52,4 +52,4 @@ A reference table of error messages returned by Tessallite services and the Gate
 
 ---
 
-← [Service Not Starting](service-not-starting.md) | [Home](../index.md) | →
+← [Service Not Starting](service-not-starting.md) | [Home](../index.md) | [Tessallite Help →](../index.md)

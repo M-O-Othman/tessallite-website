@@ -117,4 +117,4 @@ Start order from scratch: postgres → model-service → (query-router, optimize
 
 ---
 
-← [Credentials and the .env file](credentials-and-env.md) | [Home](../index.md) | [Teardown →](teardown.md)
+← [Credentials and the .env File](credentials-and-env.md) | [Home](../index.md) | [Teardown →](teardown.md)

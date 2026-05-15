@@ -100,4 +100,4 @@ Adding calendar types you don't query adds complexity to the variant resolver. I
 
 ---
 
-← [Associate Calendar with Dimensions](associate-calendar-with-dimensions.md) | [Home](../index.md) | [Calculated Measures →](calculated-measures.md)
+← [Associate Calendar with Dimensions](associate-calendar-with-dimensions.md) | [Home](../index.md) | [Measure Query Panel →](measure-query-panel.md)

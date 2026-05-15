@@ -7,6 +7,8 @@ updated: 2026-05-04
 
 ## What this covers
 
+![Live Welcome route as rendered in the deployed acme-demo application.](../assets/screencaps/welcome-wizard-live.png)
+
 The welcome wizard is a guided first-time setup flow that walks new users through the core steps of using Tessallite: connecting a data source, building a model, running a query, and connecting a BI tool. This article explains what each step covers, when to skip, and how to relaunch the wizard later.
 
 ---
@@ -75,4 +77,4 @@ Relaunching does not reset your onboarding status — it simply shows the wizard
 
 ---
 
-← [Demo Tenant: acme-demo](acme-demo-tenant.md) | [Home](../index.md) | [Workspaces and Tenants →](../concepts/workspaces-and-tenants.md)
+← [First-Time Setup](first-time-setup.md) | [Home](../index.md) | [Workspace Explorer →](workspace-explorer.md)

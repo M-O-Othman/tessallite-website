@@ -9,7 +9,6 @@ updated: 2026-04-27
 
 Every Tessallite project can carry an embedded conversational agent. The agent answers questions in natural language by translating them into queries against the project's published models. This article explains what the agent is, when it is the right tool, and how to configure it without weakening the project's safety, brand, and observability posture.
 
-[Home](../index.md) — Next: [Author the glossary alias map](glossary-alias-map.md)
 
 ---
 
@@ -137,4 +136,6 @@ Once enabled, the agent earns its keep through three feedback loops:
 - [Write a judge rubric](write-a-judge-rubric.md)
 - [Cross-model calculation recipes](cross-model-recipes.md)
 
-← [Table Auto-Analysis](../modelling/table-auto-analysis.md) | [Home](../index.md) | [Author the glossary alias map →](glossary-alias-map.md)
+---
+
+← [Agent Chat](agent-chat.md) | [Home](../index.md) | [Project-Level Personas →](project-personas.md)

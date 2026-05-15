@@ -96,4 +96,4 @@ An aggregate is marked **Stale** when its last successful refresh completed more
 
 ---
 
-← [Use the AI Optimiser](use-the-ai-optimiser.md) | [Home](../index.md) | [Create a Workspace →](../admin/create-a-workspace.md)
+← [Run a Refresh](run-a-refresh.md) | [Home](../index.md) | [Use the AI Optimiser →](use-the-ai-optimiser.md)

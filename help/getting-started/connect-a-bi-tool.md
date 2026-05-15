@@ -46,7 +46,7 @@ The workspace slug is the identifier for your tenant. It is case-sensitive. If y
 6. Click **Finish**.
 7. The connection appears in the left panel. Expand it to see the available tables. Each model published in the workspace appears as a schema.
 
-![DBeaver New Connection dialog with PostgreSQL selected.](../assets/screencaps/connect-jdbc-dbeaver.txt)
+![DBeaver New Connection dialog with PostgreSQL selected.](../assets/screencaps/connect-jdbc-dbeaver.png)
 
 ---
 
@@ -106,4 +106,4 @@ Each model published in the workspace appears as a schema. Within each schema, t
 
 ---
 
-← [First-Time Setup](first-time-setup.md) | [Home](../index.md) | [Connect Excel →](connect-excel.md)
+← [Deploy Tessallite to Google Cloud Platform](install-gcp.md) | [Home](../index.md) | [Connect Excel via XMLA →](connect-excel.md)

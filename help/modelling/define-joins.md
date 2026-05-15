@@ -83,4 +83,4 @@ Click the join line in the Canvas, then click **Delete Join** in the Drawer. Dim
 
 ---
 
-← [Add Tables to a Model](add-tables-to-a-model.md) | [Home](../index.md) | [Define Dimensions →](define-dimensions.md)
+← [Model Canvas Tour](model-canvas-tour.md) | [Home](../index.md) | [Define Dimensions →](define-dimensions.md)

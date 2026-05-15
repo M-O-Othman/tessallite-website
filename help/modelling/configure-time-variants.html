@@ -4,227 +4,73 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Configure Time Variants — Tessallite Help</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../assets/help.css">
 </head>
 <body>
   <header class="site-header">
     <a href="../index.html" class="logo">Tessallite Help</a>
-    <nav class="breadcrumb">
-      <a href="../index.html">Home</a> / <span>Modelling</span> / <span>Configure Time Variants</span>
-    </nav>
+    <nav class="breadcrumb"><a href="../index.html">Home</a> / <span>Modelling</span> / <span>Configure Time Variants</span></nav>
   </header>
-
   <main class="article">
-    <div class="article-meta">
-      <span class="audience-badge">Modeller</span>
-      <span class="updated">Updated 2026-05-06</span>
-    </div>
-
+    <div class="article-meta"><span class="audience-badge">modeller</span><span class="updated">Updated 2026-05-06</span></div>
     <h1>Configure Time Variants</h1>
-
-    <h2>What this covers</h2>
-    <p>A time variant is a derived form of a base measure that answers a time-intelligence question without forcing the modeller to write a separate measure. Examples are year-to-date revenue, prior-quarter order count, and 12-month trailing average. Each variant becomes its own first-class measure row in the catalog, named <code>&lt;base&gt;_&lt;variant&gt;</code> (for example <code>revenue_ytd</code>). The variant row inherits the base measure's source column, data type, default aggregation, hierarchy, calendar, and additivity.</p>
-
-    <h2>Before you start — the prerequisite chain</h2>
-    <p>Creating a time variant requires a chain of configuration steps to be completed first. If any step is missing, the variant will appear as "not eligible" with a reason explaining which prerequisite is absent.</p>
-
-    <h3>1. Define the base measure</h3>
-    <p>The measure you want to extend must already exist. See <a href="define-measures.html">Define Measures</a>.</p>
-
-    <h3>2. Create a time hierarchy with a calendar type</h3>
-    <p>A time hierarchy tells the system which time levels (year, quarter, month, week, day) are available, which time calculations are enabled at each level, and what calendar system governs period boundaries.</p>
-    <p>To create one:</p>
-    <ol>
-      <li>Open the <strong>Hierarchies</strong> panel in the Toolbelt.</li>
-      <li>Create a new hierarchy. Set its dimension kind to <strong>time</strong>.</li>
-      <li>Set the <strong>calendar type</strong> to one of:
-        <ul>
-          <li><strong>standard</strong> — Gregorian calendar, year starts January 1.</li>
-          <li><strong>fiscal</strong> — Gregorian calendar with a shifted year start. Select the <strong>fiscal year start month</strong> (e.g. April for a UK fiscal year, July for Australian).</li>
-          <li><strong>hijri</strong> — Islamic calendar, year starts 1 Muharram.</li>
-          <li><strong>iso</strong> — ISO 8601 week-based year.</li>
-        </ul>
-      </li>
-      <li>Add levels for each time granularity you need (e.g. year, quarter, month). On each level, set the <strong>time unit</strong> and enable the <strong>allowed time calculations</strong> for the variants you plan to use.</li>
-      <li><strong>Link the hierarchy to the measure.</strong> Open the base measure (Measures panel &rarr; edit icon). Under <strong>Time hierarchy and calendar</strong>, select the hierarchy you just created. This step is easy to miss — without it, the measure has no associated hierarchy and all period-aware variants will be ineligible.</li>
-    </ol>
-    <p>Period boundaries (where a year, quarter, or month starts and ends) are computed automatically from the calendar type. A calendar table is not required — the system derives boundaries using date expressions. If a calendar table IS present in the model, the system uses it for backward compatibility.</p>
-
-    <h3>Prerequisite summary</h3>
-    <table>
-      <thead><tr><th>Variant group</th><th>Base measure</th><th>Time hierarchy with calendar type</th><th>Level capabilities</th><th>Measure linked</th></tr></thead>
-      <tbody>
-        <tr><td>Period-to-date (ytd, qtd, mtd, wtd)</td><td>Required</td><td>Required</td><td>period_to_date</td><td>Required</td></tr>
-        <tr><td>Parallel period (prior_year, etc.)</td><td>Required</td><td>Required</td><td>parallel_period</td><td>Required</td></tr>
-        <tr><td>Year-over-year (yoy_growth, yoy_growth_pct)</td><td>Required</td><td>Required</td><td>parallel_period</td><td>Required</td></tr>
-        <tr><td>Window (lag, trailing_n, moving_avg_n)</td><td>Required</td><td>Not required</td><td>lag or moving_window</td><td>Required</td></tr>
-      </tbody>
-    </table>
-
-    <h2>Available variants</h2>
-    <table>
-      <thead><tr><th>Variant</th><th>Family</th><th>Required time unit</th><th>Calendar type needed</th></tr></thead>
-      <tbody>
-        <tr><td><code>lag</code></td><td>lag</td><td>(any)</td><td>No</td></tr>
-        <tr><td><code>prior_year</code></td><td>parallel_period</td><td>year</td><td>Yes</td></tr>
-        <tr><td><code>prior_quarter</code></td><td>parallel_period</td><td>quarter</td><td>Yes</td></tr>
-        <tr><td><code>prior_month</code></td><td>parallel_period</td><td>month</td><td>Yes</td></tr>
-        <tr><td><code>prior_week</code></td><td>parallel_period</td><td>week</td><td>Yes</td></tr>
-        <tr><td><code>ytd</code></td><td>period_to_date</td><td>year</td><td>Yes</td></tr>
-        <tr><td><code>qtd</code></td><td>period_to_date</td><td>quarter</td><td>Yes</td></tr>
-        <tr><td><code>mtd</code></td><td>period_to_date</td><td>month</td><td>Yes</td></tr>
-        <tr><td><code>wtd</code></td><td>period_to_date</td><td>week</td><td>Yes</td></tr>
-        <tr><td><code>ytd_prior_year</code></td><td>period_to_date</td><td>year</td><td>Yes</td></tr>
-        <tr><td><code>yoy_growth</code></td><td>parallel_period</td><td>year</td><td>Yes</td></tr>
-        <tr><td><code>yoy_growth_pct</code></td><td>parallel_period</td><td>year</td><td>Yes</td></tr>
-        <tr><td><code>trailing_n</code></td><td>moving_window</td><td>(any)</td><td>No</td></tr>
-        <tr><td><code>moving_avg_n</code></td><td>moving_window</td><td>(any)</td><td>No</td></tr>
-      </tbody>
-    </table>
-    <p>Default <code>n</code> for <code>trailing_n</code> is 12; default <code>n</code> for <code>moving_avg_n</code> is 30. Both can be overridden per measure.</p>
-
-    <h2>Admission rules</h2>
-    <p>A variant can be created for a base measure only when <strong>all</strong> of the following are true for the measure's linked hierarchy:</p>
-    <ol>
-      <li>The variant's family appears in at least one level's <code>allowed_time_calcs</code>.</li>
-      <li>The variant's required time unit (if any) is present as a level <code>time_unit</code> in the same hierarchy.</li>
-      <li>If the variant is period-aware, the linked hierarchy has a calendar type configured.</li>
-    </ol>
-    <p>Variants that fail any rule appear as "not eligible" in both the Measures panel and the Measure Query Panel variant popover, with a message explaining the specific prerequisite that is missing.</p>
-
-    <h2>Creating variants — two paths</h2>
-
-    <h3>Path A: From the Measures panel (dedicated dialog)</h3>
-    <p>The Measures panel has two creation buttons: <strong>Add Measure</strong> for standard measures and <strong>Add Time Variant</strong> for time-intelligence derivatives. The separation keeps both workflows simple — adding a base measure never accidentally creates variant rows, and adding a variant does not expose fields that are irrelevant to it.</p>
-    <ol>
-      <li>Open a model in Model Builder and click <strong>Measures</strong> in the Toolbelt.</li>
-      <li>Click <strong>Add Time Variant</strong>. A dialog opens.</li>
-      <li>Select the <strong>Base measure</strong> from the dropdown. Only non-variant measures are listed.</li>
-      <li>Select the <strong>Variant type</strong>. Variants that require a hierarchy show "(requires hierarchy)" next to the label. If the base measure has no time hierarchy linked, a warning appears explaining what to configure first.</li>
-      <li>For parametric variants (<code>trailing_n</code> and <code>moving_avg_n</code>), enter the window size <strong>N</strong>. Defaults are 12 and 30 respectively.</li>
-      <li>If the base measure has a linked hierarchy, an info alert confirms the hierarchy name and calendar type.</li>
-      <li>Once a base and variant type are selected, the dialog shows additional fields:
-        <ul>
-          <li><strong>Name</strong> — auto-generated as <code>&lt;base&gt;_&lt;variant&gt;</code>. Override if you want a custom name.</li>
-          <li><strong>Display name</strong> — auto-generated as <code>&lt;Base Display&gt; (&lt;variant label&gt;)</code>.</li>
-          <li><strong>Description</strong>, <strong>Display folder</strong>, <strong>Format</strong> — optional overrides; if left blank, inherited from the base.</li>
-        </ul>
-      </li>
-      <li>Click <strong>Add</strong>. The variant appears as its own row in the Measures table.</li>
-    </ol>
-
-    <h3>Path B: From the Measure Query Panel (pivot table)</h3>
-    <p>This is a shortcut for when you are actively testing a measure and want to quickly add a variant without leaving the pivot context.</p>
-    <ol>
-      <li>Open the <strong>Measure Query Panel</strong> from the Toolbelt.</li>
-      <li>Select a measure in the Measure dropdown.</li>
-      <li>Next to the measure dropdown, find the <strong>variant button</strong> — a small icon showing a function symbol (f) with a plus sign (+).</li>
-      <li>Click the button. A popover opens showing all 14 variant kinds.</li>
-      <li>Each variant shows its eligibility status:
-        <ul>
-          <li><strong>Eligible</strong> variants display the suggested name and can be clicked to create immediately.</li>
-          <li><strong>Ineligible</strong> variants show the specific reason they cannot be created and what needs to be configured.</li>
-          <li><strong>Already added</strong> variants are greyed out.</li>
-        </ul>
-      </li>
-      <li>For parametric variants, a text field appears for the window size N.</li>
-      <li>Click an eligible variant to create it.</li>
-    </ol>
-
-    <h3>Managing variants</h3>
-    <p>To <strong>edit</strong> a variant, click the edit (pencil) icon on the variant row in the Measures table. Only the name, display name, description, display folder, and format are editable on a variant — all other fields (source column, aggregation, data type, hierarchy, calendar) are inherited from the base measure. To change inherited fields, edit the base measure instead.</p>
-    <p>To <strong>delete</strong> a variant, click the delete icon on the variant row. Queries that referenced the variant will fail with an unknown-measure error.</p>
-
-    <div class="callout-note">
-      <p>Editing a measure never creates or removes variants. Creation and deletion are separate, explicit actions. This design prevents accidental side effects when modifying base measures or variant metadata.</p>
-    </div>
-
-    <h3>Multiple variants with different calendars</h3>
-    <p>You can create the same variant type multiple times on the same base measure, each linked to a different hierarchy on the base. For example:</p>
-    <ul>
-      <li><code>revenue_ytd</code> — year-to-date using the standard calendar hierarchy</li>
-      <li><code>revenue_ytd_fiscal</code> — year-to-date using the fiscal calendar hierarchy</li>
-    </ul>
-    <p>To do this, create the first variant while the base measure is linked to one hierarchy, then update the base measure's hierarchy link and create the second variant with a different name. Each variant row captures the hierarchy that was active on the base at creation time.</p>
-
-    <h2>Troubleshooting</h2>
-    <table>
-      <thead><tr><th>Message</th><th>Meaning</th><th>What to do</th></tr></thead>
-      <tbody>
-        <tr>
-          <td>"This measure is not linked to a time hierarchy."</td>
-          <td>The measure has no hierarchy association.</td>
-          <td>Go to the Hierarchies panel. Create a time hierarchy if one does not exist, add levels with the correct time units and allowed time calculations, then link this measure to the hierarchy.</td>
-        </tr>
-        <tr>
-          <td>"The linked time hierarchy does not declare the '...' capability on any level."</td>
-          <td>The hierarchy exists and is linked, but none of its levels have the required time calculation enabled.</td>
-          <td>Edit the linked hierarchy. On the appropriate level, enable the missing calculation.</td>
-        </tr>
-        <tr>
-          <td>"The linked time hierarchy has no '...'-grain level."</td>
-          <td>The hierarchy is linked and has the right calculation, but is missing a level at the required granularity.</td>
-          <td>Edit the linked hierarchy and add a level with the missing time unit.</td>
-        </tr>
-        <tr>
-          <td>"The linked time hierarchy has no calendar type configured."</td>
-          <td>Period-aware variants need a calendar type on the hierarchy.</td>
-          <td>Edit the linked hierarchy and set a calendar type (standard, fiscal, hijri, or iso).</td>
-        </tr>
-        <tr>
-          <td>"A measure named '...' already exists in this model."</td>
-          <td>A variant with this name was previously created, or another measure uses the same name.</td>
-          <td>Delete or rename the conflicting measure, then try again.</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <h2>How variants are computed</h2>
-    <p>Each variant is rewritten into a window function at query time. Period boundaries are computed using SQL expressions derived from the hierarchy's calendar type — for example, <code>EXTRACT(YEAR FROM date)</code> for a standard calendar or a fiscal-year CASE expression for fiscal calendars. If a calendar table is present in the model, the system uses it instead of expressions for backward compatibility. Postgres is the canonical authoring dialect; for BigQuery and Spark, Tessallite transpiles the canonical SQL via sqlglot. The variant row is metadata only — it does not duplicate the value in storage unless the AI optimiser proposes a per-variant aggregate.</p>
-
-    <div class="callout-note">
-      <p>If a variant query is slow, run the AI optimiser. The optimiser scores per-variant aggregates the same way it scores base-measure aggregates and proposes pre-aggregated tables when the cost-benefit is positive. See <a href="use-the-ai-optimiser.html">Use the AI optimiser</a>.</p>
-    </div>
-
-    <h2>Variants in pre-aggregates (limitation)</h2>
-    <p>The optimiser materialises only <strong>window-based</strong> variants in CTAS pre-aggregate tables: <code>lag</code>, <code>trailing_n</code>, and <code>moving_avg_n</code>.</p>
-    <p><strong>Period-aware variants are not materialised.</strong> These always rewrite over the base measure's pre-aggregate (or the source) at query time:</p>
-    <ul>
-      <li><code>prior_year</code>, <code>prior_quarter</code>, <code>prior_month</code>, <code>prior_week</code></li>
-      <li><code>ytd</code>, <code>qtd</code>, <code>mtd</code>, <code>wtd</code></li>
-      <li><code>ytd_prior_year</code>, <code>yoy_growth</code>, <code>yoy_growth_pct</code></li>
-    </ul>
-    <p>These variants depend on a calendar-table JOIN whose validity moves with the calendar contents. Baking that JOIN into a CTAS would couple the aggregate to a specific calendar snapshot, so Tessallite refuses the materialisation by design.</p>
-
-    <h2>Pitfalls</h2>
-    <ul>
-      <li><strong>Creating a period-boundary variant without a calendar type.</strong> The variant will be marked as ineligible. Edit the hierarchy and set a calendar type before enabling period-boundary variants.</li>
-      <li><strong>Mixing calendars in the same pivot query.</strong> Querying <code>revenue_ytd</code> (standard) and <code>revenue_ytd_fiscal</code> (fiscal) in the same pivot with a single date dimension produces meaningless cross-calendar numbers. Use one calendar system per query context.</li>
-      <li><strong>Assuming all variants need a calendar type.</strong> Window variants (<code>lag</code>, <code>trailing_n</code>, <code>moving_avg_n</code>) work without any calendar configuration — they only need a date dimension in the query grain.</li>
-    </ul>
-
-    <div class="related">
-      <h2>Related</h2>
-      <ul>
-        <li><a href="define-measures.html">Define Measures</a></li>
-        <li><a href="configure-calendar-table.html">Configure Calendar Table</a></li>
-        <li><a href="associate-calendar-with-dimensions.html">Associate Calendar with Dimensions</a></li>
-        <li><a href="../concepts/calendar-types.html">Calendar Types</a></li>
-        <li><a href="use-the-ai-optimiser.html">Use the AI optimiser</a></li>
-      </ul>
-    </div>
+<h2>What this covers</h2>
+<p>A time variant is a derived form of a base measure that answers a time-intelligence question without forcing the modeller to write a separate measure. Examples are year-to-date revenue, prior-quarter order count, and 12-month trailing average. In Tessallite each variant you tick on a base measure becomes its own first-class measure row in the catalog, named <code>&lt;base&gt;_&lt;variant&gt;</code> (for example <code>revenue_ytd</code>). The variant row inherits the base measure&#x27;s source column, format, data type, default aggregation, and additivity at creation. This article explains which variants exist, when they are admissible, and how to create them.</p>
+<h2>Before you start — the prerequisite chain</h2>
+<p>Creating a time variant requires a chain of configuration steps to be completed first. If any step is missing, the variant will appear as &quot;not eligible&quot; with a reason explaining which prerequisite is absent. The full chain is:</p>
+<h3>1. Define the base measure</h3>
+<p>The measure you want to extend must already exist. See <a href="define-measures.html">Define Measures</a>.</p>
+<h3>2. Create a time hierarchy with a calendar type</h3>
+<p>A time hierarchy tells the system which time levels (year, quarter, month, week, day) are available, which time calculations are enabled at each level, and what calendar system governs period boundaries.</p>
+<p>To create one:</p>
+<ol><li>Open the <strong>Hierarchies</strong> panel in the Toolbelt.</li><li>Create a new hierarchy. Set its dimension kind to <strong>time</strong>.</li><li>Set the <strong>calendar type</strong> to one of:</li></ol>
+<ul><li><strong>standard</strong> — Gregorian calendar, year starts January 1.</li><li><strong>fiscal</strong> — Gregorian calendar with a shifted year start. Select the <strong>fiscal year start month</strong> (e.g. April for a UK fiscal year, July for Australian).</li><li><strong>hijri</strong> — Islamic calendar, year starts 1 Muharram.</li><li><strong>iso</strong> — ISO 8601 week-based year.</li></ul>
+<ol><li>Add levels for each time granularity you need (e.g. year, quarter, month). On each level, set the <strong>time unit</strong> and enable the <strong>allowed time calculations</strong> for the variants you plan to use.</li><li><strong>Link the measure.</strong> In the hierarchy&#x27;s measure links section, add the base measure. This step is easy to miss — without it, the measure has no associated hierarchy and all variants will be ineligible.</li></ol>
+<p>Period boundaries (where a year, quarter, or month starts and ends) are computed automatically from the calendar type. A calendar table is not required — the system derives boundaries using date expressions. If a calendar table IS present in the model, the system uses it for backward compatibility.</p>
+<h3>Prerequisite summary</h3>
+<div class="table-wrapper"><table><thead><tr><th>Variant group</th><th>Base measure</th><th>Time hierarchy with calendar type</th><th>Level capabilities</th><th>Measure linked to hierarchy</th></tr></thead><tbody><tr><td>Period-to-date (<code>ytd</code>, <code>qtd</code>, <code>mtd</code>, <code>wtd</code>)</td><td>Required</td><td>Required</td><td><code>period_to_date</code></td><td>Required</td></tr><tr><td>Parallel period (<code>prior_year</code>, <code>prior_quarter</code>, etc.)</td><td>Required</td><td>Required</td><td><code>parallel_period</code></td><td>Required</td></tr><tr><td>Year-over-year (<code>yoy_growth</code>, <code>yoy_growth_pct</code>)</td><td>Required</td><td>Required</td><td><code>parallel_period</code></td><td>Required</td></tr><tr><td>Window (<code>lag</code>, <code>trailing_n</code>, <code>moving_avg_n</code>)</td><td>Required</td><td>Not required</td><td><code>lag</code> or <code>moving_window</code></td><td>Required</td></tr></tbody></table></div>
+<h2>Available variants</h2>
+<div class="table-wrapper"><table><thead><tr><th>Variant</th><th>Family</th><th>Required time unit</th><th>Calendar type needed</th></tr></thead><tbody><tr><td><code>lag</code></td><td>lag</td><td>(any)</td><td>No</td></tr><tr><td><code>prior_year</code></td><td>parallel_period</td><td>year</td><td>Yes</td></tr><tr><td><code>prior_quarter</code></td><td>parallel_period</td><td>quarter</td><td>Yes</td></tr><tr><td><code>prior_month</code></td><td>parallel_period</td><td>month</td><td>Yes</td></tr><tr><td><code>prior_week</code></td><td>parallel_period</td><td>week</td><td>Yes</td></tr><tr><td><code>ytd</code></td><td>period_to_date</td><td>year</td><td>Yes</td></tr><tr><td><code>qtd</code></td><td>period_to_date</td><td>quarter</td><td>Yes</td></tr><tr><td><code>mtd</code></td><td>period_to_date</td><td>month</td><td>Yes</td></tr><tr><td><code>wtd</code></td><td>period_to_date</td><td>week</td><td>Yes</td></tr><tr><td><code>ytd_prior_year</code></td><td>period_to_date</td><td>year</td><td>Yes</td></tr><tr><td><code>yoy_growth</code></td><td>parallel_period</td><td>year</td><td>Yes</td></tr><tr><td><code>yoy_growth_pct</code></td><td>parallel_period</td><td>year</td><td>Yes</td></tr><tr><td><code>trailing_n</code></td><td>moving_window</td><td>(any)</td><td>No</td></tr><tr><td><code>moving_avg_n</code></td><td>moving_window</td><td>(any)</td><td>No</td></tr></tbody></table></div>
+<p>Default <code>n</code> for <code>trailing_n</code> is 12; default <code>n</code> for <code>moving_avg_n</code> is 30. Both can be overridden per measure.</p>
+<h2>Admission rules</h2>
+<p>A variant can be ticked on a base measure only when <strong>all</strong> of the following are true for the measure&#x27;s linked hierarchy:</p>
+<ol><li>The variant&#x27;s family appears in at least one level&#x27;s <code>allowed_time_calcs</code>.</li><li>The variant&#x27;s required time unit (if any) is present as a level <code>time_unit</code> in the same hierarchy.</li><li>If the variant is period-aware, the linked hierarchy has a calendar type configured.</li></ol>
+<p>Variants that fail any rule are not offered for selection in the drawer.</p>
+<h2>Creating variants — two paths</h2>
+<p>There are two ways to create time variants. Both produce the same result — a new measure row in the catalog.</p>
+<h3>Path A: From the Measures panel (Toolbelt)</h3>
+<ol><li>Open the base measure in the Drawer (Toolbelt → Measures → click the measure name).</li><li>Under <strong>Time variants</strong>, tick the variants you want. For <code>trailing_n</code> and <code>moving_avg_n</code>, enter an <code>N</code> (defaults: 12 and 30).</li><li>For period-boundary variants, select the <strong>hierarchy</strong> to use. The dropdown shows all hierarchies with matching capabilities. Different hierarchies point to different calendar tables (e.g. standard vs fiscal), so the choice determines which calendar system the variant uses.</li><li>Click <strong>Save</strong>. The catalog refreshes; each ticked variant appears as its own measure row beside the base, named <code>&lt;base&gt;_&lt;variant&gt;</code>.</li></ol>
+<h3>Path B: From the Measure Query Panel (pivot table)</h3>
+<p>This is a shortcut for when you are actively testing a measure and want to quickly add a variant without leaving the pivot context.</p>
+<ol><li>Open the <strong>Measure Query Panel</strong> from the Toolbelt.</li><li>Select a measure in the Measure dropdown.</li><li>Next to the measure dropdown, find the <strong>variant button</strong> — a small icon showing a function symbol (f) with a plus sign (+).</li><li>Click the button. A popover opens showing all 14 variant kinds.</li><li>Each variant shows its eligibility status:</li></ol>
+<ul><li><strong>Eligible</strong> variants display the suggested name (e.g. <code>base_amount_ytd</code>) and can be clicked to create immediately.</li><li><strong>Ineligible</strong> variants show the specific reason they cannot be created and what needs to be configured. For example: &quot;This measure is not linked to a time hierarchy. Go to the Hierarchies panel, create a time hierarchy with the required levels, then link this measure to it.&quot;</li><li><strong>Already added</strong> variants are greyed out.</li></ul>
+<ol><li>For parametric variants (<code>trailing_n</code>, <code>moving_avg_n</code>), a text field appears where you can enter the window size <code>N</code>.</li><li>Click an eligible variant to create it. The new measure is added to the catalog and becomes available in the pivot table&#x27;s measure dropdown.</li></ol>
+<h3>Managing variants</h3>
+<p>To remove a variant, untick it in the Measures panel Drawer and Save. The variant row is deleted; queries that referenced it will fail with an unknown-measure error.</p>
+<p>To rename or re-format a variant row, open the variant directly. Source column, aggregation, and data type are inherited from the base and are not editable on the variant row — change them on the base.</p>
+<h3>Multiple variants with different calendars</h3>
+<p>You can create the same variant type multiple times on the same base measure, each with a different hierarchy:</p>
+<ul><li><code>revenue_ytd</code> — year-to-date using the standard calendar hierarchy</li><li><code>revenue_ytd_fiscal</code> — year-to-date using the fiscal calendar hierarchy</li></ul>
+<p>Each produces a separate measure row with distinct period boundaries. BI tools see them as independent measures and can place them side by side in the same pivot table.</p>
+<h3>What happens when you delete a hierarchy</h3>
+<p>If you delete a hierarchy that a variant depends on, the variant loses its period-boundary capability. The base measure still works, but the variant row becomes invalid and is marked with a warning. Either re-create the hierarchy or remove the variant.</p>
+<h2>How variants are computed</h2>
+<p>Each variant is rewritten into a window function at query time. Period boundaries are computed using SQL expressions derived from the hierarchy&#x27;s calendar type — for example, <code>EXTRACT(YEAR FROM date)</code> for a standard calendar or a fiscal-year CASE expression for fiscal calendars. If a calendar table is present in the model, the system uses it instead of expressions for backward compatibility. Postgres is the canonical authoring dialect; for BigQuery and Spark, Tessallite transpiles the canonical SQL via sqlglot. The variant row is metadata only — it does not duplicate the value in storage unless the AI optimiser proposes a per-variant aggregate.</p>
+<blockquote><strong>Note:</strong> If a variant query is slow, run the AI optimiser. The optimiser scores per-variant aggregates the same way it scores base-measure aggregates and proposes pre-aggregated tables when the cost-benefit is positive. See <a href="use-the-ai-optimiser.html">Use the AI optimiser</a>.</blockquote>
+<h2>Variants in pre-aggregates (limitation)</h2>
+<p>The optimiser materialises only <strong>window-based</strong> variants in CTAS pre-aggregate tables: <code>lag</code>, <code>trailing_n</code>, and <code>moving_avg_n</code>. These are computed inside the aggregate using a window function over the per-grain rows.</p>
+<p><strong>Period-aware variants are not materialised.</strong> Variants in this list always rewrite over the base measure&#x27;s pre-aggregate (or the source) at query time:</p>
+<ul><li><code>prior_year</code>, <code>prior_quarter</code>, <code>prior_month</code>, <code>prior_week</code></li><li><code>ytd</code>, <code>qtd</code>, <code>mtd</code>, <code>wtd</code></li><li><code>ytd_prior_year</code>, <code>yoy_growth</code>, <code>yoy_growth_pct</code></li></ul>
+<p>These variants depend on a calendar-table JOIN whose validity moves with the calendar contents. Baking that JOIN into a CTAS would couple the aggregate to a specific calendar snapshot, so Tessallite refuses the materialisation by design. They still execute correctly via the rewriter — only the <em>pre-aggregate</em> path is closed.</p>
+<p>A window-based variant additionally requires the aggregate&#x27;s grain to contain a time dimension (used for <code>ORDER BY</code> in the window). If you create an aggregate at a non-time grain, only base measures and non-variant aggregations are materialised.</p>
+<h2>Troubleshooting</h2>
+<div class="table-wrapper"><table><thead><tr><th>Message</th><th>Meaning</th><th>What to do</th></tr></thead><tbody><tr><td>&quot;This measure is not linked to a time hierarchy.&quot;</td><td>The measure has no hierarchy association. Without this link, the system cannot determine which time levels and calculations are available.</td><td>Go to the Hierarchies panel. Create a time hierarchy if one does not exist, add levels with the correct time units and allowed time calculations, then link this measure to the hierarchy.</td></tr><tr><td>&quot;The linked time hierarchy does not declare the &#x27;...&#x27; capability on any level.&quot;</td><td>The hierarchy exists and is linked, but none of its levels have the required time calculation enabled.</td><td>Edit the linked hierarchy. On the appropriate level, enable the missing calculation (e.g. <code>period_to_date</code> for YTD, <code>parallel_period</code> for prior year).</td></tr><tr><td>&quot;The linked time hierarchy has no &#x27;...&#x27;-grain level.&quot;</td><td>The hierarchy is linked and has the right calculation, but is missing a level at the required granularity (e.g. no year-level for YTD).</td><td>Edit the linked hierarchy and add a level with the missing time unit.</td></tr><tr><td>&quot;The linked time hierarchy has no calendar type configured.&quot;</td><td>Period-aware variants need a calendar type on the hierarchy.</td><td>Edit the linked hierarchy and set a calendar type (standard, fiscal, hijri, or iso).</td></tr><tr><td>&quot;A measure named &#x27;...&#x27; already exists in this model.&quot;</td><td>A variant with this name was previously created, or another measure uses the same name.</td><td>Delete or rename the conflicting measure, then try again.</td></tr></tbody></table></div>
+<h2>Pitfalls</h2>
+<ul><li><strong>Creating a period-boundary variant without a calendar type.</strong> The variant will be marked as ineligible. Edit the hierarchy and set a calendar type before enabling period-boundary variants.</li><li><strong>Mixing calendars in the same pivot query.</strong> Querying <code>revenue_ytd</code> (standard) and <code>revenue_ytd_fiscal</code> (fiscal) in the same pivot with a single date dimension produces meaningless cross-calendar numbers. Use one calendar system per query context.</li><li><strong>Assuming all variants need a calendar type.</strong> Window variants (<code>lag</code>, <code>trailing_n</code>, <code>moving_avg_n</code>) work without any calendar configuration — they only need a date dimension in the query grain.</li></ul>
+<h2>Related</h2>
+<ul><li><a href="define-measures.html">Define Measures</a></li><li><a href="configure-calendar-table.html">Configure Calendar Table</a></li><li><a href="associate-calendar-with-dimensions.html">Associate Calendar with Dimensions</a></li><li><a href="../concepts/calendar-types.html">Calendar Types</a></li><li><a href="use-the-ai-optimiser.html">Use the AI optimiser</a></li></ul>
+<nav class="page-nav"><a href="calculated-measures.html" class="page-nav-btn prev">&larr; Calculated Measures</a><a href="../index.html" class="page-nav-btn home">Home</a><a href="configure-calendar-table.html" class="page-nav-btn next">Configure Calendar Table &rarr;</a></nav>
   </main>
-
-  <nav class="page-nav">
-    <a href="define-measures.html" class="page-nav-btn prev">&larr; Define Measures</a>
-    <a href="../index.html" class="page-nav-btn home">Home</a>
-    <a href="configure-calendar-table.html" class="page-nav-btn next">Configure Calendar Table &rarr;</a>
-  </nav>
-
-  <footer class="site-footer">
-    <p>Tessallite Help — <a href="../index.html">Back to contents</a></p>
-  </footer>
+  <footer class="site-footer"><p>Tessallite Help — <a href="../index.html">Back to contents</a></p></footer>
 </body>
 </html>

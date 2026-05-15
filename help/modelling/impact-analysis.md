@@ -7,6 +7,8 @@ updated: 2026-05-04
 
 ## What this covers
 
+![Live Impact drawer opened from Model Builder.](../assets/screencaps/impact-panel.png)
+
 Impact analysis shows which downstream assets — dashboards, reports, ML pipelines, APIs, scheduled jobs — depend on your model's tables and columns. Before making a breaking change (renaming a column, dropping a table, changing a measure expression), impact analysis tells you what will break and who to notify. This article explains how to register downstream assets, how the source audit scanner works, and how to read the Impact panel.
 
 ---
@@ -100,4 +102,4 @@ Shows:
 
 ---
 
-← [Run a Refresh](run-a-refresh.md) | [Home](../index.md) | [Data Preview →](data-preview.md)
+← [Data Quality Rules](data-quality-rules.md) | [Home](../index.md) | [Data Preview →](data-preview.md)

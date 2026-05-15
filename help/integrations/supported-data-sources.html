@@ -4,187 +4,41 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Supported Data Sources — Tessallite Help</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../assets/help.css">
 </head>
 <body>
   <header class="site-header">
     <a href="../index.html" class="logo">Tessallite Help</a>
-    <nav class="breadcrumb">
-      <a href="../index.html">Home</a> / <span>Integrations</span> / <span>Supported Data Sources</span>
-    </nav>
+    <nav class="breadcrumb"><a href="../index.html">Home</a> / <span>Integrations</span> / <span>Supported Data Sources</span></nav>
   </header>
   <main class="article">
-    <div class="article-meta">
-      <span class="audience-badge">Modeller</span>
-      <span class="updated">Updated 2026-04-17</span>
-    </div>
+    <div class="article-meta"><span class="audience-badge">modeller</span><span class="updated">Updated 2026-04-17</span></div>
     <h1>Supported Data Sources</h1>
-
-    <h2>What this covers</h2>
-    <p>Tessallite connects to backend data sources to read raw data and write pre-aggregated summaries. This article lists the supported sources, their drivers, connection parameters, and notes on setup and permissions.</p>
-
-    <h2>Summary</h2>
-    <div class="table-wrapper">
-      <table>
-        <thead>
-          <tr>
-            <th>Data source</th>
-            <th>Driver included</th>
-            <th>Auth method</th>
-            <th>Notes</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>PostgreSQL</td>
-            <td>Yes (bundled)</td>
-            <td>Username / password</td>
-            <td>Tested PostgreSQL 13+. Supports SSL.</td>
-          </tr>
-          <tr>
-            <td>BigQuery</td>
-            <td>No (must add)</td>
-            <td>Service account JSON key</td>
-            <td>Simba/Google BigQuery JDBC driver required.</td>
-          </tr>
-          <tr>
-            <td>Hadoop / Spark Thrift Server</td>
-            <td>Yes (bundled Hive driver)</td>
-            <td>None or Kerberos</td>
-            <td>Tested with Spark 3.x Thrift Server.</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <h2>PostgreSQL</h2>
-    <p>PostgreSQL is the primary supported source. The PostgreSQL JDBC driver is bundled with Tessallite — no additional installation is required.</p>
-    <div class="table-wrapper">
-      <table>
-        <thead>
-          <tr>
-            <th>Parameter</th>
-            <th>Value</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Host</td>
-            <td>Hostname or IP of the PostgreSQL server</td>
-          </tr>
-          <tr>
-            <td>Port</td>
-            <td><code>5432</code> (default)</td>
-          </tr>
-          <tr>
-            <td>Database</td>
-            <td>PostgreSQL database name</td>
-          </tr>
-          <tr>
-            <td>User</td>
-            <td>PostgreSQL user with read access to source schemas</td>
-          </tr>
-          <tr>
-            <td>Password</td>
-            <td>PostgreSQL user password</td>
-          </tr>
-          <tr>
-            <td>SSL</td>
-            <td>Optional. Append <code>sslmode=require</code> to the connection parameters.</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <p><strong>Compatible managed services</strong>: AWS RDS for PostgreSQL, Azure Database for PostgreSQL, Google Cloud SQL for PostgreSQL. Connection parameters are the same as for self-hosted PostgreSQL.</p>
-    <p><strong>Permissions required</strong>: The database user must have <code>USAGE</code> on source schemas and <code>SELECT</code> on source tables. For aggregate writes, the user must have <code>CREATE TABLE</code>, <code>INSERT</code>, and <code>DROP TABLE</code> on the target schema.</p>
-
-    <h2>BigQuery</h2>
-    <p>Tessallite connects to BigQuery via the Simba (Google) BigQuery JDBC driver. This driver is not bundled and must be added to the Tessallite classpath before configuring a BigQuery source.</p>
-    <div class="table-wrapper">
-      <table>
-        <thead>
-          <tr>
-            <th>Parameter</th>
-            <th>Value</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>GCP project ID</td>
-            <td>Your Google Cloud project ID</td>
-          </tr>
-          <tr>
-            <td>Dataset name</td>
-            <td>The BigQuery dataset containing source tables</td>
-          </tr>
-          <tr>
-            <td>Service account key</td>
-            <td>Path to the service account JSON key file on the Tessallite host</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <p><strong>Permissions required</strong>: The service account must have the <code>bigquery.jobs.create</code> and <code>bigquery.tables.getData</code> IAM roles on the project. For aggregate writes, the service account also needs write access to the target BigQuery dataset.</p>
-    <p><strong>Query dialect</strong>: Tessallite uses standard SQL when querying BigQuery.</p>
-    <p><strong>Driver setup</strong>: Download the Simba BigQuery JDBC driver from the Google Cloud documentation. Place the JAR file in the Tessallite driver directory (typically <code>lib/jdbc/</code>) and restart the Model Service.</p>
-
-    <div class="callout-warning">
-      <p>The BigQuery JDBC driver must be installed separately. Tessallite does not distribute it. Verify the driver version is compatible with your GCP project's BigQuery API version.</p>
-    </div>
-
-    <h2>Hadoop / Spark Thrift Server</h2>
-    <p>Tessallite connects to Hadoop and Apache Spark via the Hive JDBC driver, which targets the Spark Thrift Server. The Hive JDBC driver is bundled with Tessallite.</p>
-    <div class="table-wrapper">
-      <table>
-        <thead>
-          <tr>
-            <th>Parameter</th>
-            <th>Value</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Host</td>
-            <td>Hostname or IP of the Spark Thrift Server</td>
-          </tr>
-          <tr>
-            <td>Port</td>
-            <td><code>10000</code> (default Thrift Server port)</td>
-          </tr>
-          <tr>
-            <td>Database</td>
-            <td>Hive/Spark database name</td>
-          </tr>
-          <tr>
-            <td>Authentication</td>
-            <td>None or Kerberos</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <p><strong>Tested with</strong>: Apache Spark 3.x Thrift Server.</p>
-    <p><strong>Kerberos authentication</strong>: Kerberos requires additional configuration (keytab path, principal). Refer to the Tessallite deployment guide for Kerberos setup details.</p>
-    <p><strong>Databricks SQL Warehouse</strong>: Databricks does not use the Hive JDBC driver. For Databricks, download the Databricks JDBC driver and configure it as a custom JDBC source. Connection parameters follow the Databricks JDBC driver documentation.</p>
-
-    <div class="related">
-      <h2>Related</h2>
-      <ul>
-        <li><a href="jdbc-connection-guide.html">JDBC Connection Guide</a></li>
-        <li><a href="api-authentication.html">API Authentication</a></li>
-        <li><a href="../troubleshooting/aggregates-not-building.html">Aggregates Not Building</a></li>
-        <li><a href="../troubleshooting/common-errors.html">Common Errors</a></li>
-      </ul>
-    </div>
+<h2>What this covers</h2>
+<p>Tessallite connects to backend data sources to read raw data and write pre-aggregated summaries. This article lists the supported sources, their drivers, connection parameters, and permission requirements.</p>
+<h2>Summary</h2>
+<div class="table-wrapper"><table><thead><tr><th>Data source</th><th>Driver included</th><th>Auth method</th><th>Notes</th></tr></thead><tbody><tr><td>PostgreSQL</td><td>Yes (bundled)</td><td>Username / password</td><td>Tested PostgreSQL 13+. Supports SSL.</td></tr><tr><td>BigQuery</td><td>No (must add)</td><td>Service account JSON key</td><td>Simba/Google BigQuery JDBC driver required.</td></tr><tr><td>Hadoop / Spark Thrift Server</td><td>Yes (bundled Hive driver)</td><td>None or Kerberos</td><td>Tested with Spark 3.x Thrift Server.</td></tr></tbody></table></div>
+<h2>PostgreSQL</h2>
+<p>Driver bundled. No additional installation required.</p>
+<div class="table-wrapper"><table><thead><tr><th>Parameter</th><th>Value</th></tr></thead><tbody><tr><td>Host</td><td>Hostname or IP of the PostgreSQL server</td></tr><tr><td>Port</td><td><code>5432</code> (default)</td></tr><tr><td>Database</td><td>PostgreSQL database name</td></tr><tr><td>User</td><td>PostgreSQL user with read access to source schemas</td></tr><tr><td>Password</td><td>PostgreSQL user password</td></tr><tr><td>SSL</td><td>Optional. Append <code>sslmode=require</code> to connection parameters.</td></tr></tbody></table></div>
+<p><strong>Compatible managed services</strong>: AWS RDS for PostgreSQL, Azure Database for PostgreSQL, Google Cloud SQL for PostgreSQL.</p>
+<p><strong>Permissions required</strong>: <code>USAGE</code> on source schemas, <code>SELECT</code> on source tables. For aggregate writes: <code>CREATE TABLE</code>, <code>INSERT</code>, <code>DROP TABLE</code> on the target schema.</p>
+<h2>BigQuery</h2>
+<p>Requires the Simba (Google) BigQuery JDBC driver — not bundled. Place the JAR in the Tessallite driver directory (<code>lib/jdbc/</code>) and restart the Model Service.</p>
+<div class="table-wrapper"><table><thead><tr><th>Parameter</th><th>Value</th></tr></thead><tbody><tr><td>GCP project ID</td><td>Your Google Cloud project ID</td></tr><tr><td>Dataset name</td><td>BigQuery dataset containing source tables</td></tr><tr><td>Service account key</td><td>Path to the service account JSON key file on the Tessallite host</td></tr></tbody></table></div>
+<p><strong>Permissions required</strong>: Service account must have <code>bigquery.jobs.create</code> and <code>bigquery.tables.getData</code> IAM roles. For aggregate writes, add write access to the target BigQuery dataset.</p>
+<p><strong>Query dialect</strong>: Standard SQL.</p>
+<blockquote>The BigQuery JDBC driver must be installed separately. Tessallite does not distribute it.</blockquote>
+<h2>Hadoop / Spark Thrift Server</h2>
+<p>Hive JDBC driver is bundled with Tessallite.</p>
+<div class="table-wrapper"><table><thead><tr><th>Parameter</th><th>Value</th></tr></thead><tbody><tr><td>Host</td><td>Hostname or IP of the Spark Thrift Server</td></tr><tr><td>Port</td><td><code>10000</code> (default)</td></tr><tr><td>Database</td><td>Hive/Spark database name</td></tr><tr><td>Authentication</td><td>None or Kerberos</td></tr></tbody></table></div>
+<p><strong>Tested with</strong>: Apache Spark 3.x Thrift Server.</p>
+<p><strong>Kerberos</strong>: Requires additional configuration (keytab path, principal). See the Tessallite deployment guide.</p>
+<p><strong>Databricks SQL Warehouse</strong>: Use the Databricks JDBC driver (not the Hive driver) and configure it as a custom JDBC source.</p>
+<h2>Related</h2>
+<ul><li><a href="jdbc-connection-guide.html">JDBC Connection Guide</a></li><li><a href="api-authentication.html">API Authentication</a></li><li><a href="../troubleshooting/aggregates-not-building.html">Aggregates Not Building</a></li><li><a href="../troubleshooting/common-errors.html">Common Errors</a></li></ul>
+<nav class="page-nav"><a href="powerbi-connection-guide.html" class="page-nav-btn prev">&larr; Power BI Connection Guide</a><a href="../index.html" class="page-nav-btn home">Home</a><a href="api-authentication.html" class="page-nav-btn next">API Authentication &rarr;</a></nav>
   </main>
-  <nav class="page-nav">
-    <a href="powerbi-connection-guide.html" class="page-nav-btn prev">&larr; Power BI Connection Guide</a>
-    <a href="../index.html" class="page-nav-btn home">Home</a>
-    <a href="api-authentication.html" class="page-nav-btn next">API Authentication &rarr;</a>
-  </nav>
-  <footer class="site-footer">
-    <p>Tessallite Help — <a href="../index.html">Back to contents</a></p>
-  </footer>
+  <footer class="site-footer"><p>Tessallite Help — <a href="../index.html">Back to contents</a></p></footer>
 </body>
 </html>

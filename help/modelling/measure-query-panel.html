@@ -4,64 +4,34 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Measure Query Panel — Tessallite Help</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../assets/help.css">
 </head>
 <body>
   <header class="site-header">
     <a href="../index.html" class="logo">Tessallite Help</a>
-    <nav class="breadcrumb">
-      <a href="../index.html">Home</a> / <span>Modelling</span> / <span>Measure Query Panel</span>
-    </nav>
+    <nav class="breadcrumb"><a href="../index.html">Home</a> / <span>Modelling</span> / <span>Measure Query Panel</span></nav>
   </header>
-
   <main class="article">
-    <div class="article-meta">
-      <span class="audience-badge">Modeller</span>
-      <span class="updated">Updated 2026-05-06</span>
-    </div>
-
+    <div class="article-meta"><span class="audience-badge">modeller</span><span class="updated">Updated 2026-05-06</span></div>
     <h1>Measure Query Panel</h1>
-
-    <h2>Why this panel exists</h2>
-    <p>A semantic layer lives or dies by the moment a modeller defines a new measure and checks whether it agrees with the business's mental model. Without a sanity-check surface inside the product, that check happens in Excel, in a notebook, or worse — in a dashboard a week later when the VP asks why the number is wrong.</p>
-    <p>The <strong>Measure Query Panel</strong> is Tessallite's answer to that moment. It is a minimal, opinionated pivot grid embedded directly inside Model Builder. One measure, up to two dimension axes, totals, a Route badge, and click-to-drill. It is not meant to replace a full BI canvas — it is meant to let a modeller answer "does this measure do what I think it does?" without leaving the app.</p>
-    <p>Since Phase 6, the panel grew into a small working pivot: <strong>multi-row and multi-column dimension nesting</strong>, <strong>subtotals and grand totals</strong>, <strong>client-side sort</strong>, <strong>one-click variant addition</strong> (YTD, PY, YoY without writing them), <strong>slicer chips</strong>, <strong>inline format editing</strong>, <strong>CSV and JSON export</strong>, and a <strong>Route badge</strong> that tells you which engine served the query. All of these are scoped so the panel remains a sanity-check tool, not a dashboard-builder.</p>
-    <p>This page walks through what the panel can and cannot do, how the three dropdowns combine, why the Route badge matters, and a worked example from measure definition to drill-down.</p>
-
-    <figure>
-      <img src="../assets/screencaps/measure-query-panel-overview.png" alt="The Measure Query Panel with one measure, two row-dimensions, one column-dimension, subtotals, a Route badge reading aggregate, and the slicer bar.">
-      <figcaption>Figure 1 — The full panel. Everything the modeller needs to sanity-check a measure sits in one frame. Full description: <a href="../assets/screencaps/measure-query-panel-overview.txt">measure-query-panel-overview.txt</a>.</figcaption>
-    </figure>
-
-    <h2>Before you start</h2>
-    <ul>
-      <li>The model must have at least one deployed measure. Calculated measures are welcome — the panel handles drill-through for them specially (see below).</li>
-      <li>At least one dimension is typical but not required — a "just the measure" query collapses to a single-cell result, which is a useful sanity check for "does the measure return anything at all?".</li>
-      <li>If the measure is time-aware and you want to add variants (YTD, YoY, etc.), the measure must be linked to a time hierarchy with a calendar type configured. A calendar table is not required — period boundaries are computed from SQL expressions. See <a href="configure-time-variants.html">Configure Time Variants</a>.</li>
-    </ul>
-
-    <h2>The three-dropdown shape</h2>
-    <p>The panel has three primary dropdowns and two toggles. This shape is intentional: every BI tool in the world overloads the "row / column / filter" choice with nine other decisions, and every business user spends the first five minutes with a new tool trying to work out what they are being asked. Tessallite's panel keeps the choice to the irreducible three.</p>
-    <table>
-      <thead><tr><th>Dropdown</th><th>What it does</th><th>Can be empty?</th></tr></thead>
-      <tbody>
-        <tr><td><strong>Measure</strong></td><td>Picks the single measure whose values fill the cells. Standard or calculated, optionally a time variant.</td><td>No — a pivot without a measure is a dimension list, not a pivot.</td></tr>
-        <tr><td><strong>Row dimensions</strong></td><td>One or more dimensions that appear as rows. Multiple dimensions nest top-down — outermost first.</td><td>Yes — the grid collapses to a single row.</td></tr>
-        <tr><td><strong>Column dimensions</strong></td><td>One or more dimensions that appear as columns. Multiple dimensions nest left-to-right.</td><td>Yes — the grid collapses to a single column.</td></tr>
-      </tbody>
-    </table>
-    <p>Plus two toggles:</p>
-    <ul>
-      <li><strong>Subtotals / grand totals</strong> — show roll-up rows and columns. Off by default to keep the grid easy to scan for the sanity-check use case; on for anything headed toward a report.</li>
-      <li><strong>Force Live</strong> — bypass aggregate and pocket matchers and run against the source. Covered in <a href="../querying/live-vs-aggregate.html">Live vs Aggregate</a>.</li>
-    </ul>
-    <p>If both row-dimensions and column-dimensions are empty, the grid renders a single cell with the measure's overall value. This is the fastest way to answer "is this measure even wired up?".</p>
-
-    <h2>Multi-dimension nesting</h2>
-    <p>Since Phase 6, row and column dimensions both accept multiple selections. Nesting reads <strong>outermost first</strong> on rows and <strong>leftmost first</strong> on columns:</p>
-    <pre><code>Row dimensions:    region, quarter
+<h2>Why this panel exists</h2>
+<p>A semantic layer lives or dies by the moment a modeller defines a new measure and checks whether it agrees with the business&#x27;s mental model. Without a sanity-check surface inside the product, that check happens in Excel, in a notebook, or worse — in a dashboard a week later when the VP asks why the number is wrong.</p>
+<p>The <strong>Measure Query Panel</strong> is Tessallite&#x27;s answer to that moment. It is a minimal, opinionated pivot grid embedded directly inside Model Builder. One measure, up to two dimension axes, totals, a Route badge, and click-to-drill. It is not meant to replace a full BI canvas — it is meant to let a modeller answer &quot;does this measure do what I think it does?&quot; without leaving the app.</p>
+<p>Since Phase 6, the panel grew into a small working pivot: <strong>multi-row and multi-column dimension nesting</strong>, <strong>subtotals and grand totals</strong>, <strong>client-side sort</strong>, <strong>one-click variant addition</strong> (YTD, PY, YoY without writing them), <strong>slicer chips</strong>, <strong>inline format editing</strong>, <strong>CSV and JSON export</strong>, and a <strong>Route badge</strong> that tells you which engine served the query. All of these are scoped so the panel remains a sanity-check tool, not a dashboard-builder.</p>
+<p>This page walks through what the panel can and cannot do, how the three dropdowns combine, why the Route badge matters, and a worked example from measure definition to drill-down.</p>
+<figure class="screencap"><img class="screencap" src="../assets/screencaps/measure-query-panel-overview.png" alt="The Measure Query Panel with one measure, two row-dimensions, one column-dimension, subtotals, a Route badge reading &quot;aggregate&quot;, and the slicer bar."></figure>
+<p><em>Figure 1 — The full panel. Everything the modeller needs to sanity-check a measure sits in one frame. Full description: <a href="../assets/screencaps/measure-query-panel-overview.txt">measure-query-panel-overview.txt</a>.</em></p>
+<h2>Before you start</h2>
+<ul><li>The model must have at least one deployed measure. Calculated measures are welcome — the panel handles drill-through for them specially (see below).</li><li>At least one dimension is typical but not required — a &quot;just the measure&quot; query collapses to a single-cell result, which is a useful sanity check for &quot;does the measure return anything at all?&quot;.</li><li>If the measure is time-aware and you want to add variants (YTD, YoY, etc.), the measure must be linked to a time hierarchy with a calendar type configured. A calendar table is not required — period boundaries are computed from SQL expressions. See <a href="configure-time-variants.html">Configure Time Variants</a>.</li></ul>
+<h2>The three-dropdown shape</h2>
+<p>The panel has three primary dropdowns and two toggles. This shape is intentional: every BI tool in the world overloads the &quot;row / column / filter&quot; choice with nine other decisions, and every business user spends the first five minutes with a new tool trying to work out what they are being asked. Tessallite&#x27;s panel keeps the choice to the irreducible three.</p>
+<div class="table-wrapper"><table><thead><tr><th>Dropdown</th><th>What it does</th><th>Can be empty?</th></tr></thead><tbody><tr><td><strong>Measure</strong></td><td>Picks the single measure whose values fill the cells. Standard or calculated, optionally a time variant.</td><td>No — a pivot without a measure is a dimension list, not a pivot.</td></tr><tr><td><strong>Row dimensions</strong></td><td>One or more dimensions that appear as rows. Multiple dimensions nest top-down — outermost first.</td><td>Yes — the grid collapses to a single row.</td></tr><tr><td><strong>Column dimensions</strong></td><td>One or more dimensions that appear as columns. Multiple dimensions nest left-to-right.</td><td>Yes — the grid collapses to a single column.</td></tr></tbody></table></div>
+<p>Plus two toggles:</p>
+<ul><li><strong>Subtotals / grand totals</strong> — show roll-up rows and columns. Off by default to keep the grid easy to scan for the sanity-check use case; on for anything headed toward a report.</li><li><strong>Force Live</strong> — bypass aggregate and pocket matchers and run against the source. Covered in <a href="../querying/live-vs-aggregate.html">Live vs Aggregate</a>.</li></ul>
+<p>If both row-dimensions and column-dimensions are empty, the grid renders a single cell with the measure&#x27;s overall value. This is the fastest way to answer &quot;is this measure even wired up?&quot;.</p>
+<h2>Multi-dimension nesting</h2>
+<p>Since Phase 6, row and column dimensions both accept multiple selections. Nesting reads <strong>outermost first</strong> on rows and <strong>leftmost first</strong> on columns:</p>
+<pre><code>Row dimensions:    region, quarter
 Column dimensions: product_category
 
           | Furniture | Electronics | Grocery | (grand)
@@ -73,147 +43,65 @@ EMEA      |           |             |         |
 NA        |
   Q1      |   220 000 |    160 000  | 110 000 | 490 000
   ...</code></pre>
-    <p>Subtotals appear on the second-and-beyond row levels (one per outer-level value). Grand totals are always the last row and last column. The header depth scales with the number of nested dimensions.</p>
-    <p><strong>Why outermost-first and not some other order.</strong> Reading top-down matches the way finance tables are taught at school and read by stakeholders. The alternative (innermost-first) is mathematically identical but reads "by quarter, within region" where stakeholders expect "by region, then by quarter". Tessallite picks the convention that matches the reader, not the query planner.</p>
-
-    <h2>The Route badge</h2>
-    <p>Every executed query shows a Route badge above the grid. The badge text is one of <code>aggregate</code>, <code>pocket</code>, or <code>live</code>. Hover the badge and a tooltip shows the routing reason — which aggregate / pocket matched, or why no match was found.</p>
-    <p>The Route badge is the single most useful piece of information on the panel when something looks wrong. A cell value that surprises you almost always has one of three origins:</p>
-    <ol>
-      <li><strong>The measure is wrong.</strong> Rare once the measure is saved cleanly — the DSL validator catches most of this.</li>
-      <li><strong>The aggregate is stale.</strong> Common. The badge reads <code>aggregate</code>, the number is the one from when the aggregate last built, and the source has moved since.</li>
-      <li><strong>The slicer is filtering more than you remember.</strong> Common. The badge does not tell you this directly, but the row / column totals do — if the grand total looks too small, check the slicer chips.</li>
-    </ol>
-    <p>See <a href="../querying/live-vs-aggregate.html">Live vs Aggregate</a> for a full walkthrough of the three routes and when to Force Live.</p>
-
-    <h2>One-click variants (the variant button)</h2>
-    <p>Next to the Measure dropdown and the format button sits a small icon button: a function symbol (f) with a tiny plus sign (+). This is the <strong>Add time variant</strong> button. It lets you create time-intelligence variants of the selected measure — YTD, prior year, trailing average, year-over-year growth — directly from the pivot context without switching to the Measures panel.</p>
-
-    <h3>How it works</h3>
-    <ol>
-      <li>Select a measure in the Measure dropdown.</li>
-      <li>Click the variant button (f+). A popover opens listing all 14 canonical variant kinds.</li>
-      <li>Each variant shows one of three states:
-        <ul>
-          <li><strong>Eligible</strong>: displays the suggested name (e.g. <code>revenue_ytd</code>). Click to create the variant immediately.</li>
-          <li><strong>Not eligible</strong>: displays the specific reason in amber text — for example, "This measure is not linked to a time hierarchy." The popover includes a link to the Configure Time Variants help page.</li>
-          <li><strong>Already added</strong>: greyed out. The variant measure already exists in the catalog.</li>
-        </ul>
-      </li>
-      <li>For parametric variants (<code>trailing_n</code> and <code>moving_avg_n</code>), a number field appears where you enter the window size N.</li>
-      <li>Clicking an eligible row creates a new measure in the catalog. The measure dropdown refreshes and the new variant can be selected for querying.</li>
-    </ol>
-
-    <h3>Prerequisites</h3>
-    <p>The variant button works on any base measure, but eligibility depends on the model configuration. If no variants are eligible, the popover shows a summary alert explaining the first blocking prerequisite and a link to the help documentation. The full prerequisite chain is:</p>
-    <ul>
-      <li><strong>Base measure exists</strong> — variant rows are derived from an existing measure.</li>
-      <li><strong>Time hierarchy created</strong> with levels that have the correct time units and allowed time calculations.</li>
-      <li><strong>Measure linked to the hierarchy</strong> — this is the step most often missed. Without the link, the system has no way to know which time capabilities apply to the measure.</li>
-      <li><strong>Calendar type configured on the hierarchy</strong> (for period-boundary variants only) — YTD, prior year, quarter-to-date, and year-over-year variants need a calendar type (standard, fiscal, hijri, or iso) set on the linked time hierarchy. A physical calendar table is not required.</li>
-    </ul>
-    <p>See <a href="configure-time-variants.html">Configure Time Variants</a> for the full setup walkthrough and troubleshooting table.</p>
-
-    <figure>
-      <img src="../assets/screencaps/measure-query-panel-variants.png" alt="The Measure Query Panel showing the variant popover with eligibility status for each variant kind.">
-      <figcaption>Figure 2 — The variant popover. Each row shows a variant kind with its eligibility status and reason. Full description: <a href="../assets/screencaps/measure-query-panel-variants.txt">measure-query-panel-variants.txt</a>.</figcaption>
-    </figure>
-
-    <h3>What happens under the hood</h3>
-    <p>Each variant you create becomes a first-class measure row in the catalog, named <code>&lt;base&gt;_&lt;variant&gt;</code> (for example <code>revenue_ytd</code>). The variant row inherits the base measure's source column, aggregation, format, and data type. At query time, the query router rewrites the variant into a window function using SQL expressions derived from the hierarchy's calendar type. If a calendar table is present, the system uses it for backward compatibility. No data is duplicated in storage.</p>
-    <p><strong>A modelling note.</strong> Variants only make sense on additive measures. A "Gross margin % YoY" is a ratio of ratios and almost always misleading — Tessallite will let you compute it, but the variant tooltip shows the raw formula so the analyst can see what they are asking for.</p>
-
-    <h2>Slicer chips</h2>
-    <p>Slicer chips sit below the Route badge and function as global <code>WHERE</code> predicates on the whole grid. Each chip is one predicate — <code>region in (EMEA, APAC)</code>, <code>year = 2024</code>, <code>channel != marketplace</code> — and every chip is AND'd. A click on a chip's body opens an edit popover; a click on the X removes the chip.</p>
-    <p>The design intent is that slicers carry <strong>global context</strong> and the row / column dropdowns carry <strong>what you are slicing by</strong>. Mixing the two is the most common first-week mistake for a business user — they put a single-value dimension on rows, see one row, and wonder why. The slicer bar is always at the bottom so "what's constraining my result" is one glance away.</p>
-
-    <h2>Inline format editing</h2>
-    <p>Every measure carries a format. The format is what turns <code>1234567.891</code> into <code>€1,234,567.89</code> or <code>1.23M</code>. Since Phase 6, the column-header chip on the grid carries the current format and opens an editor popover on click.</p>
-
-    <figure>
-      <img src="../assets/screencaps/measure-query-panel-format-editor.png" alt="The inline format-editor popover anchored below the measure-column chip, showing format preset dropdown, decimals spinner, thousand-separator toggle, and live preview.">
-      <figcaption>Figure 3 — The inline format editor. Changes can be scoped to this column only, or promoted onto the measure itself for everyone. Full description: <a href="../assets/screencaps/measure-query-panel-format-editor.txt">measure-query-panel-format-editor.txt</a>.</figcaption>
-    </figure>
-
-    <p>Two scopes sit at the bottom of the editor:</p>
-    <ul>
-      <li><strong>Apply to this column only.</strong> A temporary override that lives in the panel state. Closing and reopening the panel resets it.</li>
-      <li><strong>Save on measure.</strong> Promotes the format onto the measure definition. Every surface — BI tool, MCP agent, other modeller — sees the new format on the next query.</li>
-    </ul>
-    <p>The presets cover 95% of business-display needs; the tail (custom suffix strings, dynamic currency from a column) is not in v1 and is deferred to a future phase.</p>
-
-    <h2>Client-side sort</h2>
-    <p>Any column header can be clicked to sort the grid. Sort is client-side — the data in the grid is already present, and re-sorting does not re-run the query. This matters because a sort of a 720-row grid is instant, but a sort that re-queries would not be on most warehouses.</p>
-    <p>Sorting is stable across pagination within the grid view (for large result sets). The Route badge and chips are unaffected by sort.</p>
-
-    <h2>Export</h2>
-    <p>The <strong>Export</strong> split-button offers CSV and JSON. Both exports contain the same rows that are currently on the grid — they honour subtotals, sort order, and the active slicers. XLSX export is deferred to a future phase; the user need is covered by "export CSV, open in Excel" in the interim.</p>
-
-    <h2>Drill-through on calculated measures</h2>
-    <p>Calculated measures were previously not drillable from the panel. Since Phase 6, clicking a calculated-measure cell opens a <strong>decomposed drill drawer</strong> that fires one drill-through per referenced base measure and stacks the mini-panels — each paginating independently at 50 rows per page. See the <a href="drill-through.html">Drill-through</a> page for the full description. The key point for the panel is that <strong>every cell is clickable</strong> — there is no longer an "oh, calculated measures don't drill" asterisk.</p>
-
-    <h2>Worked example — sanity-check a new calculated measure</h2>
-    <p><strong>Context.</strong> A modeller just defined <code>gross_margin_pct</code> as a calculated measure. They want to confirm it reads sensibly before inviting finance to the model.</p>
-    <p><strong>Steps.</strong></p>
-    <ol>
-      <li>Open <strong>Model Builder</strong> → <strong>Measure Query</strong> in the Toolbelt.</li>
-      <li>Pick <code>Gross margin %</code> as the measure. Leave row and column dimensions empty.</li>
-      <li>Click <strong>Run</strong>. Expected result: a single cell with an overall percentage value. If it is <code>NULL</code>, the denominator is zero at the global grain — usually a sign that the base measure <code>net_sales</code> has no data, not that the calculated expression is broken.</li>
-      <li>Add <code>region</code> as a row dimension. Click <strong>Run</strong>. Expected result: one percent per region, values in the 20-40% band for a typical retail model. If one region reads 300%, the calculated expression is probably in the wrong mode — switch to <code>expression_as_written</code> (see <a href="calculated-measures.html">Calculated Measures</a>).</li>
-      <li>Add <code>quarter</code> as a column dimension. Click <strong>Run</strong>. The grid now reads regions × quarters.</li>
-      <li>Enable subtotals. Confirm subtotals make financial sense — each region's "total" column should read as the overall margin for that region, not a sum of percentages.</li>
-      <li>Click any cell to open the decomposed drill drawer. Confirm the numerator and denominator rows match what you expect.</li>
-      <li>If the number is surprising, click the Route badge. If it reads <code>aggregate</code>, turn <strong>Force Live</strong> on, re-run, and compare. A matching number confirms the aggregate is fresh; a different number says refresh the aggregate.</li>
-    </ol>
-    <p>The whole loop takes under two minutes. The measure is then safe to expose to a BI tool.</p>
-
-    <h2>Scope and limitations</h2>
-    <table>
-      <thead><tr><th>Feature</th><th>v1</th><th>Future</th></tr></thead>
-      <tbody>
-        <tr><td>Single measure per view</td><td>Yes</td><td>Multi-measure layout deferred to the Phase 8 canvas.</td></tr>
-        <tr><td>Multi-row / multi-column dimensions</td><td>Yes (Phase 6)</td><td>Cross-tab hierarchy with drill-down on rows deferred.</td></tr>
-        <tr><td>Global slicers</td><td>Yes (Phase 6)</td><td>Saved slicer presets deferred.</td></tr>
-        <tr><td>Subtotals + grand totals</td><td>Yes (Phase 6)</td><td>Alternate total functions (averages, medians of subtotals) deferred.</td></tr>
-        <tr><td>Variants (YTD, YoY, etc.)</td><td>Yes (Phase 6, built on Phase 2 time intelligence)</td><td>Custom user-defined variant formulas deferred — use a calculated measure in the interim.</td></tr>
-        <tr><td>CSV + JSON export</td><td>Yes (Phase 6)</td><td>XLSX export deferred.</td></tr>
-        <tr><td>Saved views</td><td>No</td><td>Deferred; use a calculated measure or a pocket to persist a layout.</td></tr>
-      </tbody>
-    </table>
-
-    <h2>Troubleshooting</h2>
-    <table>
-      <thead><tr><th>Symptom</th><th>Likely cause</th><th>Fix</th></tr></thead>
-      <tbody>
-        <tr><td>"Run" button greyed out</td><td>No measure selected</td><td>Pick a measure; dimensions alone are not a query</td></tr>
-        <tr><td>Grid empty after Run</td><td>Slicer chips exclude every row</td><td>Check the chip row below the Route badge; remove the offending chip</td></tr>
-        <tr><td>Cell values look right but totals look wrong</td><td>Subtotals off while dimension nesting on</td><td>Enable the subtotals toggle</td></tr>
-        <tr><td>Variant button shows all items as "not eligible"</td><td>Missing prerequisite: no time hierarchy, measure not linked to one, or no calendar type on the hierarchy</td><td>Check the reason text in the popover. See <a href="configure-time-variants.html">Configure Time Variants</a> for the full prerequisite chain.</td></tr>
-        <tr><td>Period-boundary variants show as "not eligible"</td><td>The linked time hierarchy has no calendar type configured</td><td>Edit the hierarchy in the Hierarchies panel and set a calendar type (standard, fiscal, hijri, or iso). See <a href="configure-time-variants.html">Configure Time Variants</a>.</td></tr>
-        <tr><td>Cell click on calculated measure errors</td><td>Very old frontend cache</td><td>Hard-refresh; Phase 6 shipped the decomposed drawer</td></tr>
-      </tbody>
-    </table>
-
-    <div class="related">
-      <h2>Related</h2>
-      <ul>
-        <li><a href="calculated-measures.html">Calculated Measures</a></li>
-        <li><a href="drill-through.html">Drill-through</a></li>
-        <li><a href="../querying/live-vs-aggregate.html">Live vs Aggregate</a></li>
-        <li><a href="configure-time-variants.html">Configure Time Variants</a></li>
-        <li><a href="configure-calendar-table.html">Configure Calendar Table</a></li>
-      </ul>
-    </div>
+<p>Subtotals appear on the second-and-beyond row levels (one per outer-level value). Grand totals are always the last row and last column. The header depth scales with the number of nested dimensions.</p>
+<p><strong>Why outermost-first and not some other order.</strong> Reading top-down matches the way finance tables are taught at school and read by stakeholders. The alternative (innermost-first) is mathematically identical but reads &quot;by quarter, within region&quot; where stakeholders expect &quot;by region, then by quarter&quot;. Tessallite picks the convention that matches the reader, not the query planner.</p>
+<h2>The Route badge</h2>
+<p>Every executed query shows a Route badge above the grid. The badge text is one of <code>aggregate</code>, <code>pocket</code>, or <code>live</code>. Hover the badge and a tooltip shows the routing reason — which aggregate / pocket matched, or why no match was found.</p>
+<p>The Route badge is the single most useful piece of information on the panel when something looks wrong. A cell value that surprises you almost always has one of three origins:</p>
+<ol><li><strong>The measure is wrong.</strong> Rare once the measure is saved cleanly — the DSL validator catches most of this.</li><li><strong>The aggregate is stale.</strong> Common. The badge reads <code>aggregate</code>, the number is the one from when the aggregate last built, and the source has moved since.</li><li><strong>The slicer is filtering more than you remember.</strong> Common. The badge does not tell you this directly, but the row / column totals do — if the grand total looks too small, check the slicer chips.</li></ol>
+<p>See <a href="../querying/live-vs-aggregate.html">Live vs Aggregate</a> for a full walkthrough of the three routes and when to Force Live.</p>
+<h2>One-click variants (the variant button)</h2>
+<p>Next to the Measure dropdown and the format button sits a small icon button: a function symbol (f) with a tiny plus sign (+). This is the <strong>Add time variant</strong> button. It lets you create time-intelligence variants of the selected measure — YTD, prior year, trailing average, year-over-year growth — directly from the pivot context without switching to the Measures panel.</p>
+<h3>How it works</h3>
+<ol><li>Select a measure in the Measure dropdown.</li><li>Click the variant button (f+). A popover opens listing all 14 canonical variant kinds.</li><li>Each variant shows one of three states:</li></ol>
+<ul><li><strong>Eligible</strong>: displays the suggested name (e.g. <code>revenue_ytd</code>). Click to create the variant immediately.</li><li><strong>Not eligible</strong>: displays the specific reason in amber text — for example, &quot;This measure is not linked to a time hierarchy.&quot; The popover includes a link to the Configure Time Variants help page.</li><li><strong>Already added</strong>: greyed out. The variant measure already exists in the catalog.</li></ul>
+<ol><li>For parametric variants (<code>trailing_n</code> and <code>moving_avg_n</code>), a number field appears where you enter the window size N. Defaults are 12 and 30 respectively.</li><li>Clicking an eligible row creates a new measure in the catalog. The measure dropdown refreshes and the new variant can be selected for querying.</li></ol>
+<h3>Prerequisites</h3>
+<p>The variant button works on any base measure, but eligibility depends on the model configuration. If no variants are eligible, the popover shows a summary alert explaining the first blocking prerequisite and a link to the help documentation.</p>
+<p>The full prerequisite chain is:</p>
+<ul><li><strong>Base measure exists</strong> — variant rows are derived from an existing measure.</li><li><strong>Time hierarchy created</strong> with levels that have the correct time units and allowed time calculations.</li><li><strong>Measure linked to the hierarchy</strong> — this is the step most often missed. Without the link, the system has no way to know which time capabilities apply to the measure.</li><li><strong>Calendar type configured on the hierarchy</strong> (for period-boundary variants only) — YTD, prior year, quarter-to-date, and year-over-year variants need a calendar type (standard, fiscal, hijri, or iso) set on the linked time hierarchy. A physical calendar table is not required.</li></ul>
+<p>See <a href="configure-time-variants.html">Configure Time Variants</a> for the full setup walkthrough and troubleshooting table.</p>
+<figure class="screencap"><img class="screencap" src="../assets/screencaps/measure-query-panel-variants.png" alt="The Measure Query Panel showing a row of time-variant chips expanded below the Measure dropdown, with a variant column added to the grid."></figure>
+<p><em>Figure 2 — The variant popover. Each row shows a variant kind with its eligibility status and reason. Full description: <a href="../assets/screencaps/measure-query-panel-variants.txt">measure-query-panel-variants.txt</a>.</em></p>
+<h3>What happens under the hood</h3>
+<p>Each variant you create becomes a first-class measure row in the catalog, named <code>&lt;base&gt;_&lt;variant&gt;</code> (for example <code>revenue_ytd</code>). The variant row inherits the base measure&#x27;s source column, aggregation, format, and data type. At query time, the query router rewrites the variant into a window function using SQL expressions derived from the hierarchy&#x27;s calendar type. If a calendar table is present, the system uses it for backward compatibility. No data is duplicated in storage.</p>
+<p><strong>A modelling note.</strong> Variants only make sense on additive measures. A &quot;Gross margin % YoY&quot; is a ratio of ratios and almost always misleading — Tessallite will let you compute it, but the variant tooltip shows the raw formula so the analyst can see what they are asking for.</p>
+<h2>Slicer chips</h2>
+<p>Slicer chips sit below the Route badge and function as global <code>WHERE</code> predicates on the whole grid. Each chip is one predicate — <code>region in (EMEA, APAC)</code>, <code>year = 2024</code>, <code>channel != marketplace</code> — and every chip is AND&#x27;d. A click on a chip&#x27;s body opens an edit popover; a click on the X removes the chip.</p>
+<p>The design intent is that slicers carry <strong>global context</strong> and the row / column dropdowns carry <strong>what you are slicing by</strong>. Mixing the two is the most common first-week mistake for a business user — they put a single-value dimension on rows, see one row, and wonder why. The slicer bar is always at the bottom so &quot;what&#x27;s constraining my result&quot; is one glance away.</p>
+<h3>Filter types</h3>
+<p>The slicer supports multiple filter modes depending on the dimension type and selected operator:</p>
+<div class="table-wrapper"><table><thead><tr><th>Filter mode</th><th>Operators</th><th>UI control</th><th>Best for</th></tr></thead><tbody><tr><td>Multi-value</td><td><code>in</code>, <code>not in</code></td><td>Autocomplete with type-ahead search</td><td>Categorical dimensions (region, product)</td></tr><tr><td>Single-value comparison</td><td><code>eq</code>, <code>ne</code>, <code>gt</code>, <code>gte</code>, <code>lt</code>, <code>lte</code></td><td>Text field</td><td>Numeric or string comparisons</td></tr><tr><td>Date range</td><td><code>between</code>, <code>eq</code>, <code>gt</code>, <code>gte</code>, <code>lt</code>, <code>lte</code></td><td>Native date picker</td><td>Date/timestamp dimensions</td></tr><tr><td>Null check</td><td><code>is null</code>, <code>is not null</code></td><td>(no value input)</td><td>Finding missing data</td></tr></tbody></table></div>
+<p><strong>Date-aware slicers.</strong> When you add a slicer on a date dimension (<code>is_time_dim = true</code>), the operator defaults to <code>between</code> and the value inputs are date pickers. This is faster than scrolling through thousands of date value chips.</p>
+<p><strong>Type-ahead search.</strong> Multi-value slicers on text dimensions include a search field. Type at least 2 characters and the autocomplete filters the value list after a 300ms debounce. This makes slicing on high-cardinality dimensions (e.g. product SKU, customer name) practical.</p>
+<p><strong>Numeric range filters.</strong> For numeric dimensions, operators like <code>gt</code>, <code>gte</code>, <code>lt</code>, <code>lte</code> let you define range filters (e.g. &quot;order_amount &gt; 1000&quot;). Combine two slicers for a range: <code>order_amount &gt;= 100</code> AND <code>order_amount &lt;= 500</code>.</p>
+<h2>Inline format editing</h2>
+<p>Every measure carries a format. The format is what turns <code>1234567.891</code> into <code>€1,234,567.89</code> or <code>1.23M</code>. Since Phase 6, the column-header chip on the grid carries the current format and opens an editor popover on click.</p>
+<figure class="screencap"><img class="screencap" src="../assets/screencaps/measure-query-panel-format-editor.png" alt="The inline format-editor popover anchored below the measure-column chip, showing format preset dropdown, decimals spinner, thousand-separator toggle, and live preview."></figure>
+<p><em>Figure 3 — The inline format editor. Changes can be scoped to this column only, or promoted onto the measure itself for everyone. Full description: <a href="../assets/screencaps/measure-query-panel-format-editor.txt">measure-query-panel-format-editor.txt</a>.</em></p>
+<p>Two scopes sit at the bottom of the editor:</p>
+<ul><li><strong>Apply to this column only.</strong> A temporary override that lives in the panel state. Closing and reopening the panel resets it.</li><li><strong>Save on measure.</strong> Promotes the format onto the measure definition. Every surface — BI tool, MCP agent, other modeller — sees the new format on the next query.</li></ul>
+<p>The presets cover 95% of business-display needs; the tail (custom suffix strings, dynamic currency from a column) is not in v1 and is deferred to a future phase.</p>
+<h2>Client-side sort</h2>
+<p>Any column header can be clicked to sort the grid. Sort is client-side — the data in the grid is already present, and re-sorting does not re-run the query. This matters because a sort of a 720-row grid is instant, but a sort that re-queries would not be on most warehouses.</p>
+<p>Sorting is stable across pagination within the grid view (for large result sets). The Route badge and chips are unaffected by sort.</p>
+<h2>Export</h2>
+<p>The <strong>Export</strong> split-button offers CSV and JSON. Both exports contain the same rows that are currently on the grid — they honour subtotals, sort order, and the active slicers. XLSX export is deferred to a future phase; the user need is covered by &quot;export CSV, open in Excel&quot; in the interim.</p>
+<h2>Drill-through on calculated measures</h2>
+<p>Calculated measures were previously not drillable from the panel. Since Phase 6, clicking a calculated-measure cell opens a <strong>decomposed drill drawer</strong> that fires one drill-through per referenced base measure and stacks the mini-panels — each paginating independently at 50 rows per page. See the <a href="drill-through.html">Drill-through</a> page for the full description. The key point for the panel is that <strong>every cell is clickable</strong> — there is no longer an &quot;oh, calculated measures don&#x27;t drill&quot; asterisk.</p>
+<h2>Worked example — sanity-check a new calculated measure</h2>
+<p><strong>Context.</strong> A modeller just defined <code>gross_margin_pct</code> as a calculated measure. They want to confirm it reads sensibly before inviting finance to the model.</p>
+<p><strong>Steps.</strong></p>
+<ol><li>Open <strong>Model Builder</strong> → <strong>Measure Query</strong> in the Toolbelt.</li><li>Pick <code>Gross margin %</code> as the measure. Leave row and column dimensions empty.</li><li>Click <strong>Run</strong>. Expected result: a single cell with an overall percentage value. If it is <code>NULL</code>, the denominator is zero at the global grain — usually a sign that the base measure <code>net_sales</code> has no data, not that the calculated expression is broken.</li><li>Add <code>region</code> as a row dimension. Click <strong>Run</strong>. Expected result: one percent per region, values in the 20-40% band for a typical retail model. If one region reads 300%, the calculated expression is probably in the wrong mode — switch to <code>expression_as_written</code> (see <a href="calculated-measures.html">Calculated Measures</a>).</li><li>Add <code>quarter</code> as a column dimension. Click <strong>Run</strong>. The grid now reads regions × quarters.</li><li>Enable subtotals. Confirm subtotals make financial sense — each region&#x27;s &quot;total&quot; column should read as the overall margin for that region, not a sum of percentages.</li><li>Click any cell to open the decomposed drill drawer. Confirm the numerator and denominator rows match what you expect.</li><li>If the number is surprising, click the Route badge. If it reads <code>aggregate</code>, turn <strong>Force Live</strong> on, re-run, and compare. A matching number confirms the aggregate is fresh; a different number says refresh the aggregate.</li></ol>
+<p>The whole loop takes under two minutes. The measure is then safe to expose to a BI tool.</p>
+<h2>Scope and limitations</h2>
+<div class="table-wrapper"><table><thead><tr><th>Feature</th><th>v1</th><th>Future</th></tr></thead><tbody><tr><td>Single measure per view</td><td>Yes</td><td>Multi-measure layout deferred to the Phase 8 canvas.</td></tr><tr><td>Multi-row / multi-column dimensions</td><td>Yes (Phase 6)</td><td>Cross-tab hierarchy with drill-down on rows deferred.</td></tr><tr><td>Global slicers</td><td>Yes (Phase 6)</td><td>Saved slicer presets deferred.</td></tr><tr><td>Subtotals + grand totals</td><td>Yes (Phase 6)</td><td>Alternate total functions (averages, medians of subtotals) deferred.</td></tr><tr><td>Variants (YTD, YoY, etc.)</td><td>Yes (Phase 6, built on Phase 2 time intelligence)</td><td>Custom user-defined variant formulas deferred — use a calculated measure in the interim.</td></tr><tr><td>CSV + JSON export</td><td>Yes (Phase 6)</td><td>XLSX export deferred.</td></tr><tr><td>Saved views</td><td>No</td><td>Deferred; use a calculated measure or a pocket to persist a layout.</td></tr></tbody></table></div>
+<h2>Troubleshooting</h2>
+<div class="table-wrapper"><table><thead><tr><th>Symptom</th><th>Likely cause</th><th>Fix</th></tr></thead><tbody><tr><td>&quot;Run&quot; button greyed out</td><td>No measure selected</td><td>Pick a measure; dimensions alone are not a query</td></tr><tr><td>Grid empty after Run</td><td>Slicer chips exclude every row</td><td>Check the chip row below the Route badge; remove the offending chip</td></tr><tr><td>Cell values look right but totals look wrong</td><td>Subtotals off while dimension nesting on</td><td>Enable the subtotals toggle</td></tr><tr><td>Variant button shows all items as &quot;not eligible&quot;</td><td>Missing prerequisite: no time hierarchy, measure not linked to one, or no calendar type on the hierarchy</td><td>Check the reason text in the popover. See <a href="configure-time-variants.html">Configure Time Variants</a> for the full prerequisite chain.</td></tr><tr><td>Period-boundary variants show as &quot;not eligible&quot;</td><td>The linked time hierarchy has no calendar type configured</td><td>Edit the hierarchy in the Hierarchies panel and set a calendar type (standard, fiscal, hijri, or iso). See <a href="configure-time-variants.html">Configure Time Variants</a>.</td></tr><tr><td>Cell click on calculated measure errors</td><td>Very old frontend cache</td><td>Hard-refresh; Phase 6 shipped the decomposed drawer</td></tr></tbody></table></div>
+<h2>Related</h2>
+<ul><li><a href="calculated-measures.html">Calculated Measures</a></li><li><a href="drill-through.html">Drill-through</a></li><li><a href="../querying/live-vs-aggregate.html">Live vs Aggregate</a></li><li><a href="configure-time-variants.html">Configure Time Variants</a></li><li><a href="configure-calendar-table.html">Configure Calendar Table</a></li></ul>
+<nav class="page-nav"><a href="multi-calendar-best-practices.html" class="page-nav-btn prev">&larr; Multi-Calendar Best Practices</a><a href="../index.html" class="page-nav-btn home">Home</a><a href="../querying/live-vs-aggregate.html" class="page-nav-btn next">Live vs Aggregate &rarr;</a></nav>
   </main>
-
-  <nav class="page-nav">
-    <a href="model-canvas-tour.html" class="page-nav-btn prev">&larr; Model Canvas Tour</a>
-    <a href="../index.html" class="page-nav-btn home">Home</a>
-    <a href="../querying/live-vs-aggregate.html" class="page-nav-btn next">Live vs Aggregate &rarr;</a>
-  </nav>
-
-  <footer class="site-footer">
-    <p>Tessallite Help — <a href="../index.html">Back to contents</a></p>
-  </footer>
+  <footer class="site-footer"><p>Tessallite Help — <a href="../index.html">Back to contents</a></p></footer>
 </body>
 </html>

@@ -183,4 +183,4 @@ Suppose `orders` is the fact and the source has a single `cities` table. The fac
 
 ---
 
-← [Define Dimensions](define-dimensions.md) · [Home](../index.md) · [Define Measures](define-measures.md) →
+← [Define Dimensions](define-dimensions.md) | [Home](../index.md) | [Define Measures →](define-measures.md)

@@ -76,4 +76,4 @@ A user's workspace role is the ceiling for their effective permissions. A Modell
 
 ---
 
-← [Manage Users](manage-users.md) | [Home](../index.md) | [Workspace Settings →](workspace-settings.md)
+← [Manage Users](manage-users.md) | [Home](../index.md) | [Model-Scoped RBAC →](rbac-model-scoped.md)

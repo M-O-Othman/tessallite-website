@@ -61,4 +61,4 @@ Run `teardown.bat` or `./teardown.sh` from `deploy/gcp/`. This removes Cloud Run
 
 ---
 
-← [Install Locally](install-local.md) | [Home](../index.md) | [First-Time Setup →](first-time-setup.md)
+← [Install Tessallite Locally](install-local.md) | [Home](../index.md) | [Connect a BI Tool via JDBC →](connect-a-bi-tool.md)

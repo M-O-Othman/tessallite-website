@@ -7,6 +7,8 @@ updated: 2026-05-04
 
 ## What this covers
 
+![Live data preview modal for a source table in Model Builder.](../assets/screencaps/data-preview-panel.png)
+
 Data preview shows a paginated sample of raw data from a source table, directly in Model Builder. Use it to verify column contents before defining measures or dimensions, check data quality, or confirm the right table was added. This article explains where to find the preview, how to use it, and its limitations.
 
 ---
@@ -60,4 +62,4 @@ Use the pagination controls to navigate through the data. The preview fetches ea
 
 ---
 
-← [Impact Analysis](impact-analysis.md) | [Home](../index.md) | [View Model Lineage →](view-model-lineage.md)
+← [Impact Analysis](impact-analysis.md) | [Home](../index.md) | [Schema Changes →](schema-changes.md)

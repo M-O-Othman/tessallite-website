@@ -7,6 +7,8 @@ updated: 2026-05-04
 
 ## What this covers
 
+![Live Data Tags drawer opened from Model Builder.](../assets/screencaps/data-tags-panel.png)
+
 Data tags are user-defined labels that group columns by sensitivity, category, or business domain. Tags serve two purposes: they document which columns carry sensitive data (making models auditable), and they drive column-level access control when combined with persona restrictions (see [Column-Level Security](column-level-security.md)). This article explains how to create, assign, and manage data tags.
 
 ---

@@ -1,6 +1,11 @@
-# System Configuration
+---
+title: "System Configuration"
+audience: system-admin
+area: system-admin
+updated: 2026-04-18
+---
 
-**Audience:** System Admin · **Updated:** 2026-04-18
+# System Configuration
 
 ![Settings precedence chain](../assets/illustrations/settings-precedence-chain.svg)
 
@@ -58,4 +63,4 @@ python tessallite/scripts/gen_config_reference.py
 
 ---
 
-[← Configure environment variables](configure-environment-variables.md) · [Home](../index.md) · [Credentials and the .env file →](credentials-and-env.md)
+← [Configure Environment Variables](configure-environment-variables.md) | [Home](../index.md) | [Credentials and the .env File →](credentials-and-env.md)

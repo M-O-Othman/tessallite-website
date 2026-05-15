@@ -76,4 +76,4 @@ Both approaches can be combined. The Optimiser handles opportunistic coverage; m
 
 ---
 
-← [View Diagnostics](view-diagnostics.md) | [Home](../index.md) | [Manage Aggregate Schedules →](manage-aggregate-schedules.md)
+← [Manage Aggregate Schedules](manage-aggregate-schedules.md) | [Home](../index.md) | [Usage Analytics →](usage-analytics.md)

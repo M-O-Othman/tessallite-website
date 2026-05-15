@@ -146,4 +146,4 @@ All require `modeler` role on the model's project.
 
 ---
 
-[← Export and Import a Project](export-and-import-a-project.md) | [Home](../index.md) | [Data Quality Rules →](data-quality-rules.md)
+← [Configure Personas](configure-personas.md) | [Home](../index.md) | [Data Quality Rules →](data-quality-rules.md)

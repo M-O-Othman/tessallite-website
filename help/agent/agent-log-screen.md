@@ -7,9 +7,10 @@ updated: 2026-04-28
 
 ## What this covers
 
+![Live Agent Log route for a project.](../assets/screencaps/agent-log-live.png)
+
 The agent log screen is a full-trace audit viewer for every conversational agent turn in a project. It lets tenant administrators and project modellers inspect what happened during any agent interaction: the user's question, the LLM's reasoning, the queries it chose, the answers it produced, how the judge evaluated those answers, and how tokens were spent. This article explains the purpose of the log screen, how to enable it, how to read the trace data, and how to use it effectively for quality assurance and troubleshooting.
 
-[Previous: Cross-model calculation recipes](cross-model-recipes.md) — [Home](../index.md)
 
 ---
 
@@ -119,4 +120,6 @@ Filters are combined with AND logic. Pagination resets to page one after each se
 - [Write a judge rubric](write-a-judge-rubric.md)
 - [Cross-model calculation recipes](cross-model-recipes.md)
 
-[Previous: Cross-model calculation recipes](cross-model-recipes.md) — [Home](../index.md) — [Next: Agent Session Memory](session-memory.md)
+---
+
+← [Cross-model calculation recipes](cross-model-recipes.md) | [Home](../index.md) | [Agent Session Memory →](session-memory.md)

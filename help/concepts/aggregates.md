@@ -28,7 +28,7 @@ Each aggregate is defined by two things:
 - **Grain** — the set of dimensions at which the data was grouped. Example: {Region, Product Category, Month}.
 - **Measures** — the aggregated values stored at that grain. Example: SUM(order_total), COUNT(order_id).
 
-The aggregate table has one column per grain dimension and one column per measure. For the example above, its schema would be: `region`, `product_category`, `month`, `sum_order_total`, `count_order_id`.
+The aggregate table has one column per grain dimension and multiple columns per measure — one for each type-compatible aggregation. For example, a SUM-default measure also stores COUNT, MIN, and MAX so that queries requesting any of those stat types can route to the aggregate instead of falling back to the source. The example above would produce columns like: `region`, `product_category`, `month`, `order_total__sum`, `order_total__count`, `order_total__min`, `order_total__max`, `order_id__count`, `order_id__min`, `order_id__max`.
 
 ---
 

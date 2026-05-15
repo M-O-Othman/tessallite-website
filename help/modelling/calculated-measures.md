@@ -162,4 +162,4 @@ A minimal, copyable recipe for the single most-requested calculated measure.
 
 ---
 
-← [Multi-Calendar Best Practices](multi-calendar-best-practices.md) | [Home](../index.md) | [Model Canvas Tour →](model-canvas-tour.md)
+← [Define Measures](define-measures.md) | [Home](../index.md) | [Configure Time Variants →](configure-time-variants.md)

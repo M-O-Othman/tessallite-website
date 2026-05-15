@@ -4,209 +4,42 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>API Reference — Tessallite Help</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../assets/help.css">
 </head>
 <body>
   <header class="site-header">
     <a href="../index.html" class="logo">Tessallite Help</a>
-    <nav class="breadcrumb">
-      <a href="../index.html">Home</a> / <span>Integrations</span> / <span>API Reference</span>
-    </nav>
+    <nav class="breadcrumb"><a href="../index.html">Home</a> / <span>Integrations</span> / <span>API Reference</span></nav>
   </header>
   <main class="article">
-    <div class="article-meta">
-      <span class="audience-badge">Modeller</span>
-      <span class="updated">Updated 2026-04-17</span>
-    </div>
+    <div class="article-meta"><span class="audience-badge">modeller</span><span class="updated">Updated 2026-05-04</span></div>
     <h1>API Reference</h1>
-
-    <h2>What this covers</h2>
-    <p>REST API endpoint reference for Tessallite. All endpoints require HTTP Basic authentication unless stated otherwise. See <a href="api-authentication.html">API Authentication</a> for details on credentials and roles.</p>
-    <p>Base URL: <code>http://HOST:3000/api/v1</code></p>
-
-    <div class="callout-note">
-      <p>REST API endpoint paths are subject to change between major versions. Check the release notes when upgrading across major versions.</p>
-    </div>
-
-    <h2>Health</h2>
-    <div class="table-wrapper">
-      <table>
-        <thead>
-          <tr>
-            <th>Method</th>
-            <th>Path</th>
-            <th>Auth required</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><code>GET</code></td>
-            <td><code>/health</code></td>
-            <td>No</td>
-            <td>Returns service health status. Response: <code>{"status":"ok","db_migration":"N"}</code>. Use this to verify the Frontend service is reachable.</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <h2>Workspaces</h2>
-    <p>These endpoints require a System Admin account.</p>
-    <div class="table-wrapper">
-      <table>
-        <thead>
-          <tr>
-            <th>Method</th>
-            <th>Path</th>
-            <th>Auth required</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><code>GET</code></td>
-            <td><code>/workspaces</code></td>
-            <td>System Admin</td>
-            <td>List all workspaces.</td>
-          </tr>
-          <tr>
-            <td><code>POST</code></td>
-            <td><code>/workspaces</code></td>
-            <td>System Admin</td>
-            <td>Create a workspace. Request body: <code>{"slug":"acme","display_name":"Acme Corp","admin_email":"admin@acme.com"}</code></td>
-          </tr>
-          <tr>
-            <td><code>GET</code></td>
-            <td><code>/workspaces/{slug}</code></td>
-            <td>System Admin</td>
-            <td>Get details for a specific workspace.</td>
-          </tr>
-          <tr>
-            <td><code>DELETE</code></td>
-            <td><code>/workspaces/{slug}</code></td>
-            <td>System Admin</td>
-            <td>Delete a workspace. This operation is irreversible and removes all projects, models, and aggregates in the workspace.</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <h2>Projects</h2>
-    <p>These endpoints require a Tenant Admin or Modeller account.</p>
-    <div class="table-wrapper">
-      <table>
-        <thead>
-          <tr>
-            <th>Method</th>
-            <th>Path</th>
-            <th>Auth required</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><code>GET</code></td>
-            <td><code>/workspaces/{slug}/projects</code></td>
-            <td>Tenant Admin or Modeller</td>
-            <td>List all projects in the workspace.</td>
-          </tr>
-          <tr>
-            <td><code>POST</code></td>
-            <td><code>/workspaces/{slug}/projects</code></td>
-            <td>Tenant Admin</td>
-            <td>Create a new project in the workspace.</td>
-          </tr>
-          <tr>
-            <td><code>GET</code></td>
-            <td><code>/workspaces/{slug}/projects/{id}</code></td>
-            <td>Tenant Admin or Modeller</td>
-            <td>Get details for a specific project.</td>
-          </tr>
-          <tr>
-            <td><code>DELETE</code></td>
-            <td><code>/workspaces/{slug}/projects/{id}</code></td>
-            <td>Tenant Admin</td>
-            <td>Delete a project and all its models and aggregates.</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <h2>Aggregates and diagnostics</h2>
-    <p>These endpoints require a Modeller account or higher.</p>
-    <div class="table-wrapper">
-      <table>
-        <thead>
-          <tr>
-            <th>Method</th>
-            <th>Path</th>
-            <th>Auth required</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><code>GET</code></td>
-            <td><code>/workspaces/{slug}/projects/{id}/aggregates</code></td>
-            <td>Modeller</td>
-            <td>List all aggregates for the project, including their current status (Ready, Building, Stale, Error).</td>
-          </tr>
-          <tr>
-            <td><code>POST</code></td>
-            <td><code>/workspaces/{slug}/projects/{id}/aggregates/{agg_id}/refresh</code></td>
-            <td>Modeller</td>
-            <td>Trigger an immediate refresh of the specified aggregate. The build runs asynchronously; poll the GET aggregates endpoint to check status.</td>
-          </tr>
-          <tr>
-            <td><code>GET</code></td>
-            <td><code>/workspaces/{slug}/projects/{id}/diagnostics</code></td>
-            <td>Modeller</td>
-            <td>Get model health diagnostics, including schema drift warnings, permission errors, and build failure details.</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <h2>Model definition</h2>
-    <div class="table-wrapper">
-      <table>
-        <thead>
-          <tr>
-            <th>Method</th>
-            <th>Path</th>
-            <th>Auth required</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><code>GET</code></td>
-            <td><code>/workspaces/{slug}/projects/{id}/model</code></td>
-            <td>Modeller</td>
-            <td>Get the model definition for a project: tables, joins, dimensions, and measures.</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="related">
-      <h2>Related</h2>
-      <ul>
-        <li><a href="api-authentication.html">API Authentication</a></li>
-        <li><a href="supported-data-sources.html">Supported Data Sources</a></li>
-        <li><a href="../troubleshooting/common-errors.html">Common Errors</a></li>
-      </ul>
-    </div>
+<h2>What this covers</h2>
+<p>REST API endpoint reference for Tessallite. All endpoints require HTTP Basic authentication unless stated otherwise. See <a href="api-authentication.html">API Authentication</a> for credential and role details.</p>
+<p><strong>Base URL</strong>: <code>http://HOST:3000/api/v1</code></p>
+<blockquote>REST API endpoint paths are subject to change between major versions. Check release notes when upgrading across major versions.</blockquote>
+<h2>Health</h2>
+<div class="table-wrapper"><table><thead><tr><th>Method</th><th>Path</th><th>Auth required</th><th>Description</th></tr></thead><tbody><tr><td><code>GET</code></td><td><code>/health</code></td><td>No</td><td>Returns <code>{&quot;status&quot;:&quot;ok&quot;,&quot;db_migration&quot;:&quot;N&quot;}</code>. Use to verify the Frontend service is reachable.</td></tr></tbody></table></div>
+<h2>Workspaces</h2>
+<p>System Admin only.</p>
+<div class="table-wrapper"><table><thead><tr><th>Method</th><th>Path</th><th>Auth required</th><th>Description</th></tr></thead><tbody><tr><td><code>GET</code></td><td><code>/workspaces</code></td><td>System Admin</td><td>List all workspaces</td></tr><tr><td><code>POST</code></td><td><code>/workspaces</code></td><td>System Admin</td><td>Create a workspace. Body: <code>{&quot;slug&quot;:&quot;acme&quot;,&quot;display_name&quot;:&quot;Acme Corp&quot;,&quot;admin_email&quot;:&quot;admin@acme.com&quot;}</code></td></tr><tr><td><code>GET</code></td><td><code>/workspaces/{slug}</code></td><td>System Admin</td><td>Get workspace details</td></tr><tr><td><code>DELETE</code></td><td><code>/workspaces/{slug}</code></td><td>System Admin</td><td>Delete workspace (irreversible — removes all projects, models, and aggregates)</td></tr></tbody></table></div>
+<h2>Projects</h2>
+<p>Tenant Admin or Modeller.</p>
+<div class="table-wrapper"><table><thead><tr><th>Method</th><th>Path</th><th>Auth required</th><th>Description</th></tr></thead><tbody><tr><td><code>GET</code></td><td><code>/workspaces/{slug}/projects</code></td><td>Tenant Admin or Modeller</td><td>List all projects in the workspace</td></tr><tr><td><code>POST</code></td><td><code>/workspaces/{slug}/projects</code></td><td>Tenant Admin</td><td>Create a new project</td></tr><tr><td><code>GET</code></td><td><code>/workspaces/{slug}/projects/{id}</code></td><td>Tenant Admin or Modeller</td><td>Get project details</td></tr><tr><td><code>DELETE</code></td><td><code>/workspaces/{slug}/projects/{id}</code></td><td>Tenant Admin</td><td>Delete project and all its models and aggregates</td></tr></tbody></table></div>
+<h2>Aggregates and diagnostics</h2>
+<p>Modeller or higher.</p>
+<div class="table-wrapper"><table><thead><tr><th>Method</th><th>Path</th><th>Auth required</th><th>Description</th></tr></thead><tbody><tr><td><code>GET</code></td><td><code>/workspaces/{slug}/projects/{id}/aggregates</code></td><td>Modeller</td><td>List aggregates with status (Ready, Building, Stale, Error)</td></tr><tr><td><code>POST</code></td><td><code>/workspaces/{slug}/projects/{id}/aggregates/{agg_id}/refresh</code></td><td>Modeller</td><td>Trigger immediate aggregate refresh (async; poll GET aggregates to check status)</td></tr><tr><td><code>GET</code></td><td><code>/workspaces/{slug}/projects/{id}/diagnostics</code></td><td>Modeller</td><td>Get model health diagnostics (schema drift, permission errors, build failures)</td></tr></tbody></table></div>
+<h2>Model definition</h2>
+<div class="table-wrapper"><table><thead><tr><th>Method</th><th>Path</th><th>Auth required</th><th>Description</th></tr></thead><tbody><tr><td><code>GET</code></td><td><code>/workspaces/{slug}/projects/{id}/model</code></td><td>Modeller</td><td>Get model definition: tables, joins, dimensions, measures</td></tr></tbody></table></div>
+<h2>Headless API (query-router)</h2>
+<p>JSON-in, JSON-out query interface for non-SQL clients. Base URL for headless: <code>http://HOST:3000/query-router/api/v1/headless</code>.</p>
+<div class="table-wrapper"><table><thead><tr><th>Method</th><th>Path</th><th>Auth required</th><th>Description</th></tr></thead><tbody><tr><td><code>POST</code></td><td><code>/query</code></td><td>JWT</td><td>Execute a semantic query. Body: <code>{project_id, model_id, measures, dimensions, filters, limit, offset, order_by}</code>. Returns <code>{columns, rows, total_rows, query_id}</code>.</td></tr><tr><td><code>GET</code></td><td><code>/models</code></td><td>JWT</td><td>List all models accessible to the caller&#x27;s tenant.</td></tr><tr><td><code>GET</code></td><td><code>/models/{model_id}/measures</code></td><td>JWT</td><td>List measures in a model with name, display_name, format, aggregation_type, variant_kind.</td></tr><tr><td><code>GET</code></td><td><code>/models/{model_id}/dimensions</code></td><td>JWT</td><td>List dimensions in a model with name, display_name, is_time_dim.</td></tr></tbody></table></div>
+<p>Rate limit: 100 requests/minute per tenant (configurable via <code>HEADLESS_RATE_LIMIT</code> env var). Returns <code>429 Too Many Requests</code> when exceeded. All responses include the <code>X-RateLimit-Remaining</code> header.</p>
+<p>See <a href="headless-api.html">Headless API</a> for full documentation with worked examples.</p>
+<h2>Related</h2>
+<ul><li><a href="api-authentication.html">API Authentication</a></li><li><a href="headless-api.html">Headless API</a></li><li><a href="supported-data-sources.html">Supported Data Sources</a></li><li><a href="../troubleshooting/common-errors.html">Common Errors</a></li></ul>
+<nav class="page-nav"><a href="api-authentication.html" class="page-nav-btn prev">&larr; API Authentication</a><a href="../index.html" class="page-nav-btn home">Home</a><a href="headless-api.html" class="page-nav-btn next">Headless API &rarr;</a></nav>
   </main>
-  <nav class="page-nav">
-    <a href="api-authentication.html" class="page-nav-btn prev">&larr; API Authentication</a>
-    <a href="../index.html" class="page-nav-btn home">Home</a>
-    <a href="../troubleshooting/excel-connection-problems.html" class="page-nav-btn next">Excel Connection Problems &rarr;</a>
-  </nav>
-  <footer class="site-footer">
-    <p>Tessallite Help — <a href="../index.html">Back to contents</a></p>
-  </footer>
+  <footer class="site-footer"><p>Tessallite Help — <a href="../index.html">Back to contents</a></p></footer>
 </body>
 </html>

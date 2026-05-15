@@ -73,4 +73,4 @@ Project settings apply to every model in the project. The allow-list and per-mod
 
 ---
 
-[← Workspace Settings](workspace-settings.md) · [Home](../index.md) · [Model Configuration →](model-configuration.md)
+← [Workspace Settings](workspace-settings.md) | [Home](../index.md) | [Model Configuration →](model-configuration.md)

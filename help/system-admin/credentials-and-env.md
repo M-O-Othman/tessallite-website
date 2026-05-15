@@ -1,6 +1,11 @@
-# Credentials and the .env file
+---
+title: "Credentials and the .env File"
+audience: system-admin
+area: system-admin
+updated: 2026-04-18
+---
 
-**Audience:** System Admin · **Updated:** 2026-04-18
+# Credentials and the .env file
 
 ![Editor view of the .env file with bootstrap credentials.](../assets/screencaps/credentials-env-file.png)
 
@@ -75,4 +80,4 @@ The non-secret routing fields — provider base URLs, model-name suggestions, th
 
 ---
 
-[← System Configuration](system-configuration.md) · [Home](../index.md) · [Service reference →](service-reference.md)
+← [System Configuration](system-configuration.md) | [Home](../index.md) | [Service Reference →](service-reference.md)

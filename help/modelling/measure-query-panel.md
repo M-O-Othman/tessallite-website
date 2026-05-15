@@ -245,4 +245,4 @@ The whole loop takes under two minutes. The measure is then safe to expose to a 
 
 ---
 
-← [Model Canvas Tour](model-canvas-tour.md) | [Home](../index.md) | [Live vs Aggregate →](../querying/live-vs-aggregate.md)
+← [Multi-Calendar Best Practices](multi-calendar-best-practices.md) | [Home](../index.md) | [Live vs Aggregate →](../querying/live-vs-aggregate.md)

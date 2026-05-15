@@ -43,4 +43,4 @@ Tenant Administration exposes two tabs: **Projects** and **Users**. Workspace id
 
 ---
 
-[← Manage Roles](manage-roles.md) | [Home](../index.md) | [Project Settings →](project-settings.md)
+← [Model-Scoped RBAC](rbac-model-scoped.md) | [Home](../index.md) | [Project Settings →](project-settings.md)

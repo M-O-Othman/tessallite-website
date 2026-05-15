@@ -65,4 +65,4 @@ To stop all containers, run `teardown.bat` (Windows) or `./teardown.sh` (Mac/Lin
 
 ---
 
-← [How Tessallite Works](how-tessallite-works.md) | [Home](../index.md) | [Install on GCP →](install-gcp.md)
+← [Demo tenant: acme-demo](acme-demo-tenant.md) | [Home](../index.md) | [Deploy Tessallite to Google Cloud Platform →](install-gcp.md)

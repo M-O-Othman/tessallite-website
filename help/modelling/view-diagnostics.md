@@ -88,4 +88,4 @@ Tessallite collects column-level statistics from your data sources to inform agg
 
 ---
 
-← [View Model Lineage](view-model-lineage.md) | [Home](../index.md) | [Use the AI Optimiser →](use-the-ai-optimiser.md)
+← [View Model Lineage](view-model-lineage.md) | [Home](../index.md) | [Save and Version a Model →](save-and-version-a-model.md)

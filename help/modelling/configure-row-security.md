@@ -196,4 +196,4 @@ Running `scripts/seed_acme_test_demo.py` prints a 30-day JWT for each audience. 
 
 ---
 
-← [Configure Pocket Tables](configure-pocket-tables.md) | [Home](../index.md) | [Data Tags →](data-tags.md)
+← [Usage Analytics](usage-analytics.md) | [Home](../index.md) | [Data Tags →](data-tags.md)

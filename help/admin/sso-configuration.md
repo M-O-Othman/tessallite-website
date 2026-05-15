@@ -159,4 +159,4 @@ Users with a non-local auth source cannot change their password via Tessallite �
 
 ---
 
-[← Audit Log](audit-log.md) | [Home](../index.md) | [Webhooks →](webhooks.md)
+← [Audit Log](audit-log.md) | [Home](../index.md) | [SSO Group Mappings →](group-mappings.md)

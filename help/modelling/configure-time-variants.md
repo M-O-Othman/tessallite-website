@@ -184,4 +184,4 @@ A window-based variant additionally requires the aggregate's grain to contain a 
 
 ---
 
-← [Define Measures](define-measures.md) | [Home](../index.md) | [Configure Calendar Table →](configure-calendar-table.md)
+← [Calculated Measures](calculated-measures.md) | [Home](../index.md) | [Configure Calendar Table →](configure-calendar-table.md)

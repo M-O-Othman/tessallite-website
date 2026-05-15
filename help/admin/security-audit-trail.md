@@ -86,4 +86,4 @@ Audit events are kept for 90 days by default. The retention period can be adjust
 
 ---
 
-← [Webhooks](webhooks.md) | [Home](../index.md) | [Model-Scoped RBAC →](rbac-model-scoped.md)
+← [Webhooks](webhooks.md) | [Home](../index.md) | [Scheduler SLA Declarations →](scheduler-sla.md)

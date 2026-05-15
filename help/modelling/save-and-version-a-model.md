@@ -79,4 +79,4 @@ Every change you make in the Model Builder — adding a table, defining a join, 
 
 ---
 
-← [Manage Aggregate Schedules](manage-aggregate-schedules.md) | [Home](../index.md) | [Deploy a Model →](deploy-a-model.md)
+← [View Diagnostics](view-diagnostics.md) | [Home](../index.md) | [Deploy a Model →](deploy-a-model.md)

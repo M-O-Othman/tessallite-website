@@ -145,4 +145,4 @@ Aggregates and pockets are physical tables in the target database. The exported 
 
 ---
 
-← [Export and Import a Model](export-and-import-a-model.md) | [Home](../index.md) | [Parameterized Filters →](parameterized-filters.md)
+← [Export and Import a Model](export-and-import-a-model.md) | [Home](../index.md) | [Agent Chat →](../agent/agent-chat.md)

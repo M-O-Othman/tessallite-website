@@ -79,4 +79,4 @@ Model-scoped bindings control which CRUD operations a user can perform on model 
 
 ---
 
-← [Security Audit Trail](security-audit-trail.md) | [Home](../index.md) | [Scheduler SLA Declarations →](scheduler-sla.md)
+← [Manage Roles](manage-roles.md) | [Home](../index.md) | [Workspace Settings →](workspace-settings.md)

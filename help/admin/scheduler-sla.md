@@ -89,4 +89,4 @@ SLAs can be updated via PATCH and deleted via DELETE. Deleting an SLA does not a
 
 ---
 
-← [Model-Scoped RBAC](rbac-model-scoped.md) | [Home](../index.md) | [Architecture Overview →](../system-admin/architecture-overview.md)
+← [Security Audit Trail](security-audit-trail.md) | [Home](../index.md) | [Architecture Overview →](../system-admin/architecture-overview.md)

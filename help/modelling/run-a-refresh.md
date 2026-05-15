@@ -88,4 +88,4 @@ If a refresh fails, the aggregate status changes to **Error**. The Scheduler rec
 
 ---
 
-← [Configure Personas](configure-personas.md) | [Home](../index.md) | [Impact Analysis →](impact-analysis.md)
+← [Configure Pocket Tables](configure-pocket-tables.md) | [Home](../index.md) | [Manage Aggregate Schedules →](manage-aggregate-schedules.md)

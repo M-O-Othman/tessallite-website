@@ -9,7 +9,6 @@ updated: 2026-04-26
 
 The judge is a second LLM that scores every answer the agent produces against a rubric. This article explains why the judge exists, how a rubric is shaped, how to write sections that the judge can act on consistently, and how to calibrate the rubric using the metrics the platform already records.
 
-[Previous: Author the glossary alias map](glossary-alias-map.md) — [Home](../index.md) — Next: [Cross-model calculation recipes](cross-model-recipes.md)
 
 ---
 
@@ -144,4 +143,6 @@ Pick the cheapest, fastest LLM you can stomach for the judge — judging is a co
 - [Author the glossary alias map](glossary-alias-map.md)
 - [Cross-model calculation recipes](cross-model-recipes.md)
 
-[Previous: Author the glossary alias map](glossary-alias-map.md) — [Home](../index.md) — Next: [Cross-model calculation recipes](cross-model-recipes.md)
+---
+
+← [Author the glossary alias map](glossary-alias-map.md) | [Home](../index.md) | [Cross-model calculation recipes →](cross-model-recipes.md)

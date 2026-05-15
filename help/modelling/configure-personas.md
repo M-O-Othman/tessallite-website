@@ -184,4 +184,4 @@ When a query is bound to persona `X` (through the catalog name), the router pref
 
 ---
 
-← [Column-Level Security](column-level-security.md) | [Home](../index.md) | [Run a Refresh →](run-a-refresh.md)
+← [Column-Level Security](column-level-security.md) | [Home](../index.md) | [Parameterized Filters →](parameterized-filters.md)

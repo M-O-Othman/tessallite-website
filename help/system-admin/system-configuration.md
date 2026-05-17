@@ -7,7 +7,7 @@ updated: 2026-04-18
 
 # System Configuration
 
-![Settings precedence chain](../assets/illustrations/settings-precedence-chain.svg)
+![Settings precedence chain](../assets/illustrations/settings-precedence-chain.png)
 
 ![System Admin — Configuration tab with sectioned settings accordions.](../assets/screencaps/system-configuration-tab.png)
 

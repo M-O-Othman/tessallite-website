@@ -36,7 +36,7 @@ password=&lt;your-password&gt;</code></pre>
 <p>Any PostgreSQL-compatible driver accepts these parameters directly.</p>
 <h2>What you see after connecting</h2>
 <p>Each model published in the workspace appears as a schema. Within each schema, the dimensions and measures defined in the model are listed as columns. Querying them returns results immediately. Tessallite routes the query to the fastest available source — a pre-aggregated summary if one exists, or the raw data source otherwise.</p>
-<figure class="illustration"><img class="illustration" src="../assets/illustrations/jdbc-connection-flow.svg" alt="JDBC connection path from BI tool through the gateway to the data source."></figure>
+<figure class="illustration"><img class="illustration" src="../assets/illustrations/jdbc-connection-flow.png" alt="JDBC connection path from BI tool through the gateway to the data source."></figure>
 <h2>Troubleshooting</h2>
 <div class="table-wrapper"><table><thead><tr><th>Symptom</th><th>Likely cause</th><th>What to do</th></tr></thead><tbody><tr><td>Connection refused on port 5433</td><td>Gateway is not running</td><td>Ask your system administrator to check the gateway service</td></tr><tr><td>Authentication failed</td><td>Wrong slug, email, or password</td><td>Check all three fields exactly — the slug is case-sensitive</td></tr><tr><td>No tables visible</td><td>No models exist in the workspace</td><td>A modeller must publish at least one model before tables are visible</td></tr><tr><td>Timeout on GCP</td><td>No TCP load balancer configured</td><td>Use the XMLA connection for Excel or Power BI, or ask your administrator to add a load balancer</td></tr></tbody></table></div>
 <h2>Related</h2>

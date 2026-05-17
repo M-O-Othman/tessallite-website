@@ -64,7 +64,7 @@ The slug is set when the System Admin creates the workspace. It cannot be modifi
 
 ## Hierarchy at a glance
 
-![Tessallite four-level organisational hierarchy](../assets/illustrations/tenant-workspace-hierarchy.svg)
+![Tessallite four-level organisational hierarchy](../assets/illustrations/tenant-workspace-hierarchy.png)
 
 | Level | Who manages it | What it contains |
 |---|---|---|

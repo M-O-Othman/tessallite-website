@@ -33,18 +33,17 @@ To create one:
    - **hijri** — Islamic calendar, year starts 1 Muharram.
    - **iso** — ISO 8601 week-based year.
 4. Add levels for each time granularity you need (e.g. year, quarter, month). On each level, set the **time unit** and enable the **allowed time calculations** for the variants you plan to use.
-5. **Link the measure.** In the hierarchy's measure links section, add the base measure. This step is easy to miss — without it, the measure has no associated hierarchy and all variants will be ineligible.
 
-Period boundaries (where a year, quarter, or month starts and ends) are computed automatically from the calendar type. A calendar table is not required — the system derives boundaries using date expressions. If a calendar table IS present in the model, the system uses it for backward compatibility.
+Period boundaries (where a year, quarter, or month starts and ends) are computed automatically from the calendar type. A calendar table is not required — the system derives boundaries using date expressions. If a calendar table IS present in the model, the system uses it for backward compatibility. The system automatically associates measures with the time hierarchy that shares the same table as the measure's source column — no manual linking step is needed.
 
 ### Prerequisite summary
 
-| Variant group | Base measure | Time hierarchy with calendar type | Level capabilities | Measure linked to hierarchy |
-|---|---|---|---|---|
-| Period-to-date (`ytd`, `qtd`, `mtd`, `wtd`) | Required | Required | `period_to_date` | Required |
-| Parallel period (`prior_year`, `prior_quarter`, etc.) | Required | Required | `parallel_period` | Required |
-| Year-over-year (`yoy_growth`, `yoy_growth_pct`) | Required | Required | `parallel_period` | Required |
-| Window (`lag`, `trailing_n`, `moving_avg_n`) | Required | Not required | `lag` or `moving_window` | Required |
+| Variant group | Base measure | Time hierarchy with calendar type | Level capabilities |
+|---|---|---|---|
+| Period-to-date (`ytd`, `qtd`, `mtd`, `wtd`) | Required | Required | `period_to_date` |
+| Parallel period (`prior_year`, `prior_quarter`, etc.) | Required | Required | `parallel_period` |
+| Year-over-year (`yoy_growth`, `yoy_growth_pct`) | Required | Required | `parallel_period` |
+| Window (`lag`, `trailing_n`, `moving_avg_n`) | Required | Not required | `lag` or `moving_window` |
 
 ---
 
@@ -73,11 +72,11 @@ Default `n` for `trailing_n` is 12; default `n` for `moving_avg_n` is 30. Both c
 
 ## Admission rules
 
-A variant can be ticked on a base measure only when **all** of the following are true for the measure's linked hierarchy:
+A variant can be ticked on a base measure only when **all** of the following are true for the measure's associated time hierarchy:
 
 1. The variant's family appears in at least one level's `allowed_time_calcs`.
 2. The variant's required time unit (if any) is present as a level `time_unit` in the same hierarchy.
-3. If the variant is period-aware, the linked hierarchy has a calendar type configured.
+3. If the variant is period-aware, the associated hierarchy has a calendar type configured.
 
 Variants that fail any rule are not offered for selection in the drawer.
 
@@ -104,7 +103,7 @@ This is a shortcut for when you are actively testing a measure and want to quick
 4. Click the button. A popover opens showing all 14 variant kinds.
 5. Each variant shows its eligibility status:
    - **Eligible** variants display the suggested name (e.g. `base_amount_ytd`) and can be clicked to create immediately.
-   - **Ineligible** variants show the specific reason they cannot be created and what needs to be configured. For example: "This measure is not linked to a time hierarchy. Go to the Hierarchies panel, create a time hierarchy with the required levels, then link this measure to it."
+   - **Ineligible** variants show the specific reason they cannot be created and what needs to be configured. For example: "This measure has no associated time hierarchy. Create a time hierarchy with the required levels on the same table as the measure's source column."
    - **Already added** variants are greyed out.
 6. For parametric variants (`trailing_n`, `moving_avg_n`), a text field appears where you can enter the window size `N`.
 7. Click an eligible variant to create it. The new measure is added to the catalog and becomes available in the pivot table's measure dropdown.
@@ -158,10 +157,10 @@ A window-based variant additionally requires the aggregate's grain to contain a 
 
 | Message | Meaning | What to do |
 |---|---|---|
-| "This measure is not linked to a time hierarchy." | The measure has no hierarchy association. Without this link, the system cannot determine which time levels and calculations are available. | Go to the Hierarchies panel. Create a time hierarchy if one does not exist, add levels with the correct time units and allowed time calculations, then link this measure to the hierarchy. |
-| "The linked time hierarchy does not declare the '...' capability on any level." | The hierarchy exists and is linked, but none of its levels have the required time calculation enabled. | Edit the linked hierarchy. On the appropriate level, enable the missing calculation (e.g. `period_to_date` for YTD, `parallel_period` for prior year). |
-| "The linked time hierarchy has no '...'-grain level." | The hierarchy is linked and has the right calculation, but is missing a level at the required granularity (e.g. no year-level for YTD). | Edit the linked hierarchy and add a level with the missing time unit. |
-| "The linked time hierarchy has no calendar type configured." | Period-aware variants need a calendar type on the hierarchy. | Edit the linked hierarchy and set a calendar type (standard, fiscal, hijri, or iso). |
+| "This measure has no associated time hierarchy." | The system could not find a time hierarchy on the same table as the measure's source column. | Create a time hierarchy whose levels reference columns on the same table as the measure's source column. |
+| "The associated time hierarchy does not declare the '...' capability on any level." | The hierarchy exists but none of its levels have the required time calculation enabled. | Edit the hierarchy. On the appropriate level, enable the missing calculation (e.g. `period_to_date` for YTD, `parallel_period` for prior year). |
+| "The associated time hierarchy has no '...'-grain level." | The hierarchy has the right calculation but is missing a level at the required granularity (e.g. no year-level for YTD). | Edit the hierarchy and add a level with the missing time unit. |
+| "The associated time hierarchy has no calendar type configured." | Period-aware variants need a calendar type on the hierarchy. | Edit the hierarchy and set a calendar type (standard, fiscal, hijri, or iso). |
 | "A measure named '...' already exists in this model." | A variant with this name was previously created, or another measure uses the same name. | Delete or rename the conflicting measure, then try again. |
 
 ---

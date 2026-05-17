@@ -102,4 +102,4 @@ The table list in the Sources panel includes a search field that filters tables 
 
 ---
 
-← [Create a Project](create-a-project.md) | [Home](../index.md) | [Add Tables to a Model →](add-tables-to-a-model.md)
+← [Manage Connections](manage-connections.md) | [Home](../index.md) | [Add Tables to a Model →](add-tables-to-a-model.md)

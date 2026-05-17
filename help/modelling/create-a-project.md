@@ -67,4 +67,4 @@ Open the project and click the **Settings** tab to edit the following:
 
 ---
 
-← [Calendar Types](../concepts/calendar-types.md) | [Home](../index.md) | [Add a Data Source →](add-a-data-source.md)
+← [Calendar Types](../concepts/calendar-types.md) | [Home](../index.md) | [Manage Connections →](manage-connections.md)

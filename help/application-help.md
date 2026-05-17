@@ -4,14 +4,14 @@ Generated inventory of frontend source locations that point to Tessallite help p
 
 | Frontend source file | Line | Help file |
 |---|---:|---|
-| `tessallite/frontend/src/components/Builder/Drawer.tsx` | 45 | `/help/modelling/add-a-data-source.html` |
+| `tessallite/frontend/src/components/Builder/Drawer.tsx` | 45 | `/help/modelling/manage-connections.html` |
 | `tessallite/frontend/src/components/Builder/Drawer.tsx` | 46 | `/help/modelling/add-tables-to-a-model.html` |
 | `tessallite/frontend/src/components/Builder/Drawer.tsx` | 47 | `/help/modelling/define-joins.html` |
-| `tessallite/frontend/src/components/Builder/Drawer.tsx` | 48 | `/help/modelling/define-dimensions.html` |
+| `tessallite/frontend/src/components/Builder/Drawer.tsx` | 48 | `/help/modelling/define-hierarchies.html` |
 | `tessallite/frontend/src/components/Builder/Drawer.tsx` | 49 | `/help/modelling/define-dimensions.html` |
 | `tessallite/frontend/src/components/Builder/Drawer.tsx` | 50 | `/help/modelling/define-measures.html` |
 | `tessallite/frontend/src/components/Builder/Drawer.tsx` | 51 | `/help/modelling/configure-aggregates.html` |
-| `tessallite/frontend/src/components/Builder/Drawer.tsx` | 52 | `/help/modelling/predictive-aggregates.html` |
+| `tessallite/frontend/src/components/Builder/Drawer.tsx` | 52 | `/help/modelling/source-statistics.html` |
 | `tessallite/frontend/src/components/Builder/Drawer.tsx` | 53 | `/help/modelling/predictive-aggregates.html` |
 | `tessallite/frontend/src/components/Builder/Drawer.tsx` | 54 | `/help/modelling/aggregate-lifecycle.html` |
 | `tessallite/frontend/src/components/Builder/Drawer.tsx` | 55 | `/help/modelling/configure-pocket-tables.html` |
@@ -21,9 +21,9 @@ Generated inventory of frontend source locations that point to Tessallite help p
 | `tessallite/frontend/src/components/Builder/Drawer.tsx` | 59 | `/help/modelling/view-model-lineage.html` |
 | `tessallite/frontend/src/components/Builder/Drawer.tsx` | 60 | `/help/modelling/view-diagnostics.html` |
 | `tessallite/frontend/src/components/Builder/Drawer.tsx` | 61 | `/help/integrations/api-reference.html` |
-| `tessallite/frontend/src/components/Builder/Drawer.tsx` | 62 | `/help/modelling/measure-query-panel.html` |
+| `tessallite/frontend/src/components/Builder/Drawer.tsx` | 62 | `/help/modelling/query-panel.html` |
 | `tessallite/frontend/src/components/Builder/Drawer.tsx` | 63 | `/help/modelling/measure-query-panel.html` |
-| `tessallite/frontend/src/components/Builder/Drawer.tsx` | 64 | `/help/concepts/dimensions-and-measures.html` |
+| `tessallite/frontend/src/components/Builder/Drawer.tsx` | 64 | `/help/modelling/business-glossary.html` |
 | `tessallite/frontend/src/components/Builder/Drawer.tsx` | 65 | `/help/modelling/manage-aggregate-schedules.html` |
 | `tessallite/frontend/src/components/Builder/Drawer.tsx` | 66 | `/help/admin/model-configuration.html` |
 | `tessallite/frontend/src/components/Builder/Drawer.tsx` | 67 | `/help/modelling/parameterized-filters.html` |
@@ -49,7 +49,7 @@ Generated inventory of frontend source locations that point to Tessallite help p
 | `tessallite/frontend/src/pages/AgentChat.tsx` | 517 | `/help/agent/agent-chat.html` |
 | `tessallite/frontend/src/pages/AgentLog.tsx` | 340 | `/help/agent/agent-log-screen.html` |
 | `tessallite/frontend/src/pages/AuditLog.tsx` | 112 | `/help/admin/audit-log.html` |
-| `tessallite/frontend/src/pages/Connections.tsx` | 125 | `/help/modelling/add-a-data-source.html` |
+| `tessallite/frontend/src/pages/Connections.tsx` | 125 | `/help/modelling/manage-connections.html` |
 | `tessallite/frontend/src/pages/Explorer.tsx` | 639 | `/help/getting-started/workspace-explorer.html` |
 | `tessallite/frontend/src/pages/GroupMappings.tsx` | 85 | `/help/admin/group-mappings.html` |
 | `tessallite/frontend/src/pages/SystemAdmin.tsx` | 279 | `/help/admin/create-a-workspace.html` |

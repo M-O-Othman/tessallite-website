@@ -120,7 +120,7 @@ If your model uses calendar tables (rather than expression-based period boundari
 3. Pick the alias the measure should use. When a calendar alias is selected, the query router uses the calendar table's pre-computed columns instead of expression-based boundaries.
 4. Tick the variants you need and save.
 
-If no calendar alias is selected, the system derives period boundaries from the linked hierarchy's calendar type. Both paths produce correct results — the calendar table path is for backward compatibility and advanced use cases.
+If no calendar alias is selected, the system derives period boundaries from the associated hierarchy's calendar type. Both paths produce correct results — the calendar table path is for backward compatibility and advanced use cases.
 
 ---
 
@@ -183,4 +183,4 @@ Suppose `orders` is the fact and the source has a single `cities` table. The fac
 
 ---
 
-← [Define Dimensions](define-dimensions.md) | [Home](../index.md) | [Define Measures →](define-measures.md)
+← [Define Dimensions](define-dimensions.md) | [Home](../index.md) | [Business Glossary →](business-glossary.md)

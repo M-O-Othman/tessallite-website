@@ -97,7 +97,7 @@ Next to the Measure dropdown and the format button sits a small icon button: a f
 2. Click the variant button (f+). A popover opens listing all 14 canonical variant kinds.
 3. Each variant shows one of three states:
    - **Eligible**: displays the suggested name (e.g. `revenue_ytd`). Click to create the variant immediately.
-   - **Not eligible**: displays the specific reason in amber text — for example, "This measure is not linked to a time hierarchy." The popover includes a link to the Configure Time Variants help page.
+   - **Not eligible**: displays the specific reason in amber text — for example, "This measure has no associated time hierarchy." The popover includes a link to the Configure Time Variants help page.
    - **Already added**: greyed out. The variant measure already exists in the catalog.
 4. For parametric variants (`trailing_n` and `moving_avg_n`), a number field appears where you enter the window size N. Defaults are 12 and 30 respectively.
 5. Clicking an eligible row creates a new measure in the catalog. The measure dropdown refreshes and the new variant can be selected for querying.
@@ -109,9 +109,8 @@ The variant button works on any base measure, but eligibility depends on the mod
 The full prerequisite chain is:
 
 - **Base measure exists** — variant rows are derived from an existing measure.
-- **Time hierarchy created** with levels that have the correct time units and allowed time calculations.
-- **Measure linked to the hierarchy** — this is the step most often missed. Without the link, the system has no way to know which time capabilities apply to the measure.
-- **Calendar type configured on the hierarchy** (for period-boundary variants only) — YTD, prior year, quarter-to-date, and year-over-year variants need a calendar type (standard, fiscal, hijri, or iso) set on the linked time hierarchy. A physical calendar table is not required.
+- **Time hierarchy created** with levels that have the correct time units and allowed time calculations, on the same table as the measure's source column.
+- **Calendar type configured on the hierarchy** (for period-boundary variants only) — YTD, prior year, quarter-to-date, and year-over-year variants need a calendar type (standard, fiscal, hijri, or iso) set on the time hierarchy. A physical calendar table is not required.
 
 See [Configure Time Variants](configure-time-variants.md) for the full setup walkthrough and troubleshooting table.
 
@@ -229,8 +228,8 @@ The whole loop takes under two minutes. The measure is then safe to expose to a 
 | "Run" button greyed out | No measure selected | Pick a measure; dimensions alone are not a query |
 | Grid empty after Run | Slicer chips exclude every row | Check the chip row below the Route badge; remove the offending chip |
 | Cell values look right but totals look wrong | Subtotals off while dimension nesting on | Enable the subtotals toggle |
-| Variant button shows all items as "not eligible" | Missing prerequisite: no time hierarchy, measure not linked to one, or no calendar type on the hierarchy | Check the reason text in the popover. See [Configure Time Variants](configure-time-variants.md) for the full prerequisite chain. |
-| Period-boundary variants show as "not eligible" | The linked time hierarchy has no calendar type configured | Edit the hierarchy in the Hierarchies panel and set a calendar type (standard, fiscal, hijri, or iso). See [Configure Time Variants](configure-time-variants.md). |
+| Variant button shows all items as "not eligible" | Missing prerequisite: no time hierarchy on the measure's table, or no calendar type on the hierarchy | Check the reason text in the popover. See [Configure Time Variants](configure-time-variants.md) for the full prerequisite chain. |
+| Period-boundary variants show as "not eligible" | The associated time hierarchy has no calendar type configured | Edit the hierarchy in the Hierarchies panel and set a calendar type (standard, fiscal, hijri, or iso). See [Configure Time Variants](configure-time-variants.md). |
 | Cell click on calculated measure errors | Very old frontend cache | Hard-refresh; Phase 6 shipped the decomposed drawer |
 
 ---
@@ -245,4 +244,4 @@ The whole loop takes under two minutes. The measure is then safe to expose to a 
 
 ---
 
-← [Multi-Calendar Best Practices](multi-calendar-best-practices.md) | [Home](../index.md) | [Live vs Aggregate →](../querying/live-vs-aggregate.md)
+← [Multi-Calendar Best Practices](multi-calendar-best-practices.md) | [Home](../index.md) | [Query Panel →](query-panel.md)

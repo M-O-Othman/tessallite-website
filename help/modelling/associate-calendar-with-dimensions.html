@@ -45,8 +45,7 @@
 <h3>Without calendar tables (expression-based)</h3>
 <ol><li><strong>Create time hierarchies:</strong> In the Hierarchies panel, create two hierarchies:</li></ol>
 <ul><li><code>Standard Calendar</code> — dimension kind: time, calendar type: standard. Add year, quarter, month levels with <code>period_to_date</code> enabled.</li><li><code>Fiscal Calendar</code> — dimension kind: time, calendar type: fiscal, fiscal year start month: April. Add the same levels.</li></ul>
-<ol><li><strong>Link the measure:</strong> In each hierarchy&#x27;s measure links section, add the <code>revenue</code> measure.</li></ol>
-<ol><li><strong>Enable time variants:</strong> On the <code>revenue</code> measure, enable <code>_ytd</code>. The variant resolver sees two hierarchies with period-to-date capability. Select the standard hierarchy for <code>revenue_ytd</code> and the fiscal hierarchy for <code>revenue_ytd_fiscal</code>.</li></ol>
+<ol><li><strong>Enable time variants:</strong> On the <code>revenue</code> measure, enable <code>_ytd</code>. The system automatically finds time hierarchies on the same table as the measure&#x27;s source column. Select the standard hierarchy for <code>revenue_ytd</code> and the fiscal hierarchy for <code>revenue_ytd_fiscal</code>.</li></ol>
 <p>Period boundaries are computed from SQL expressions — no physical calendar table needed.</p>
 <h3>With calendar tables (for dense enumeration or retail 4-4-5)</h3>
 <ol><li><strong>Create calendar tables:</strong> On the source, create <code>calendar_standard</code> (type: Standard) and <code>calendar_fiscal</code> (type: Fiscal, start month: April).</li></ol>

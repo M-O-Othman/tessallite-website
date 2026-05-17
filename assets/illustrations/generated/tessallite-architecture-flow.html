@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tessallite Architecture Flow</title>
+    <style>
+        @font-face {
+            font-family: Inter;
+            src: url("../../fonts/inter/Inter-Regular.woff2") format("woff2");
+            font-weight: 400;
+        }
+        @font-face {
+            font-family: Inter;
+            src: url("../../fonts/inter/Inter-SemiBold.woff2") format("woff2");
+            font-weight: 600;
+        }
+        @font-face {
+            font-family: Inter;
+            src: url("../../fonts/inter/Inter-Bold.woff2") format("woff2");
+            font-weight: 700;
+        }
+        :root {
+            --green: #006C35;
+            --green-2: #0E7D45;
+            --gold: #D4AF37;
+            --charcoal: #333333;
+            --mint: #F2F7F4;
+            --line: #CBD5E1;
+            --soft: #EEF7F2;
+            --white: #FFFFFF;
+        }
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            width: 2400px;
+            height: 1500px;
+            font-family: Inter, Arial, sans-serif;
+            color: var(--charcoal);
+            background:
+                linear-gradient(120deg, rgba(0, 108, 53, 0.08), rgba(242, 247, 244, 0.94) 38%, #fff 100%);
+            overflow: hidden;
+        }
+        .canvas {
+            position: relative;
+            width: 2400px;
+            height: 1500px;
+            padding: 84px;
+        }
+        .canvas::after {
+            content: "";
+            position: absolute;
+            right: -90px;
+            bottom: -190px;
+            width: 920px;
+            height: 520px;
+            background:
+                linear-gradient(90deg, rgba(0, 108, 53, 0.08) 1px, transparent 1px),
+                linear-gradient(0deg, rgba(0, 108, 53, 0.08) 1px, transparent 1px);
+            background-size: 42px 42px;
+            transform: rotate(-7deg);
+            z-index: 0;
+        }
+        .title {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+        h1 {
+            margin: 0;
+            color: var(--green);
+            font-size: 68px;
+            letter-spacing: 0;
+            line-height: 1.06;
+            max-width: 1060px;
+        }
+        .subtitle {
+            max-width: 720px;
+            margin-top: 6px;
+            font-size: 28px;
+            line-height: 1.46;
+            color: rgba(51, 51, 51, 0.76);
+        }
+        .flow-strip {
+            position: relative;
+            z-index: 2;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-bottom: 28px;
+        }
+        .flow-step {
+            position: relative;
+            min-height: 94px;
+            background: rgba(255, 255, 255, 0.94);
+            border: 1px solid rgba(0, 108, 53, 0.14);
+            border-radius: 18px;
+            padding: 18px 22px 18px 72px;
+            box-shadow: 0 14px 34px rgba(0, 0, 0, 0.06);
+        }
+        .flow-step::before {
+            content: attr(data-step);
+            position: absolute;
+            left: 18px;
+            top: 22px;
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            background: var(--green);
+            color: var(--white);
+            display: grid;
+            place-items: center;
+            font-weight: 800;
+        }
+        .flow-step:not(:last-child)::after {
+            content: "";
+            position: absolute;
+            right: -14px;
+            top: 50%;
+            width: 14px;
+            height: 4px;
+            background: var(--gold);
+            transform: translateY(-50%);
+        }
+        .flow-step strong {
+            display: block;
+            color: var(--green);
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+        .flow-step span {
+            display: block;
+            color: rgba(51, 51, 51, 0.66);
+            font-size: 15px;
+            line-height: 1.35;
+        }
+        .diagram {
+            position: relative;
+            z-index: 2;
+            display: grid;
+            grid-template-columns: 450px 690px 570px 340px;
+            gap: 32px;
+            align-items: stretch;
+            height: 870px;
+        }
+        .column {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+        .column-title {
+            color: var(--green);
+            font-size: 29px;
+            font-weight: 700;
+            margin: 0 0 2px;
+        }
+        .column-note {
+            font-size: 18px;
+            color: rgba(51, 51, 51, 0.66);
+            line-height: 1.45;
+            min-height: 48px;
+        }
+        .panel,
+        .source-panel,
+        .result-panel {
+            background: rgba(255, 255, 255, 0.94);
+            border: 1px solid rgba(0, 108, 53, 0.14);
+            border-radius: 18px;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.09);
+        }
+        .consumer-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .consumer {
+            min-height: 126px;
+            padding: 22px;
+        }
+        .icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            background: var(--green);
+            color: var(--white);
+            font-weight: 800;
+            font-size: 22px;
+            margin-bottom: 16px;
+            box-shadow: inset 0 -8px 16px rgba(0, 0, 0, 0.12);
+        }
+        .icon.gold {
+            background: var(--gold);
+            color: var(--charcoal);
+        }
+        .label {
+            font-size: 21px;
+            font-weight: 700;
+            color: var(--charcoal);
+            margin-bottom: 8px;
+        }
+        .small {
+            font-size: 16px;
+            line-height: 1.42;
+            color: rgba(51, 51, 51, 0.67);
+        }
+        .tessallite-core {
+            padding: 26px;
+            min-height: 780px;
+            position: relative;
+            overflow: hidden;
+        }
+        .core-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--line);
+            padding-bottom: 20px;
+            margin-bottom: 22px;
+        }
+        .brand-mark {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            color: var(--green);
+            font-size: 30px;
+            font-weight: 800;
+        }
+        .tiles {
+            position: relative;
+            width: 72px;
+            height: 42px;
+        }
+        .tile {
+            position: absolute;
+            width: 31px;
+            height: 15px;
+            background: var(--green);
+            transform: skew(28deg);
+        }
+        .tile:nth-child(1) { left: 0; top: 0; }
+        .tile:nth-child(2) { left: 34px; top: 0; background: var(--green-2); }
+        .tile:nth-child(3) { left: 68px; top: 0; background: var(--gold); }
+        .tile:nth-child(4) { left: 0; top: 22px; }
+        .tile:nth-child(5) { left: 34px; top: 22px; background: #F7FAF8; border: 3px solid #8A94A6; }
+        .tile:nth-child(6) { left: 68px; top: 22px; }
+        .status-pill {
+            border: 1px solid rgba(0, 108, 53, 0.18);
+            color: var(--green);
+            background: var(--soft);
+            border-radius: 999px;
+            padding: 10px 16px;
+            font-size: 16px;
+            font-weight: 700;
+        }
+        .core-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+        .core-card {
+            background: var(--mint);
+            border: 1px solid rgba(0, 108, 53, 0.13);
+            border-radius: 16px;
+            padding: 20px;
+            min-height: 137px;
+        }
+        .core-card .label {
+            color: var(--green);
+        }
+        .decision {
+            padding: 22px;
+            border-radius: 18px;
+            border: 1px solid rgba(212, 175, 55, 0.55);
+            background: linear-gradient(180deg, #FFFFFF, #FFF9E8);
+            margin-top: 12px;
+        }
+        .decision-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--green);
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+        .route-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+        .route-option {
+            background: var(--white);
+            border: 1px solid rgba(0, 108, 53, 0.14);
+            border-radius: 14px;
+            padding: 14px;
+            min-height: 94px;
+        }
+        .route-option strong {
+            display: block;
+            color: var(--green);
+            font-size: 17px;
+            margin-bottom: 6px;
+        }
+        .source-panel {
+            padding: 24px;
+            height: 780px;
+        }
+        .source-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-top: 18px;
+        }
+        .source {
+            min-height: 88px;
+            border: 1px solid var(--line);
+            border-radius: 15px;
+            background: linear-gradient(180deg, #FFFFFF, #F8FBF9);
+            padding: 15px;
+        }
+        .source strong {
+            display: block;
+            color: var(--charcoal);
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        .source span {
+            display: block;
+            color: rgba(51, 51, 51, 0.62);
+            font-size: 14px;
+            line-height: 1.36;
+        }
+        .source .badge-dot {
+            width: 12px;
+            height: 12px;
+            display: inline-block;
+            border-radius: 50%;
+            background: var(--gold);
+            margin-right: 7px;
+        }
+        .result-column {
+            gap: 18px;
+        }
+        .result-panel {
+            padding: 24px;
+        }
+        .answer-value {
+            font-size: 56px;
+            line-height: 1;
+            color: var(--green);
+            font-weight: 800;
+            margin: 14px 0 12px;
+        }
+        .answer-meta {
+            display: grid;
+            gap: 10px;
+            margin-top: 18px;
+        }
+        .meta-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            border-top: 1px solid var(--line);
+            padding-top: 10px;
+            font-size: 15px;
+        }
+        .meta-row span:first-child {
+            color: rgba(51, 51, 51, 0.62);
+        }
+        .meta-row span:last-child {
+            font-weight: 700;
+        }
+        .legend {
+            padding: 20px;
+        }
+        .legend-item {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.35;
+        }
+        .legend-swatch {
+            flex: 0 0 auto;
+            width: 34px;
+            height: 12px;
+            border-radius: 999px;
+            margin-top: 5px;
+        }
+        .legend-swatch.gold { background: var(--gold); }
+        .legend-swatch.green { background: var(--green); }
+        .legend-swatch.grey { background: #8A94A6; }
+    </style>
+</head>
+<body>
+    <main class="canvas">
+        <header class="title">
+            <div>
+                <h1>How Tessallite returns one trusted answer</h1>
+            </div>
+            <p class="subtitle">Questions start in familiar business tools. Tessallite checks the approved business definition, applies security, chooses the best answer path, and retrieves data from large enterprise platforms when needed.</p>
+        </header>
+
+        <section class="flow-strip" aria-label="Architecture flow summary">
+            <article class="flow-step" data-step="1">
+                <strong>Question starts</strong>
+                <span>Spreadsheet, dashboard, application, or AI assistant.</span>
+            </article>
+            <article class="flow-step" data-step="2">
+                <strong>Tessallite governs</strong>
+                <span>Business definition, security, freshness, and ownership are checked.</span>
+            </article>
+            <article class="flow-step" data-step="3">
+                <strong>Data is retrieved</strong>
+                <span>Prepared summary, focused slice, or live source read.</span>
+            </article>
+            <article class="flow-step" data-step="4">
+                <strong>Answer returns</strong>
+                <span>The same trusted result reaches every approved channel.</span>
+            </article>
+        </section>
+
+        <section class="diagram" aria-label="Tessallite architecture diagram">
+            <section class="column">
+                <h2 class="column-title">People and tools</h2>
+                <p class="column-note">The same business question can come from many places.</p>
+                <div class="consumer-grid">
+                    <article class="panel consumer">
+                        <div class="icon">XL</div>
+                        <div class="label">Spreadsheets</div>
+                        <p class="small">Pivot tables and finance analysis.</p>
+                    </article>
+                    <article class="panel consumer">
+                        <div class="icon gold">BI</div>
+                        <div class="label">Dashboards</div>
+                        <p class="small">Reports, charts, and business reviews.</p>
+                    </article>
+                    <article class="panel consumer">
+                        <div class="icon">AI</div>
+                        <div class="label">AI assistants</div>
+                        <p class="small">Plain-language data questions.</p>
+                    </article>
+                    <article class="panel consumer">
+                        <div class="icon gold">APP</div>
+                        <div class="label">Applications</div>
+                        <p class="small">Products and internal workflows.</p>
+                    </article>
+                </div>
+            </section>
+
+            <section class="column">
+                <h2 class="column-title">Tessallite governed layer</h2>
+                <p class="column-note">The platform controls meaning, access, speed, and evidence before an answer is returned.</p>
+                <div class="panel tessallite-core">
+                    <div class="core-head">
+                        <div class="brand-mark">
+                            <div class="tiles" aria-hidden="true">
+                                <i class="tile"></i><i class="tile"></i><i class="tile"></i>
+                                <i class="tile"></i><i class="tile"></i><i class="tile"></i>
+                            </div>
+                            Tessallite
+                        </div>
+                        <span class="status-pill">governed answer layer</span>
+                    </div>
+                    <div class="core-grid">
+                        <article class="core-card">
+                            <div class="icon">1</div>
+                            <div class="label">Business definitions</div>
+                            <p class="small">Approved KPI rules, calendars, joins, glossary terms, and ownership.</p>
+                        </article>
+                        <article class="core-card">
+                            <div class="icon gold">2</div>
+                            <div class="label">Security and audience rules</div>
+                            <p class="small">Workspace access, role views, row filters, and sensitive field controls.</p>
+                        </article>
+                        <article class="core-card">
+                            <div class="icon gold">3</div>
+                            <div class="label">Answer planner</div>
+                            <p class="small">Checks whether a prepared answer is safe or whether the source must be read.</p>
+                        </article>
+                        <article class="core-card">
+                            <div class="icon">4</div>
+                            <div class="label">Trust evidence</div>
+                            <p class="small">Freshness, route used, source lineage, owner, health checks, and usage logs.</p>
+                        </article>
+                    </div>
+                    <div class="decision">
+                        <div class="decision-title"><span class="icon gold">✓</span> Choose the safest and fastest answer path</div>
+                        <div class="route-options">
+                            <div class="route-option">
+                                <strong>Prepared summary</strong>
+                                <span class="small">Use when a trusted reusable answer already exists.</span>
+                            </div>
+                            <div class="route-option">
+                                <strong>Focused slice</strong>
+                                <span class="small">Use for repeated filtered analysis over a controlled subset.</span>
+                            </div>
+                            <div class="route-option">
+                                <strong>Live source</strong>
+                                <span class="small">Use the original platform when accuracy requires fresh retrieval.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="column">
+                <h2 class="column-title">Enterprise data sources</h2>
+                <p class="column-note">Tessallite can retrieve from cloud warehouses, lake platforms, and private data systems.</p>
+                <div class="source-panel">
+                    <div class="source-grid">
+                        <article class="source"><strong><span class="badge-dot"></span>BigQuery</strong><span>Google cloud analytics warehouse.</span></article>
+                        <article class="source"><strong><span class="badge-dot"></span>Amazon Redshift</strong><span>AWS cloud data warehouse.</span></article>
+                        <article class="source"><strong><span class="badge-dot"></span>Synapse Analytics</strong><span>Microsoft enterprise analytics platform.</span></article>
+                        <article class="source"><strong><span class="badge-dot"></span>Hadoop</strong><span>Large-scale distributed data storage.</span></article>
+                        <article class="source"><strong><span class="badge-dot"></span>Spark</strong><span>Distributed processing for large datasets.</span></article>
+                        <article class="source"><strong><span class="badge-dot"></span>Impala</strong><span>Fast analytical SQL over data lakes.</span></article>
+                        <article class="source"><strong><span class="badge-dot"></span>PostgreSQL</strong><span>Operational and analytical relational data.</span></article>
+                        <article class="source"><strong><span class="badge-dot"></span>Oracle</strong><span>Enterprise database systems.</span></article>
+                        <article class="source"><strong><span class="badge-dot"></span>Data lake files</strong><span>Parquet, structured files, and managed lake storage.</span></article>
+                        <article class="source"><strong><span class="badge-dot"></span>Private platforms</strong><span>Customer-controlled data environments.</span></article>
+                    </div>
+                </div>
+            </section>
+
+            <section class="column result-column">
+                <h2 class="column-title">Trusted output</h2>
+                <p class="column-note">Every channel receives the same governed result.</p>
+                <article class="result-panel">
+                    <div class="label">Gross Margin %</div>
+                    <div class="answer-value">41.8%</div>
+                    <p class="small">Returned with context so business and data teams know why the answer can be trusted.</p>
+                    <div class="answer-meta">
+                        <div class="meta-row"><span>Freshness</span><span>09:03 UTC</span></div>
+                        <div class="meta-row"><span>Owner</span><span>Finance Analytics</span></div>
+                        <div class="meta-row"><span>Security</span><span>Finance view</span></div>
+                        <div class="meta-row"><span>Path</span><span>Prepared summary</span></div>
+                    </div>
+                </article>
+                <article class="panel legend">
+                    <div class="legend-item"><span class="legend-swatch gold"></span><span>Gold flow: the question and data retrieval path.</span></div>
+                    <div class="legend-item"><span class="legend-swatch green"></span><span>Green flow: the trusted answer returned to the user.</span></div>
+                    <div class="legend-item"><span class="legend-swatch grey"></span><span>Grey context: freshness, owner, policy, and lineage evidence.</span></div>
+                </article>
+            </section>
+        </section>
+    </main>
+</body>
+</html>

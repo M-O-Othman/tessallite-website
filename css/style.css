@@ -1452,6 +1452,10 @@ section {
     margin-top: 34px;
 }
 
+.architecture-section .container {
+    max-width: 1360px;
+}
+
 .step {
     border-left: 3px solid var(--accent-gold);
     background: var(--white);

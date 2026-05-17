@@ -29,6 +29,7 @@
             --line: #CBD5E1;
             --soft: #EEF7F2;
             --white: #FFFFFF;
+            --lower-panel-height: 850px;
         }
         * {
             box-sizing: border-box;
@@ -176,11 +177,15 @@
         .consumer-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
             gap: 16px;
+            height: var(--lower-panel-height);
         }
         .consumer {
-            min-height: 126px;
             padding: 22px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
         .icon {
             width: 48px;
@@ -211,8 +216,8 @@
             color: rgba(51, 51, 51, 0.67);
         }
         .tessallite-core {
-            padding: 26px;
-            min-height: 780px;
+            padding: 24px;
+            height: var(--lower-panel-height);
             position: relative;
             overflow: hidden;
         }
@@ -220,37 +225,44 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            gap: 22px;
             border-bottom: 1px solid var(--line);
-            padding-bottom: 20px;
-            margin-bottom: 22px;
+            padding-bottom: 16px;
+            margin-bottom: 18px;
         }
         .brand-mark {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 20px;
             color: var(--green);
             font-size: 30px;
             font-weight: 800;
+            min-width: 0;
         }
         .tiles {
+            --tile-width: 33px;
+            --tile-height: 15px;
+            --tile-gap: 3px;
             position: relative;
-            width: 72px;
+            flex: 0 0 calc((var(--tile-width) * 3) + (var(--tile-gap) * 2));
+            width: calc((var(--tile-width) * 3) + (var(--tile-gap) * 2));
             height: 42px;
         }
         .tile {
             position: absolute;
-            width: 31px;
-            height: 15px;
+            width: var(--tile-width);
+            height: var(--tile-height);
             background: var(--green);
-            transform: skew(28deg);
+            clip-path: polygon(14% 0, 100% 0, 86% 100%, 0 100%);
         }
         .tile:nth-child(1) { left: 0; top: 0; }
-        .tile:nth-child(2) { left: 34px; top: 0; background: var(--green-2); }
-        .tile:nth-child(3) { left: 68px; top: 0; background: var(--gold); }
+        .tile:nth-child(2) { left: calc(var(--tile-width) + var(--tile-gap)); top: 0; background: var(--green-2); }
+        .tile:nth-child(3) { left: calc((var(--tile-width) + var(--tile-gap)) * 2); top: 0; background: var(--gold); }
         .tile:nth-child(4) { left: 0; top: 22px; }
-        .tile:nth-child(5) { left: 34px; top: 22px; background: #F7FAF8; border: 3px solid #8A94A6; }
-        .tile:nth-child(6) { left: 68px; top: 22px; }
+        .tile:nth-child(5) { left: calc(var(--tile-width) + var(--tile-gap)); top: 22px; background: #F7FAF8; border: 3px solid #8A94A6; }
+        .tile:nth-child(6) { left: calc((var(--tile-width) + var(--tile-gap)) * 2); top: 22px; }
         .status-pill {
+            flex: 0 0 auto;
             border: 1px solid rgba(0, 108, 53, 0.18);
             color: var(--green);
             background: var(--soft);
@@ -258,38 +270,55 @@
             padding: 10px 16px;
             font-size: 16px;
             font-weight: 700;
+            white-space: nowrap;
         }
         .core-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            margin-bottom: 18px;
+            gap: 14px;
+            margin-bottom: 14px;
         }
         .core-card {
             background: var(--mint);
             border: 1px solid rgba(0, 108, 53, 0.13);
             border-radius: 16px;
-            padding: 20px;
-            min-height: 137px;
+            padding: 16px 18px;
+            min-height: 0;
+        }
+        .core-card .icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            font-size: 20px;
+            margin-bottom: 12px;
         }
         .core-card .label {
             color: var(--green);
+            font-size: 20px;
+            line-height: 1.16;
         }
         .decision {
-            padding: 22px;
+            padding: 18px 22px;
             border-radius: 18px;
             border: 1px solid rgba(212, 175, 55, 0.55);
             background: linear-gradient(180deg, #FFFFFF, #FFF9E8);
-            margin-top: 12px;
+            margin-top: 10px;
         }
         .decision-title {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             color: var(--green);
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 800;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
+        }
+        .decision-title .icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            font-size: 20px;
+            margin-bottom: 0;
         }
         .route-options {
             display: grid;
@@ -300,8 +329,8 @@
             background: var(--white);
             border: 1px solid rgba(0, 108, 53, 0.14);
             border-radius: 14px;
-            padding: 14px;
-            min-height: 94px;
+            padding: 12px;
+            min-height: 0;
         }
         .route-option strong {
             display: block;
@@ -311,20 +340,23 @@
         }
         .source-panel {
             padding: 24px;
-            height: 780px;
+            height: var(--lower-panel-height);
         }
         .source-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
+            grid-template-rows: repeat(5, 1fr);
             gap: 14px;
-            margin-top: 18px;
+            height: 100%;
         }
         .source {
-            min-height: 88px;
             border: 1px solid var(--line);
             border-radius: 15px;
             background: linear-gradient(180deg, #FFFFFF, #F8FBF9);
             padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
         .source strong {
             display: block;
@@ -351,6 +383,10 @@
         }
         .result-panel {
             padding: 24px;
+            height: var(--lower-panel-height);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
         .answer-value {
             font-size: 56px;
@@ -362,7 +398,7 @@
         .answer-meta {
             display: grid;
             gap: 10px;
-            margin-top: 18px;
+            margin-top: 32px;
         }
         .meta-row {
             display: flex;
@@ -378,26 +414,6 @@
         .meta-row span:last-child {
             font-weight: 700;
         }
-        .legend {
-            padding: 20px;
-        }
-        .legend-item {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 14px;
-            font-size: 16px;
-            line-height: 1.35;
-        }
-        .legend-swatch {
-            flex: 0 0 auto;
-            width: 34px;
-            height: 12px;
-            border-radius: 999px;
-            margin-top: 5px;
-        }
-        .legend-swatch.gold { background: var(--gold); }
-        .legend-swatch.green { background: var(--green); }
-        .legend-swatch.grey { background: #8A94A6; }
     </style>
 </head>
 <body>
@@ -544,11 +560,6 @@
                         <div class="meta-row"><span>Security</span><span>Finance view</span></div>
                         <div class="meta-row"><span>Path</span><span>Prepared summary</span></div>
                     </div>
-                </article>
-                <article class="panel legend">
-                    <div class="legend-item"><span class="legend-swatch gold"></span><span>Gold flow: the question and data retrieval path.</span></div>
-                    <div class="legend-item"><span class="legend-swatch green"></span><span>Green flow: the trusted answer returned to the user.</span></div>
-                    <div class="legend-item"><span class="legend-swatch grey"></span><span>Grey context: freshness, owner, policy, and lineage evidence.</span></div>
                 </article>
             </section>
         </section>

@@ -5,7 +5,7 @@ area: concepts
 updated: 2026-04-17
 ---
 
-![Diagram showing how dimensions map to GROUP BY clauses and measures map to aggregate SELECT expressions, with additive and non-additive types distinguished.](../assets/illustrations/dimensions-and-measures.svg)
+![Diagram showing how dimensions map to GROUP BY clauses and measures map to aggregate SELECT expressions, with additive and non-additive types distinguished.](../assets/illustrations/dimensions-and-measures.png)
 
 ## What this covers
 

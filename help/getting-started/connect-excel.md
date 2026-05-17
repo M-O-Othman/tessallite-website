@@ -65,7 +65,7 @@ Connecting Microsoft Excel to a Tessallite workspace via the XMLA endpoint, sele
 4. Drag measure fields to the **Values** area.
 5. Excel queries Tessallite and populates the pivot table with results.
 
-![Excel XMLA connection sequence.](../assets/illustrations/excel-connection-flow.svg)
+![Excel XMLA connection sequence.](../assets/illustrations/excel-connection-flow.png)
 
 ---
 

@@ -95,9 +95,7 @@ A sales fact table has two date columns: `order_date` (standard reporting) and `
    - `Standard Calendar` — dimension kind: time, calendar type: standard. Add year, quarter, month levels with `period_to_date` enabled.
    - `Fiscal Calendar` — dimension kind: time, calendar type: fiscal, fiscal year start month: April. Add the same levels.
 
-2. **Link the measure:** In each hierarchy's measure links section, add the `revenue` measure.
-
-3. **Enable time variants:** On the `revenue` measure, enable `_ytd`. The variant resolver sees two hierarchies with period-to-date capability. Select the standard hierarchy for `revenue_ytd` and the fiscal hierarchy for `revenue_ytd_fiscal`.
+2. **Enable time variants:** On the `revenue` measure, enable `_ytd`. The system automatically finds time hierarchies on the same table as the measure's source column. Select the standard hierarchy for `revenue_ytd` and the fiscal hierarchy for `revenue_ytd_fiscal`.
 
 Period boundaries are computed from SQL expressions — no physical calendar table needed.
 

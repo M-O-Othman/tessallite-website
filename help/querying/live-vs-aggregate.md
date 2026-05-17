@@ -144,4 +144,4 @@ This is why "test a query with Force Live" is a constructive action even when th
 
 ---
 
-← [Measure Query Panel](../modelling/measure-query-panel.md) | [Home](../index.md) | [Drill-through →](../modelling/drill-through.md)
+← [Query Panel](../modelling/query-panel.md) | [Home](../index.md) | [Drill-through →](../modelling/drill-through.md)

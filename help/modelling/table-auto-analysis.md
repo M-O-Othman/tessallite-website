@@ -77,4 +77,4 @@ The **potential calendar column** field, when present, identifies a date/timesta
 
 ---
 
-← [Add Tables to a Model](add-tables-to-a-model.md) | [Home](../index.md) | [Model Canvas Tour →](model-canvas-tour.md)
+← [Source Statistics](source-statistics.md) | [Home](../index.md) | [Model Canvas Tour →](model-canvas-tour.md)

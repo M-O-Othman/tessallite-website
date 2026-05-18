@@ -47,7 +47,7 @@ Skip this part if the deploy script already created a tenant user — the script
 2. On the sign-in form, enter the workspace slug, the user's email address, and the password.
 3. Click **Sign in**. The Explorer screen opens. This is the main workspace for modellers and analysts.
 
-![First-time setup flow.](../assets/illustrations/first-time-setup-flow.png)
+![First-time setup flow.](../assets/illustrations/first-time-setup-flow.svg)
 
 ## Troubleshooting
 

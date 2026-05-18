@@ -5,7 +5,7 @@ area: system-admin
 updated: 2026-04-17
 ---
 
-![Architecture diagram showing the six Tessallite services, the internal PostgreSQL database, and their connections to external BI tools and the user data source.](../assets/illustrations/architecture-overview.png)
+![Architecture diagram showing the six Tessallite services, the internal PostgreSQL database, and their connections to external BI tools and the user data source.](../assets/illustrations/architecture-overview.svg)
 
 ## What this covers
 

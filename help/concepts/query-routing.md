@@ -23,7 +23,7 @@ Tessallite routes a query to a pre-computed aggregate when all three of the foll
 
 If any one of these conditions is not met, the query runs against the raw source table.
 
-![Query routing flow.](../assets/illustrations/query-routing-flow.png)
+![Query routing flow.](../assets/illustrations/query-routing-flow.svg)
 
 ---
 

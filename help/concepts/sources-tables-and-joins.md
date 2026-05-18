@@ -5,7 +5,7 @@ area: concepts
 updated: 2026-04-17
 ---
 
-![Star schema diagram: fact table at the centre connected to dim_aggregate tables (extends grain) and a dim_detail table (filter only, no grain).](../assets/illustrations/model-table-types.png)
+![Star schema diagram: fact table at the centre connected to dim_aggregate tables (extends grain) and a dim_detail table (filter only, no grain).](../assets/illustrations/model-table-types.svg)
 
 ## What this covers
 

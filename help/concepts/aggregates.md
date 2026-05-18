@@ -5,7 +5,7 @@ area: concepts
 updated: 2026-04-17
 ---
 
-![Aggregate lifecycle state diagram: query miss leads to Optimizer scoring, then Building, Ready, Stale, Refreshing back to Ready, and Retired for unused aggregates.](../assets/illustrations/aggregate-lifecycle.png)
+![Aggregate lifecycle state diagram: query miss leads to Optimizer scoring, then Building, Ready, Stale, Refreshing back to Ready, and Retired for unused aggregates.](../assets/illustrations/aggregate-lifecycle.svg)
 
 ## What this covers
 

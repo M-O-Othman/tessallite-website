@@ -11,7 +11,7 @@ updated: 2026-04-22
 
 A pocket table is a cached, filtered **slice of a model** — not free SQL over the model's tables. The Query Router redirects matching reads to the pocket instead of running them against the source. This article covers the model-subset contract, how to author the defining SQL, validate it, measure it with a dry-run, schedule refreshes, handle drift when the model changes, and understand when the Router will and will not use a pocket.
 
-![Pocket matching and identity — how the Query Router picks a pocket and when it skips.](../assets/illustrations/pocket-matching-flow.png)
+![Pocket matching and identity — how the Query Router picks a pocket and when it skips.](../assets/illustrations/pocket-matching-flow.svg)
 
 ---
 

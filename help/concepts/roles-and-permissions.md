@@ -88,7 +88,7 @@ Analyst → Modeller → Tenant Admin → System Admin
 
 A user with a higher role holds all capabilities of the roles below it in the hierarchy.
 
-![Tessallite role hierarchy from least to most access](../assets/illustrations/role-hierarchy.png)
+![Tessallite role hierarchy from least to most access](../assets/illustrations/role-hierarchy.svg)
 
 ---
 

@@ -48,6 +48,25 @@ Drag dimensions to Rows or Columns and measures to Values. Excel sends MDX queri
 
 ---
 
+## Supported PivotTable features
+
+| Feature | Status | Notes |
+|---------|--------|-------|
+| Expand / collapse hierarchies | Supported | Click +/- on row/column headers. Works with all hierarchy types. |
+| Subtotals and grand totals | Supported | SUM, COUNT, DISTINCT COUNT, MIN, MAX, AVG aggregations all render correct subtotals. |
+| Show Values As | Supported | % of Grand Total, % of Parent, Difference From, % Difference From, Running Total, Rank (Largest/Smallest), Index. |
+| Calculated Fields | Supported | Insert Calculated Field for arithmetic expressions, ratios, and IIF conditionals. |
+| Value Filters (Top 10, >=, etc.) | Supported | Right-click a field > Value Filters. Top N, Bottom N, and comparison operators. |
+| Label Filters (Contains, etc.) | Supported | Subselect-based member filtering. |
+| Date Grouping | Supported | Right-click a date field > Group. Groups by Year, Quarter, Month via hierarchy levels. |
+| GETPIVOTDATA | Supported | Cell formulas that reference specific PivotTable intersections. |
+| Number Formatting | Supported | FORMAT_STRING from model definitions flows through to all cells including subtotals and calculated members. |
+| Manual Member Selection | Supported | Filter dropdowns on row/column fields. |
+| Custom Grouping | Not supported | Right-click > Group on non-date members. Requires MDX Aggregate() over member sets. |
+| Calculated Items | Not supported | Insert Calculated Item on a dimension. Requires dimension-level member aggregation. |
+
+---
+
 ## Refresh data
 
 Right-click anywhere in the PivotTable and select **Refresh** to re-query Tessallite.

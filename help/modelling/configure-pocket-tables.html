@@ -17,7 +17,7 @@
 <figure class="screencap"><img class="screencap" src="../assets/screencaps/pocket-drawer.png" alt="Model Builder — Pocket Drawer in create mode, Query tab."></figure>
 <h2>What this covers</h2>
 <p>A pocket table is a cached, filtered <strong>slice of a model</strong> — not free SQL over the model&#x27;s tables. The Query Router redirects matching reads to the pocket instead of running them against the source. This article covers the model-subset contract, how to author the defining SQL, validate it, measure it with a dry-run, schedule refreshes, handle drift when the model changes, and understand when the Router will and will not use a pocket.</p>
-<figure class="illustration"><img class="illustration" src="../assets/illustrations/pocket-matching-flow.png" alt="Pocket matching and identity — how the Query Router picks a pocket and when it skips."></figure>
+<figure class="illustration"><img class="illustration" src="../assets/illustrations/pocket-matching-flow.svg" alt="Pocket matching and identity — how the Query Router picks a pocket and when it skips."></figure>
 <h2>When to use a pocket table</h2>
 <p>Use a pocket table when a narrow filter on a large source table is scanned repeatedly, and the result set is small enough to cache. Aggregates cover rolled-up summaries; pocket tables cover row-level slices. Both live in the same query target and are selected independently by the Router — when both can answer a query, the pocket wins.</p>
 <h2>Pocket identity</h2>

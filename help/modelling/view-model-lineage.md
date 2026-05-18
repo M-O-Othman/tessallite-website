@@ -5,7 +5,7 @@ area: modelling
 updated: 2026-04-17
 ---
 
-![Model lineage diagram: source dimension tables on the left connect into the central fact table via join edges; the fact table connects to aggregate nodes on the right showing their grain and measures.](../assets/illustrations/model-lineage.png)
+![Model lineage diagram: source dimension tables on the left connect into the central fact table via join edges; the fact table connects to aggregate nodes on the right showing their grain and measures.](../assets/illustrations/model-lineage.svg)
 
 ## What this covers
 

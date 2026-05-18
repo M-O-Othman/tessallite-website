@@ -28,7 +28,7 @@ When Tessallite can answer a query from a pre-computed summary table, it does. W
 5. If a match is found — a hit — the Query Router rewrites the query to run against the summary table. The rewritten query executes and the result is returned to the BI tool.
 6. If no match is found — a miss — the query runs against the raw source table. The miss is recorded with the query's grain and measure pattern.
 
-![Query routing flow.](../assets/illustrations/query-routing-flow.png)
+![Query routing flow.](../assets/illustrations/query-routing-flow.svg)
 
 ---
 

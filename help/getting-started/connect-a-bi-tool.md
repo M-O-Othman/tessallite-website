@@ -83,7 +83,7 @@ Any PostgreSQL-compatible driver accepts these parameters directly.
 
 Each model published in the workspace appears as a schema. Within each schema, the dimensions and measures defined in the model are listed as columns. Querying them returns results immediately. Tessallite routes the query to the fastest available source — a pre-aggregated summary if one exists, or the raw data source otherwise.
 
-![JDBC connection path from BI tool through the gateway to the data source.](../assets/illustrations/jdbc-connection-flow.png)
+![JDBC connection path from BI tool through the gateway to the data source.](../assets/illustrations/jdbc-connection-flow.svg)
 
 ---
 

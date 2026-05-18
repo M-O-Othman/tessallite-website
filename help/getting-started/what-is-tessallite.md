@@ -19,7 +19,7 @@ When a BI tool sends a SQL or DAX query, Tessallite intercepts it. Tessallite ch
 
 The BI tool requires no changes. The query results are identical regardless of which path was taken.
 
-![Tessallite sits between BI tools and the data warehouse.](../assets/illustrations/system-overview.png)
+![Tessallite sits between BI tools and the data warehouse.](../assets/illustrations/system-overview.svg)
 
 ---
 

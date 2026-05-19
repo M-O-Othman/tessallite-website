@@ -61,7 +61,7 @@
 <ul><li><strong>&quot;Sign in with SSO&quot; button does not appear.</strong> Check that <code>saml</code> or <code>oidc</code> is listed in the <code>AUTH_BACKENDS</code> tenant setting and that the IdP configuration fields are non-empty.</li><li><strong>&quot;Invalid assertion&quot; error after redirect.</strong> The SP entity ID in Tessallite does not match what is registered in the IdP, or the ACS URL is wrong. Compare the SP metadata XML with the IdP&#x27;s configuration.</li><li><strong>User created but has no project access.</strong> The user&#x27;s IdP groups do not match any entry in group-to-role mappings, and the JIT default role is <code>viewer</code> (which may have no project bindings). Add the appropriate mapping.</li></ul>
 <h2>Related</h2>
 <ul><li><a href="manage-users.html">Manage Users</a></li><li><a href="manage-roles.html">Manage Roles</a></li><li><a href="workspace-settings.html">Workspace Settings</a></li></ul>
-<nav class="page-nav"><a href="audit-log.html" class="page-nav-btn prev">&larr; Audit Log</a><a href="../index.html" class="page-nav-btn home">Home</a><a href="group-mappings.html" class="page-nav-btn next">SSO Group Mappings &rarr;</a></nav>
+<nav class="page-nav"><a href="alert-configuration.html" class="page-nav-btn prev">&larr; Alert Configuration</a><a href="../index.html" class="page-nav-btn home">Home</a><a href="group-mappings.html" class="page-nav-btn next">SSO Group Mappings &rarr;</a></nav>
   </main>
   <footer class="site-footer"><p>Tessallite Help — <a href="../index.html">Back to contents</a></p></footer>
 </body>

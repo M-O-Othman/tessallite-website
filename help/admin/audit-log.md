@@ -130,4 +130,4 @@ Both require `tenant_admin` role.
 
 ---
 
-← [Model Configuration](model-configuration.md) | [Home](../index.md) | [SSO Configuration →](sso-configuration.md)
+← [Model Configuration](model-configuration.md) | [Home](../index.md) | [Query Log ->](query-log.md)

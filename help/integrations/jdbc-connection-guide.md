@@ -74,6 +74,24 @@ jdbc:postgresql://analytics.example.com:5433/acme?sslmode=require
 
 ---
 
+## Connect with Apache Superset
+
+1. Log in to Superset.
+2. Go to **Data** > **Databases** > **+ Database**.
+3. Select **PostgreSQL** as the database type.
+4. In the **SQLAlchemy URI** field, enter:
+   ```
+   postgresql://USER:PASSWORD@HOST:5433/WORKSPACE_SLUG
+   ```
+   Replace `USER`, `PASSWORD`, `HOST`, and `WORKSPACE_SLUG` with your Tessallite credentials and gateway address.
+5. Click **Test Connection** to verify.
+6. Click **Connect**.
+7. Navigate to **SQL Lab** to run queries against Tessallite models, or create datasets from the connection for use in charts and dashboards.
+
+> Superset connects via the standard PostgreSQL driver (psycopg2). No additional driver installation is needed.
+
+---
+
 ## Driver note
 
 Tessallite uses the PostgreSQL wire protocol. Use the standard `org.postgresql.Driver` (JDBC) or `psycopg2` (Python). No special driver is required.

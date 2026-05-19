@@ -2,7 +2,7 @@
 title: "Add a Data Source"
 audience: modeller
 area: modelling
-updated: 2026-05-04
+updated: 2026-05-18
 ---
 
 ![Model Builder — data source settings panel.](../assets/screencaps/data-source-settings.png)
@@ -48,6 +48,32 @@ Each Tessallite project connects to exactly one data source. This article explai
 
 When adding a BigQuery source to a model, the **Dataset** field specifies which BigQuery dataset to expose. Tessallite uses the project ID from the connection credentials and the dataset from the source configuration to build fully qualified table references: `project_id.dataset.table_name`. Identifiers with hyphens (common in GCP project IDs like `my-company-prod`) are automatically backtick-quoted in generated SQL.
 
+### Amazon Redshift
+
+| Parameter | Required | Notes |
+|---|---|---|
+| Host | Yes | Redshift cluster endpoint. |
+| Port | Yes | Default is `5439`. |
+| Database | Yes | Redshift database name. |
+| User | Yes | Redshift user with SELECT access. |
+| Password | Yes | Stored encrypted; never shown in plain text after saving. |
+
+Uses the same asyncpg driver as PostgreSQL (Redshift is wire-compatible). No additional installation required.
+
+### Snowflake
+
+| Parameter | Required | Notes |
+|---|---|---|
+| Account | Yes | Snowflake account identifier (e.g. `xy12345.us-east-1.aws`). |
+| Username | Yes | Snowflake user. |
+| Password | Yes | Stored encrypted; never shown in plain text after saving. |
+| Database | Yes | Snowflake database name. |
+| Schema | No | Default schema. Defaults to `PUBLIC`. |
+| Warehouse | Yes | Compute warehouse for query execution. |
+| Role | No | Session role (optional). |
+
+Requires `snowflake-connector-python`. See [Supported Data Sources](../integrations/supported-data-sources.md) for installation instructions.
+
 ### Hadoop / Spark Thrift Server
 
 | Parameter | Required | Notes |
@@ -55,6 +81,22 @@ When adding a BigQuery source to a model, the **Dataset** field specifies which 
 | Thrift Server host | Yes | Hostname or IP of the HiveServer2 or Spark Thrift Server endpoint. |
 | Port | Yes | Default is `10000` for HiveServer2, `10001` for Spark Thrift Server. |
 | Database | Yes | The Hive or Spark database (schema) name. |
+
+### SQL Server
+
+| Parameter | Required | Notes |
+|---|---|---|
+| Host | Yes | Hostname or IP of the SQL Server instance. |
+| Port | Yes | Default is `1433`. |
+| Database | Yes | SQL Server database name. |
+| Username | Yes | SQL Server login. |
+| Password | Yes | Stored encrypted; never shown in plain text after saving. |
+| Schema | No | Default schema. Defaults to `dbo`. |
+| ODBC Driver | No | Driver name. Defaults to `ODBC Driver 17 for SQL Server`. |
+| Encrypt | No | Encrypt the connection to SQL Server using TLS. |
+| Trust Server Certificate | No | Accept self-signed certificates (non-production only). |
+
+Requires `aioodbc` and an ODBC driver installed on the host. See [Supported Data Sources](../integrations/supported-data-sources.md) for driver installation instructions.
 
 ---
 

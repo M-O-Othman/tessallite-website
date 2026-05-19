@@ -31,6 +31,9 @@
 <ol><li>Open DBeaver.</li><li>Click <strong>New Database Connection</strong> (plug icon in toolbar).</li><li>Select <strong>PostgreSQL</strong> and click <strong>Next</strong>.</li><li>Fill in Host, Port (<code>5433</code>), Database (workspace slug), Username, and Password.</li><li>Click <strong>Test Connection</strong>. A &quot;Connected&quot; dialog confirms success.</li><li>Click <strong>Finish</strong>.</li><li>Expand the connection in the left panel to see schemas and columns.</li></ol>
 <h2>Connect with Tableau</h2>
 <ol><li>Open Tableau Desktop.</li><li>In the <strong>Connect</strong> pane, under <strong>To a Server</strong>, select <strong>PostgreSQL</strong>.</li><li>Enter the Gateway hostname in <strong>Server</strong>.</li><li>Enter <code>5433</code> in <strong>Port</strong>.</li><li>Enter the workspace slug in <strong>Database</strong>.</li><li>Enter your credentials and click <strong>Sign In</strong>.</li></ol>
+<h2>Connect with Apache Superset</h2>
+<ol><li>Log in to Superset.</li><li>Go to <strong>Data</strong> &gt; <strong>Databases</strong> &gt; <strong>+ Database</strong>.</li><li>Select <strong>PostgreSQL</strong> as the database type.</li><li>In the <strong>SQLAlchemy URI</strong> field, enter: <code>postgresql://USER:PASSWORD@HOST:5433/WORKSPACE_SLUG</code> — replace with your Tessallite credentials and gateway address.</li><li>Click <strong>Test Connection</strong> to verify.</li><li>Click <strong>Connect</strong>.</li><li>Navigate to <strong>SQL Lab</strong> to run queries against Tessallite models, or create datasets from the connection for use in charts and dashboards.</li></ol>
+<p>Superset connects via the standard PostgreSQL driver (psycopg2). No additional driver installation is needed.</p>
 <h2>Driver note</h2>
 <p>Tessallite uses the PostgreSQL wire protocol. Use the standard <code>org.postgresql.Driver</code> (JDBC) or <code>psycopg2</code> (Python). No special driver is required.</p>
 <h2>Troubleshooting</h2>

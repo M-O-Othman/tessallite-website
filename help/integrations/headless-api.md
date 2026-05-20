@@ -223,4 +223,4 @@ curl -s -X POST http://localhost:3000/query-router/api/v1/headless/query \
 
 ---
 
-← [API Reference](api-reference.md) | [Home](../index.md) | [Excel Connection Problems →](../troubleshooting/excel-connection-problems.md)
+← [API Reference](api-reference.md) | [Home](../index.md) | [Embed API →](embed-api.md)

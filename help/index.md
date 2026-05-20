@@ -158,6 +158,8 @@ Deploys and operates the Tessallite platform. Start with [Architecture overview]
 - [API Authentication](integrations/api-authentication.md)
 - [API Reference](integrations/api-reference.md)
 - [Headless API](integrations/headless-api.md)
+- [Embed API](integrations/embed-api.md)
+- [Embed Agent Chat](integrations/embed-agent-chat.md)
 
 ## Troubleshooting
 

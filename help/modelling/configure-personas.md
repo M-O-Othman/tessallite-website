@@ -2,7 +2,7 @@
 title: "Configure Personas"
 audience: modeller
 area: modelling
-updated: 2026-04-24
+updated: 2026-05-20
 ---
 
 ## What a persona is
@@ -35,6 +35,12 @@ A model can carry any number of personas. Each is independent. They are never OR
 
 Empty allow lists are the **default** and the most common setting for personas that exist only to attach default filters. Non-empty lists switch that axis into restrictive mode.
 
+### Hierarchy and dimension interaction
+
+Dimensions are governance concepts; hierarchies are presentation objects built from dimensions. When a persona restricts the dimension allow list, any hierarchy level that is backed by an excluded dimension is automatically hidden. If all levels of a hierarchy are hidden, the hierarchy itself disappears from the list.
+
+This means you do not need to maintain both dimension and hierarchy allow lists in lockstep. Restricting dimensions cascades into hierarchies naturally. The hierarchy allow list is still useful for hiding entire hierarchies that are allowed by their dimensions but should not be shown to the audience.
+
 ![The Personas panel showing three personas for the acme demo: Finance, Ops, and Partner, with the Finance row expanded to reveal the three measure allow-list chips and a default filter on fiscal_year.](../assets/screencaps/personas-panel-overview.png)
 
 *Figure 1 — The Personas panel. Each row shows the persona's name, description, and a one-glance summary of its allow lists and default filters. The preview-on-canvas action opens the model canvas with this persona pre-selected as a dimmed overlay.*
@@ -43,14 +49,14 @@ Empty allow lists are the **default** and the most common setting for personas t
 
 ## How the Router applies a persona
 
-Every query that reaches `/execute`, `/explain`, or `/validate` runs through the persona gate **before** row security and before route selection. The gate runs this four-step procedure:
+Every query — from the gateway, the plugin execution endpoint, or internal REST paths — runs through the persona gate **before** row security and before route selection. The gate runs this four-step procedure:
 
-1. **Resolve the persona.** The gateway parses the connecting catalog name. If it matches `<model.slug>_<persona.slug>`, the persona is resolved and sent to the router in the request body as `persona_id`. If the caller is on the base `<model.slug>` catalog, no persona is bound and the gate short-circuits.
-2. **Check the allow lists.** For each measure in the bound query, confirm its ID is in `included_measure_ids` (or the list is empty). Same for each dimension and hierarchy. The **first** object that falls outside triggers a 403 `PERSONA_OBJECT_NOT_INCLUDED` with the object kind and name in the error detail.
+1. **Resolve the persona.** For gateway queries, the catalog name determines the persona. For the Excel plugin, the `persona_id` field in the request body is used. Embedded users always use the persona set in their token. The server determines the effective persona — the client sends a request, but the server decides.
+2. **Check the allow lists.** For each measure in the bound query, confirm its ID is in `included_measure_ids` (or the list is empty). Same for each dimension and hierarchy. The **first** object that falls outside is rejected with the object kind and name in the error detail.
 3. **Merge default filters.** Each `(dimension_path, value)` pair in `default_filters` is added to the query's `WHERE` — unless the caller has already authored their own filter on that dimension, in which case the user's filter wins.
 4. **Proceed to row security.** The persona step does not touch the generated SQL beyond adding filters. Row-security then wraps the plan as usual, and the aggregate/pocket fast paths remain available if neither layer blocks them.
 
-The gate runs the same logic for every read path — REST, XMLA, JDBC, MCP — so swapping tool is not a way around it.
+The gate runs the same logic for every read path — REST, XMLA, JDBC, Excel plugin, MCP — so swapping tool is not a way around it.
 
 ---
 
@@ -84,13 +90,26 @@ The overlay is the single best way to catch mistakes before publishing. Select e
 
 ---
 
-## Audience roles
+## Audience roles and persona assignment
 
-A persona advertises itself to a caller via its `audience_roles` list. The Query Panel and Measure Query Panel each show a **Persona** picker that lists personas whose `audience_roles` intersect the caller's JWT roles. A picker that would be empty auto-hides, so users without a persona see no extra chrome.
+The `audience_roles` field on a persona controls which users are **assigned** to it. A user is assigned to a persona when their role appears in the persona's `audience_roles` list, or when the list is empty (available to everyone).
 
-Selecting a persona in the picker binds every query from that panel to that persona via the `persona_id` field on the request body. External BI clients (Excel, Power BI, Tableau) pick a persona by **connecting to its virtual catalog** — the XMLA and JDBC catalog lists include one entry per persona (`<model.slug>_<persona.slug>`) alongside the base model catalog. Admins and modellers see every persona catalog regardless of `audience_roles` (persona impersonation); regular viewers only see personas whose audience roles intersect theirs.
+How persona assignment affects what happens when a user queries:
 
-The `audience_roles` list **does not grant access**. It is purely a UI hint. Access is enforced by the allow lists and by the underlying RBAC of the model. A user whose JWT carries a role matching `audience_roles` still needs to be a member of the project to read the model at all.
+| Situation | What happens |
+|---|---|
+| User is assigned to **one** persona | That persona is applied automatically — no selection needed. Selecting a different persona is not allowed. |
+| User is assigned to **more than one** persona | The user must select one. Queries without a selection are not allowed. |
+| User is **not assigned** to any persona | Everything in the model is available. The user may optionally select any persona as a voluntary filter. |
+| **Admin or modeller** | Everything in the model is available. Any persona may be selected optionally. |
+| **Technical persona holder** | The technical persona is applied automatically. Selecting a different persona is not allowed. |
+| **Embedded user** with a persona set in the token | That persona is always applied. No other persona can be selected. |
+
+The Query Panel, Measure Query Panel, and Excel plugin each show a **Persona** picker that lists the personas the user is assigned to. When only one is assigned, it is pre-selected. When none are assigned, the picker shows all available personas as optional filters.
+
+External BI clients (Excel, Power BI, Tableau) pick a persona by **connecting to its virtual catalog** — the XMLA and JDBC catalog lists include one entry per persona (`<model.slug>_<persona.slug>`) alongside the base `<model.slug>` catalog.
+
+The `audience_roles` list **does not grant project access**. A user still needs to be a member of the project to read the model. Persona assignment only controls which slice of the model catalogue the user sees.
 
 ---
 

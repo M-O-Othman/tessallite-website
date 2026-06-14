@@ -2,7 +2,7 @@
 title: "Column-Level Security"
 audience: modeller
 area: modelling
-updated: 2026-05-04
+updated: 2026-06-12
 ---
 
 ## What this covers
@@ -21,7 +21,14 @@ Column-level security is a two-layer system:
 When a query arrives under a persona:
 
 - If the query explicitly requests a column tagged with a restricted tag → the query is rejected with a 403 error.
-- If the query uses SELECT * and a restricted column would be included → the column is silently dropped from the result set.
+- If the query uses SELECT * and a restricted column would be included → the column is silently dropped from the result set. If **every** column the star resolves to is restricted, the query is rejected — there is nothing left to return.
+- If the query uses advanced SQL shapes (subqueries, CTEs, set operations, window functions, and similar) → it is rejected with a 403, because such shapes cannot be checked column-by-column. Rewrite it as a plain `SELECT` over the model.
+
+Restrictions follow a column wherever it is used, not just when it is named directly:
+
+- A **calculated measure** whose formula reads a restricted column is blocked too.
+- A **time-variant measure** (YTD, prior year, ...) of a measure built on a restricted column is blocked too.
+- A **computed attribute** (user-defined attribute) that reads a restricted column is blocked too.
 
 ---
 
@@ -90,8 +97,9 @@ The `email` column is silently excluded from the result. The persona sees `custo
 ## Pitfalls
 
 - **New columns are visible by default.** When you add a column to a table that has tagged columns, the new column is untagged and therefore visible to all personas. Always review new columns after schema changes.
-- **Calculated measures that depend on restricted columns.** If a calculated measure references a restricted column in its expression, the measure will fail for restricted personas. Either remove the dependency or don't restrict the column.
+- **Calculated measures that depend on restricted columns are blocked.** If a calculated measure (or a time variant, or a computed attribute) reads a restricted column anywhere in its formula, restricted personas get a 403 naming the measure. Either remove the dependency or don't restrict the column.
 - **Tag assignment is model-scoped.** Restricting `PII` in one model doesn't affect another model, even if they share the same source tables. Each model's tags and restrictions are independent.
+- **Restrictions travel with exports.** Data tags and persona restrictions are part of the model snapshot, so project export/import and version restore keep your column security intact.
 
 ---
 

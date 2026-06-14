@@ -12,11 +12,11 @@
     <nav class="breadcrumb"><a href="../index.html">Home</a> / <span>Admin</span> / <span>Alert Configuration</span></nav>
   </header>
   <main class="article">
-    <div class="article-meta"><span class="audience-badge">modeler</span><span class="updated">Updated 2026-05-18</span></div>
+    <div class="article-meta"><span class="audience-badge">modeler</span><span class="updated">Updated 2026-05-23</span></div>
     <h1>Alert Configuration</h1>
 
 <h2>What this covers</h2>
-<p>Tessallite can send email and Slack notifications when platform lifecycle events occur: aggregate refresh failures, schema drift, SLA breaches, query failure spikes, and aggregate retirements. This page explains how alert routing works, how to configure routes, and best practices for operational alerting.</p>
+<p>Tessallite can send email and Slack notifications when platform lifecycle events occur: aggregate refresh failures, schema drift, SLA breaches, query failure spikes, aggregate retirements, and upstream refresh failures. This page explains how alert routing works, how to configure routes, and best practices for operational alerting.</p>
 
 <h2>How alerting works</h2>
 <p>The alert system consists of three layers:</p>
@@ -37,6 +37,9 @@
     <tr><td><strong>SLA Breach</strong></td><td>The hourly SLA monitor finds an aggregate whose freshness exceeds the configured SLA threshold.</td><td>Check the SLA Configuration panel for the breached aggregate. Verify the source database is accessible and the refresh schedule is running.</td></tr>
     <tr><td><strong>Query Failure Spike</strong></td><td>More than 10 queries fail within a 5-minute window in the query-router.</td><td>Check the Query Log for the error pattern. Common causes: source database down, credential rotation, or connection pool exhaustion.</td></tr>
     <tr><td><strong>Aggregate Retired</strong></td><td>The daily retirement sweep removes aggregates that exceed the per-model cap.</td><td>Review the retired aggregates in the Diagnostics panel. If important aggregates were retired, increase the model's aggregate limit.</td></tr>
+    <tr><td><strong>Upstream Refresh Failed</strong></td><td>A scheduled refresh did not run because an upstream refresh it depends on failed first.</td><td>Fix the upstream refresh, then re-run the dependent job. Check the Scheduler Dependencies for the chain order — a failure early in the chain blocks everything that depends on it.</td></tr>
+    <tr><td><strong>KPI Status Change</strong></td><td>A KPI's computed status transitions (e.g., Good&rarr;Warning or Warning&rarr;Poor).</td><td>Check the KPI Scorecard for the current status and trend. Status changes often indicate a developing issue that may need attention before it becomes critical.</td></tr>
+    <tr><td><strong>KPI Trend Alert</strong></td><td>A KPI's trend direction changes (e.g., Improving&rarr;Declining or Flat&rarr;Declining).</td><td>Review the KPI trend in the Scorecard. A declining trend is an early warning that the KPI may move from its current status to a worse one.</td></tr>
   </tbody>
 </table>
 </div>
@@ -51,6 +54,7 @@
   <li>Select the <strong>Channel</strong> — Email or Slack.</li>
   <li>For <strong>Email</strong>: enter one or more recipient email addresses, separated by commas.</li>
   <li>For <strong>Slack</strong>: enter the Slack incoming webhook URL for your channel.</li>
+  <li>For <strong>KPI events</strong>: optionally enter a <strong>KPI Name</strong> to restrict the alert to a specific KPI (leave blank to match all KPIs). For <strong>KPI Threshold Breach</strong>, set the <strong>Threshold</strong> ratio — a value like 0.8 triggers an alert when the KPI value drops below 80% of its goal.</li>
   <li>Toggle <strong>Enabled</strong> on (enabled by default).</li>
   <li>Click <strong>Create</strong>.</li>
 </ol>

@@ -77,4 +77,4 @@ If Tessallite is on a private network, Power BI Service cannot reach it for sche
 
 ---
 
-← [Excel XMLA Connection Guide](excel-xmla-connection-guide.md) | [Home](../index.md) | [Supported Data Sources →](supported-data-sources.md)
+← [Tessallite Excel Add-in](excel-add-in.md) | [Home](../index.md) | [Supported Data Sources →](supported-data-sources.md)

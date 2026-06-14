@@ -5,7 +5,7 @@ area: Modelling
 updated: 2026-04-17
 ---
 
-![Scheduler panel listing aggregate refresh jobs.](../assets/screencaps/scheduler-panel.png)
+![Aggregates page, Refresh tab listing aggregate refresh jobs.](../assets/screencaps/scheduler-panel.png)
 
 ## What this covers
 
@@ -23,16 +23,16 @@ Aggregate schedules control when the Scheduler service refreshes each aggregate.
 4. Enter a cron expression or select a preset.
 5. Click **Save**. The new schedule takes effect at the next scheduled run time.
 
-### Option 2: Scheduler panel
+### Option 2: Aggregates page, Refresh tab
 
 1. From the workspace sidebar, click **Scheduler**.
-2. The Scheduler panel opens, showing all aggregates across all models in the workspace.
+2. The Aggregates page, Refresh tab opens, showing all aggregates across all models in the workspace.
 3. Locate the aggregate by model or aggregate name, then click its schedule field to edit it inline.
 4. Click **Save**.
 
 ---
 
-## Scheduler panel columns
+## Aggregates page, Refresh tab columns
 
 | Column | Description |
 |--------|-------------|
@@ -62,19 +62,19 @@ All times are evaluated in UTC unless the server's `SCHEDULER_TZ` environment va
 
 ## Pausing a schedule
 
-In the Scheduler panel, click the **Active** toggle to switch it off. The aggregate retains its data and continues to serve queries, but the Scheduler will not attempt any further refreshes until the toggle is switched back on. A paused aggregate displays status **Paused** in the panel.
+In the Aggregates page, Refresh tab, click the **Active** toggle to switch it off. The aggregate retains its data and continues to serve queries, but the Scheduler will not attempt any further refreshes until the toggle is switched back on. A paused aggregate displays status **Paused** in the panel.
 
 ---
 
 ## Running a refresh immediately
 
-In the Scheduler panel, click **Run now** in the Actions column. The aggregate's status changes to **Building** for the duration of the run. This does not affect the regular schedule.
+In the Aggregates page, Refresh tab, click **Run now** in the Actions column. The aggregate's status changes to **Building** for the duration of the run. This does not affect the regular schedule.
 
 ---
 
 ## Viewing refresh history
 
-1. In the Scheduler panel, click the aggregate name.
+1. In the Aggregates page, Refresh tab, click the aggregate name.
 2. A history drawer opens showing the last 10 refresh runs.
 3. Each entry shows start time, duration, and outcome (Success or Failed).
 4. For failed runs, click **View log** to see the full Scheduler log for that run.
@@ -96,4 +96,4 @@ An aggregate is marked **Stale** when its last successful refresh completed more
 
 ---
 
-← [Run a Refresh](run-a-refresh.md) | [Home](../index.md) | [Use the AI Optimiser →](use-the-ai-optimiser.md)
+← [Run a Refresh](run-a-refresh.md) | [Home](../index.md) | [Scheduler Dependencies →](scheduler-dependencies.md)

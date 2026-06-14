@@ -47,7 +47,7 @@ Click any row in the diagnostic list. The Canvas scrolls to and highlights the a
 | Measure on non-numeric column | Error | A measure (sum, average, etc.) targets a column with a text or boolean data type. | Open the measure in the Drawer. Change the source column to a numeric column, or change the measure type to Count if counting rows is the intent. |
 | Fact table missing | Error | No table in the model is designated as the fact table. | Open the relevant table's Drawer and change its Type to **Fact**. |
 | Schema drift detected | Warning | The source table's column list has changed since the model was last synced. | Run a schema sync from the table Drawer or trigger a workspace-wide sync from workspace settings. |
-| Aggregate refresh overdue | Warning | An aggregate has not been refreshed within its expected window. | Open the Scheduler panel, check the aggregate's last-refresh status, and re-run the refresh manually if needed. |
+| Aggregate refresh overdue | Warning | An aggregate has not been refreshed within its expected window. | Open the Aggregates page, switch to the Refresh tab, check the aggregate's last-refresh status, and re-run the refresh manually if needed. |
 | Unused dimension | Info | A dimension is defined in the model but has never appeared in a query. | No immediate action required. Consider removing it to keep the model clean if it is not expected to be used. |
 
 ---
@@ -55,6 +55,14 @@ Click any row in the diagnostic list. The Canvas scrolls to and highlights the a
 ## Resolving errors before building aggregates
 
 Any Error-severity diagnostic blocks the aggregate build process for the affected objects. Resolve all Errors first, save the model, then proceed to build or schedule aggregates.
+
+---
+
+## Route trace
+
+For a query that has already run, the Diagnostics panel can show **why** it took the route it did. Open the query's detail and click **Show route trace** to expand the stored decision trail — how the query was parsed and bound, which aggregates or pocket tables were considered, why each was accepted or skipped, and which engine finally served the result. Click **Hide route trace** to collapse it.
+
+This is the fastest way to answer "why was this query slow?" or "why did it hit the source instead of my aggregate?". The trace usually points straight at the cause: an aggregate that was missing, stale, or simply did not match the query's shape. If a query has no stored trace yet, the panel says **"No stored trace for this query"** — run the query again to capture one.
 
 ---
 
@@ -76,7 +84,7 @@ Tessallite collects column-level statistics from your data sources to inform agg
 
 **How to trigger a refresh:** Statistics are collected automatically during schema sync. For non-PostgreSQL sources, you can also trigger a manual refresh from the table's Drawer by clicking **Refresh Statistics**.
 
-**Precision differences:** BigQuery uses `APPROX_COUNT_DISTINCT`, which is based on HyperLogLog and may differ from the exact count by up to 1-2% for high-cardinality columns. PostgreSQL and Spark provide exact counts. The statistics panel displays an "(approx)" label next to BigQuery cardinality values.
+**Precision differences:** BigQuery uses `APPROX_COUNT_DISTINCT`, which is based on HyperLogLog and may differ from the exact count by up to 1-2% for high-cardinality columns. PostgreSQL and Spark provide exact counts. The statistics view displays an "(approx)" label next to BigQuery cardinality values.
 
 ---
 

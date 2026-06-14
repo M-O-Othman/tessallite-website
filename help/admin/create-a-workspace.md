@@ -67,4 +67,4 @@ Share the slug with Analysts so they can configure their connections correctly.
 
 ---
 
-← [Agent Session Memory](../agent/session-memory.md) | [Home](../index.md) | [Manage Users →](manage-users.md)
+← [Agent Stop Button](../agent/agent-stop-button.md) | [Home](../index.md) | [Manage Users →](manage-users.md)

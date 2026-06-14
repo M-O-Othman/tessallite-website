@@ -33,6 +33,17 @@
 <ul><li><strong>AVG</strong>: the average of a set of averages is not the overall average unless the group sizes are equal.</li><li><strong>COUNT DISTINCT</strong>: the union of distinct counts from two partitions can double-count values that appear in both.</li></ul>
 <p>For non-additive measures, Tessallite requires an <strong>exact grain match</strong>. The aggregate must have been built at exactly the grain the query requests. If no exact match exists, the query falls through to raw data.</p>
 <p>COUNT DISTINCT is the most common source of unexpected fallthrough to raw data. Define an aggregate explicitly at the grain used by your most frequent COUNT DISTINCT queries.</p>
+<h2>Hidden columns and aggregate expressions</h2>
+<p>A model may mark certain columns as <strong>hidden</strong>. Hidden columns are excluded from the business view &mdash; they do not appear in the BI tool's field list and cannot be placed directly in a <code>SELECT</code> clause.</p>
+<p>However, hidden columns can still participate in <strong>aggregate expressions</strong> and <strong>WHERE filters</strong>. When a query wraps a hidden column inside an aggregate function such as <code>SUM()</code>, <code>AVG()</code>, <code>COUNT()</code>, <code>MAX()</code>, or <code>MIN()</code>, the query router resolves it as a <strong>measure reference</strong> rather than as a bare column request. The persona scope gate does not block it because the column never appears as a standalone value in the result set &mdash; only the aggregated result does.</p>
+<p><strong>Example.</strong> Suppose <code>fee_amount</code> and <code>base_amount</code> are hidden columns (measures) in a model. The following queries behave differently:</p>
+<div class="table-wrapper"><table><thead><tr><th>Query</th><th>Result</th></tr></thead><tbody>
+<tr><td><code>SELECT fee_amount FROM modely</code></td><td>Rejected &mdash; <code>fee_amount</code> is hidden and cannot appear as a bare column in the SELECT list.</td></tr>
+<tr><td><code>SELECT SUM(fee_amount) FROM modely</code></td><td>Allowed &mdash; <code>SUM(fee_amount)</code> is an aggregate expression. The router resolves <code>fee_amount</code> as a measure reference and computes the sum.</td></tr>
+<tr><td><code>SELECT SUM(fee_amount) / SUM(base_amount) FROM modely</code></td><td>Allowed &mdash; both columns are inside aggregate functions. The router treats the entire expression as a compound passthrough and preserves it in the rewritten SQL.</td></tr>
+<tr><td><code>SELECT * FROM modely WHERE fee_amount &gt; 100</code></td><td>Allowed &mdash; <code>fee_amount</code> in the WHERE clause is used as a filter, not a result column. Hidden columns may appear in filters.</td></tr>
+</tbody></table></div>
+<p>This design lets modellers keep internal detail columns (like individual fee components) out of end-user reports while still allowing those columns to power calculated measures and compound aggregate formulas.</p>
 <h2>How dimensions and measures appear in the Model Builder</h2>
 <p>In the Model Builder Canvas, each table node lists its defined dimensions and measures. The Toolbelt on the left allows you to add, rename, or remove them. The Drawer on the right shows the full definition of whichever object is selected — source column, aggregation type, and logical name.</p>
 <p>The Summary Bar at the bottom of the canvas shows a count of total dimensions and measures in the model. This count is used during Health checks to verify that no measures are defined on non-numeric columns.</p>

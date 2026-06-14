@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Excel PivotTable Features — Tessallite Help</title>
+  <link rel="stylesheet" href="../assets/help.css">
+</head>
+<body>
+  <header class="site-header">
+    <a href="../index.html" class="logo">Tessallite Help</a>
+    <nav class="breadcrumb"><a href="../index.html">Home</a> / <span>Integrations</span> / <span>Excel PivotTable Features</span></nav>
+  </header>
+  <main class="article">
+    <div class="article-meta"><span class="audience-badge">analyst</span><span class="updated">Updated 2026-05-22</span></div>
+<h1>Excel PivotTable Features</h1>
+<h2>What this covers</h2>
+<p>Once Excel is connected to Tessallite over XMLA, the PivotTable behaves like any Analysis Services cube. This page covers the advanced PivotTable features Tessallite supports — value and label filters, Show Values As, timelines, calculated fields, drill-through, and <code>GETPIVOTDATA</code> — and how each maps onto the semantic model. To connect in the first place, see <a href="../getting-started/connect-excel.html">Connect Excel via XMLA</a>.</p>
+<h2>Show Values As</h2>
+<p>Right-click a value and choose <strong>Show Values As</strong> to display a measure as a percentage, running total, rank, or difference instead of the raw number. Tessallite supports % of Grand Total, % of Parent Row/Column, Difference From, % Difference From, Running Total, and Rank (largest or smallest). These are evaluated server-side as calculated members, so subtotals and grand totals stay consistent.</p>
+<h2>Value filters and Top 10</h2>
+<p>Use <strong>Value Filters</strong> on a row or column field to keep only the members whose measure passes a test — for example *greater than*, *between*, or <strong>Top 10</strong>. Tessallite translates value tests to a <code>HAVING</code> clause and Top/Bottom-N to an <code>ORDER BY</code> with a <code>LIMIT</code>, so the filter runs in the database rather than in the workbook.</p>
+<h2>Label filters</h2>
+<p><strong>Label Filters</strong> (begins with, contains, ends with, and their negations) filter members by their caption. Tessallite maps these to SQL <code>LIKE</code> / <code>NOT LIKE</code> patterns with the wildcards escaped, so a search for a literal percent sign matches that character rather than everything.</p>
+<h2>Timeline slicers</h2>
+<p>Insert a <strong>Timeline</strong> on a date hierarchy to filter the PivotTable to a date range with a drag handle. Tessallite exposes date dimensions with the metadata Excel needs to offer Year, Quarter, Month, and Day granularities, and translates the selected range into a date filter on the query. Combine a timeline with ordinary slicers to filter by date and by another dimension at the same time.</p>
+<h2>Calculated fields</h2>
+<p>Excel's <strong>Calculated Field</strong> dialog lets you define a new measure as an arithmetic expression over existing measures (for example margin divided by revenue). Excel sends this as a session-scoped <code>WITH MEMBER</code> definition; Tessallite evaluates it after the query and preserves number formatting. The calculated field lives only in your workbook session — it does not change the published model.</p>
+<h2>Drill-through to detail</h2>
+<p>Double-click a value cell to drill through to the fact rows behind it. Excel issues an XMLA <code>DRILLTHROUGH</code> statement and Tessallite returns the contributing rows on a new sheet, honouring the model's curated drill-through columns, row security, and your persona scope. The detail rows always reconcile to the cell you drilled from.</p>
+<h2>GETPIVOTDATA</h2>
+<p>Reference a single PivotTable value from elsewhere in the workbook with <code>GETPIVOTDATA</code>. Tessallite resolves the function as a point query against the model, so a dashboard cell that uses <code>GETPIVOTDATA</code> stays correct when the PivotTable refreshes.</p>
+<h2>Hierarchies and subtotals</h2>
+<p>Date, geography, and entity hierarchies appear in the field list with working expand/collapse. When you place more than one hierarchy on an axis, Tessallite computes the cross-product of subtotal levels so each subtotal and grand total is correct for additive measures. Non-additive measures (such as a ratio) show a dash in the total row instead of a misleading sum.</p>
+<h2>Notes and limitations</h2>
+<ul><li>These features require an XMLA connection. SQL-based tools over JDBC see a flat relational view without PivotTable semantics.</li><li>Calculated fields are session-scoped: they are not saved to the model and are not shared with other users.</li><li>Power BI connects over the same XMLA endpoint but does not support XMLA drill-through natively.</li></ul>
+<h2>Related</h2>
+<ul><li><a href="../getting-started/connect-excel.html">Connect Excel via XMLA</a></li><li><a href="excel-add-in.html">Tessallite Excel Add-in</a></li><li><a href="excel-xmla-connection-guide.html">Excel XMLA Connection Guide</a></li><li><a href="../modelling/drill-through.html">Drill-through</a></li></ul>
+<nav class="page-nav"><a href="excel-xmla-connection-guide.html" class="page-nav-btn prev">&larr; Excel XMLA Connection Guide</a><a href="../index.html" class="page-nav-btn home">Home</a><a href="excel-add-in.html" class="page-nav-btn next">Tessallite Excel Add-in &rarr;</a></nav>
+  </main>
+  <footer class="site-footer"><p>Tessallite Help — <a href="../index.html">Back to contents</a></p></footer>
+</body>
+</html>

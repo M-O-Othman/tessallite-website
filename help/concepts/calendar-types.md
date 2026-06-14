@@ -49,7 +49,9 @@ Weeks start on Monday, numbered 1-52 (occasionally 53). Week 1 is the week conta
 
 ### Retail 4-4-5
 
-The NRF (National Retail Federation) calendar divides the year into 4-week and 5-week periods following a 4-4-5 pattern within each quarter. Periods do not align with calendar months. A "retail month" is either 4 or 5 weeks long, and the retail year may start on the first Saturday of February (the most common convention) or another anchor day.
+The NRF (National Retail Federation) calendar divides the year into 4-week and 5-week periods following a 4-4-5 pattern within each quarter. Periods do not align with calendar months: a "retail month" is either 4 or 5 weeks long.
+
+Because this week-and-period grid **cannot** be derived by ordinary date arithmetic, a retail 4-4-5 calendar **requires a physical calendar table** to be bound to the time hierarchy. Tessallite reads the period and year boundaries straight from that table's pre-computed columns rather than computing them from a formula — which also means the exact retail-year start date is whatever your calendar table defines, not a value Tessallite guesses. If you select the retail calendar type but no calendar table is bound, the query **fails loudly with a clear error** rather than silently falling back to ordinary months and returning wrong numbers.
 
 **Who uses it:** Retail chains, CPG companies, any business that needs like-for-like weekly comparisons across years without the distortion of months having different numbers of days.
 

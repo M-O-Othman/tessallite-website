@@ -2,7 +2,7 @@
 title: "Export and Import a Project"
 audience: tenant-admin
 area: modelling
-updated: 2026-04-27
+updated: 2026-05-28
 ---
 
 ## What this covers
@@ -33,12 +33,18 @@ This article covers export options, the import workflow, how connections and cre
 
 ---
 
+## Opening the dialog
+
+Project import and export are accessed from a single **Import / Export** button (swap-arrows icon) in the Explorer sidebar, below the tenant card. This button is visible to admin users only. Clicking it opens a dialog with two tabs: **Import** and **Export**.
+
+---
+
 ## Exporting a project
 
-1. In the Explorer sidebar, locate the project you want to export.
-2. Click the three-dot menu (kebab) next to the project name.
-3. Select **Export Project**.
-4. In the dialog, choose which sections to include:
+1. In the Explorer sidebar, click the **Import / Export** button.
+2. Switch to the **Export** tab.
+3. Select the project you want to export from the dropdown.
+4. Choose which sections to include under **Included in export**:
 
 | Section | Default | What it contains |
 |---|---|---|
@@ -74,7 +80,7 @@ Models are always included regardless of section selection.
 
 ## Importing a project
 
-1. In the Explorer, click **Import Project** in the header toolbar.
+1. In the Explorer sidebar, click the **Import / Export** button. The dialog opens on the **Import** tab by default.
 2. Click **Choose project export file (.json)** and select the bundle.
 3. The dialog shows a summary: project name, model count, included sections, and whether credentials are present.
 4. If the bundle includes credentials, enter the passphrase used during export.
@@ -99,7 +105,9 @@ Deletes all existing content in the target project (models, connections, LLM con
 
 8. Optionally check **Override existing connections with exported credentials** to update credentials on mapped connections.
 
-9. Click **Import**.
+9. **Preview before applying (replace mode).** Before committing a destructive replace, run a **dry run** first. A dry run does not touch the target project at all — it does not decrypt credentials, delete anything, or create anything, and it does not even need the export passphrase. Instead it returns a *plan* showing exactly how many objects in each section (models, connections, personas, and so on) would be deleted and recreated if you went ahead. Review the counts; if they look right, run the real import. This turns "replace wholesale" from a leap of faith into a checked step.
+
+10. Click **Import**.
 
 ---
 
@@ -145,4 +153,4 @@ Aggregates and pockets are physical tables in the target database. The exported 
 
 ---
 
-← [Export and Import a Model](export-and-import-a-model.md) | [Home](../index.md) | [Agent Chat →](../agent/agent-chat.md)
+← [Export and Import a Model](export-and-import-a-model.md) | [Home](../index.md) | [Import from dbt →](import-from-dbt.md)

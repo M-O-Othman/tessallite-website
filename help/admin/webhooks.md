@@ -32,10 +32,20 @@ Webhooks are not the right tool for polling or querying state. Use the REST API 
 |---|---|
 | `model.published` | A model is deployed to a version. |
 | `model.undeployed` | A model's deploy pointer is cleared. |
+| `model.reverted` | A model is reverted to an earlier version. |
 | `model.deleted` | A model is permanently deleted. |
 | `user.created` | A new user account is created (local, JIT, or SSO). |
 | `user.deleted` | A user account is deleted. |
 | `settings.changed` | A tenant, project, or model setting is saved. |
+| `schema_drift.detected` | The scheduler detects that a source's schema has drifted from the model. |
+| `refresh.completed` | An aggregate refresh (scheduled or manual) finishes successfully. |
+| `refresh.failed` | An aggregate refresh ends in error. |
+| `refresh.sla_breach` | An aggregate's freshness exceeds its configured SLA threshold. |
+| `refresh.sla_recovered` | An aggregate that had breached its SLA returns to freshness. |
+
+The `refresh.*` family is the most useful for orchestration: subscribe to `refresh.completed` to trigger a downstream job only after data is fresh, and to `refresh.failed` / `refresh.sla_breach` to alert when it is not. The authoritative list of event names lives in `shared/webhooks/event_types.py`; a subscription can name specific events or use the wildcard `*` to receive all of them.
+
+There is also a `test.ping` event. It is **not** a real platform event — it is sent only when you click **Send test** on an endpoint, so you can confirm connectivity and signature verification without waiting for something to happen.
 
 Each event type sends a JSON payload with the event type, a timestamp, the actor's identity, and an event-specific detail object.
 

@@ -105,4 +105,4 @@ To set automatic refresh: **Data** → **Queries & Connections** → right-click
 
 ---
 
-← [JDBC Connection Guide](jdbc-connection-guide.md) | [Home](../index.md) | [Power BI Connection Guide →](powerbi-connection-guide.md)
+← [JDBC Connection Guide](jdbc-connection-guide.md) | [Home](../index.md) | [Excel PivotTable Features →](excel-pivottable-features.md)

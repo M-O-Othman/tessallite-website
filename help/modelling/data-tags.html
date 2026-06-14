@@ -12,7 +12,7 @@
     <nav class="breadcrumb"><a href="../index.html">Home</a> / <span>Modelling</span> / <span>Data Tags</span></nav>
   </header>
   <main class="article">
-    <div class="article-meta"><span class="audience-badge">modeller</span><span class="updated">Updated 2026-05-04</span></div>
+    <div class="article-meta"><span class="audience-badge">modeller</span><span class="updated">Updated 2026-06-12</span></div>
     <h1>Data Tags</h1>
 <h2>What this covers</h2>
 <figure class="screencap"><img class="screencap" src="../assets/screencaps/data-tags-panel.png" alt="Live Data Tags drawer opened from Model Builder."></figure>
@@ -22,16 +22,16 @@
 <h2>What data tags are not</h2>
 <p>Tags are for access control and governance, not data classification. They tell Tessallite &quot;this column is PII&quot; so the platform can restrict it — they don&#x27;t tell the data lake &quot;this column is PII&quot; for compliance scanning. Classification belongs at the source; tagging belongs at the semantic layer.</p>
 <h2>Creating a tag</h2>
-<ol><li>Open the <strong>Data Tags</strong> panel in Model Builder (Toolbelt sidebar).</li><li>Click <strong>Add Tag</strong>.</li><li>Enter a <strong>tag name</strong> (e.g. <code>PII</code>, <code>Financial</code>, <code>Internal Only</code>).</li><li>Optionally enter a <strong>description</strong> explaining what the tag means and who should have access.</li><li>Click <strong>Save</strong>.</li></ol>
+<ol><li>Open the <strong>Data Tags</strong> panel in Model Builder (Toolbelt sidebar).</li><li>Click <strong>Add Tag</strong>.</li><li>Enter a <strong>tag name</strong> (e.g. <code>PII</code>, <code>Financial</code>, <code>Internal Only</code>).</li><li>Optionally enter a <strong>description</strong> explaining what the tag means and who should have access.</li><li>Assign columns in the <strong>Columns</strong> section (you can also do this later — see below).</li><li>Click <strong>Create</strong>.</li></ol>
 <h2>Assigning columns to a tag</h2>
-<ol><li>Open a tag from the Data Tags panel.</li><li>Click <strong>Add Columns</strong>.</li><li>Select columns from the table/column picker. Columns are listed as <code>table_name.column_name</code>.</li><li>Click <strong>Save</strong>. The tagged columns now show a tag chip in the Table Details drawer.</li></ol>
+<ol><li>In the Data Tags panel, click the edit (pencil) icon on the tag — or do this while creating it.</li><li>In the <strong>Columns</strong> section of the dialog, choose a <strong>Table</strong> from the dropdown.</li><li>Tick the columns the tag should cover. Each assigned column appears as a chip labelled <code>table_name.column_name</code>; click the chip&#x27;s &times; to remove it.</li><li>Repeat with other tables if the tag spans more than one.</li><li>Click <strong>Update</strong> (or <strong>Create</strong>). The tagged columns now show a tag chip in the table editor&#x27;s <strong>Attributes</strong> tab.</li></ol>
 <p>You can assign the same column to multiple tags (e.g. <code>customers.email</code> could be both <code>PII</code> and <code>Contact Info</code>).</p>
 <h2>Grouping strategy</h2>
 <p>Choose a tagging strategy that matches your governance model:</p>
 <div class="table-wrapper"><table><thead><tr><th>Strategy</th><th>Tags</th><th>Best for</th></tr></thead><tbody><tr><td>By sensitivity</td><td><code>PII</code>, <code>Sensitive</code>, <code>Financial</code>, <code>Public</code></td><td>Regulatory compliance (GDPR, HIPAA)</td></tr><tr><td>By audience</td><td><code>External</code>, <code>Internal</code>, <code>Executive</code></td><td>Role-based access in multi-persona models</td></tr><tr><td>By domain</td><td><code>Customer</code>, <code>Product</code>, <code>Finance</code></td><td>Large models with cross-functional teams</td></tr></tbody></table></div>
 <p>Whichever strategy you choose, apply it consistently. Mixed strategies make persona restrictions harder to reason about.</p>
 <h2>Viewing tags in the model</h2>
-<p>Tagged columns display a small tag chip next to the column name in the Table Details drawer. The lineage graph shows a &quot;N tagged cols&quot; count on semantic nodes that have tagged columns.</p>
+<p>Tagged columns display a small tag chip next to the column name in the table editor&#x27;s <strong>Attributes</strong> tab (double-click a table on the canvas to open it). The lineage graph shows a &quot;N tagged cols&quot; count on semantic nodes that have tagged columns. The Data Tags panel itself lists every tag with its assigned columns — expand a tag row to see them.</p>
 <h2>Best practices</h2>
 <ul><li><strong>Tag new columns promptly.</strong> Untagged columns are visible to all personas by default. If you add a new column to a tagged table, remember to tag it if it contains sensitive data.</li><li><strong>Use descriptive tag names.</strong> <code>PII</code> is better than <code>Tag1</code>. The name appears in persona restrictions, audit logs, and tag chips.</li><li><strong>Review tags when the model changes.</strong> Source schema drift may add columns that need tagging. Run schema refresh, then review untagged columns.</li></ul>
 <h2>Related</h2>

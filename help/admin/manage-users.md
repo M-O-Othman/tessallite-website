@@ -27,10 +27,12 @@ The Users tab displays all users in the workspace with their email address, role
 
 1. On the Users tab, click **Invite User**.
 2. Enter the user's email address.
-3. Select the role to assign: Tenant Admin, Modeller, or Analyst.
+3. Select the role to assign: Tenant Admin, Modeller, Analyst, or `model_technical`.
 4. Click **Send Invitation**.
 
 The user receives an email containing a one-time invitation link, valid for 48 hours. On first sign-in, the user sets their own password.
+
+The `model_technical` choice is a special **audience** role rather than a permission level: it pins the user to the technical persona for column-level security and data tags, and grants no project access on its own. Pick it only for users who should see technical column detail; they will still need a project-level Viewer or Modeller binding to open a project. See [Manage roles](manage-roles.md) and [Configure personas](../modelling/configure-personas.md).
 
 ### If the invitation expires
 

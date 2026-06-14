@@ -101,4 +101,4 @@ If a service fails after upgrade:
 
 ---
 
-← [Teardown](teardown.md) | [Home](../index.md) | [JDBC Connection Guide →](../integrations/jdbc-connection-guide.md)
+← [Teardown](teardown.md) | [Home](../index.md) | [Monitoring Stack →](monitoring-stack.md)

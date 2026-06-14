@@ -12,32 +12,52 @@
     <nav class="breadcrumb"><a href="../index.html">Home</a> / <span>System Admin</span> / <span>Configure Environment Variables</span></nav>
   </header>
   <main class="article">
-    <div class="article-meta"><span class="audience-badge">system-admin</span><span class="updated">Updated 2026-04-17</span></div>
+    <div class="article-meta"><span class="audience-badge">system-admin</span><span class="updated">Updated 2026-06-14</span></div>
     <h1>Configure Environment Variables</h1>
 <h2>What this covers</h2>
-<p>The complete reference for all environment variables accepted by Tessallite. Also covers how to set variables in Docker Compose and Cloud Run, and how to keep secrets out of source control.</p>
-<h2>Variable reference</h2>
-<div class="table-wrapper"><table><thead><tr><th>Variable</th><th>Required</th><th>Default</th><th>Services</th><th>Description</th></tr></thead><tbody><tr><td><code>DB_HOST</code></td><td>Yes</td><td><code>postgres</code></td><td>All except gateway</td><td>Hostname of the internal PostgreSQL instance. In Docker Compose, use the service name <code>postgres</code>. On GCP, use the Cloud SQL private IP or <code>127.0.0.1</code> with Auth Proxy.</td></tr><tr><td><code>DB_PORT</code></td><td>No</td><td><code>5432</code></td><td>All except gateway</td><td>Port of the internal PostgreSQL instance.</td></tr><tr><td><code>DB_NAME</code></td><td>No</td><td><code>tessallite</code></td><td>All except gateway</td><td>Database name in the internal PostgreSQL instance.</td></tr><tr><td><code>DB_USER</code></td><td>Yes</td><td>—</td><td>All except gateway</td><td>PostgreSQL username.</td></tr><tr><td><code>DB_PASS</code></td><td>Yes</td><td>—</td><td>All except gateway</td><td>PostgreSQL password. Do not commit to source control.</td></tr><tr><td><code>ADMIN_USER</code></td><td>Yes</td><td>—</td><td>frontend</td><td>System Admin username for initial login to the web UI.</td></tr><tr><td><code>ADMIN_PASS</code></td><td>Yes</td><td>—</td><td>frontend</td><td>System Admin password.</td></tr><tr><td><code>SESSION_SECRET</code></td><td>Yes</td><td>—</td><td>frontend</td><td>Random string used to sign session tokens. Minimum 32 characters. No default — service will not start without this set.</td></tr><tr><td><code>GATEWAY_PORT_JDBC</code></td><td>No</td><td><code>5433</code></td><td>gateway</td><td>Port on which gateway listens for JDBC connections.</td></tr><tr><td><code>GATEWAY_PORT_XMLA</code></td><td>No</td><td><code>8080</code></td><td>gateway</td><td>Port on which gateway listens for XMLA connections.</td></tr><tr><td><code>FRONTEND_PORT</code></td><td>No</td><td><code>3000</code></td><td>frontend</td><td>Port on which the web UI is served.</td></tr><tr><td><code>OPTIMIZER_SCORE_THRESHOLD</code></td><td>No</td><td><code>50</code></td><td>optimizer</td><td>Minimum ROI score required before optimizer surfaces a build recommendation. Integer, 0–100.</td></tr><tr><td><code>SCHEDULER_MAX_CONCURRENT</code></td><td>No</td><td><code>3</code></td><td>scheduler</td><td>Maximum number of aggregate build jobs running simultaneously.</td></tr><tr><td><code>LOG_LEVEL</code></td><td>No</td><td><code>info</code></td><td>All</td><td>Log verbosity. Accepted values: <code>debug</code>, <code>info</code>, <code>warn</code>, <code>error</code>.</td></tr></tbody></table></div>
+<p>The variables you set in <code>.env</code> (local) or Secret Manager (GCP) to start Tessallite. These are the <strong>bootstrap</strong> variables — the bare minimum the services need before they can read anything from the database. Operational tuning knobs (rate limits, optimizer thresholds, scheduler cadences) are set in the System Admin UI and are not covered here.</p>
+<p>The <strong>complete, always-current list</strong> of every configurable value is in the <a href="../../../docs/guides/guides_configuration-reference.md">Configuration Reference</a>. When this page and the reference disagree, the reference is authoritative.</p>
+<h2>Required bootstrap variables</h2>
+<p>These must be set in <code>.env</code> (local) or stored as Secret Manager secrets (GCP). The services will refuse to start if any of the credential fields are left at their placeholder values.</p>
+<div class="table-wrapper"><table><thead><tr><th>Variable</th><th>Required</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>POSTGRES_PASSWORD</code></td><td>Yes</td><td>—</td><td>Password for the internal PostgreSQL user. Used by Docker Compose to construct the connection URL automatically. On GCP the full URL (<code>SYSTEM_DATABASE_URL</code>) is stored in Secret Manager instead.</td></tr>
+<tr><td><code>CREDENTIAL_ENCRYPTION_KEY</code></td><td>Yes</td><td>—</td><td>Fernet key (base64, 32 bytes) used to encrypt source database credentials at rest. Generate with: <code>python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"</code></td></tr>
+<tr><td><code>JWT_SECRET_KEY</code></td><td>Yes</td><td>—</td><td>Secret used to sign user session tokens. Minimum 32 characters.</td></tr>
+<tr><td><code>SYSTEM_ADMIN_EMAIL</code></td><td>No</td><td><code>admin@tessallite.local</code></td><td>Email address of the system-level administrator.</td></tr>
+<tr><td><code>SYSTEM_ADMIN_PASSWORD</code></td><td>Yes</td><td>—</td><td>Password for the system administrator.</td></tr>
+</tbody></table></div>
+<h2>GCP-specific: SYSTEM_DATABASE_URL</h2>
+<p>On GCP the Cloud Run services cannot reach the local Docker network. Instead of <code>POSTGRES_PASSWORD</code>, store the full connection URL as a Secret Manager secret:</p>
+<div class="table-wrapper"><table><thead><tr><th>Variable</th><th>Purpose</th></tr></thead><tbody>
+<tr><td><code>SYSTEM_DATABASE_URL</code></td><td>Full PostgreSQL connection URL. Format: <code>postgresql+asyncpg://postgres:&lt;password&gt;@&lt;vm-ip&gt;:5432/tessallite_system</code></td></tr>
+</tbody></table></div>
+<p>The scripted GCP deploy (<code>deploy/gcp/</code>) sets this automatically using the Compute Engine VM's IP address. You do not set it by hand unless you are connecting to a custom database host.</p>
+<h2>Optional variables</h2>
+<div class="table-wrapper"><table><thead><tr><th>Variable</th><th>Default</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>JDBC_PORT</code></td><td><code>5433</code></td><td>Port on which the gateway listens for JDBC connections.</td></tr>
+<tr><td><code>XMLA_PORT</code></td><td><code>8080</code></td><td>Port on which the gateway listens for XMLA connections.</td></tr>
+<tr><td><code>GATEWAY_XMLA_TLS_ENABLED</code></td><td><code>false</code></td><td>Set <code>true</code> only when BI clients connect directly to the gateway and you need TLS on that hop. Leave <code>false</code> when TLS is terminated upstream.</td></tr>
+<tr><td><code>GCLOUD_ADC_PATH</code></td><td>—</td><td>Path to a Google Application Default Credentials file, mounted into containers that talk to GCP services (Docker Compose only).</td></tr>
+<tr><td><code>LOG_LEVEL</code></td><td><code>info</code></td><td>Log verbosity: <code>debug</code>, <code>info</code>, <code>warn</code>, or <code>error</code>.</td></tr>
+</tbody></table></div>
 <h2>Setting variables in Docker Compose</h2>
-<p>Create a <code>.env</code> file in the same directory as <code>docker-compose.yml</code>:</p>
-<pre><code>DB_HOST=postgres
-DB_PORT=5432
-DB_NAME=tessallite
-DB_USER=tessallite
-DB_PASS=changeme
-ADMIN_USER=admin
-ADMIN_PASS=changeme
-SESSION_SECRET=your-random-secret-here</code></pre>
-<p>Docker Compose reads this file automatically. Alternatively, set variables in the <code>environment:</code> block of each service in <code>docker-compose.yml</code> for non-secret values.</p>
+<p>Copy <code>.env.example</code> to <code>.env</code> (in the same directory as <code>docker-compose.yml</code>) and fill in the required values:</p>
+<pre><code>POSTGRES_PASSWORD=your-strong-password
+CREDENTIAL_ENCRYPTION_KEY=your-fernet-key-here
+JWT_SECRET_KEY=your-jwt-secret-min-32-chars
+SYSTEM_ADMIN_PASSWORD=your-admin-password</code></pre>
+<p>Docker Compose reads this file automatically. Never commit <code>.env</code> to source control — it is listed in <code>.gitignore</code>.</p>
 <h2>Setting variables in Cloud Run</h2>
-<p>Via the CLI:</p>
-<pre><code>gcloud run services update SERVICE_NAME \
+<p>The scripted GCP deploy handles secrets automatically. If you need to update a secret manually:</p>
+<pre><code># Update a secret value
+echo -n "new-value" | gcloud secrets versions add SECRET_NAME --data-file=-
+
+# Set a non-secret env var on a service
+gcloud run services update SERVICE_NAME \
   --region REGION \
-  --set-env-vars LOG_LEVEL=info,OPTIMIZER_SCORE_THRESHOLD=50 \
-  --update-secrets DB_PASS=tessallite-db-pass:latest,SESSION_SECRET=tessallite-session-secret:latest</code></pre>
-<p>Via the console: Open the Cloud Run service, select Edit and Deploy New Revision, then open the Variables and Secrets tab.</p>
+  --set-env-vars LOG_LEVEL=debug</code></pre>
 <h2>Security</h2>
-<p>Never commit <code>DB_PASS</code>, <code>ADMIN_PASS</code>, or <code>SESSION_SECRET</code> to source control. Add <code>.env</code> to <code>.gitignore</code>. On GCP, use Secret Manager for all credential values rather than embedding them in the Cloud Run service definition.</p>
+<p>Never commit credential values to source control. On GCP, all three secrets (<code>SYSTEM_DATABASE_URL</code>, <code>CREDENTIAL_ENCRYPTION_KEY</code>, <code>JWT_SECRET_KEY</code>) are stored in Secret Manager and mounted into Cloud Run at deploy time — they never appear in the service YAML. For key rotation, see <code>CREDENTIAL_ENCRYPTION_KEY_PREVIOUS</code> in the <a href="../../../docs/guides/guides_configuration-reference.md">Configuration Reference</a>.</p>
 <h2>Related</h2>
 <ul><li><a href="deploy-local.html">Deploy Locally</a></li><li><a href="deploy-gcp.html">Deploy on GCP</a></li><li><a href="service-reference.html">Service Reference</a></li></ul>
 <nav class="page-nav"><a href="deploy-gcp.html" class="page-nav-btn prev">&larr; Deploy on GCP</a><a href="../index.html" class="page-nav-btn home">Home</a><a href="system-configuration.html" class="page-nav-btn next">System Configuration &rarr;</a></nav>

@@ -15,7 +15,12 @@ Every change you make in the Model Builder — adding a table, defining a join, 
 
 ## Before you start
 
-- You must be able to edit the model. See your project access role in **Tenant Admin → Project Access**.
+- Your project access role controls what you can do here, because each action carries a different level of risk:
+  - **Viewers** can open the Versions list and look at past versions and their differences.
+  - **Modellers** can additionally **Save** a new version and **Deploy** or **Undeploy** a model.
+  - **Reverting** to an older version is the most destructive action — it deletes every version newer than the one you revert to — so it requires the **Admin** role on the project.
+
+  Check your role in **Tenant Admin → Project Access**. If a button is missing or returns a "not permitted" message, your role is below the level that action needs.
 - Save and Versions buttons appear on the Model Builder top toolbar, next to the model name.
 
 ---

@@ -120,6 +120,24 @@ A slim status bar stretches across the bottom of the canvas. Six badges, each a 
 
 Click any badge to jump to the matching panel — the aggregates badge opens the Aggregates panel, the joins badge opens a join list, etc. This is the "one-glance → one-click → fix" loop the canvas is designed around.
 
+### The validation chip and tray
+
+On the right-hand end of the status bar sits the **validation chip**. It is the answer to "is anything broken right now":
+
+- When the model is healthy, the chip shows a green check and **"No validation issues"**.
+- When something is wrong, the chip turns into a count — for example **"2 errors · 1 warning"** — coloured by the most severe issue.
+
+Click the chip and the **validation tray** expands above the status bar, listing every issue with its severity. Issues come from two places:
+
+1. **The model validation engine.** Broken dimensions or measures, failed aggregate builds, refresh failures, schema drift — anything the platform's structural validator has flagged on this model. These are the same alerts you see on the Model Health tab.
+2. **Structural checks on the canvas itself.** A model with no fact table, a table that is joined to nothing, or a missing query target gets flagged immediately, while you are still building.
+
+Most issues are clickable: an issue about a dimension or measure opens that object in its panel, and an issue about a table pans the canvas to that table. Fix the problem and the issue disappears from the tray on the next check — no manual refresh needed.
+
+![The canvas bottom band showing the expanded validation tray with one warning issue and the status bar's amber "1 warning" validation chip.](../assets/screencaps/canvas-validation-tray.png)
+
+*Figure 5 — The validation chip reporting a real issue and the expanded tray listing it. Full description: [canvas-validation-tray.txt](../assets/screencaps/canvas-validation-tray.txt).*
+
 ---
 
 ## Layout and persistence
@@ -187,4 +205,4 @@ Under one minute. The modeller has the shape, the coverage, and the one open que
 
 ---
 
-← [Table Auto-Analysis](table-auto-analysis.md) | [Home](../index.md) | [Define Joins →](define-joins.md)
+← [Table Auto-Analysis](table-auto-analysis.md) | [Home](../index.md) | [Canvas Undo/Redo →](canvas-undo-redo.md)

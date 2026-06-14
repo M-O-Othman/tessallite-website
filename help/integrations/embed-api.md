@@ -84,6 +84,18 @@ For production embedding, set the expiry shorter (30-60 minutes) and implement t
 
 ---
 
+## Revoking a token early
+
+A token normally stays valid until it expires. If a token leaks, or you simply want to cut a session short before its expiry, you can revoke it:
+
+**Endpoint:** `DELETE /api/v1/auth/embed-token/{jti}`
+
+The `{jti}` is the token's unique ID — the `jti` claim inside the signed JWT you minted. Only a tenant admin may revoke. Once revoked, the token stops working within about a minute (the platform refreshes its revocation list roughly once a minute), and every query or chat call made with it returns 403. The revocation is recorded in the Audit Log as `embed_token.revoked`. The platform cleans up the revocation record automatically once the token would have expired anyway (at most 24 hours, the maximum token lifetime), so the blocklist never grows without bound.
+
+Revocation fails safe: if the platform cannot confirm a token is still valid, it refuses the request rather than letting it through. Build a revoke call into your "sign out" or "rotate credentials" flow so a leaked link can be cut off immediately rather than waiting out its expiry.
+
+---
+
 ## CORS configuration
 
 Embedded components load from the ISV's domain. The Tessallite backend must allow cross-origin requests from that domain.
@@ -152,7 +164,7 @@ curl -s -b cookies.txt -X POST http://localhost:3000/api/v1/auth/embed-token \
 
 ## Security considerations
 
-- Embed tokens carry no password — they are signed JWTs with scoped claims. Treat them as bearer tokens: anyone with the token can use it until it expires.
+- Embed tokens carry no password — they are signed JWTs with scoped claims. Treat them as bearer tokens: anyone with the token can use it until it expires **or until you revoke it** (see *Revoking a token early* above). If a token leaks, revoke it immediately rather than waiting for it to expire.
 - Never expose the admin credentials used to mint embed tokens in client-side code. The minting call must happen server-side.
 - Use HTTPS in production. Embed tokens transmitted over plain HTTP can be intercepted.
 - Set `ALLOWED_EMBED_ORIGINS` to specific domains in production. Do not use `*` outside of development.

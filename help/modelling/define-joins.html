@@ -12,7 +12,7 @@
     <nav class="breadcrumb"><a href="../index.html">Home</a> / <span>Modelling</span> / <span>Define Joins</span></nav>
   </header>
   <main class="article">
-    <div class="article-meta"><span class="audience-badge">modeller</span><span class="updated">Updated 2026-04-17</span></div>
+    <div class="article-meta"><span class="audience-badge">modeller</span><span class="updated">Updated 2026-05-25</span></div>
     <h1>Define Joins</h1>
 <figure class="screencap"><img class="screencap" src="../assets/screencaps/model-builder-join-drawer.png" alt="Model Builder — Join configuration drawer."></figure>
 <h2>What this covers</h2>
@@ -34,9 +34,16 @@
 <p>Click the join line in the Canvas to open it in the Drawer. Edit any property and click <strong>Save Join</strong>.</p>
 <h2>Deleting a join</h2>
 <p>Click the join line in the Canvas, then click <strong>Delete Join</strong> in the Drawer. Dimensions or measures relying on columns in the disconnected table will produce Health tab errors until the join is restored or those objects are removed.</p>
+<h2>Auto-hide of dimension join keys</h2>
+<p>When a join is created between a fact table and a dimension table, Tessallite automatically hides the dimension-side join key column. This prevents the same attribute from appearing twice in the virtual schema (once from the fact table's foreign key and once from the dimension table's primary/join key).</p>
+<p><strong>How it works:</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Event</th><th>What happens</th></tr></thead><tbody><tr><td>Join created (fact to dimension)</td><td>The dimension table's join key column is hidden. Any dimension or measure referencing that column is also hidden.</td></tr><tr><td>Join deleted</td><td>If the column was auto-hidden (not manually set by the user), it becomes visible again. If other joins still reference the column, it stays hidden.</td></tr><tr><td>Join columns changed</td><td>The old dimension-side column is restored to visible; the new dimension-side column is hidden.</td></tr></tbody></table></div>
+<p><strong>Manual override.</strong> You can always change the visibility of any column manually. Open the table card in the Canvas, click the column, and toggle the <strong>Hidden</strong> checkbox.</p>
+<ul><li>If you manually show an auto-hidden column, the system records your choice. Deleting the join later will not re-hide it.</li><li>If you manually hide a column, creating a join through that column will not change your setting.</li></ul>
+<p>The auto-hide rule only applies to fact-to-dimension joins. Joins between two dimension tables (snowflake joins) do not trigger auto-hide.</p>
 <h2>Related</h2>
 <ul><li><a href="add-tables-to-a-model.html">Add Tables to a Model</a></li><li><a href="define-dimensions.html">Define Dimensions</a></li><li><a href="../concepts/sources-tables-and-joins.html">Sources, Tables, and Joins</a></li></ul>
-<nav class="page-nav"><a href="model-canvas-tour.html" class="page-nav-btn prev">&larr; Model Canvas Tour</a><a href="../index.html" class="page-nav-btn home">Home</a><a href="define-hierarchies.html" class="page-nav-btn next">Define Hierarchies &rarr;</a></nav>
+<nav class="page-nav"><a href="canvas-undo-redo.html" class="page-nav-btn prev">&larr; Canvas Undo/Redo</a><a href="../index.html" class="page-nav-btn home">Home</a><a href="define-hierarchies.html" class="page-nav-btn next">Define Hierarchies &rarr;</a></nav>
   </main>
   <footer class="site-footer"><p>Tessallite Help — <a href="../index.html">Back to contents</a></p></footer>
 </body>

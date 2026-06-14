@@ -21,8 +21,9 @@
 <ol><li>Sign in to your workspace.</li><li>In the workspace sidebar, click <strong>Admin</strong>.</li><li>Click the <strong>Users</strong> tab.</li></ol>
 <p>The Users tab displays all users in the workspace with their email address, role, last-active timestamp, and project memberships.</p>
 <h2>Inviting a user</h2>
-<ol><li>On the Users tab, click <strong>Invite User</strong>.</li><li>Enter the user&#x27;s email address.</li><li>Select the role to assign: Tenant Admin, Modeller, or Analyst.</li><li>Click <strong>Send Invitation</strong>.</li></ol>
+<ol><li>On the Users tab, click <strong>Invite User</strong>.</li><li>Enter the user&#x27;s email address.</li><li>Select the role to assign: Tenant Admin, Modeller, Analyst, or <code>model_technical</code>.</li><li>Click <strong>Send Invitation</strong>.</li></ol>
 <p>The user receives an email containing a one-time invitation link, valid for 48 hours. On first sign-in, the user sets their own password.</p>
+<p>The <code>model_technical</code> choice is a special <strong>audience</strong> role rather than a permission level: it pins the user to the technical persona for column-level security and data tags, and grants no project access on its own. Pick it only for users who should see technical column detail; they will still need a project-level Viewer or Modeller binding to open a project. See <a href="manage-roles.html">Manage roles</a> and <a href="../modelling/configure-personas.html">Configure personas</a>.</p>
 <h3>If the invitation expires</h3>
 <p>Return to the Users tab. The invited user appears with status <strong>Invitation expired</strong>. Click <strong>Resend</strong> next to their row. A new invitation link is generated; the old link is invalidated.</p>
 <h2>Removing a user</h2>

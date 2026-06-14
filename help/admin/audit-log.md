@@ -2,7 +2,7 @@
 title: "Audit Log"
 audience: tenant-admin
 area: Admin
-updated: 2026-05-01
+updated: 2026-06-12
 ---
 
 # Audit Log
@@ -30,9 +30,13 @@ Events fall into six categories. Each event records the actor (email), the actio
 | Model lifecycle | `model.create`, `model.deploy`, `model.undeploy`, `model.revert`, `model.delete` |
 | Connections | `connection.create`, `connection.update`, `connection.delete` |
 | Users | `user.create`, `user.delete`, `user.role_change`, `user.password_reset` |
-| Security | Row-security rule create/update/delete, persona changes |
+| Security | Row-security rule create/update/delete, persona changes, `rbac.bootstrap_admin_grant` (open-project bootstrap access — see [Manage Roles](manage-roles.md)) |
 | Settings | Tenant, project, and model setting changes |
+| Refresh SLAs | `refresh_sla_config.create`, `refresh_sla_config.update`, `refresh_sla_config.delete` |
+| Notification routes | `notification_route.create`, `notification_route.update`, `notification_route.delete` |
 | Authentication | `auth.login_success`, `auth.login_failure` |
+
+Refresh-SLA and notification-route changes are recorded at **warn** severity, with the project, the target object, and the fields that changed. For notification routes the audit detail deliberately **omits the channel configuration**, so a Slack webhook URL or other channel secret is never written into the audit log.
 
 ---
 

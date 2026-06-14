@@ -83,6 +83,20 @@ A dimension exists in the model but has not appeared in any query within the usa
 
 ---
 
+## Query routing metrics
+
+The Model Health panel has a separate **Query routing** section. Unlike the structural health checks above — which inspect the model *definition* — this section reports on **live query traffic**, so it answers a different question: are the model's speed-up tables actually earning their keep? Pick a window (**Last 24 hours**, **Last 7 days**, or **Last 30 days**) and it shows:
+
+- **Acceleration rate** — the share of queries served from an aggregate or pocket table instead of going all the way to the source. Higher is better: it means more queries took the fast path.
+- **Total queries**, broken down into **Aggregate hits**, **Pocket hits**, and **Source queries** — where each query was actually served.
+- **Data scanned avoided** — how much source data the fast paths saved you from scanning.
+- **Hourly query volume** — a simple chart of traffic across the window.
+- When pockets are in use, a **Pocket savings** block adds **Pocket storage**, **Time saved**, and **Evictions (24h)**.
+
+**How to read it.** A *low* acceleration rate together with a *high* source-query count is the signal to act: queries are not matching any aggregate. That is a cue to look at the [AI Optimiser](../modelling/use-the-ai-optimiser.md) or to add an aggregate for the shapes people actually run. If the section says **"No queries recorded in this window"**, the model simply has not been queried in that period — not a problem, just no data to show yet.
+
+---
+
 ## How to navigate to an issue
 
 Each row in the Health tab identifies the affected object by name and type. Click a row to jump directly to that object in the Canvas. The object will be selected and the Drawer will open with its full definition, ready to edit.

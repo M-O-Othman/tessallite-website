@@ -2,7 +2,7 @@
 title: "Configure Personas"
 audience: modeller
 area: modelling
-updated: 2026-05-20
+updated: 2026-06-12
 ---
 
 ## What a persona is
@@ -17,7 +17,7 @@ Use a persona when one model serves several audiences that should see different 
 - **External partner feed.** A partner can see shipment counts and dates but not margins, costs, or internal customer names. A `partner` persona strips the sensitive measures and dimensions out of every query.
 - **Compliance-sensitive pilot.** A new calculated measure is under legal review. It lives in the model but is gated behind a `legal_review` persona until sign-off. Regular users never see it.
 
-A model can carry any number of personas. Each is independent. They are never ORed together — a caller is tied to at most one persona, which is chosen by **connecting to that persona's virtual catalog**. The gateway emits one catalog per persona named `<model.slug>_<persona.slug>` alongside the base `<model.slug>` catalog. A seeded `technical` persona per model exposes every column (including hidden ones) as `<model.slug>_technical`, which is the classic modeller view.
+A model can carry any number of personas. Each is independent. They are never ORed together — a caller is tied to at most one persona, which is chosen by **connecting to that persona's virtual catalog**. The gateway emits one catalog per persona named `<model.slug>_<persona.slug>` alongside the base `<model.slug>` catalog. A seeded `technical` persona per model exposes every column (including hidden ones) as `<model.slug>_technical`, which is the classic modeller view. It is reserved for admins, modellers, and users granted the `model_technical` role (see "Audience roles and persona assignment" below).
 
 ---
 
@@ -31,7 +31,7 @@ A model can carry any number of personas. Each is independent. They are never OR
 | `included_dimension_ids` | Allow list of dimension IDs. Same empty-means-unrestricted rule. |
 | `included_hierarchy_ids` | Allow list of hierarchy IDs. Same rule. |
 | `default_filters` | A small dictionary of `dimension_path → value` (or `dimension_path → {operator: value}`) applied to every query unless the caller has authored their own filter on the same dimension. |
-| `audience_roles` | List of role names. A caller whose JWT carries one of these roles sees this persona listed in the picker. |
+| `audience_roles` | List of role names. A caller whose JWT carries one of these roles sees this persona listed in the picker. An empty list means "available to everyone" — **except** for personas that show hidden columns, which always need an explicit role match (see below). |
 
 Empty allow lists are the **default** and the most common setting for personas that exist only to attach default filters. Non-empty lists switch that axis into restrictive mode.
 
@@ -57,6 +57,10 @@ Every query — from the gateway, the plugin execution endpoint, or internal RES
 4. **Proceed to row security.** The persona step does not touch the generated SQL beyond adding filters. Row-security then wraps the plan as usual, and the aggregate/pocket fast paths remain available if neither layer blocks them.
 
 The gate runs the same logic for every read path — REST, XMLA, JDBC, Excel plugin, MCP — so swapping tool is not a way around it.
+
+> **Advanced SQL is rejected for scoped personas.** Some SQL shapes — subqueries, CTEs (`WITH ...`), `UNION`/set operations, window functions, and similar constructs — cannot be checked column-by-column against a persona's allow lists, default filters, or column restrictions. When the persona carries any of those controls, such a query is rejected with a clear 403 message instead of being run unchecked. Rewrite it as a plain `SELECT` over the model. Personas with no allow lists, no default filters, and no column restrictions (for example the technical persona) keep full SQL freedom.
+
+> **Tip — hidden columns inside aggregate functions.** The persona scope gate checks whether a column appears as a bare value in the SELECT list. Columns wrapped inside aggregate functions like `SUM()`, `AVG()`, or `COUNT()` are resolved as **measure references**, not as standalone columns. This means a hidden column such as `fee_amount` is rejected when written as `SELECT fee_amount FROM ...` but allowed when written as `SELECT SUM(fee_amount) FROM ...`. The same applies to compound expressions like `SELECT SUM(fee_amount) / SUM(base_amount) FROM ...` — both hidden columns are inside aggregation functions and pass the gate. Hidden columns are also allowed in `WHERE` clauses. See [Dimensions and Measures](../concepts/dimensions-and-measures.md#hidden-columns-and-aggregate-expressions) for details.
 
 ---
 
@@ -93,6 +97,17 @@ The overlay is the single best way to catch mistakes before publishing. Select e
 ## Audience roles and persona assignment
 
 The `audience_roles` field on a persona controls which users are **assigned** to it. A user is assigned to a persona when their role appears in the persona's `audience_roles` list, or when the list is empty (available to everyone).
+
+**Exception — personas that show hidden columns.** A persona with **Includes hidden columns** turned on (such as the seeded Technical persona) widens what a user can see, so it is never handed out to everyone. It is assigned only to users whose role explicitly appears in its `audience_roles` list. An empty audience list on such a persona assigns it to nobody (admins and modellers can still select it, because they can select any persona).
+
+### The technical persona and the `model_technical` role
+
+Every model carries a seeded **Technical** persona that exposes every column, including hidden ones. It is gated behind the audience role `model_technical`:
+
+- **Admins and modellers** can always pick the technical persona — no extra role needed.
+- To give a regular user (for example a data engineer) the technical view, grant them the `model_technical` role: in **Tenant Admin → Users**, set the user's role to `model_technical`, or — for SSO — map one of their IdP groups to `model_technical` in **Group Mappings**. A user with this role is automatically locked to the technical persona on every model.
+- The `model_technical` role grants no project permissions by itself. The user still needs a project access binding (viewer, modeler, or admin) to read or edit anything, exactly like a `member`.
+- For SSO users whose groups map to several roles, the highest project role (admin > modeler > viewer) wins over `model_technical` at first login. To make such a user a technical-view holder, set their role to `model_technical` directly in user management afterwards.
 
 How persona assignment affects what happens when a user queries:
 
@@ -185,7 +200,9 @@ When a query is bound to persona `X` (through the catalog name), the router pref
 
 | Symptom | Likely cause | Fix |
 |---|---|---|
-| Persona picker is empty for a user who should see one | JWT has no role in the persona's `audience_roles` | Add the role, or edit the persona's audience list |
+| Persona picker is empty for a user who should see one | JWT has no role in the persona's `audience_roles` | Add the role, or edit the persona's audience list. For a hidden-columns persona an empty audience list assigns nobody — add an explicit role |
+| Query returns `PERSONA_COMPLEX_SQL_NOT_ALLOWED` | The query uses subqueries, CTEs, set operations, window functions, or similar constructs under a persona with allow lists or default filters | Rewrite the query as a plain `SELECT` over the model, or run it under an unscoped persona |
+| Regular user cannot reach the technical persona | The user does not carry the `model_technical` role | Set the user's role to `model_technical` in user management (or via an SSO group mapping) |
 | Query returns `PERSONA_OBJECT_NOT_INCLUDED` unexpectedly | A measure/dimension is not in the allow list, but the audience needs it | Add the object's ID to the list, or remove the list to make that axis unrestricted |
 | Default filter does not fire | The caller already has a filter on that dimension | Expected — user-authored filters win. Remove the user filter or change the default's scope |
 | 404 `PERSONA_NOT_FOUND` on every query | The request body carries a `persona_id` that belongs to another model, or the persona was deleted | Check the ID; the router checks `persona.model_id == request.model_id` |

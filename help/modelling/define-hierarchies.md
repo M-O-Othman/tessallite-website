@@ -31,6 +31,14 @@ Time units on levels are what let measures support variants such as YTD, prior y
 
 ---
 
+## Generated attributes are managed for you
+
+When a date hierarchy generates levels such as year, quarter, month, or week, Tessallite also creates the matching attributes on the table for you. These are **generated attributes**: their formula is written and kept up to date by the hierarchy itself, so you do not edit it by hand.
+
+If you open such an attribute in the table editor, the **expression box is locked** and the formula-building tools are hidden, with a note explaining that the attribute came from a date hierarchy. You can still rename it, change its description, or adjust its output type — only the *formula* is protected. This is deliberate: it stops a later change to the hierarchy from colliding with a hand edit, which would otherwise silently drift the two apart. To change what the formula does, edit the **hierarchy**, not the attribute, and the generated attributes update with it.
+
+---
+
 ## Health checks
 
 The panel checks whether hierarchy levels still point to valid attributes, whether required time metadata is present, and whether generated levels can be interpreted by the query compiler. Resolve hierarchy warnings before relying on time variants or drill paths.

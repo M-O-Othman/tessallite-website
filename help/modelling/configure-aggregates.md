@@ -76,7 +76,10 @@ In edit mode the drawer header carries a **Refresh now** button that triggers an
 4. Pick a **Target** (where the summary table is stored).
 5. Select the **Grain (dimensions)**. Every distinct combination of dimension values becomes one row in the summary table. Dimensions whose value is functionally equivalent to another dimension's value (a redundant partner) are disabled with a tooltip explaining why.
 6. Select the **Measures** to include. The default aggregation function (`SUM`, `AVG`, etc.) shown next to each measure name is what will be computed at create time. Non-additive measures are flagged with a chip.
-7. Optionally enable **Include quantile columns (p25, p50, p75, p95)**.
+7. Optionally enable the advanced statistical columns:
+   - **Include quantile columns (p1, p5, p10, p25, p50, p75, p90, p95, p99)** — lets the router serve `MEDIAN` and `PERCENTILE_CONT`/`PERCENTILE_DISC` queries from the aggregate.
+   - **Include dispersion-stat columns (STDDEV_POP, STDDEV_SAMP, VAR_POP, VAR_SAMP)** — lets the router serve standard-deviation and variance queries from the aggregate.
+   Both are opt-in because they add extra columns per numeric measure, and both can only be served at the aggregate's exact grain (see *How aggregates store data*).
 8. The **Aggregate estimate** card appears live as you change selections, showing the ROI score and any non-additive warnings.
 9. Switch to the **Schedule** tab. Turn the **Schedule enabled** switch on, pick a cron expression with the picker, then click **Save**.
 10. The aggregate is queued for an initial build by the Scheduler. The card shows status **creating** and transitions to **active** once the first refresh completes.
@@ -89,12 +92,47 @@ In edit mode the drawer header carries a **Refresh now** button that triggers an
 
 Editing scope is intentionally narrow:
 
-- **Editable** — schedule (cron + enabled), status (active / retired), include-quantiles toggle, refresh-now trigger.
+- **Editable** — schedule (cron + enabled), status (active / retired), include-quantiles and include-stats toggles, refresh-now trigger.
 - **Read-only** — target, grain, measures. The drawer renders these as static chips with the note "*To change the shape, delete this aggregate and create a new one.*" Aggregate shape changes go through delete-and-recreate so the physical table identity matches the definition.
 
 The **Definition** tab shows the AI rationale card when the aggregate was created by the AI optimiser. The **Advanced** tab exposes the rest of the metadata.
 
 The footer carries a **Delete** button (left) that asks for confirmation before retiring the aggregate and dropping its physical table.
+
+---
+
+## How aggregates store data
+
+Each measure included in an aggregate generates multiple physical columns in the summary table. This allows the Query Router to serve a wider range of SQL functions from the same aggregate without re-scanning the source.
+
+| Measure type | Physical columns created |
+|---|---|
+| SUM measure | `sum`, `count`, `min`, `max` |
+| AVG measure | `avg`, `sum`, `count`, `min`, `max` |
+| COUNT measure | `count`, `min`, `max` |
+| MIN measure | `min`, `count`, `max` |
+| MAX measure | `max`, `count`, `min` |
+| Any numeric measure, **Include quantiles** on | adds `p1, p5, p10, p25, p50, p75, p90, p95, p99` |
+| Any numeric measure, **Include stats** on | adds `stddev_pop`, `stddev_samp`, `var_pop`, `var_samp` |
+
+**AVG at query time.** AVG is computed at query time from the stored SUM and COUNT columns (`SUM / COUNT`). It is not stored as a separate physical value. This avoids the mathematical error of averaging averages.
+
+**COUNT(\*).** Every aggregate automatically includes a row-count column so that `COUNT(*)` queries can be served directly.
+
+**Median, percentile, and dispersion stats.** `MEDIAN`/`PERCENTILE_CONT`/`PERCENTILE_DISC`, `STDDEV_*`, and `VAR_*` are *not re-aggregatable* — the median of two groups is not the median of their union. They can still be served from an aggregate, but only when:
+
+- the aggregate was built with the **Include quantiles** and/or **Include stats** option, and
+- the query's grain matches the aggregate's grain **exactly** (no coarser roll-up).
+
+At any coarser grain, or when the columns were not materialised, the Query Router sends the query to the source table. Two notes on exactness by source engine:
+
+- **PostgreSQL** quantiles are exact.
+- **Spark** quantiles are exact for a same-engine refresh (Spark source and Spark target). A cross-engine refresh (Spark source into a non-Spark target) cannot guarantee exact quantiles, so they are not materialised and such queries go to the source.
+- **BigQuery** only offers approximate quantiles, so percentile queries on a BigQuery-sourced model always go to the source for an exact answer. Standard-deviation and variance are exact on all three engines.
+
+**Functions that always hit the source.** Order-dependent or distribution-shaped functions — `MODE`, `STRING_AGG`/`ARRAY_AGG`/`LISTAGG`, and `APPROX_COUNT_DISTINCT` — cannot be served from pre-computed columns and always route to the source table.
+
+**Include all measures.** When the model setting "Include all measures" is enabled (the default), every aggregate includes all model measures. The Optimizer's advisors recommend only the dimension grain in this mode; measures are added automatically at build time. If a new measure is added to the model after an aggregate was built, the lifecycle sweep detects the gap, retires the stale aggregate, and rebuilds it with the full measure set.
 
 ---
 

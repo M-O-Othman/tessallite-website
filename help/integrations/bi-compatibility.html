@@ -12,7 +12,7 @@
     <nav class="breadcrumb"><a href="../index.html">Home</a> / <span>Integrations</span> / <span>BI Compatibility</span></nav>
   </header>
   <main class="article">
-    <div class="article-meta"><span class="audience-badge">analyst</span><span class="updated">Updated 2026-05-18</span></div>
+    <div class="article-meta"><span class="audience-badge">analyst</span><span class="updated">Updated 2026-05-25</span></div>
     <h1>BI Tool Compatibility Matrix</h1>
 
 <h2>Overview</h2>
@@ -87,6 +87,16 @@
       <td>Pass</td><td>Pass</td><td>Pass</td><td>Pass</td><td>Pass</td><td>Pass</td><td>N/A</td>
       <td><a href="headless-api.html">Guide</a></td>
     </tr>
+    <tr>
+      <td><strong>Looker Studio / Data Studio (direct)</strong></td><td>JDBC</td>
+      <td>Ready for live validation</td><td>Ready for live validation</td><td>Ready for live validation</td><td>Internal</td><td>Pending live</td><td>Pending live</td><td>N/A</td>
+      <td><a href="looker-studio-connection-guide.html">Guide</a></td>
+    </tr>
+    <tr>
+      <td><strong>Optional Looker-hosted workflow</strong></td><td>JDBC + LookML</td>
+      <td>Deferred</td><td>Internal</td><td>Internal</td><td>Internal</td><td>Deferred</td><td>Deferred</td><td>Internal</td>
+      <td><a href="looker-studio-via-looker-guide.html">Guide</a></td>
+    </tr>
   </tbody>
 </table>
 </div>
@@ -96,10 +106,10 @@
 <p>Aggregate routing is transparent. When a query matches a pre-built aggregate, the gateway rewrites the query to read from the aggregate table instead of the source. The BI tool does not need to be aware of aggregates.</p>
 
 <h3>Personas</h3>
-<p>Persona-based filtering is available over XMLA (Excel, Power BI) and the Headless API. JDBC clients connect as a single user and do not have persona context. Persona-based row filtering applies automatically when a persona is resolved from the user's group membership.</p>
+<p>Persona catalogues are available over XMLA and JDBC as <code>&lt;model_slug&gt;_&lt;persona_slug&gt;</code> relations, and the Headless API accepts its governed persona context. A client must select the intended persona catalogue or use the API context; a plain base JDBC relation is not implicitly scoped to a persona.</p>
 
 <h3>Row security</h3>
-<p>Row-level security filters are applied server-side for XMLA connections where the gateway resolves the user's persona. JDBC connections authenticate the user but do not apply persona-based row filters unless the Headless API is used with explicit persona headers.</p>
+<p>Row-level security is enforced server-side when a query is bound to its applicable rule or persona context, including persona-catalogue JDBC queries. Clients cannot bypass an applied rule by changing BI tools.</p>
 
 <h3>Drill-through</h3>
 <p>Drill-through (clicking a PivotTable cell to see the underlying detail rows) is supported in Excel via the XMLA endpoint. Power BI does not support XMLA drill-through natively. JDBC clients can achieve the same result by querying with the appropriate WHERE clause.</p>
@@ -109,6 +119,8 @@
   <li><strong>Excel users</strong> should connect via XMLA. This gives full PivotTable functionality, persona support, row security, and drill-through.</li>
   <li><strong>Power BI users</strong> should connect via XMLA for the richest experience (measures, hierarchies, formatted values).</li>
   <li><strong>Tableau, Superset, DBeaver</strong> and other SQL-based tools should connect via JDBC. They get SQL access to all published models with transparent aggregate routing.</li>
+  <li><strong>Looker Studio / Data Studio</strong> uses its direct PostgreSQL route for relational reports and does not consume LookML. This route does not require <code>LOOKER_GATEWAY_ENABLED</code>.</li>
+  <li><strong>Optional Looker-hosted execution</strong> uses generated LookML and the TLS JDBC gateway; enable <code>LOOKER_GATEWAY_ENABLED</code> only when an eligible instance is available for validation.</li>
   <li><strong>Programmatic access</strong> (scripts, pipelines) should use the Headless REST API for the most control, or JDBC for standard SQL integration.</li>
 </ul>
 
@@ -117,6 +129,7 @@
   <li>JDBC clients see a flat relational view. Hierarchies and measure formatting defined in the semantic model are not exposed over the PostgreSQL wire protocol.</li>
   <li>XMLA connections require models to be deployed (published). JDBC connections also require deployment.</li>
   <li>Concurrent connection limits depend on the gateway configuration and deployment scale.</li>
+  <li>Direct Data Studio live-product validation is still pending recorded evidence. The optional generated-LookML relation surface is default-off and rejects unsupported symmetric-aggregate window shapes instead of executing uncertain results.</li>
 </ul>
 
   </main>

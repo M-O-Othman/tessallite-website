@@ -18,8 +18,12 @@ SSO group mappings translate identity-provider groups into Tessallite workspace 
 | Provider group | Group name or claim value received from the identity provider. |
 | Workspace | Tenant workspace where the mapping applies. |
 | Project | Optional project scope. If omitted, the mapping applies at workspace level where supported. |
-| Role | Tessallite role granted by the mapping, such as viewer, modeler, or admin. |
+| Role | Tessallite role granted by the mapping: `viewer`, `modeler`, `admin`, or the audience role `model_technical`. |
 | Status | Whether the mapping is active. |
+
+### Mapping a group to `model_technical`
+
+Besides the three access roles, you can map an IdP group to `model_technical`. This is an *audience* role: it does not grant project permissions, it pins everyone in that group to the **technical persona**, so column-level security and data tags show them the technical view of the data. Use it for an "engineers" or "data platform" IdP group that should always see technical column detail. Because `model_technical` confers no access by itself, those users still need a `viewer`/`modeler`/`admin` mapping (or a local project binding) to actually reach a project. See [Manage roles](manage-roles.md) and [Configure personas](../modelling/configure-personas.md).
 
 ## How mappings are applied
 

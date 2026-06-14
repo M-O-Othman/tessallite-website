@@ -109,6 +109,8 @@ Each section gets a `title`, a one-sentence `body`, and three to five binary `bu
 Calibration is the process of tightening sections until the verdicts match what an admin would say if they reviewed each answer by hand. The platform makes this concrete:
 
 - Open *Project Agent → Metrics*. The *Recent calibration* table lists the most recent judged turns with verdict, reasoning, and the original answer text.
+
+  **Who can see blocked originals.** When the judge *blocks* an answer, the original text the user was prevented from seeing is sensitive — so the *Recent calibration* table, the judge trace, and the agent log reveal it only to people trusted to review it: a tenant administrator (or system administrator), or a user given an explicit **Modeller** or **Admin** binding on the project. Everyone else gets a 403 and sees the block message instead, never the original. This holds even on a brand-new project that has no access entries yet — unlike ordinary first-run setup, viewing blocked content is never opened up by default. It fails closed, because a project without bindings would otherwise expose every blocked answer to any signed-in user.
 - For each row, ask: would I have made the same call as the judge? If yes, the section is calibrated. If no, look at the reasoning column — it usually identifies which section was misapplied.
 - Edit the rubric. Tighten the body, add a bullet that names the missed case, or split an over-broad section into two.
 - Re-run *Run eval* (also under *Metrics*) — that re-runs the agent against every example question registered in the per-model glossaries and gives you a regression view.

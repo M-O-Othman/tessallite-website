@@ -64,9 +64,9 @@ The drop-and-replace approach means the summary table is briefly unavailable dur
 
 ---
 
-## Option 3 — Trigger a refresh from the Scheduler panel
+## Option 3 — Trigger a refresh from the Aggregates page
 
-1. Open the **Scheduler** panel from the main navigation.
+1. Open the **Aggregates** page and switch to the **Refresh** tab.
 2. Locate the aggregate in the list.
 3. Click **Run Now** next to the aggregate entry.
 4. The Scheduler executes the refresh immediately, outside of the regular cron schedule. The next scheduled run is not affected.

@@ -121,6 +121,21 @@ The API is `GET/POST/PUT/DELETE /api/v1/admin/group-mappings` (tenant admin only
 
 ---
 
+## What ends up inside the login token
+
+When a user signs in through SAML or OIDC, Tessallite does **not** copy every attribute the identity provider sends into the session token. It keeps only what it actually needs:
+
+- the attributes your **row-security rules** reference (so those rules can evaluate per-user), and
+- any extra attribute names you explicitly list in `AUTH_JWT_CLAIMS_ALLOWLIST` (comma-separated).
+
+Everything else the identity provider released is dropped. This keeps the token small and stops attributes a rule never uses from riding along inside it.
+
+There is a size limit, `AUTH_JWT_CLAIMS_MAX_BYTES` (4096 bytes by default). If the attributes Tessallite must keep do not fit inside that cap, the login is **refused with HTTP 413** rather than quietly trimming an attribute a rule depends on. That is deliberate: a silently-dropped attribute would make a row-security rule match the wrong rows, so Tessallite fails the login rather than risk leaking data to the wrong person.
+
+**If an admin sees a 413 on login**, the fix is one of: shorten the identity provider's attribute *values*, narrow which attributes the row-security rules reference, or raise `AUTH_JWT_CLAIMS_MAX_BYTES`. Every dropped attribute name is logged, so the service logs tell you exactly what was trimmed.
+
+---
+
 ## JIT user creation
 
 When a user authenticates via SSO for the first time and no local user record exists, Tessallite automatically creates one. The new user's:

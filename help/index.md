@@ -43,6 +43,7 @@ Deploys and operates the Tessallite platform. Start with [Architecture overview]
 - [Deploy Tessallite to Google Cloud Platform](getting-started/install-gcp.md)
 - [Connect a BI Tool via JDBC](getting-started/connect-a-bi-tool.md)
 - [Connect Excel via XMLA](getting-started/connect-excel.md)
+- [Tessallite Features](getting-started/tessallite-features.md)
 
 ## Core Concepts
 
@@ -65,6 +66,7 @@ Deploys and operates the Tessallite platform. Start with [Architecture overview]
 - [Source Statistics](modelling/source-statistics.md)
 - [Table Auto-Analysis](modelling/table-auto-analysis.md)
 - [Model Canvas Tour](modelling/model-canvas-tour.md)
+- [Canvas Undo/Redo](modelling/canvas-undo-redo.md)
 - [Define Joins](modelling/define-joins.md)
 - [Define Hierarchies](modelling/define-hierarchies.md)
 - [Define Dimensions](modelling/define-dimensions.md)
@@ -77,6 +79,7 @@ Deploys and operates the Tessallite platform. Start with [Architecture overview]
 - [Associate Calendar with Dimensions](modelling/associate-calendar-with-dimensions.md)
 - [Multi-Calendar Best Practices](modelling/multi-calendar-best-practices.md)
 - [Measure Query Panel](modelling/measure-query-panel.md)
+- [Pivot Conditional Formatting](modelling/pivot-conditional-formatting.md)
 - [Query Panel](modelling/query-panel.md)
 - [Live vs Aggregate](querying/live-vs-aggregate.md)
 - [Drill-through](modelling/drill-through.md)
@@ -89,6 +92,7 @@ Deploys and operates the Tessallite platform. Start with [Architecture overview]
 - [Configure Pocket Tables](modelling/configure-pocket-tables.md)
 - [Run a Refresh](modelling/run-a-refresh.md)
 - [Manage Aggregate Schedules](modelling/manage-aggregate-schedules.md)
+- [Scheduler Dependencies](modelling/scheduler-dependencies.md)
 - [Use the AI Optimiser](modelling/use-the-ai-optimiser.md)
 - [Usage Analytics](modelling/usage-analytics.md)
 - [Configure Row Security](modelling/configure-row-security.md)
@@ -98,6 +102,8 @@ Deploys and operates the Tessallite platform. Start with [Architecture overview]
 - [Parameterized Filters](modelling/parameterized-filters.md)
 - [Data Quality Rules](modelling/data-quality-rules.md)
 - [Impact Analysis](modelling/impact-analysis.md)
+- [Named Lists](modelling/named-sets.md)
+- [KPIs](modelling/kpis.md)
 - [Data Preview](modelling/data-preview.md)
 - [Schema Changes](modelling/schema-changes.md)
 - [View Model Lineage](modelling/view-model-lineage.md)
@@ -106,6 +112,10 @@ Deploys and operates the Tessallite platform. Start with [Architecture overview]
 - [Deploy a Model](modelling/deploy-a-model.md)
 - [Export and Import a Model](modelling/export-and-import-a-model.md)
 - [Export and Import a Project](modelling/export-and-import-a-project.md)
+- [Import from dbt](modelling/import-from-dbt.md)
+- [Model Templates](modelling/model-templates.md)
+- [Model Translations (i18n)](modelling/model-translations.md)
+- [Model Details](modelling/model-details.md)
 
 ## Conversational Agent
 
@@ -117,6 +127,8 @@ Deploys and operates the Tessallite platform. Start with [Architecture overview]
 - [Cross-model calculation recipes](agent/cross-model-recipes.md)
 - [Agent log screen](agent/agent-log-screen.md)
 - [Agent Session Memory](agent/session-memory.md)
+- [Agent Conversation Export](agent/agent-export.md)
+- [Agent Stop Button](agent/agent-stop-button.md)
 
 ## Admin
 
@@ -134,7 +146,7 @@ Deploys and operates the Tessallite platform. Start with [Architecture overview]
 - [SSO Group Mappings](admin/group-mappings.md)
 - [Webhooks](admin/webhooks.md)
 - [Security Audit Trail](admin/security-audit-trail.md)
-- [Scheduler SLA Declarations](admin/scheduler-sla.md)
+- [Refresh SLA Declarations](admin/scheduler-sla.md)
 
 ## System Admin
 
@@ -147,11 +159,17 @@ Deploys and operates the Tessallite platform. Start with [Architecture overview]
 - [Service Reference](system-admin/service-reference.md)
 - [Teardown](system-admin/teardown.md)
 - [Upgrade](system-admin/upgrade.md)
+- [Monitoring Stack (Prometheus & Grafana)](system-admin/monitoring-stack.md)
 
 ## Integrations
 
 - [JDBC Connection Guide](integrations/jdbc-connection-guide.md)
+- [Looker Studio Direct Connection](integrations/looker-studio-connection-guide.md)
+- [Optional Looker-hosted LookML Workflow](integrations/looker-studio-via-looker-guide.md)
+- [LookML Emitter](integrations/lookml-emitter-guide.md)
 - [Excel XMLA Connection Guide](integrations/excel-xmla-connection-guide.md)
+- [Excel PivotTable Features](integrations/excel-pivottable-features.md)
+- [Tessallite Excel Add-in](integrations/excel-add-in.md)
 - [Power BI Connection Guide](integrations/powerbi-connection-guide.md)
 - [BI Tool Compatibility Matrix](integrations/bi-compatibility.md)
 - [Supported Data Sources](integrations/supported-data-sources.md)
@@ -160,6 +178,8 @@ Deploys and operates the Tessallite platform. Start with [Architecture overview]
 - [Headless API](integrations/headless-api.md)
 - [Embed API](integrations/embed-api.md)
 - [Embed Agent Chat](integrations/embed-agent-chat.md)
+- [Solidatus Integration](integrations/solidatus-integration.md)
+- [Collibra Integration](integrations/collibra-integration.md)
 
 ## Troubleshooting
 

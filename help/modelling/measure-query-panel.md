@@ -2,18 +2,20 @@
 title: "Measure Query Panel"
 audience: modeller
 area: modelling
-updated: 2026-05-06
+updated: 2026-06-03
 ---
 
 ## Why this panel exists
 
 A semantic layer lives or dies by the moment a modeller defines a new measure and checks whether it agrees with the business's mental model. Without a sanity-check surface inside the product, that check happens in Excel, in a notebook, or worse — in a dashboard a week later when the VP asks why the number is wrong.
 
-The **Measure Query Panel** is Tessallite's answer to that moment. It is a minimal, opinionated pivot grid embedded directly inside Model Builder. One measure, up to two dimension axes, totals, a Route badge, and click-to-drill. It is not meant to replace a full BI canvas — it is meant to let a modeller answer "does this measure do what I think it does?" without leaving the app.
+The **Measure Query Panel** is Tessallite's answer to that moment. It is a minimal, opinionated pivot grid embedded directly inside Model Builder. One or more measures, up to two dimension axes, totals, a Route badge, and click-to-drill. It is not meant to replace a full BI canvas — it is meant to let a modeller answer "does this measure do what I think it does?" without leaving the app.
 
-Since Phase 6, the panel grew into a small working pivot: **multi-row and multi-column dimension nesting**, **subtotals and grand totals**, **client-side sort**, **one-click variant addition** (YTD, PY, YoY without writing them), **slicer chips**, **inline format editing**, **CSV and JSON export**, and a **Route badge** that tells you which engine served the query. All of these are scoped so the panel remains a sanity-check tool, not a dashboard-builder.
+The panel grew into a small working pivot: **multiple measures in one view**, **the same measure under several aggregate functions** (SUM, AVG, MAX side by side), a built-in **Record Count** column, **multi-row and multi-column dimension nesting**, **subtotals and grand totals with distinct shading**, **header-click sort**, **one-click variant addition** (YTD, PY, YoY without writing them), **slicers**, **inline format editing**, **Excel/CSV/JSON export**, **saveable and shareable views**, and a **Route badge** that tells you which engine served the query. All of these are scoped so the panel remains a sanity-check tool, not a dashboard-builder.
 
-This page walks through what the panel can and cannot do, how the three dropdowns combine, why the Route badge matters, and a worked example from measure definition to drill-down.
+The setup area is a **single line of selectors** — Add Measure, Add Row, Add Column — with the chosen items listed as plain-text rows underneath. After a successful Run the setup collapses to a one-line summary, leaving the result grid the full height of the panel; an **Edit** control reopens it.
+
+This page walks through what the panel can and cannot do, how the selectors combine, why the Route badge matters, and a worked example from measure definition to drill-down.
 
 ![The Measure Query Panel with one measure, two row-dimensions, one column-dimension, subtotals, a Route badge reading "aggregate", and the slicer bar.](../assets/screencaps/measure-query-panel-overview.png)
 
@@ -29,22 +31,24 @@ This page walks through what the panel can and cannot do, how the three dropdown
 
 ---
 
-## The three-dropdown shape
+## The three-selector shape
 
-The panel has three primary dropdowns and two toggles. This shape is intentional: every BI tool in the world overloads the "row / column / filter" choice with nine other decisions, and every business user spends the first five minutes with a new tool trying to work out what they are being asked. Tessallite's panel keeps the choice to the irreducible three.
+The panel has three primary selectors and two toggles. This shape is intentional: every BI tool in the world overloads the "row / column / filter" choice with nine other decisions, and every business user spends the first five minutes with a new tool trying to work out what they are being asked. Tessallite's panel keeps the choice to the irreducible three.
 
-| Dropdown | What it does | Can be empty? |
+| Selector | What it does | Can be empty? |
 |---|---|---|
-| **Measure** | Picks the single measure whose values fill the cells. Standard or calculated, optionally a time variant. | No — a pivot without a measure is a dimension list, not a pivot. |
-| **Row dimensions** | One or more dimensions that appear as rows. Multiple dimensions nest top-down — outermost first. | Yes — the grid collapses to a single row. |
-| **Column dimensions** | One or more dimensions that appear as columns. Multiple dimensions nest left-to-right. | Yes — the grid collapses to a single column. |
+| **Add Measure** | Adds a measure column. Add the same measure more than once to compare aggregate functions; add the built-in **Record Count** for a row tally. Standard or calculated, optionally a time variant. | No — a pivot without a measure is a dimension list, not a pivot. |
+| **Add Row** | One or more dimensions that appear as rows. Multiple dimensions nest top-down — outermost first. | Yes — the grid collapses to a single row. |
+| **Add Column** | One or more dimensions that appear as columns. Multiple dimensions nest left-to-right. | Yes — the grid collapses to a single column. |
+
+Each selection appears as a **plain-text row** beneath the selector line — no chips or coloured badges. A measure row carries its own aggregate-function dropdown, a format button, up/down reorder buttons, and a remove button. A dimension row carries left/right reorder buttons and a remove button.
 
 Plus two toggles:
 
 - **Subtotals / grand totals** — show roll-up rows and columns. Off by default to keep the grid easy to scan for the sanity-check use case; on for anything headed toward a report.
 - **Force Live** — bypass aggregate and pocket matchers and run against the source. Covered in [Live vs Aggregate](../querying/live-vs-aggregate.md).
 
-If both row-dimensions and column-dimensions are empty, the grid renders a single cell with the measure's overall value. This is the fastest way to answer "is this measure even wired up?".
+If both row and column selectors are empty, the grid renders one cell per measure with each measure's overall value. This is the fastest way to answer "is this measure even wired up?".
 
 ---
 
@@ -70,6 +74,20 @@ NA        |
 Subtotals appear on the second-and-beyond row levels (one per outer-level value). Grand totals are always the last row and last column. The header depth scales with the number of nested dimensions.
 
 **Why outermost-first and not some other order.** Reading top-down matches the way finance tables are taught at school and read by stakeholders. The alternative (innermost-first) is mathematically identical but reads "by quarter, within region" where stakeholders expect "by region, then by quarter". Tessallite picks the convention that matches the reader, not the query planner.
+
+---
+
+## Multiple measures and aggregate functions
+
+A view can show more than one measure column. Each click of **Add Measure** appends a new column; the columns appear left to right in the order you add them, and the up/down reorder buttons on each measure row change that order.
+
+The same measure can appear more than once, each instance with its own aggregate function. Add `Revenue` three times and set the per-row dropdowns to **SUM**, **AVG** and **MAX**, and the grid shows three Revenue columns side by side — the total, the average and the largest — all from one Run. Each column header reads `Revenue (Sum)`, `Revenue (Average)`, `Revenue (Max)` so the function is never ambiguous.
+
+**Totals are aggregate-aware.** The panel computes subtotals and grand totals by summing the visible cells. Summing composes correctly for **SUM** and **COUNT**, so those columns roll up normally. It does **not** compose for **AVG**, **MIN**, **MAX** or **COUNT DISTINCT** — the average of subtotals is not the average of the whole — so those columns render an em-dash (—) in the total rows instead of a misleading number. This is correctness, not a missing feature: the client only has the displayed cells, not the underlying rows needed to recompute those functions.
+
+## Record Count
+
+The **Record Count** entry in the Add Measure list adds a `COUNT(*)` column — the number of source rows behind each cell. It behaves like any other measure column: it can be reordered, removed, and it participates in subtotals and grand totals (counts are additive). Record Count is a fast way to confirm a cell is backed by the row volume you expect — a region showing a large revenue but a record count of 1 is usually a data problem, not a sales record. Record Count cells are not drillable (there is no single measure to decompose).
 
 ---
 
@@ -138,7 +156,7 @@ The slicer supports multiple filter modes depending on the dimension type and se
 
 | Filter mode | Operators | UI control | Best for |
 |---|---|---|---|
-| Multi-value | `in`, `not in` | Autocomplete with type-ahead search | Categorical dimensions (region, product) |
+| Multi-value | `in` | Autocomplete with type-ahead search | Categorical dimensions (region, product) |
 | Single-value comparison | `eq`, `ne`, `gt`, `gte`, `lt`, `lte` | Text field | Numeric or string comparisons |
 | Date range | `between`, `eq`, `gt`, `gte`, `lt`, `lte` | Native date picker | Date/timestamp dimensions |
 | Null check | `is null`, `is not null` | (no value input) | Finding missing data |
@@ -168,23 +186,47 @@ The presets cover 95% of business-display needs; the tail (custom suffix strings
 
 ---
 
-## Client-side sort
+## Header-click sort
 
-Any column header can be clicked to sort the grid. Sort is client-side — the data in the grid is already present, and re-sorting does not re-run the query. This matters because a sort of a 720-row grid is instant, but a sort that re-queries would not be on most warehouses.
+Every value-column header carries a sort glyph. When the column is unsorted the glyph is a faint neutral up/down marker; click it once to sort ascending (arrow up), again for descending (arrow down), and a third time to clear. The glyph is always visible, so you can see at a glance which columns are sortable and which way the active sort runs. The grand-total column header is sortable too.
 
-Sorting is stable across pagination within the grid view (for large result sets). The Route badge and chips are unaffected by sort.
+Sort is client-side — the data in the grid is already present, and re-sorting does not re-run the query. This matters because a sort of a 720-row grid is instant, but a sort that re-queries would not be on most warehouses. There is no separate sort toolbar; the headers carry the full control.
+
+Sorting is stable across pagination within the grid view (for large result sets). The Route badge and slicers are unaffected by sort.
+
+## Total and subtotal shading
+
+Subtotal rows and columns use a light brand-green tint; grand totals use a deeper tint of the same green. The two shades are distinct from each other and from the header, so when several total levels stack you can tell a region subtotal from the grand total without reading the labels.
 
 ---
 
 ## Export
 
-The **Export** split-button offers CSV and JSON. Both exports contain the same rows that are currently on the grid — they honour subtotals, sort order, and the active slicers. XLSX export is deferred to a future phase; the user need is covered by "export CSV, open in Excel" in the interim.
+The **Export** split-button offers Excel (XLSX), CSV, and JSON. The CSV and Excel exports contain the same grid that is on screen: **every measure column** (not just the first), the **subtotals and grand totals** when those are switched on, the user's **current sort order**, and the active slicers. JSON exports the raw result set as returned by the query router. Excel preserves the per-measure number formats and the total shading; CSV is plain text for spreadsheet or pipeline use.
+
+---
+
+## Saving and sharing a view
+
+A pivot layout — its measures, dimensions, slicers, totals, and sort — can be saved as a **view** and reloaded later, so you do not have to rebuild a familiar cut every time.
+
+A saved view is **personal by default**: only you see it. To let everyone working on the model use it, open the view and choose **Share**. A shared view becomes visible to everyone with access to the model, but **only you, the owner, can edit or delete it** — a "Shared" badge and a "Shared by …" label make ownership clear so a teammate knows whose view it is. Choose **Make private** to pull it back to just yourself again.
+
+Use sharing for layouts the whole team relies on — a standard revenue cut, a month-end pivot — and keep experimental layouts private until they are worth promoting.
+
+---
+
+## Drilling down a hierarchy in the grid
+
+When a row dimension is the top of a defined hierarchy (for example `Year` in a Year → Month → Day date hierarchy), the panel lets you walk down that hierarchy without leaving the grid. Drillable row labels show a small ▸ marker, and hovering the label displays a hint naming the hierarchy the drill goes through — for example **"Drill down through application_date_hierarchy"**. This tells you, before you click, that a deeper level exists and which hierarchy it belongs to.
+
+Clicking a drillable row label swaps that row for its child level (Year becomes Month), pins the clicked value as a slicer, and **re-runs the query automatically** so the grid shows the child rows with their real values. A breadcrumb appears above the grid (`All / Year: 2024 / ...`); click any earlier crumb to climb back up. Each step re-runs immediately, so the row labels always reflect the level you are actually viewing.
 
 ---
 
 ## Drill-through on calculated measures
 
-Calculated measures were previously not drillable from the panel. Since Phase 6, clicking a calculated-measure cell opens a **decomposed drill drawer** that fires one drill-through per referenced base measure and stacks the mini-panels — each paginating independently at 50 rows per page. See the [Drill-through](drill-through.md) page for the full description. The key point for the panel is that **every cell is clickable** — there is no longer an "oh, calculated measures don't drill" asterisk.
+Calculated measures were previously not drillable from the panel. Since Phase 6, clicking a calculated-measure cell opens a **decomposed drill drawer** that fires one drill-through per referenced base measure and stacks the mini-panels — each paginating independently at 50 rows per page. See the [Drill-through](drill-through.md) page for the full description. The key point for the panel is that **every measure cell is clickable** — there is no longer an "oh, calculated measures don't drill" asterisk. The two exceptions are **Record Count** and scratchpad-expression columns, which have no single underlying measure to decompose and so are not clickable.
 
 ---
 
@@ -211,13 +253,16 @@ The whole loop takes under two minutes. The measure is then safe to expose to a 
 
 | Feature | v1 | Future |
 |---|---|---|
-| Single measure per view | Yes | Multi-measure layout deferred to the Phase 8 canvas. |
-| Multi-row / multi-column dimensions | Yes (Phase 6) | Cross-tab hierarchy with drill-down on rows deferred. |
+| Multiple measures per view | Yes | Add several measures; reorder and remove each independently. |
+| Same measure under multiple aggregate functions | Yes | Add a measure more than once, each with its own function (SUM, AVG, MAX…). |
+| Built-in Record Count column | Yes | `COUNT(*)` per cell; additive in totals. |
+| Multi-row / multi-column dimensions | Yes (Phase 6) | Cross-tab layout supported. |
+| In-grid row hierarchy drill-down | Yes | Walk a hierarchy on rows (Year → Month → Day) with a hover hint and breadcrumb; the query re-runs on each step. |
 | Global slicers | Yes (Phase 6) | Saved slicer presets deferred. |
 | Subtotals + grand totals | Yes (Phase 6) | Alternate total functions (averages, medians of subtotals) deferred. |
 | Variants (YTD, YoY, etc.) | Yes (Phase 6, built on Phase 2 time intelligence) | Custom user-defined variant formulas deferred — use a calculated measure in the interim. |
-| CSV + JSON export | Yes (Phase 6) | XLSX export deferred. |
-| Saved views | No | Deferred; use a calculated measure or a pocket to persist a layout. |
+| Excel (XLSX) + CSV + JSON export | Yes | All three formats export every measure, the totals, and the current sort. |
+| Saved views | Yes | Save a pivot layout (measures, dimensions, slicers, totals) and reload it later, or copy a shareable link. |
 
 ---
 
@@ -231,6 +276,7 @@ The whole loop takes under two minutes. The measure is then safe to expose to a 
 | Variant button shows all items as "not eligible" | Missing prerequisite: no time hierarchy on the measure's table, or no calendar type on the hierarchy | Check the reason text in the popover. See [Configure Time Variants](configure-time-variants.md) for the full prerequisite chain. |
 | Period-boundary variants show as "not eligible" | The associated time hierarchy has no calendar type configured | Edit the hierarchy in the Hierarchies panel and set a calendar type (standard, fiscal, hijri, or iso). See [Configure Time Variants](configure-time-variants.md). |
 | Cell click on calculated measure errors | Very old frontend cache | Hard-refresh; Phase 6 shipped the decomposed drawer |
+| Row labels read "(null)" after drilling into a hierarchy | Old frontend cache (pre-fix the grid did not re-run after an in-grid drill) | Hard-refresh; the grid now re-runs the query automatically on each drill step |
 
 ---
 
@@ -244,4 +290,4 @@ The whole loop takes under two minutes. The measure is then safe to expose to a 
 
 ---
 
-← [Multi-Calendar Best Practices](multi-calendar-best-practices.md) | [Home](../index.md) | [Query Panel →](query-panel.md)
+← [Multi-Calendar Best Practices](multi-calendar-best-practices.md) | [Home](../index.md) | [Pivot Conditional Formatting →](pivot-conditional-formatting.md)

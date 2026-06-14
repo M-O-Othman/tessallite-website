@@ -41,11 +41,11 @@ Type validation happens at resolution time. A `multi_value` parameter supplied w
 2. Click the **Parameters** icon in the toolbelt to open the Parameters panel.
 3. Click **Add Parameter**.
 4. Fill in:
-   - **Name** — must start with `@` (e.g., `@region`, `@date_start`). The `@` prefix is what the query engine scans for during substitution.
+   - **Name** — must be `@` followed by a letter or underscore, then any mix of letters, digits, and underscores (e.g. `@region`, `@date_start`, `@_internal`). A name like `@1region` (digit first) or `@my-param` (hyphen) is rejected with a clear error, because the query engine has to recognise `@name` as a single token during substitution — a name that started with a digit or contained punctuation could not be told apart from the surrounding SQL.
    - **Display name** — optional friendly label shown in admin UIs.
    - **Type** — one of the five types above.
    - **Default value** — the value used when no higher-precedence source provides one. Type-dependent: a string for `string`, a number for `number`, a JSON array for `multi_value`, a `{"from": ..., "to": ...}` object for `date_range`, or `true`/`false` for `boolean`.
-   - **Allowed values** — optional whitelist for `string` and `multi_value` types. When set, values outside the list are rejected at resolution time.
+   - **Allowed values** — optional whitelist for `string`, `multi_value`, and `number` parameters. When set, any resolved value outside the list is rejected at resolution time with a clear error, so a stray or malicious filter value can never reach the source. For `multi_value`, *every* member must be on the list. Number lists are checked numerically, so a declared `[10, 20]` matches a resolved `10` or `"10"` — you do not have to worry about a "10" vs 10 spelling mismatch. A `date_range` parameter does **not** take an allowed-values list — a whitelist has no meaning for a from/to range, so the list is ignored there; constrain a date range with its `from`/`to` bounds instead.
    - **Description** — optional documentation.
 5. Click **Save**.
 

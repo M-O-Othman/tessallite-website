@@ -168,7 +168,7 @@ embed_token = resp.json()["token"]
   <h1>Ask our data</h1>
   <iframe
     id="tessallite-chat"
-    src="http://localhost:3001/embed/chat?token=TOKEN_FROM_SERVER"
+    src="http://localhost:3333/embed/chat?token=TOKEN_FROM_SERVER"
     style="width: 100%; height: 700px; border: 1px solid #ddd; border-radius: 8px;"
   ></iframe>
 
@@ -180,7 +180,7 @@ embed_token = resp.json()["token"]
         document.getElementById("tessallite-chat")
           .contentWindow.postMessage(
             { type: "tessallite:token", token },
-            "http://localhost:3001"
+            "http://localhost:3333"
           );
       }
     });
@@ -208,4 +208,4 @@ embed_token = resp.json()["token"]
 
 ---
 
-← [Embed API](embed-api.md) | [Home](../index.md) | [Excel Connection Problems →](../troubleshooting/excel-connection-problems.md)
+← [Embed API](embed-api.md) | [Home](../index.md) | [Solidatus Integration →](solidatus-integration.md)

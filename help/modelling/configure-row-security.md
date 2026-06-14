@@ -101,14 +101,12 @@ For every read query, the Query Router runs the same four-step procedure:
 
 1. **Resolve the principal.** The caller's `Principal` is extracted from the JWT: `user_identity` from the `sub` / `email` claim, `roles` from the `role` claim. A single-string role is treated as a one-element frozen set so both `role: "manager"` and `role: ["manager"]` JWTs work.
 2. **Compile every matching enabled rule.** Every role predicate whose `applies_to_roles` intersects the principal's roles. Every user mapping rule (these always match once per user). Disabled rules are skipped.
-3. **Wrap the planned SQL.** If at least one rule compiled, the planned SQL is wrapped:
+3. **Constrain every table scan.** If at least one rule compiled, the Query Router adds the combined predicate to the `WHERE` of *every* SELECT that reads a physical table — not as an outer wrapper around the whole query, but inside each scan. That includes each branch of a `UNION` / `EXCEPT` / `INTERSECT`, scalar subqueries, subquery-first `FROM` clauses, and the bodies of CTEs. Two consequences matter:
 
-   ```sql
-   SELECT * FROM (<planned SQL>) AS __ts_sec
-   WHERE <combined predicate>
-   ```
+   - Because the filter lives in the *same* SELECT as each scan, it always applies **before any `LIMIT`**. So `LIMIT 100` returns up to 100 *allowed* rows — never the first 100 physical rows that are then filtered down to far fewer (or none).
+   - The combined predicate is an AND of every compiled rule, so multiple enabled rules for the same principal **intersect** — if one rule says "EMEA or APAC" and another says "2024 only", the caller sees the intersection.
 
-   The combined predicate is an AND of every compiled rule. Multiple enabled rules for the same principal intersect — if one rule says "EMEA or APAC" and another says "2024 only", the caller sees the intersection.
+   A query whose shape the Router cannot prove it has fully constrained — one it cannot parse, or whose scopes it cannot resolve — is **rejected** with a `403` and the error code `row_security_unsupported_shape`, rather than being run unfiltered. Rewriting it as a plain SELECT (or a UNION of plain SELECTs) over the model resolves it. This fail-closed stance is the whole point: an unconstrainable query is refused, never leaked.
 
 4. **Disable the fast paths.** The aggregate matcher and pocket matcher are skipped whenever any rule fires. This is a correctness guarantee, not a performance choice — if a pre-computed aggregate dropped the security dimension, filtering by the wrap alone would silently leak rows.
 
@@ -155,10 +153,11 @@ Phase 12 will extend this to a **workspace-wide simulate mode** that re-runs the
 
 | Limitation | Impact | Workaround |
 |---|---|---|
-| **Inner SELECT must project the security dimension column.** The wrap references the dimension by its last path segment (e.g. `region.region_code` → `region_code`). | If the planned query does not project that column, `is_query_compatible` returns false and the Router fails the query **closed** rather than emitting SQL that would reference an unprojected column. | Ensure the model's `SELECT *` path for the fact table includes the security column, or add the column to the query grain. |
+| **Every scanned table must expose the security dimension column.** The Router ANDs the predicate (referenced by the path's last segment, e.g. `region.region_code` → `region_code`) into the WHERE of every SELECT that reads a physical table. | If a scanned scope does not expose that column, the source database rejects the query with "column does not exist" — it fails **closed**, never returning unfiltered rows. Query shapes the Router cannot safely constrain are rejected with a `row_security_unsupported_shape` error. | Ensure the fact table exposes the security column, or rewrite the query as a plain SELECT (or a UNION of plain SELECTs) over the model. |
 | **Aggregate and pocket fast paths are bypassed when any rule fires.** | Queries from audiences with active rules always execute against the source. | If latency matters for a filtered audience, consider a pre-filtered pocket owned per-audience instead of a general aggregate. |
 | **Roles are strings carried on the JWT.** No central role registry in v1. | Typos in `applies_to_roles` silently match nothing. | Keep a canonical list of role strings in the team's runbook; Phase 12's rule-coverage audit will highlight orphaned roles. |
 | **One security dimension per rule.** A rule filters on exactly one `dimension_path`. | Compound rules require multiple rules. | Author multiple rules — they AND together. |
+| **Embed sessions are persona-filtered, not RLS-rule-filtered.** An embedded view runs under its embed persona's default filters; it carries no role, group, or claim, so `role_predicate` / `idp_group` / `saml_claim` / `oidc_scope` rules never match it. | A `role_predicate` rule you expect to filter an embedded view will not apply. | Express the embedded audience's scope as the embed persona's default filters, not as an RLS rule. |
 | **Visual rule builder (predicate tree, simulate-principal canvas overlay, coverage audit) is split to Phase 12.** | Current authoring is a free-text DSL editor. | The DSL is small; the form validates as you type; Simulate gives the round-trip check. |
 
 ---
@@ -180,7 +179,8 @@ Running `scripts/seed_acme_test_demo.py` prints a 30-day JWT for each audience. 
 | Symptom | Likely cause | Fix |
 |---|---|---|
 | Rule saves but wrap is never applied | Role in `applies_to_roles` does not match the JWT's `role` claim | Check the JWT; keep role strings canonical |
-| Query returns "is_query_compatible: false" | Security dimension column is not projected by the planned query | Ensure the fact `SELECT *` path projects the column |
+| Query errors with "column does not exist" for the security column | A scanned scope does not expose the security dimension column the rule references | Ensure the fact table exposes the column (the filter fails closed rather than returning unfiltered rows) |
+| Query rejected with `row_security_unsupported_shape` | The query shape cannot be safely constrained by the active rules | Rewrite it as a plain SELECT, or a UNION of plain SELECTs, over the model |
 | Rule saves but Simulate says "does not fire" for the target user | User's roles do not include any `applies_to_roles` from the rule | Add the role to the user's JWT claim, or the role name to the rule |
 | Two users in the same role see different rows | The rule is `user_mapping`, not `role_predicate` — and the mapping table's allowed values differ per user | Expected. Use `role_predicate` if per-role scope is needed |
 | User mapping rule returns zero rows for a valid user | Mapping table has no row for that user | Add a row, or fall back to a role-predicate rule for users without mapping rows |

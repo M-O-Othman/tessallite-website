@@ -69,16 +69,18 @@ Resolves measure and dimension names against the semantic model, builds SQL via 
 }
 ```
 
-**Required fields:** `project_id`, `model_id`, `measures` (at least one).
+**Required fields:** `project_id`, `model_id`, `measures` (at least one). The `project_id` must be the project the model belongs to — a mismatch returns 403.
 
-**Optional fields:** `dimensions`, `filters`, `limit`, `offset`, `order_by`.
+**Optional fields:** `dimensions`, `filters`, `limit`, `offset`, `order_by`, `persona_id`.
+
+**Choosing a persona:** if your user is assigned more than one persona on the model, pass `persona_id` to say which one the query should run as. Users with a single assigned persona are locked to it automatically, and embed tokens always use the persona baked into the token — in both cases you can leave the field out. The persona's column restrictions and default filters are applied to every query, exactly as they are in the Query Panel and through BI tools.
 
 **Filter operators:**
 
 | Operator | Description | Value field |
 |---|---|---|
 | `eq` | Equals | `value` |
-| `ne` | Not equals | `value` |
+| `neq` | Not equals | `value` |
 | `gt` | Greater than | `value` |
 | `gte` | Greater than or equal | `value` |
 | `lt` | Less than | `value` |
@@ -90,6 +92,10 @@ Resolves measure and dimension names against the semantic model, builds SQL via 
 | `is_null` | Is NULL | (none) |
 | `is_not_null` | Is not NULL | (none) |
 
+**Friendly aliases.** If your client already speaks a Cube-style filter vocabulary, the API accepts these spellings and converts them for you: `ne` and `notEquals` mean `neq`, `equals` means `eq`, `set` means `in`, `inDateRange` means `between`, and `contains` becomes a `like` with the value wrapped in `%...%` (so `contains "VI"` matches "VISA"). For the scalar operators you may also put the value in `values[0]` instead of `value`.
+
+**Mistakes fail loudly.** An unknown operator, a scalar operator without a value, an empty `in` list, or a `between` without exactly two values returns 422 with a message listing what is accepted — the API never guesses and never runs a weaker filter than you asked for.
+
 **Response:**
 
 ```json
@@ -99,10 +105,17 @@ Resolves measure and dimension names against the semantic model, builds SQL via 
     {"region": "US", "revenue": 125000, "order_count": 430},
     {"region": "EU", "revenue": 98000, "order_count": 312}
   ],
+  "page_row_count": 2,
   "total_rows": 2,
   "query_id": "a1b2c3d4e5f6g7h8"
 }
 ```
+
+**Reading the response fields.**
+
+- `page_row_count` is the number of rows in **this page** of the result — the count of objects in `rows`. It is not a total-matching-row count; the API does not run a separate `COUNT(*)`. To know whether more pages exist, request `limit + 1` rows and check whether you got the extra one.
+- `total_rows` carries the same value as `page_row_count`. It is kept only for wire back-compat with older clients and will be removed in a future version — prefer `page_row_count`.
+- `query_id` identifies **this exact page** of this query: it folds in `limit`, `offset` and `order_by`, so two different pages of the same query get different ids. It is safe to use as a result-cache key. It is a stable hash, not a server-side handle — you cannot fetch a result by replaying the id.
 
 ---
 
@@ -126,7 +139,7 @@ Lists all models accessible to the authenticated user's tenant.
 
 ### GET /query-router/api/v1/headless/models/{model_id}/measures
 
-Lists all measures in the specified model.
+Lists the measures in the specified model that your persona is allowed to see. If your user has more than one persona on the model, add `?persona_id=<uuid>` to pick one — the listing then matches exactly what that persona can query.
 
 ```json
 [
@@ -144,7 +157,7 @@ Lists all measures in the specified model.
 
 ### GET /query-router/api/v1/headless/models/{model_id}/dimensions
 
-Lists all dimensions in the specified model.
+Lists the dimensions in the specified model that your persona is allowed to see (same `?persona_id=` rule as measures). `data_type` is the source column's database type — useful for choosing sensible filter operators (for example, `between` for dates and numbers). Calculated dimensions without a source column report `null`.
 
 ```json
 [
@@ -153,7 +166,8 @@ Lists all dimensions in the specified model.
     "name": "region",
     "display_name": "Region",
     "description": "Sales region",
-    "is_time_dim": false
+    "is_time_dim": false,
+    "data_type": "character varying"
   }
 ]
 ```
@@ -168,9 +182,11 @@ The headless API enforces a per-tenant rate limit (default: 100 requests per min
 HTTP 429 Too Many Requests
 ```
 
-Every response includes the `X-RateLimit-Remaining` header showing how many requests remain in the current window. Monitor this header to implement client-side throttling.
+Every response includes the `X-RateLimit-Remaining` header showing how many requests remain in the current window. Monitor this header to implement client-side throttling. A `429` response carries a `Retry-After` header with the number of seconds to wait before retrying.
 
-The rate limit is configurable via the `HEADLESS_RATE_LIMIT` environment variable.
+The rate limit is configurable via the `HEADLESS_RATE_LIMIT` environment variable. The same per-tenant limit and headers apply to the plugin execution endpoint (`/query-router/api/v1/plugin/execute`); both surfaces draw from one shared per-tenant budget.
+
+**Multi-instance note.** The limiter counts requests per server process. When the query-router runs as more than one instance (for example, several Cloud Run replicas), each instance keeps its own counter, so the effective per-tenant ceiling is the configured limit multiplied by the number of running instances, and counters reset when an instance is recycled. The limit therefore protects the source from sustained floods but is not an exact per-tenant quota across a horizontally scaled deployment.
 
 ---
 
@@ -209,7 +225,7 @@ curl -s -X POST http://localhost:3000/query-router/api/v1/headless/query \
 
 ## Pitfalls
 
-- **Forgetting pagination.** Without `limit`, the API returns all matching rows. For large datasets, always set a limit.
+- **Forgetting pagination.** Without `limit`, the API returns up to a hard cap of 100,000 rows — it does not stream an unbounded result set. For large datasets, always set an explicit `limit` and page with `offset`, and never assume a single response holds every matching row.
 - **Persona restrictions.** If the authenticated user's persona restricts certain columns, querying those measures or dimensions returns 403. Check the persona configuration if you get unexpected 403 errors.
 - **Measure names are semantic names, not display names.** Use the metadata endpoint to discover the correct `name` field (e.g. `revenue`, not `Revenue`).
 

@@ -20,6 +20,8 @@ Usage Analytics is a read-only Model Builder tab that shows how a deployed model
 | Average or median latency | Whether users experience the model as interactive. |
 | Top measures | Which business metrics are driving workload. |
 | Top aggregates | Which acceleration objects are earning their storage and refresh cost. |
+| Acceleration rate | The overall share of query work served from an aggregate or pocket instead of scanning the source. A rising rate means your acceleration objects are doing more of the heavy lifting; a falling one is a prompt to look at what stopped matching. |
+| Top missed measures | The measures most often requested by queries that still fell through to the source. Anything already served from an aggregate or pocket is *not* counted here, so this list points straight at what is worth accelerating next. |
 | Miss patterns | Repeated live queries that the optimizer may be able to accelerate. |
 
 ## How to use the tab

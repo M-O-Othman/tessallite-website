@@ -118,6 +118,16 @@ A calendar table adds value in these scenarios:
 
 ---
 
+## Check calendar coverage
+
+Use **Check calendar coverage** to confirm the calendar actually spans your fact data *before* you rely on period rollups. The check compares the calendar's date range against the range of dates present in the fact table.
+
+This matters because of a quiet failure mode: if some fact dates fall **outside** the calendar — for example the fact table has 2026 rows but the calendar only goes to 2025 — those rows get NULL period values and **drop silently out of period rollups**. Your year-to-date and monthly totals would simply under-count, with no error to warn you. The coverage check turns that silent gap into a clear message: it reports the exact fact range and calendar range so you can see the shortfall and extend the calendar to cover it. A green result means every fact date is covered.
+
+Run this whenever you load new fact data, change the calendar's range, or notice a period total looking lower than you expected.
+
+---
+
 ## Troubleshooting
 
 - **"The connection does not have 'Allow Tessallite to run DDL on this source' enabled"** — the write access checkbox is not checked on the connection. Edit the connection and enable it, or use the Get script + Bind existing path instead.

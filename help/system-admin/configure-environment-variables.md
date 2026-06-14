@@ -2,73 +2,89 @@
 title: "Configure Environment Variables"
 audience: system-admin
 area: system-admin
-updated: 2026-04-17
+updated: 2026-06-14
 ---
 
 ## What this covers
 
-The complete reference for all environment variables accepted by Tessallite. Also covers how to set variables in Docker Compose and Cloud Run, and how to keep secrets out of source control.
+The variables you set in `.env` (local) or Secret Manager (GCP) to start Tessallite. These are the **bootstrap** variables — the bare minimum the services need before they can read anything from the database. Operational tuning knobs (rate limits, optimizer thresholds, scheduler cadences) are set in the System Admin UI and are not covered here.
+
+The **complete, always-current list** of every configurable value is in the [Configuration Reference](../../../docs/guides/guides_configuration-reference.md). When this page and the reference disagree, the reference is authoritative.
 
 ---
 
-## Variable reference
+## Required bootstrap variables
 
-| Variable | Required | Default | Services | Description |
-|---|---|---|---|---|
-| `DB_HOST` | Yes | `postgres` | All except gateway | Hostname of the internal PostgreSQL instance. In Docker Compose, use the service name `postgres`. On GCP, use the Cloud SQL private IP or `127.0.0.1` with Auth Proxy. |
-| `DB_PORT` | No | `5432` | All except gateway | Port of the internal PostgreSQL instance. |
-| `DB_NAME` | No | `tessallite` | All except gateway | Database name in the internal PostgreSQL instance. |
-| `DB_USER` | Yes | — | All except gateway | PostgreSQL username. |
-| `DB_PASS` | Yes | — | All except gateway | PostgreSQL password. Do not commit to source control. |
-| `ADMIN_USER` | Yes | — | frontend | System Admin username for initial login to the web UI. |
-| `ADMIN_PASS` | Yes | — | frontend | System Admin password. |
-| `SESSION_SECRET` | Yes | — | frontend | Random string used to sign session tokens. Minimum 32 characters. No default — service will not start without this set. |
-| `GATEWAY_PORT_JDBC` | No | `5433` | gateway | Port on which gateway listens for JDBC connections. |
-| `GATEWAY_PORT_XMLA` | No | `8080` | gateway | Port on which gateway listens for XMLA connections. |
-| `FRONTEND_PORT` | No | `3000` | frontend | Port on which the web UI is served. |
-| `OPTIMIZER_SCORE_THRESHOLD` | No | `50` | optimizer | Minimum ROI score required before optimizer surfaces a build recommendation. Integer, 0–100. |
-| `SCHEDULER_MAX_CONCURRENT` | No | `3` | scheduler | Maximum number of aggregate build jobs running simultaneously. |
-| `LOG_LEVEL` | No | `info` | All | Log verbosity. Accepted values: `debug`, `info`, `warn`, `error`. |
+These must be set in `.env` (local) or stored as Secret Manager secrets (GCP). The services will refuse to start if any of the credential fields are left at their placeholder values.
+
+| Variable | Required | Default | Description |
+|---|---|---|---|
+| `POSTGRES_PASSWORD` | Yes | — | Password for the internal PostgreSQL user. Used by Docker Compose to construct the connection URL automatically. On GCP the full URL (`SYSTEM_DATABASE_URL`) is stored in Secret Manager instead. |
+| `CREDENTIAL_ENCRYPTION_KEY` | Yes | — | Fernet key (base64, 32 bytes) used to encrypt source database credentials at rest. Generate with: `python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"` |
+| `JWT_SECRET_KEY` | Yes | — | Secret used to sign user session tokens. Minimum 32 characters. |
+| `SYSTEM_ADMIN_EMAIL` | No | `admin@tessallite.local` | Email address of the system-level administrator. |
+| `SYSTEM_ADMIN_PASSWORD` | Yes | — | Password for the system administrator. |
+
+---
+
+## GCP-specific: SYSTEM_DATABASE_URL
+
+On GCP the Cloud Run services cannot reach the local Docker network. Instead of `POSTGRES_PASSWORD`, store the full connection URL as a Secret Manager secret:
+
+| Variable | Purpose |
+|---|---|
+| `SYSTEM_DATABASE_URL` | Full PostgreSQL connection URL. Format: `postgresql+asyncpg://postgres:<password>@<vm-ip>:5432/tessallite_system` |
+
+The scripted GCP deploy (`deploy/gcp/`) sets this automatically using the Compute Engine VM's IP address. You do not set it by hand unless you are connecting to a custom database host.
+
+---
+
+## Optional variables
+
+| Variable | Default | Description |
+|---|---|---|
+| `JDBC_PORT` | `5433` | Port on which the gateway listens for JDBC connections. |
+| `XMLA_PORT` | `8080` | Port on which the gateway listens for XMLA connections. |
+| `GATEWAY_XMLA_TLS_ENABLED` | `false` | Set `true` only when BI clients connect directly to the gateway and you need TLS on that hop. Leave `false` when TLS is terminated upstream (load balancer or Cloud Run). |
+| `GCLOUD_ADC_PATH` | — | Path to a Google Application Default Credentials file, mounted into containers that talk to GCP services (Docker Compose only). |
+| `LOG_LEVEL` | `info` | Log verbosity: `debug`, `info`, `warn`, or `error`. |
 
 ---
 
 ## Setting variables in Docker Compose
 
-Create a `.env` file in the same directory as `docker-compose.yml`:
+Copy `.env.example` to `.env` (in the same directory as `docker-compose.yml`) and fill in the required values:
 
 ```
-DB_HOST=postgres
-DB_PORT=5432
-DB_NAME=tessallite
-DB_USER=tessallite
-DB_PASS=changeme
-ADMIN_USER=admin
-ADMIN_PASS=changeme
-SESSION_SECRET=your-random-secret-here
+POSTGRES_PASSWORD=your-strong-password
+CREDENTIAL_ENCRYPTION_KEY=your-fernet-key-here
+JWT_SECRET_KEY=your-jwt-secret-min-32-chars
+SYSTEM_ADMIN_PASSWORD=your-admin-password
 ```
 
-Docker Compose reads this file automatically. Alternatively, set variables in the `environment:` block of each service in `docker-compose.yml` for non-secret values.
+Docker Compose reads this file automatically. Never commit `.env` to source control — it is listed in `.gitignore`.
 
 ---
 
 ## Setting variables in Cloud Run
 
-Via the CLI:
+The scripted GCP deploy handles secrets automatically. If you need to update a secret manually:
 
 ```bash
+# Update a secret value
+echo -n "new-value" | gcloud secrets versions add SECRET_NAME --data-file=-
+
+# Set a non-secret env var on a service
 gcloud run services update SERVICE_NAME \
   --region REGION \
-  --set-env-vars LOG_LEVEL=info,OPTIMIZER_SCORE_THRESHOLD=50 \
-  --update-secrets DB_PASS=tessallite-db-pass:latest,SESSION_SECRET=tessallite-session-secret:latest
+  --set-env-vars LOG_LEVEL=debug
 ```
-
-Via the console: Open the Cloud Run service, select Edit and Deploy New Revision, then open the Variables and Secrets tab.
 
 ---
 
 ## Security
 
-Never commit `DB_PASS`, `ADMIN_PASS`, or `SESSION_SECRET` to source control. Add `.env` to `.gitignore`. On GCP, use Secret Manager for all credential values rather than embedding them in the Cloud Run service definition.
+Never commit credential values to source control. On GCP, all three secrets (`SYSTEM_DATABASE_URL`, `CREDENTIAL_ENCRYPTION_KEY`, `JWT_SECRET_KEY`) are stored in Secret Manager and mounted into Cloud Run at deploy time — they never appear in the service YAML. For key rotation, see `CREDENTIAL_ENCRYPTION_KEY_PREVIOUS` in the [Configuration Reference](../../../docs/guides/guides_configuration-reference.md).
 
 ---
 

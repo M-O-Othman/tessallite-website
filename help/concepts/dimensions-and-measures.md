@@ -61,6 +61,25 @@ COUNT DISTINCT is the most common source of unexpected fallthrough to raw data. 
 
 ---
 
+## Hidden columns and aggregate expressions
+
+A model may mark certain columns as **hidden**. Hidden columns are excluded from the business view — they do not appear in the BI tool's field list and cannot be placed directly in a `SELECT` clause.
+
+However, hidden columns can still participate in **aggregate expressions** and **WHERE filters**. When a query wraps a hidden column inside an aggregate function such as `SUM()`, `AVG()`, `COUNT()`, `MAX()`, or `MIN()`, the query router resolves it as a **measure reference** rather than as a bare column request. The persona scope gate does not block it because the column never appears as a standalone value in the result set — only the aggregated result does.
+
+**Example.** Suppose `fee_amount` and `base_amount` are hidden columns (measures) in a model. The following queries behave differently:
+
+| Query | Result |
+|---|---|
+| `SELECT fee_amount FROM modely` | Rejected — `fee_amount` is hidden and cannot appear as a bare column in the SELECT list. |
+| `SELECT SUM(fee_amount) FROM modely` | Allowed — `SUM(fee_amount)` is an aggregate expression. The router resolves `fee_amount` as a measure reference and computes the sum. |
+| `SELECT SUM(fee_amount) / SUM(base_amount) FROM modely` | Allowed — both columns are inside aggregate functions. The router treats the entire expression as a compound passthrough and preserves it in the rewritten SQL. |
+| `SELECT * FROM modely WHERE fee_amount > 100` | Allowed — `fee_amount` in the WHERE clause is used as a filter, not a result column. Hidden columns may appear in filters. |
+
+This design lets modellers keep internal detail columns (like individual fee components) out of end-user reports while still allowing those columns to power calculated measures and compound aggregate formulas.
+
+---
+
 ## How dimensions and measures appear in the Model Builder
 
 In the Model Builder Canvas, each table node lists its defined dimensions and measures. The Toolbelt on the left allows you to add, rename, or remove them. The Drawer on the right shows the full definition of whichever object is selected — source column, aggregation type, and logical name.

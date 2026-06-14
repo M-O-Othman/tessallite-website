@@ -23,9 +23,31 @@ Each edit creates a new version on the server. Provenance is kept so reviewers c
 
 ---
 
+## Building the glossary by hand
+
+You do not have to wait for the bootstrap action to fill the glossary. Three buttons on the panel toolbar let you build it directly:
+
+- **Add term** opens a small form where you type the term, its definition, optional context notes, and synonyms. The entry is saved as **approved** straight away, so it is live for everyone the moment you save. Use this for the occasional one-off.
+- **Import CSV** takes a pasted spreadsheet. Use a header row of exactly `term,description`, then one row per term; every row becomes an **approved** entry. This is the fastest way to seed a glossary from a list someone already keeps in Excel. If a few rows are malformed, the good ones still import and the panel tells you how many rows had errors.
+- **Revoke link** turns off *every* active public share link for this glossary at once. Anyone holding an old link gets a "not found" page, and no replacement link is created. Reach for it the moment a shared glossary should stop being reachable — for example if a link was forwarded too widely.
+
+## Approving every pending entry at once
+
+When the bootstrap proposes many terms, approving them one by one is slow. **Approve all** approves every entry currently *Pending review* in a single step. Tessallite applies the same promotion and hidden-column behaviour it would apply to each entry individually — the result is exactly as if you had approved them one at a time, just faster. Review the proposals first; once you trust a bootstrap run, Approve all clears the queue in one click.
+
+## Sample values
+
+A glossary entry can carry a few example values drawn from the underlying column — a "Region" term might show `EMEA`, `APAC`, `Americas`. These appear as small chips on the entry so a reader can recognise what the term actually contains without running a query. Up to 20 sample values are kept per entry; the rest are left off to keep the list readable.
+
+---
+
 ## Visibility
 
 Visibility controls whether an entry is shown, hidden, or held for review. Use **hide** for terms that are technically present but not useful to business users. Use **review** when the definition is probably useful but needs validation from a domain owner.
+
+### Hide column
+
+A glossary entry also has a separate **Hide column** checkbox, and it does more than hide the glossary entry. When the entry is *approved*, the underlying model **column** is hidden everywhere it appears: it disappears from the catalogue and from BI clients such as Excel and Power BI. Use it to retire a technical column from business view in one place, rather than hiding it column-by-column on the model. Keep the distinction clear: hiding the glossary *entry* (above) only affects the glossary; **Hide column** affects the *column itself* across the whole model.
 
 ---
 

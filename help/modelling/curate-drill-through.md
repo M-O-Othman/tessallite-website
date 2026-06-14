@@ -34,9 +34,10 @@ Calculated measures show no chevron — drill-through on a calculated measure de
 
 Pick the columns the analyst should see when they drill into a cell. The picker lists every column on the source fact table; selected entries become the SELECT projection.
 
-- **Empty selection** keeps the default (every column on the source table).
-- A column referenced by an active row-security rule **must** stay in the projection — otherwise the endpoint would have no way to filter the drilled rows. The save fails with `DRILL_DETAIL_COLUMN_OFF_TABLE` if the curator removes a security column.
-- Columns that exist on the model but on a *different* table are rejected at save time, even if the override source points elsewhere — the projection list is always validated against the table that will actually be read.
+- **Empty selection** keeps the default (the cell's grouping dimensions on the source table).
+- Only columns that are exposed as a dimension on the model can be projected — drill-through runs through the semantic layer, so a raw column with no dimension over it is not selectable. Curate from the dimension-backed column set the editor lists.
+- Columns that exist on the model but on a *different* table are rejected at save time with `DRILL_DETAIL_COLUMN_OFF_TABLE`, even if the override source points elsewhere — the projection list is always validated against the table that will actually be read.
+- Keep any column an active row-security rule depends on in the projection. Row-security filtering needs that column present; if you remove it the drill will fail closed rather than leak rows.
 
 **Pick the columns the analyst would name themselves.** Internal IDs, audit timestamps, and `created_by` columns rarely answer the analyst's "which rows made up this number" question; they push the useful columns off the right edge of the drawer. Tighten ruthlessly.
 
@@ -97,7 +98,7 @@ The editor confirms before resetting because the change is destructive: previous
 | Fact stores `customer_id`, dimension stores `customer.name` | Joined dimensions: add `customer` | Surrogate keys are not an answer to "which customer?" |
 | Measure aggregates orders, analyst wants line items | Source override: `order_lines`; pick the `order_lines → orders → sales` path | The granularity the analyst needs lives one hop deeper |
 | Fact has 10M+ rows; analyst rarely needs > 250 in a session | Row-limit override: 250 | Smaller payloads, faster TTFB, same investigative power |
-| Curator removed a column the row-security rule depends on | Save is rejected with `DRILL_DETAIL_COLUMN_OFF_TABLE` | Add the column back, or relax the security rule first |
+| Curator removed a column the row-security rule depends on | The drill fails closed at query time rather than leaking rows | Add the column back to the detail set, or relax the security rule first |
 
 ---
 
@@ -122,14 +123,13 @@ Stable error codes returned by the PATCH endpoint. Frontends and integrations sh
 | `DRILL_DIMENSION_NOT_IN_MODEL` | Joined dimension id does not belong to this model |
 | `DRILL_DIMENSION_NO_JOIN` | Joined dimension's base table has no direct join to the fact |
 | `DRILL_SOURCE_TABLE_NOT_IN_MODEL` | Override source table id does not belong to this model |
-| `DRILL_OVERRIDE_NO_JOIN_PATH` | Override is set but no join path was provided when more than one exists |
-| `DrillThroughOverrideJoinPathInvalid` | Provided join path references unknown joins or is not contiguous |
+| `DRILL_OVERRIDE_NO_JOIN_PATH` | Override is set but no join path was provided, and the number of candidate paths is not exactly one (zero or several); or a provided join path references unknown joins or is not a contiguous chain from the source table |
 
 ---
 
 ## Permissions
 
-Reading a drill-through set requires the `viewer` role; updating or resetting requires the `modeler` role. The editor hides the Save and Reset buttons when the caller lacks `modeler` so the read-only view is browseable but not editable.
+Reading a drill-through set requires the `viewer` role; updating or resetting requires the `modeler` role. The PATCH and reset endpoints enforce this — a caller without `modeler` receives a 403 from the API.
 
 ---
 

@@ -51,6 +51,12 @@
 <ul><li><strong>IdP group name</strong> — the exact group name as sent by the IdP (case-sensitive).</li><li><strong>Project</strong> — the project to scope the role to. Leave blank for a tenant-wide mapping.</li><li><strong>Role</strong> — <code>admin</code>, <code>modeler</code>, or <code>viewer</code>.</li></ul>
 <p>A group can map to different roles in different projects. A single user who belongs to multiple groups receives the union of all matching roles.</p>
 <p>The API is <code>GET/POST/PUT/DELETE /api/v1/admin/group-mappings</code> (tenant admin only).</p>
+<h2>What ends up inside the login token</h2>
+<p>When a user signs in through SAML or OIDC, Tessallite does <strong>not</strong> copy every attribute the identity provider sends into the session token. It keeps only what it actually needs:</p>
+<ul><li>the attributes your <strong>row-security rules</strong> reference (so those rules can evaluate per-user), and</li><li>any extra attribute names you explicitly list in <code>AUTH_JWT_CLAIMS_ALLOWLIST</code> (comma-separated).</li></ul>
+<p>Everything else the identity provider released is dropped. This keeps the token small and stops attributes a rule never uses from riding along inside it.</p>
+<p>There is a size limit, <code>AUTH_JWT_CLAIMS_MAX_BYTES</code> (4096 bytes by default). If the attributes Tessallite must keep do not fit inside that cap, the login is <strong>refused with HTTP 413</strong> rather than quietly trimming an attribute a rule depends on. That is deliberate: a silently-dropped attribute would make a row-security rule match the wrong rows, so Tessallite fails the login rather than risk leaking data to the wrong person.</p>
+<p><strong>If an admin sees a 413 on login</strong>, the fix is one of: shorten the identity provider's attribute <em>values</em>, narrow which attributes the row-security rules reference, or raise <code>AUTH_JWT_CLAIMS_MAX_BYTES</code>. Every dropped attribute name is logged, so the service logs tell you exactly what was trimmed.</p>
 <h2>JIT user creation</h2>
 <p>When a user authenticates via SSO for the first time and no local user record exists, Tessallite automatically creates one. The new user&#x27;s:</p>
 <ul><li><strong>Email</strong> comes from the SAML assertion or OIDC ID token.</li><li><strong>Display name</strong> comes from the mapped attribute/claim (if configured).</li><li><strong>Auth source</strong> is set to <code>saml</code> or <code>oidc</code>.</li><li><strong>Role</strong> is determined by group-to-role mappings, falling back to the JIT default role.</li></ul>

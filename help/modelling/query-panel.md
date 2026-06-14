@@ -37,6 +37,20 @@ The route trace explains whether Tessallite used an aggregate, a pocket table, o
 
 ---
 
+## Saving and reusing a query
+
+A query you run often can be saved to the model's **Saved Queries** so you — and your teammates — can re-run it without retyping it. Give the query a name and an optional description and save it. Saved queries belong to the **model**, not to one person, so anyone with access to the model sees the same list and can run any of them.
+
+Because the list is shared, *changing* or *deleting* a saved query is governed:
+
+- You may always edit or delete a query **you** created.
+- A **Modeller** (or higher) may edit or delete **any** saved query on the model.
+- A Viewer who did not create a query cannot change or delete it — the panel shows the server's message ("Only the query owner or a modeler can modify this saved query") rather than failing silently.
+
+Deleting always asks you to **confirm first**, because a delete cannot be undone and the query is shared with everyone on the model.
+
+---
+
 ## Related
 
 - [Measure Query Panel](measure-query-panel.md)
@@ -45,4 +59,4 @@ The route trace explains whether Tessallite used an aggregate, a pocket table, o
 
 ---
 
-← [Measure Query Panel](measure-query-panel.md) | [Home](../index.md) | [Live vs Aggregate →](../querying/live-vs-aggregate.md)
+← [Pivot Conditional Formatting](pivot-conditional-formatting.md) | [Home](../index.md) | [Live vs Aggregate →](../querying/live-vs-aggregate.md)

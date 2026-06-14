@@ -22,6 +22,9 @@
     <h2>Time hierarchy fields</h2>
     <p>For time hierarchies, set the dimension kind to <strong>time</strong> and choose the calendar type when period calculations matter. Fiscal and ISO calendars change the meaning of year, week, quarter, and period-to-date variants.</p>
     <p>Time units on levels are what let measures support variants such as YTD, prior year, moving windows, and period-to-date calculations.</p>
+    <h2>Generated attributes are managed for you</h2>
+    <p>When a date hierarchy generates levels such as year, quarter, month, or week, Tessallite also creates the matching attributes on the table for you. These are <strong>generated attributes</strong>: their formula is written and kept up to date by the hierarchy itself, so you do not edit it by hand.</p>
+    <p>If you open such an attribute in the table editor, the <strong>expression box is locked</strong> and the formula-building tools are hidden, with a note explaining that the attribute came from a date hierarchy. You can still rename it, change its description, or adjust its output type — only the <em>formula</em> is protected. This is deliberate: it stops a later change to the hierarchy from colliding with a hand edit, which would otherwise silently drift the two apart. To change what the formula does, edit the <strong>hierarchy</strong>, not the attribute, and the generated attributes update with it.</p>
     <h2>Health checks</h2>
     <p>The panel checks whether hierarchy levels still point to valid attributes, whether required time metadata is present, and whether generated levels can be interpreted by the query compiler. Resolve hierarchy warnings before relying on time variants or drill paths.</p>
     <h2>Related</h2>

@@ -4,7 +4,7 @@
 
 ## What this covers
 
-Tessallite can send email and Slack notifications when platform lifecycle events occur: aggregate refresh failures, schema drift, SLA breaches, query failure spikes, and aggregate retirements. This page explains how alert routing works, how to configure routes, and best practices for operational alerting.
+Tessallite can send email and Slack notifications when platform lifecycle events occur: aggregate refresh failures, schema drift, SLA breaches, query failure spikes, aggregate retirements, and upstream refresh failures. This page explains how alert routing works, how to configure routes, and best practices for operational alerting.
 
 ## How alerting works
 
@@ -25,6 +25,7 @@ When a lifecycle event fires, the dispatcher looks up all enabled notification r
 | **SLA Breach** | The hourly SLA monitor finds an aggregate whose freshness exceeds the configured SLA threshold. | Check the SLA Configuration panel for the breached aggregate. Verify the source database is accessible and the refresh schedule is running. |
 | **Query Failure Spike** | More than 10 queries fail within a 5-minute window in the query-router. | Check the Query Log for the error pattern. Common causes: source database down, credential rotation, or connection pool exhaustion. |
 | **Aggregate Retired** | The daily retirement sweep removes aggregates that exceed the per-model cap. | Review the retired aggregates in the Diagnostics panel. If important aggregates were retired, increase the model's aggregate limit. |
+| **Upstream Refresh Failed** | A scheduled refresh did not run because an upstream refresh it depends on failed first. | Fix the upstream refresh, then re-run the dependent job. Check the Scheduler Dependencies for the chain order — a failure early in the chain blocks everything that depends on it. |
 
 ## Configuring alert routes
 

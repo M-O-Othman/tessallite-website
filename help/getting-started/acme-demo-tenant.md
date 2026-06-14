@@ -16,9 +16,10 @@ It supersedes the legacy `acme-test` fixture. `acme-test` scripts remain in `tes
 ## What it contains
 
 - One project (`project1`).
-- Two models in that project:
-  - `modelx` — small smoke model: one fact, three measures, one persona, one row-security rule.
-  - `modely` — comprehensive model: two facts, snowflake dims, time + geo hierarchies, twelve measures (sum / avg / calculated / currency + percent formats / six time variants), three personas, two row-security rules (mapping + role predicate), two pocket tables, three predictive aggregates with one demand-driven, three lifecycle events, ten drill-through sets, five glossary entries.
+- Five models in that project. Two are the primary worked examples used throughout this help and the end-to-end test suite:
+  - `ModelX` — small smoke model: one fact, a handful of measures, one persona, one row-security rule. The simplest model to read when you are learning the canvas.
+  - `modely` — comprehensive model: two facts, snowflake dimensions, time + geo hierarchies, many measures (sum / avg / calculated / currency + percent formats / time variants), three personas, two row-security rules (mapping + role predicate), pocket tables, predictive aggregates (including a demand-driven one), lifecycle events, drill-through sets, and glossary entries. This is the model that exercises nearly every feature.
+  - The remaining three — `Model L`, `onboarding`, and `inventory` — are additional sample models added so the demo tenant shows a realistic multi-model workspace (a fuller catalogue, more dimensions, and varied measure counts) rather than just two. They are good for exploring the Explorer and model-switching, but `modely` remains the reference for feature walkthroughs.
 - Source schema `acme_demo_src` and target schema `acme_demo_target` in `tessallite_system`. Both are recreated on every reseed.
 
 ---
@@ -28,7 +29,7 @@ It supersedes the legacy `acme-test` fixture. `acme-test` scripts remain in `tes
 The deploy step seeds it automatically. On `tessallite/deploy/local/steps/06_sample_data.sh` (and the GCP equivalent in `09_sample_data.sh`), after the legacy `demo_data` load:
 
 1. Source and target schemas are loaded from `deploy/Sample-db/acme-demo/*.sql`.
-2. The acme-demo tenant is reset, the project + four connections are created, then both models are re-imported from the JSON bundles in `tessallite/seeds/acme-demo/`.
+2. The acme-demo tenant is reset, the project + four connections are created, then all five models are re-imported from the seed bundle `tessallite/seeds/acme-demo/project.json` (a single project export containing every model; older builds used separate per-model JSON files).
 
 The seed is conditional on `SYSTEM_DATABASE_URL` and `CREDENTIAL_ENCRYPTION_KEY` being set. If the seed assets are missing, the deploy step prints a notice and continues.
 
@@ -56,9 +57,9 @@ Re-running against an unchanged codebase produces zero diff.
 
 1. Modify `tessallite/scripts/bootstrap_acme_demo_models.py` to add the feature.
 2. Run `bash scripts/regenerate-acme-demo-seeds.sh`.
-3. Commit the changed `tessallite/seeds/acme-demo/{modelx,modely}.json` and `MANIFEST.sha256`.
+3. Commit the changed `tessallite/seeds/acme-demo/project.json` and `MANIFEST.sha256`.
 
-The committed JSON is the source of truth. Container deploys re-import from those files; they do not re-run the bootstrap step.
+The committed `project.json` is the source of truth. Container deploys re-import from it; they do not re-run the bootstrap step.
 
 ---
 

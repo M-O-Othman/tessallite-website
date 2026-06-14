@@ -33,7 +33,8 @@
 <p>Weeks start on Monday, numbered 1-52 (occasionally 53). Week 1 is the week containing the first Thursday of January. This means January 1 can fall in ISO week 52 or 53 of the previous year — a subtlety that breaks naive <code>EXTRACT(WEEK FROM date)</code> in many SQL dialects.</p>
 <p><strong>Who uses it:</strong> Logistics, manufacturing, EU government reporting, any context where &quot;week&quot; must be unambiguous across borders and systems.</p>
 <h3>Retail 4-4-5</h3>
-<p>The NRF (National Retail Federation) calendar divides the year into 4-week and 5-week periods following a 4-4-5 pattern within each quarter. Periods do not align with calendar months. A &quot;retail month&quot; is either 4 or 5 weeks long, and the retail year may start on the first Saturday of February (the most common convention) or another anchor day.</p>
+<p>The NRF (National Retail Federation) calendar divides the year into 4-week and 5-week periods following a 4-4-5 pattern within each quarter. Periods do not align with calendar months: a &quot;retail month&quot; is either 4 or 5 weeks long.</p>
+<p>Because this week-and-period grid <strong>cannot</strong> be derived by ordinary date arithmetic, a retail 4-4-5 calendar <strong>requires a physical calendar table</strong> to be bound to the time hierarchy. Tessallite reads the period and year boundaries straight from that table's pre-computed columns rather than computing them from a formula — which also means the exact retail-year start date is whatever your calendar table defines, not a value Tessallite guesses. If you select the retail calendar type but no calendar table is bound, the query <strong>fails loudly with a clear error</strong> rather than silently falling back to ordinary months and returning wrong numbers.</p>
 <p><strong>Who uses it:</strong> Retail chains, CPG companies, any business that needs like-for-like weekly comparisons across years without the distortion of months having different numbers of days.</p>
 <p><strong>Key concept — period vs month:</strong> In a 4-4-5 calendar, &quot;Period 1&quot; is the first 4-week block of Q1, not January. Retail reports labelled &quot;monthly&quot; are actually period reports. Mixing retail periods with standard months in the same pivot query produces meaningless numbers.</p>
 <h3>Hijri (Islamic)</h3>
@@ -50,7 +51,7 @@
 <p><strong>When one is enough:</strong> If all your time-intelligence variants use the same calendar system, one hierarchy with one calendar type is sufficient. Don&#x27;t create extra hierarchies &quot;just in case&quot; — each one adds complexity to the variant resolver.</p>
 <h2>Related</h2>
 <ul><li><a href="../modelling/configure-calendar-table.html">Configure Calendar Table</a></li><li><a href="../modelling/associate-calendar-with-dimensions.html">Associate Calendar with Dimensions</a></li><li><a href="../modelling/configure-time-variants.html">Configure Time Variants</a></li><li><a href="../modelling/multi-calendar-best-practices.html">Multi-Calendar Best Practices</a></li></ul>
-<nav class="page-nav"><a href="roles-and-permissions.html" class="page-nav-btn prev">&larr; Roles and Permissions</a><a href="../index.html" class="page-nav-btn home">Home</a><a href="../modelling/create-a-project.html" class="page-nav-btn next">Create a Project &rarr;</a></nav>
+<nav class="page-nav"><a href="roles-and-permissions.html" class="page-nav-btn prev">&larr; Roles and Permissions</a><a href="../index.html" class="page-nav-btn home">Home</a><a href="kpis.html" class="page-nav-btn next">KPIs &rarr;</a></nav>
   </main>
   <footer class="site-footer"><p>Tessallite Help — <a href="../index.html">Back to contents</a></p></footer>
 </body>

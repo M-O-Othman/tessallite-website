@@ -2,7 +2,7 @@
 title: "Data Tags"
 audience: modeller
 area: modelling
-updated: 2026-05-04
+updated: 2026-06-12
 ---
 
 ## What this covers
@@ -32,16 +32,18 @@ Tags are for access control and governance, not data classification. They tell T
 2. Click **Add Tag**.
 3. Enter a **tag name** (e.g. `PII`, `Financial`, `Internal Only`).
 4. Optionally enter a **description** explaining what the tag means and who should have access.
-5. Click **Save**.
+5. Assign columns in the **Columns** section (you can also do this later — see below).
+6. Click **Create**.
 
 ---
 
 ## Assigning columns to a tag
 
-1. Open a tag from the Data Tags panel.
-2. Click **Add Columns**.
-3. Select columns from the table/column picker. Columns are listed as `table_name.column_name`.
-4. Click **Save**. The tagged columns now show a tag chip in the Table Details drawer.
+1. In the Data Tags panel, click the edit (pencil) icon on the tag — or do this while creating it.
+2. In the **Columns** section of the dialog, choose a **Table** from the dropdown.
+3. Tick the columns the tag should cover. Each assigned column appears as a chip labelled `table_name.column_name`; click the chip's × to remove it.
+4. Repeat with other tables if the tag spans more than one.
+5. Click **Update** (or **Create**). The tagged columns now show a tag chip in the table editor's **Attributes** tab.
 
 You can assign the same column to multiple tags (e.g. `customers.email` could be both `PII` and `Contact Info`).
 
@@ -63,7 +65,7 @@ Whichever strategy you choose, apply it consistently. Mixed strategies make pers
 
 ## Viewing tags in the model
 
-Tagged columns display a small tag chip next to the column name in the Table Details drawer. The lineage graph shows a "N tagged cols" count on semantic nodes that have tagged columns.
+Tagged columns display a small tag chip next to the column name in the table editor's **Attributes** tab (double-click a table on the canvas to open it). The lineage graph shows a "N tagged cols" count on semantic nodes that have tagged columns. The Data Tags panel itself lists every tag with its assigned columns — expand a tag row to see them.
 
 ---
 

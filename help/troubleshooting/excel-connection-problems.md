@@ -59,4 +59,4 @@ Any HTTP response (even a server-side error) confirms the port is reachable. A t
 
 ---
 
-← [Embed Agent Chat](../integrations/embed-agent-chat.md) | [Home](../index.md) | [Query Returns Wrong Results →](query-returns-wrong-results.md)
+← [Collibra Integration](../integrations/collibra-integration.md) | [Home](../index.md) | [Query Returns Wrong Results →](query-returns-wrong-results.md)

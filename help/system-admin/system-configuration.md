@@ -2,7 +2,7 @@
 title: "System Configuration"
 audience: system-admin
 area: system-admin
-updated: 2026-04-18
+updated: 2026-05-28
 ---
 
 # System Configuration
@@ -13,7 +13,29 @@ updated: 2026-04-18
 
 ## What this covers
 
-The Configuration tab in System Admin lets you tune every platform-wide setting that used to be hardcoded in source: scheduler cadences, gateway timeouts, rate-limit binding, XMLA session cache, optimizer thresholds, result-row caps, schema-drift cadence, LLM provider routing, and frontend defaults. It also surfaces the read-only Bootstrap (env-only) panel so you can verify the values that came from the `.env` file at process start.
+The Configuration tab in System Admin lets you tune platform-wide settings across five sections: authentication, daily maintenance schedule, query timeouts, result limits and rate limiting, and a read-only view of the environment variables from the `.env` file.
+
+## Tabs
+
+| Tab | Purpose |
+|---|---|
+| **Auth** | Session lifetime and security settings. |
+| **Daily schedule** | What time each daily maintenance task runs (aggregate cleanup, source schema check, AI advisor, predictive aggregate check, pocket table cleanup). Each shows a time picker in UTC. |
+| **Timeouts** | Source database connect timeout and query timeout. |
+| **Ceilings** | Maximum result rows, chunk size, tenant query rate limiting. |
+| **Environment** | Read-only view of values from the host `.env` file (database DSN, JWT key, ports, CORS). |
+
+## Rate limiting and the per-replica ceiling
+
+The **Ceilings** section sets two rate limits: the number of requests each tenant may make per minute (`rate_limit.per_minute`), and a stricter ceiling on login attempts per client address per minute (`rate_limit.login_per_minute`, which slows password guessing). When a caller exceeds either limit, the platform returns HTTP 429 with a `Retry-After` header and stops serving them until the minute rolls over. The master switch `rate_limit.enabled` turns enforcement on or off, and changes take effect immediately — no restart.
+
+There is one thing to understand before you rely on these ceilings in production. **The limit is counted per replica.** Each running copy of a service (each worker process, or each instance when the platform scales out — for example on Cloud Run) keeps its own private tally in memory. If you run three replicas, a tenant can make up to three times the configured number of requests per minute, because each replica only sees a third of the traffic and none of them share a running total. The counters also reset to zero whenever a replica restarts or a new one starts up.
+
+This is fine for a single-instance deployment (the usual local or small setup), where there is exactly one replica and the configured number is the real ceiling. It matters once you scale horizontally and want a single, shared ceiling across every replica. To get that, point the `RATE_LIMIT_STORAGE_URI` environment variable (in the host `.env`, shown read-only on the **Environment** tab) at a shared store such as a Redis or Memcached server — for example `redis://my-redis-host:6379/0`. With a shared store configured, all replicas count against the same buckets and the configured number becomes the true platform-wide ceiling. Leaving `RATE_LIMIT_STORAGE_URI` empty keeps the default per-replica in-memory behaviour.
+
+**Tip:** if you are seeing more requests get through than the number you set, count your replicas first — the most common cause is the per-replica tally, not a broken limit. Either set `RATE_LIMIT_STORAGE_URI` to a shared store, or pin the replica count, or simply divide your intended ceiling by the number of replicas.
+
+Internal service-to-service traffic (for example the gateway relaying a BI query to the model service) is intentionally exempt from these limits, so throttling never breaks the query pipeline for connected BI tools.
 
 ## Who can edit it
 
@@ -34,15 +56,15 @@ Every setting on this page is the platform default. A tenant admin can override 
 
 ![Yellow restart-required banner with the How to restart link.](../assets/screencaps/system-restart-banner.png)
 
-Some settings — scheduler cadences, gateway listen ports, the rate-limit binding, the XMLA session cache file, the Vite dev server, and the frontend default endpoint ports — can only take effect when the relevant service process restarts. Saving any of these flags appends an entry to the "restart-pending" list and shows a yellow banner at the top of the page listing the recently-changed keys.
+Some settings — daily schedule times — can only take effect when the scheduler service restarts. Saving any of these shows a yellow banner at the top of the page listing the recently-changed keys.
 
 The **How to restart** button on that banner opens a dialog with the docker-compose / systemd procedure. After restarting, return to the Configuration tab and click **Mark all as applied** to clear the banner.
 
-## Bootstrap (env-only) panel
+## Environment tab
 
-![System Configuration — read-only Bootstrap (env-only) panel.](../assets/screencaps/bootstrap-env-panel.png)
+![System Configuration — read-only Environment panel.](../assets/screencaps/bootstrap-env-panel.png)
 
-Scroll to the bottom of the Configuration tab for the read-only Bootstrap panel. Every value here comes from the host's `.env` file and is needed before the database is even reachable: the system DB DSN, the Fernet credential-encryption key, the JWT signing key, the system administrator's email and password, the gateway's JDBC and XMLA ports, the internal service URLs, and the CORS allow-list. Secrets are masked (`***** (32 chars)`) and the DSN's password is redacted, so a passing operator can verify what is in effect without exposing credentials.
+The Environment tab shows read-only values from the host's `.env` file: the system DB DSN, the Fernet credential-encryption key, the JWT signing key, the system administrator's email and password, the gateway's JDBC and XMLA ports, the internal service URLs, and the CORS allow-list. Secrets are masked (`***** (32 chars)`) and the DSN's password is redacted, so an operator can verify what is in effect without exposing credentials.
 
 To change any of these values, edit `.env` on the host and restart the affected service (or the whole stack with `docker compose restart`). See [Credentials and the .env file](credentials-and-env.md) for the full procedure.
 
@@ -56,6 +78,7 @@ python tessallite/scripts/gen_config_reference.py
 
 ## Related
 
+- [Configure Environment Variables](configure-environment-variables.md)
 - [Credentials and the .env file](credentials-and-env.md)
 - [Workspace settings (tenant level)](../admin/workspace-settings.md)
 - [Project settings](../admin/project-settings.md)

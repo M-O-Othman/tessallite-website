@@ -31,7 +31,7 @@ A recipe is a small JSON document a modeller authors. It has:
 - **A name and description.** Human-readable. The description is what the answer LLM reads when deciding whether to call the recipe.
 - **Parameters.** Named placeholders the user's question fills in (typically a time window, a region, a category).
 - **Steps.** An ordered list of single-model queries. Each step pins to a model in the project's allow-list, names its measures, dimensions, filters, and limit, and is given a step name.
-- **A combine expression.** A short formula that combines the step results into a single value or table. Common combines: `step_a / step_b`, `step_a - step_b`, or no combine when the recipe simply runs the queries side-by-side.
+- **A combine expression.** A short formula that combines the step results into a single value or table. Reference each step's measure with a dot: `step_a.revenue / step_b.qty`, `step_a.amount - step_b.amount`, or leave the combine empty when the recipe simply runs the queries side-by-side. The editor checks the expression when you save: every step name and measure you reference must exist on the steps.
 - **Notes.** Free text. Read by the judge as a hint about what good output looks like.
 
 Recipes live under *Tenant Administration → Projects → \<project> → Conversational agent → Recipes*. The same surface is exposed via the recipes API.
@@ -89,7 +89,7 @@ A worked example. The recipe answers "what is inventory turnover for [time windo
       "limit": 1
     }
   ],
-  "combine": "cogs / avg_inventory",
+  "combine": "cogs.cogs / avg_inventory.avg_inventory",
   "notes": "Express the answer as a unitless ratio with two decimal places. Mention the window."
 }
 ```
@@ -109,7 +109,8 @@ The answer LLM is shown the description and parameters of every recipe in the pr
 
 ## Common pitfalls
 
-- **Mismatched grains.** Daily and monthly facts combined without re-grain produce numbers that look right but are off by an order of magnitude. Filter to a common grain in each step's filters before combining.
+- **Mismatched grains.** When two steps return different dimension sets, the engine combines them against the *finest* shared grain. A step that returns a single value — for example a company-wide total — is **broadcast** across every row of the more detailed step, so each detailed row gets the correct combined value rather than the total being applied once and the rest silently dropped. Where the grains genuinely cannot be lined up — neither is a clean refinement of the other — the engine does **not** guess: it returns the rows as a visible **stack** instead of a single combined number, so you can see at a glance that the combine did not line up. If you see a stacked result where you expected one number, re-grain the steps (filter each step to a common dimension set) so the combine has an unambiguous shape.
+- **Empty step results.** The scalar functions a combine can use (`round`, `abs`, `min`, `max`, `sum`) pass a missing value straight through as a blank result instead of erroring — so a step that returns no rows yields a blank combined answer rather than crashing the whole turn. Division by zero behaves the same way: it produces a blank, not an error. If a blank should be read as "no data" rather than "zero", say so in the recipe note so the narration explains it.
 - **Hard-coded time windows.** Embedding "last 30 days" in the steps locks the recipe to one window. Use a parameter instead.
 - **Combines that hide divisions by zero.** If the denominator step can return zero, add a note in the recipe so the narration explicitly handles it.
 - **Recipes that wrap a single query.** If the recipe has one step and no combine, it is just a query. Use a query.

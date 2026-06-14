@@ -40,4 +40,4 @@ Use Agent Chat for exploration and explanation. Switch to Model Builder when the
 
 ---
 
-← [Export and Import a Project](../modelling/export-and-import-a-project.md) | [Home](../index.md) | [Configure your project agent →](configure-agent.md)
+← [Model Translations](../modelling/model-translations.md) | [Home](../index.md) | [Configure your project agent →](configure-agent.md)

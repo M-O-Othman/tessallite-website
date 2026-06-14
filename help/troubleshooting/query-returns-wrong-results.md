@@ -60,6 +60,17 @@ Run the equivalent query directly against the source database (bypassing Tessall
 
 ---
 
+## A query now returns an error where it used to "work"
+
+Tessallite was deliberately made stricter, so a couple of cases that used to be *guessed* silently now fail with a clear error instead. If a query that ran before now errors, this is usually why — and the error is the safer outcome:
+
+- **An unrecognised filter operator is rejected** instead of being quietly treated as equals (`=`). Previously a typo or an unsupported operator could slip through as an equality match and return the wrong rows; now it stops with an error. Check the operator on the filter and use one the model supports.
+- **Sorting by a column the query does not actually select is rejected** instead of being matched to a guessed table. Previously an `ORDER BY` on an unknown column could be silently bound to the wrong column; now it errors. Add the column to the query, or sort by one that is already present.
+
+A clear error is better than a result that *looks* right but was built on a guess. Fix the operator or the sort column and re-run — you are not losing a feature, you are being protected from a silently wrong answer.
+
+---
+
 ## Related
 
 - [Query Routing](../concepts/query-routing.md)

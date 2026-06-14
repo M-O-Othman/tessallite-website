@@ -12,13 +12,13 @@
     <nav class="breadcrumb"><a href="../index.html">Home</a> / <span>Admin</span> / <span>Model-Scoped RBAC</span></nav>
   </header>
   <main class="article">
-    <div class="article-meta"><span class="audience-badge">tenant_admin</span><span class="updated">Updated 2026-05-02</span></div>
+    <div class="article-meta"><span class="audience-badge">tenant_admin</span><span class="updated">Updated 2026-06-12</span></div>
     <h1>Model-Scoped RBAC</h1>
 <h2>What this covers</h2>
 <p>Model-scoped RBAC lets you grant a user a different access level on a specific model than they have at the project level. This page explains the binding hierarchy, the fallback rules, and when model-scoped bindings are the right tool.</p>
 <h2>The binding hierarchy</h2>
 <p>Access in Tessallite is determined by checking bindings in this order:</p>
-<ol><li><strong>Model-scoped binding</strong> — <code>user_access_bindings</code> with <code>model_id</code> set. Takes precedence for operations on that specific model.</li><li><strong>Project-scoped binding</strong> — <code>user_access_bindings</code> with <code>project_id</code> set and <code>model_id</code> null. Used when no model-scoped binding exists.</li><li><strong>Bootstrap rule</strong> — A <code>tenant_admin</code> user can access any model even with no explicit binding.</li></ol>
+<p><strong>Workspace-admin bypass:</strong> <code>tenant_admin</code> and <code>system_admin</code> users skip binding checks entirely and can access any project and model. For everyone else, bindings are checked in this order:</p><ol><li><strong>Model-scoped binding</strong> — <code>user_access_bindings</code> with <code>model_id</code> set. Takes precedence for operations on that specific model.</li><li><strong>Project-scoped binding</strong> — <code>user_access_bindings</code> with <code>project_id</code> set and <code>model_id</code> null. Used when no model-scoped binding exists.</li><li><strong>Bootstrap rule</strong> — If the project has <strong>no bindings at all</strong>, any signed-in workspace user is treated as the project&#x27;s admin. This open period ends the moment the first binding is saved, and each use is recorded in the audit log as <code>rbac.bootstrap_admin_grant</code>. See <a href="manage-roles.html">Manage Roles — the bootstrap rule</a> for why this is deliberate and how to close it early.</li></ol>
 <p>If none of these match, the request is rejected with 403.</p>
 <h2>Why model-scoped bindings exist</h2>
 <p>The typical use case is a project with multiple models where different teams own different models:</p>

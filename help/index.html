@@ -84,6 +84,10 @@
         <h3>Connect Excel via XMLA</h3>
         <p>Connect Microsoft Excel via XMLA and build a pivot table.</p>
       </a>
+      <a href="getting-started/tessallite-features.html" class="nav-card">
+        <h3>Tessallite Features</h3>
+        <p>Complete reference of every feature with descriptions and where to find it.</p>
+      </a>
     </div>
     <h2>Core Concepts</h2>
     <p>Core ideas behind Tessallite. Read this section before building or governing models.</p>
@@ -97,6 +101,7 @@
       <li><a href="concepts/model-health.html">Model Health</a></li>
       <li><a href="concepts/roles-and-permissions.html">Roles and Permissions</a></li>
       <li><a href="concepts/calendar-types.html">Calendar Types</a></li>
+      <li><a href="concepts/kpis.html">KPIs (Key Performance Indicators)</a></li>
     </ul>
     <h2>Modelling</h2>
     <p>Step-by-step walkthroughs for every major task in Model Builder.</p>
@@ -108,18 +113,21 @@
       <li><a href="modelling/source-statistics.html">Source Statistics</a></li>
       <li><a href="modelling/table-auto-analysis.html">Table Auto-Analysis</a></li>
       <li><a href="modelling/model-canvas-tour.html">Model Canvas Tour</a></li>
+      <li><a href="modelling/canvas-undo-redo.html">Canvas Undo/Redo</a></li>
       <li><a href="modelling/define-joins.html">Define Joins</a></li>
       <li><a href="modelling/define-hierarchies.html">Define Hierarchies</a></li>
       <li><a href="modelling/define-dimensions.html">Define Dimensions</a></li>
       <li><a href="modelling/dimension-aliases.html">Dimension Aliases</a></li>
       <li><a href="modelling/business-glossary.html">Business Glossary</a></li>
       <li><a href="modelling/define-measures.html">Define Measures</a></li>
+      <li><a href="modelling/semi-additive-measures.html">Semi-Additive Measures</a></li>
       <li><a href="modelling/calculated-measures.html">Calculated Measures</a></li>
       <li><a href="modelling/configure-time-variants.html">Configure Time Variants</a></li>
       <li><a href="modelling/configure-calendar-table.html">Configure Calendar Table</a></li>
       <li><a href="modelling/associate-calendar-with-dimensions.html">Associate Calendar with Dimensions</a></li>
       <li><a href="modelling/multi-calendar-best-practices.html">Multi-Calendar Best Practices</a></li>
       <li><a href="modelling/measure-query-panel.html">Measure Query Panel</a></li>
+      <li><a href="modelling/pivot-conditional-formatting.html">Pivot Conditional Formatting</a></li>
       <li><a href="modelling/query-panel.html">Query Panel</a></li>
       <li><a href="querying/live-vs-aggregate.html">Live vs Aggregate</a></li>
       <li><a href="modelling/drill-through.html">Drill-through</a></li>
@@ -132,6 +140,7 @@
       <li><a href="modelling/configure-pocket-tables.html">Configure Pocket Tables</a></li>
       <li><a href="modelling/run-a-refresh.html">Run a Refresh</a></li>
       <li><a href="modelling/manage-aggregate-schedules.html">Manage Aggregate Schedules</a></li>
+      <li><a href="modelling/scheduler-dependencies.html">Scheduler Dependencies</a></li>
       <li><a href="modelling/use-the-ai-optimiser.html">Use the AI Optimiser</a></li>
       <li><a href="modelling/usage-analytics.html">Usage Analytics</a></li>
       <li><a href="modelling/configure-row-security.html">Configure Row Security</a></li>
@@ -141,6 +150,8 @@
       <li><a href="modelling/parameterized-filters.html">Parameterized Filters</a></li>
       <li><a href="modelling/data-quality-rules.html">Data Quality Rules</a></li>
       <li><a href="modelling/impact-analysis.html">Impact Analysis</a></li>
+      <li><a href="modelling/named-sets.html">Named Lists (Named Sets)</a></li>
+      <li><a href="modelling/kpis.html">KPIs</a></li>
       <li><a href="modelling/data-preview.html">Data Preview</a></li>
       <li><a href="modelling/schema-changes.html">Schema Changes</a></li>
       <li><a href="modelling/view-model-lineage.html">View Model Lineage</a></li>
@@ -149,6 +160,11 @@
       <li><a href="modelling/deploy-a-model.html">Deploy a Model</a></li>
       <li><a href="modelling/export-and-import-a-model.html">Export and Import a Model</a></li>
       <li><a href="modelling/export-and-import-a-project.html">Export and Import a Project</a></li>
+      <li><a href="modelling/import-from-dbt.html">Import from dbt</a></li>
+      <li><a href="modelling/import-from-semantic-layer.html">Import from a Semantic Layer Tool</a></li>
+      <li><a href="modelling/model-templates.html">Model Templates</a></li>
+      <li><a href="modelling/model-translations.html">Model Translations (i18n)</a></li>
+      <li><a href="modelling/model-details.html">Model Details</a></li>
     </ul>
     <h2>Conversational Agent</h2>
     <p>Project-level conversational agent setup, scoping, quality control, recipes, and logs.</p>
@@ -161,6 +177,8 @@
       <li><a href="agent/cross-model-recipes.html">Cross-model calculation recipes</a></li>
       <li><a href="agent/agent-log-screen.html">Agent log screen</a></li>
       <li><a href="agent/session-memory.html">Agent Session Memory</a></li>
+      <li><a href="agent/agent-export.html">Agent Conversation Export</a></li>
+      <li><a href="agent/agent-stop-button.html">Agent Stop Button</a></li>
     </ul>
     <h2>Admin</h2>
     <p>Workspace administration: users, roles, settings, SSO, webhooks, audit trails, and operational policies.</p>
@@ -179,7 +197,7 @@
       <li><a href="admin/group-mappings.html">SSO Group Mappings</a></li>
       <li><a href="admin/webhooks.html">Webhooks</a></li>
       <li><a href="admin/security-audit-trail.html">Security Audit Trail</a></li>
-      <li><a href="admin/scheduler-sla.html">Scheduler SLA Declarations</a></li>
+      <li><a href="admin/scheduler-sla.html">Refresh SLA Declarations</a></li>
     </ul>
     <h2>System Admin</h2>
     <p>Platform deployment, configuration, service operation, credentials, and upgrade procedures.</p>
@@ -193,12 +211,20 @@
       <li><a href="system-admin/service-reference.html">Service Reference</a></li>
       <li><a href="system-admin/teardown.html">Teardown</a></li>
       <li><a href="system-admin/upgrade.html">Upgrade</a></li>
+      <li><a href="system-admin/monitoring-stack.html">Monitoring Stack (Prometheus &amp; Grafana)</a></li>
     </ul>
     <h2>Integrations</h2>
     <p>Connection guides and API references for BI tools and programmatic clients.</p>
     <ul>
       <li><a href="integrations/jdbc-connection-guide.html">JDBC Connection Guide</a></li>
+      <li><a href="integrations/looker-studio-connection-guide.html">Looker Studio Direct Connection</a></li>
+      <li><a href="integrations/looker-studio-via-looker-guide.html">Optional Looker-hosted LookML Workflow</a></li>
+      <li><a href="integrations/lookml-emitter-guide.html">LookML Emitter</a></li>
       <li><a href="integrations/excel-xmla-connection-guide.html">Excel XMLA Connection Guide</a></li>
+      <li><a href="integrations/excel-pivottable-features.html">Excel PivotTable Features</a></li>
+      <li><a href="integrations/excel-add-in.html">Tessallite Excel Add-in</a></li>
+      <li><a href="integrations/named-list-mdx-composition.html">Named List MDX Composition</a></li>
+      <li><a href="integrations/named-list-parameterisation.html">Named List Parameterisation</a></li>
       <li><a href="integrations/powerbi-connection-guide.html">Power BI Connection Guide</a></li>
       <li><a href="integrations/bi-compatibility.html">BI Tool Compatibility Matrix</a></li>
       <li><a href="integrations/supported-data-sources.html">Supported Data Sources</a></li>
@@ -207,6 +233,9 @@
       <li><a href="integrations/headless-api.html">Headless API</a></li>
       <li><a href="integrations/embed-api.html">Embed API</a></li>
       <li><a href="integrations/embed-agent-chat.html">Embed Agent Chat</a></li>
+      <li><a href="integrations/mcp-server.html">MCP Server (Model Context Protocol)</a></li>
+      <li><a href="integrations/solidatus-integration.html">Solidatus Integration</a></li>
+      <li><a href="integrations/collibra-integration.html">Collibra Integration</a></li>
     </ul>
     <h2>Troubleshooting</h2>
     <p>Diagnostic guidance for common connection, query, refresh, and service problems.</p>

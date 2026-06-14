@@ -2,7 +2,7 @@
 title: "Export and Import a Model"
 audience: modeller
 area: modelling
-updated: 2026-04-18
+updated: 2026-05-28
 ---
 
 ![Explorer page showing Add Model and Import buttons.](../assets/screencaps/explorer-import-button.png)
@@ -21,12 +21,20 @@ You can export any model as a single JSON file and import it into the same proje
 
 ---
 
+## Opening the dialog
+
+Both model export and import are accessed from a single **Import / Export** button (swap-arrows icon) in the project toolbar in the Explorer, or in the Model Builder toolbar. Clicking this button opens a dialog with two tabs: **Import** and **Export**.
+
+---
+
 ## Exporting a model
 
-1. Open the Model Builder for the model you want to export.
-2. On the toolbar, click the **Export** button (down-arrow into tray icon).
-3. Tessallite downloads a file named `{model_slug}.tessallite.json` to your browser's download folder.
-4. The file is a single JSON document containing every per-model row — tables, columns, joins, hierarchies, dimensions, measures, aggregates, refresh policies, AI scheduler config, model settings, and the canvas layout.
+1. Click the **Import / Export** button in the project toolbar (Explorer) or Model Builder toolbar.
+2. Switch to the **Export** tab.
+3. Select a format from the dropdown: **Tessallite Model (.json)**, **Tessallite YAML (.zip)**, or **LookML (.zip)**.
+4. For Tessallite Model format, click the model you want to export from the list.
+5. Tessallite downloads a file named `{model_slug}.tessallite.json` to your browser's download folder.
+6. The file is a single JSON document containing every per-model row — tables, columns, joins, hierarchies, dimensions, measures, aggregates, refresh policies, AI scheduler config, model settings, and the canvas layout.
 
 The file does **not** contain credentials, query history, miss logs, alerts, or anything stored at tenant, project, or system scope.
 
@@ -34,16 +42,17 @@ The file does **not** contain credentials, query history, miss logs, alerts, or 
 
 ## Importing a model
 
-1. From the Explorer, select the project you want to import into.
-2. Click the **Import** button next to **Add Model**.
-3. In the dialog, click **Choose .tessallite.json file** and pick the export file.
-4. The dialog reads the bundle and shows:
+1. Click the **Import / Export** button in the project toolbar (Explorer) or Model Builder toolbar.
+2. The dialog opens on the **Import** tab by default.
+3. Select a format from the dropdown: **Tessallite Model (.json)**, **Tessallite YAML (.zip)**, **dbt (.yml / .zip)**, **Cube (.yml / .zip)**, or **AtScale SML (.zip)**.
+4. For Tessallite Model format, click **Choose .tessallite.json file** and pick the export file.
+5. The dialog reads the bundle and shows:
    - The original model's slug and display name (you can override either).
    - Every connection referenced by the bundle, with the source's display name and connection type.
-5. For each referenced connection, pick a local connection from the dropdown. Only connections of the matching type appear.
-6. Optionally tick **Deploy immediately after import** to save v1 and deploy in one click.
-7. Click **Import**. Tessallite creates a new model in the target project, rewrites every internal UUID, rebinds the connections, and (if you ticked Deploy) saves and deploys v1.
-8. The Explorer navigates to the new model.
+6. For each referenced connection, pick a local connection from the dropdown. Only connections of the matching type appear.
+7. Optionally tick **Deploy immediately after import** to save v1 and deploy in one click.
+8. Click **Import**. Tessallite creates a new model in the target project, rewrites every internal UUID, rebinds the connections, and (if you ticked Deploy) saves and deploys v1.
+9. The Explorer navigates to the new model.
 
 If the source slug already exists in the target project, Tessallite auto-suffixes (`sales`, `sales-2`, `sales-3`).
 

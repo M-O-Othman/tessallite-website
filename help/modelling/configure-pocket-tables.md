@@ -48,6 +48,23 @@ The pocket's source table list is not a stored field. It is parsed from the defi
 
 The default refresh strategy is **full refresh** — the pocket is rebuilt from scratch on each run. Optional incremental mode kicks in when `incremental_column` is set on the pocket.
 
+Incremental refresh re-reads only the rows whose incremental column changed inside the look-back window and adds or replaces them. It is fast, but it has blind spots you must understand: it does **not** remove rows that were *deleted* at the source, and it misses any update that leaves the incremental column unchanged or that falls outside the window. Treat incremental refresh as a quick top-up *between* full rebuilds, not a replacement for them — schedule a periodic full refresh as well, so deletes and stragglers are reconciled.
+
+---
+
+## Refresh trigger: schedule or source change
+
+Each pocket refreshes one of two ways, chosen by the **Refresh trigger** setting in the pocket drawer:
+
+- **On a schedule** — the pocket rebuilds on the cron schedule you set, just like an aggregate. Use this when the source updates on a predictable rhythm.
+- **On source change** — the pocket rebuilds automatically whenever the **source schema** for this model changes, with *no cron schedule at all*. Use this when structural changes to the source are the thing you actually need to keep up with, and you would rather not guess a cadence. (The daily drift sweep is what detects the change and fires the rebuild, so a source-change refresh happens shortly after the change is noticed, not the instant it occurs.)
+
+---
+
+## When a pocket stops earning its keep
+
+A pocket that has been refreshed but that **no query has matched since its last refresh** is flagged with a "No matches since refresh" badge, and the panel raises a model-level alert counting how many pockets are in that state, along with the most common reason queries skipped them over the last seven days. A fresh pocket nothing routes to is pure cost — storage and refresh work for no benefit. Treat the badge as a prompt to re-scope the pocket's defining SQL so it matches the queries people actually run, or to retire it.
+
 ---
 
 ## The model-subset contract

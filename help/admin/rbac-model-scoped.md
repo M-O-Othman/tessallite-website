@@ -2,7 +2,7 @@
 title: "Model-Scoped RBAC"
 audience: tenant_admin
 area: admin
-updated: 2026-05-02
+updated: 2026-06-12
 ---
 
 ## What this covers
@@ -13,9 +13,10 @@ Model-scoped RBAC lets you grant a user a different access level on a specific m
 
 Access in Tessallite is determined by checking bindings in this order:
 
+0. **Workspace-admin bypass** — `tenant_admin` and `system_admin` users skip binding checks entirely and can access any project and model.
 1. **Model-scoped binding** — `user_access_bindings` with `model_id` set. Takes precedence for operations on that specific model.
 2. **Project-scoped binding** — `user_access_bindings` with `project_id` set and `model_id` null. Used when no model-scoped binding exists.
-3. **Bootstrap rule** — A `tenant_admin` user can access any model even with no explicit binding.
+3. **Bootstrap rule** — If the project has **no bindings at all**, any signed-in workspace user is treated as the project's admin. This open period ends the moment the first binding is saved, and each use is recorded in the audit log as `rbac.bootstrap_admin_grant`. See [Manage Roles — the bootstrap rule](manage-roles.md#open-project-access-before-the-first-binding-the-bootstrap-rule) for why this is deliberate and how to close it early.
 
 If none of these match, the request is rejected with 403.
 

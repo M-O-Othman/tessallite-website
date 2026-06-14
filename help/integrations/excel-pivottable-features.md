@@ -2,12 +2,32 @@
 title: "Excel PivotTable Features"
 audience: analyst
 area: Integrations
-updated: 2026-05-22
+updated: 2026-06-14
 ---
 
 ## What this covers
 
 Once Excel is connected to Tessallite over XMLA, the PivotTable behaves like any Analysis Services cube. This page covers the advanced PivotTable features Tessallite supports — value and label filters, Show Values As, timelines, calculated fields, drill-through, and `GETPIVOTDATA` — and how each maps onto the semantic model. To connect in the first place, see [Connect Excel via XMLA](../getting-started/connect-excel.md).
+
+**Why this matters.** Every one of these features is evaluated *in the source database against the published model*, not in your workbook. That is the whole point of connecting Excel to Tessallite rather than pasting an extract: a "Top 10 customers" filter or a "% of grand total" calculation runs over the full data set the model can see, respects row security and your persona, and stays correct when someone refreshes the workbook tomorrow. The sections below first walk one example end to end, then describe each feature as a reference.
+
+---
+
+## A worked example: top products by margin, this year
+
+Imagine you are a category manager and you want the ten products contributing the most gross margin so far this year, each shown as a share of the whole category. Here is the whole journey, and what Tessallite does underneath at each step.
+
+1. **Build the base layout.** Drag the `Product` dimension to Rows and the `Gross Margin` measure to Values. Excel shows every product and its margin. Underneath, Tessallite issues a `SELECT product, SUM(gross_margin) ... GROUP BY product` against the source — no data leaves the database except the grouped result.
+2. **Keep only this year.** Insert a **Timeline** on the `Order Date` hierarchy and drag it to cover the current year. The PivotTable narrows instantly. Tessallite turns the timeline range into a date filter (`WHERE order_date >= ...`) on the same query, so the margin numbers are recomputed in the database, not trimmed in the sheet.
+3. **Keep only the top ten.** Open **Value Filters → Top 10** on the Product field, by `Gross Margin`. Tessallite translates this to `ORDER BY SUM(gross_margin) DESC LIMIT 10`. Crucially, the ranking is decided over *all* products in the database first, then the top ten are returned — so you get the genuine leaders, not the top ten of whatever happened to be on screen.
+4. **Show each as a share.** Right-click the value column → **Show Values As → % of Grand Total**. Each product now reads as a percentage. Because this is computed server-side as a calculated member, the percentages reconcile exactly with the subtotal and grand total rows, even after the Top 10 filter.
+5. **Check the detail behind a number.** Double-click the leading product's cell to **drill through**. Tessallite returns the contributing fact rows on a new sheet, limited to the model's curated drill-through columns and filtered by your persona and row security — so the detail always reconciles to the cell, and never exposes a column you are not allowed to see.
+
+The result is a live, governed report: refresh it next week and every step re-runs against current data, with the same security and the same definitions everyone else uses.
+
+**Good habits this example shows.** Filter to the period *first* so later steps work on less data; prefer a server-side **Value Filter** over manually deleting rows (deleting rows breaks subtotals and is not refreshable); and reach for **drill-through** rather than rebuilding a detail query by hand, so the rows you see are exactly the rows behind the cell.
+
+**A common trap.** "Show Values As" and Excel **Calculated Fields** are presentation conveniences layered on the query result. They cannot invent a number the model does not expose — if you need a brand-new business metric (say a blended margin across two fact tables), define it as a **measure** in the model so it is governed, reusable, and available to every tool, not just this workbook.
 
 ---
 

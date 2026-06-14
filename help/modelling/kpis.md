@@ -2,7 +2,7 @@
 title: "KPIs"
 audience: modeller
 area: modelling
-updated: 2026-06-06
+updated: 2026-06-14
 ---
 
 ## What this covers
@@ -315,6 +315,8 @@ After selecting a formula card, the builder shows the relevant controls for that
 **Important:** Composite scores work best when all input measures are on comparable scales (e.g. all are 0-100 percentages). If one measure is in dollars and another is a count, the weighted sum is meaningless. Normalise the inputs first (create each as a separate KPI on a 0-100 scale) and then combine.
 
 **Nesting composites:** A composite KPI can itself be a child of another composite — its weighted score feeds the parent, normalised against its own target like any other child. Nesting is limited to 5 composite levels and circular references are rejected; both cases produce a clear error instead of a wrong number. See [KPI concepts](../concepts/kpis.md) for the full scoring rules, including how weights renormalise and why viewers with different privileges can see different composite scores.
+
+**Broken inputs are flagged:** If one of a composite's child KPIs fails to evaluate (a broken formula, a query error), the composite still scores from its working children but shows a **Degraded** badge on its scorecard card naming the broken child. A child that simply has no data is dropped quietly. See [KPI concepts](../concepts/kpis.md) for the difference between a broken input and no data.
 
 ### Time calculation (optional)
 
@@ -699,7 +701,9 @@ Deploy a KPI the same way you deploy a model: once you are happy with the previe
 
 ## KPI Scorecard
 
-The KPI Scorecard is a tab in the Model Health panel (bottom tab bar). It shows all KPIs in a model with their current values, status colours, trend arrows, and sparkline charts.
+The KPI Scorecard is the **KPIs** tab in the Model Builder tab bar (alongside Canvas, Query, Model Health, and Analytics). It shows all KPIs in a model with their current values, status colours, trend arrows, and sparkline charts.
+
+![The KPI Scorecard for the acme demo ModelX. The summary bar reads 6 total KPIs — 3 Good, 1 Warning, 2 Poor. The Sales Performance folder shows Avg Transaction Value (bullet chart, $2,504.71, On Track), Gross Margin % (72.5%, On Track), and Net Sales (bullet chart, $141.5M, Near Target), each with a value, goal, gap-to-goal, and status badge.](../assets/screencaps/kpi-scorecard.png)
 
 You can narrow the board several ways, and the filters combine:
 

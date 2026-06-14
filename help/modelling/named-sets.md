@@ -2,12 +2,16 @@
 title: "Named Lists (Named Sets)"
 audience: modeller
 area: modelling
-updated: 2026-05-24
+updated: 2026-06-14
 ---
 
 ## What this covers
 
 A named list (also called a named set) is a reusable collection of dimension members stored within a semantic model. Named lists let modellers pre-define member selections — top customers, active product categories, regional groupings — that BI tool users can apply as filters, row sets, or column sets without rebuilding the selection each time. This article explains the different types of named lists, how to create and preview them, and how they surface in BI tools and the Excel plugin.
+
+![The Named Sets panel for the acme demo ModelX. Four named lists are listed as cards, each with its type chip (Dynamic for the Top/Bottom-N sets, Filtered for the rule-based one), a Session scope chip, Edit and Delete actions, a plain-language description, and a display folder. The sets are Top 5 and Bottom 5 Countries by Revenue (Geography), Top 10 Channels by Revenue (Channels), and High-Revenue Account Types (Accounts). Buttons at the top offer "From template" and "Add set".](../assets/screencaps/named-sets-panel.png)
+
+Each card shows the list's type and scope at a glance, a description for the people who will use it, and the display folder it is grouped under. A **Dynamic** list (Top/Bottom-N) re-ranks itself on every query as the data changes; a **Filtered** list re-evaluates its rule; a **Fixed** list always returns the exact members you chose.
 
 ---
 

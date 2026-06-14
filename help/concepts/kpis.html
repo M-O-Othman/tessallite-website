@@ -12,7 +12,7 @@
     <nav class="breadcrumb"><a href="../index.html">Home</a> / <span>Concepts</span> / <span>KPIs</span></nav>
   </header>
   <main class="article">
-    <div class="article-meta"><span class="audience-badge">modeller</span><span class="updated">Updated 2026-05-31</span></div>
+    <div class="article-meta"><span class="audience-badge">modeller</span><span class="updated">Updated 2026-06-14</span></div>
     <h1>KPIs (Key Performance Indicators)</h1>
 
 <h2>What this covers</h2>
@@ -167,6 +167,15 @@
   <li>The composite's own status, trend, and formatting are then computed from the score against the composite's target &mdash; exactly the same way as for any other KPI, and identically wherever the KPI appears (KPIs panel, Scorecard, the <code>$KPIs</code> table for BI tools).</li>
 </ol>
 
+<h3>When a child input breaks</h3>
+<p>There are two very different reasons a child can end up with no value, and the platform now treats them differently:</p>
+<ul>
+  <li><strong>No data.</strong> The child evaluated correctly but simply has nothing to show for the current slice (for example, a region with no sales this month). This is normal. The child is quietly dropped, the remaining weights renormalise, and the parent keeps showing a healthy score. Nothing is flagged.</li>
+  <li><strong>A broken input.</strong> The child's evaluation <strong>failed</strong> &mdash; for example its formula references something that no longer exists, the underlying query errored, or it tripped a nesting or circular-reference guard. This is not "no data"; it means one of the numbers feeding your score is broken.</li>
+</ul>
+<p>When a child is broken, the composite still computes its score from the children that did work, but it now carries a visible <strong>Degraded</strong> badge on its scorecard card. Hover the badge to see exactly which child failed and why. This stops a broken input from being silently swept under the rug while the parent shows a falsely confident number.</p>
+<p>If <strong>every</strong> child is broken, there is nothing trustworthy left to score from, so the composite shows an error instead of inventing a number.</p>
+
 <h3>Nested composites</h3>
 <p>A composite can itself be the child of another composite. The platform scores these <strong>recursively, from the bottom up</strong>: the inner composite's weighted score becomes its raw value inside the outer composite, and is normalised against the inner composite's own target like any other child. Example: an "Overall Health" composite whose only child is a "Financial Health" composite scoring 40 against a target of 50 evaluates to 80 (40/50 of target, normalised to 0-100).</p>
 <p>Two guard rails apply, and both fail with a clear error rather than a silently wrong number:</p>
@@ -179,6 +188,9 @@
 <p>Composite scores respect the viewer's privileges. Draft children are excluded for users who cannot see drafts, and children referencing measures outside the viewer's persona scope are excluded too &mdash; in both cases the remaining weights are renormalised. This means a viewer and an admin can legitimately see <strong>different composite scores for the same KPI</strong>: each sees the weighted score of the children they are allowed to see. When comparing numbers across users, check certification status and persona scope first.</p>
 
 <h2>The KPI Scorecard</h2>
+<p>The KPI Scorecard provides a live, at-a-glance view of all KPIs in a model.</p>
+<figure class="screencap"><img class="screencap" src="../assets/screencaps/kpi-scorecard.png" alt="The KPI Scorecard for the acme demo ModelX, open on the KPIs tab. The summary bar reads 6 total KPIs — 3 Good, 1 Warning, 2 Poor — with filters for certification, display folder, indicator type, and a viewing-as-persona preview. Below, the Sales Performance folder shows cards for Avg Transaction Value (bullet chart, $2,504.71, On Track), Gross Margin % (72.5%, On Track), and Net Sales (bullet chart, $141.5M, Near Target), each with its current value, goal, gap-to-goal, and status badge."></figure>
+<p>Each card is built from one server-computed evaluation, so the visual, the value, the gap-to-goal, and the status badge always tell the same story. The summary bar at the top counts how many KPIs are Good, Warning, or Poor, and the filters let you narrow by certification, folder, or indicator type — or preview the board as a specific persona before you publish.</p>
 <h3>What it shows</h3>
 <ul>
   <li><strong>Summary bar</strong> &mdash; total KPI count and chips showing how many are Good, Warning, Poor, or Unknown.</li>

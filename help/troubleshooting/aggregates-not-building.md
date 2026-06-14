@@ -63,4 +63,4 @@ Replace `target_schema` and `tessallite_user` with the values from your data sou
 
 ---
 
-← [Query Returns Wrong Results](query-returns-wrong-results.md) | [Home](../index.md) | [Service Not Starting →](service-not-starting.md)
+← [Field Compatibility Warnings](field-compatibility-warnings.md) | [Home](../index.md) | [Service Not Starting →](service-not-starting.md)

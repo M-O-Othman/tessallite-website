@@ -12,7 +12,7 @@
     <nav class="breadcrumb"><a href="../index.html">Home</a> / <span>Modelling</span> / <span>KPIs</span></nav>
   </header>
   <main class="article">
-    <div class="article-meta"><span class="audience-badge">modeller</span><span class="updated">Updated 2026-06-08</span></div>
+    <div class="article-meta"><span class="audience-badge">modeller</span><span class="updated">Updated 2026-06-14</span></div>
     <h1>KPIs</h1>
 
 <h2>What this covers</h2>
@@ -254,6 +254,8 @@
 <blockquote><strong>Important:</strong> Composite scores work best when all input measures are on comparable scales (e.g. all are 0-100 percentages). If one measure is in dollars and another is a count, the weighted sum is meaningless. Normalise the inputs first (create each as a separate KPI on a 0-100 scale) and then combine.</blockquote>
 
 <blockquote><strong>Nesting composites:</strong> A composite KPI can itself be a child of another composite &mdash; its weighted score feeds the parent, normalised against its own target like any other child. Nesting is limited to 5 composite levels and circular references are rejected; both cases produce a clear error instead of a wrong number. See <a href="../concepts/kpis.html">KPI concepts</a> for the full scoring rules, including how weights renormalise and why viewers with different privileges can see different composite scores.</blockquote>
+
+<blockquote><strong>Broken inputs are flagged:</strong> If one of a composite's child KPIs fails to evaluate (a broken formula, a query error), the composite still scores from its working children but shows a <strong>Degraded</strong> badge on its scorecard card naming the broken child. A child that simply has no data is dropped quietly. See <a href="../concepts/kpis.html">KPI concepts</a> for the difference between a broken input and no data.</blockquote>
 
 <h3>Time calculation (optional)</h3>
 <p>Most formula types offer a &ldquo;+ Add time calculation&rdquo; link below the formula controls. Clicking it adds a secondary time-variant calculation that transforms the base formula&rsquo;s result over time. This is different from the time window &mdash; the time window says &ldquo;look at data from last month&rdquo;, while the time calculation says &ldquo;compare this month to last month&rdquo; or &ldquo;average across the last 3 months&rdquo;.</p>
@@ -579,7 +581,8 @@
 <p><strong>Certifying and deploying are different things, and they are independent.</strong> Certifying is a <em>governance</em> stamp ("this KPI is approved and trustworthy"). Deploying controls <em>visibility</em> to BI tools. A KPI can be certified but undeployed (approved, not yet published), or deployed but uncertified (published for early use, not yet formally blessed). Decide each one separately.</p>
 
 <h2>KPI Scorecard</h2>
-<p>The KPI Scorecard is a tab in the Model Health panel (bottom tab bar). It shows all KPIs in a model with their current values, status colours, trend arrows, and sparkline charts.</p>
+<p>The KPI Scorecard is the <strong>KPIs</strong> tab in the Model Builder tab bar (alongside Canvas, Query, Model Health, and Analytics). It shows all KPIs in a model with their current values, status colours, trend arrows, and sparkline charts.</p>
+<figure class="screencap"><img class="screencap" src="../assets/screencaps/kpi-scorecard.png" alt="The KPI Scorecard for the acme demo ModelX. The summary bar reads 6 total KPIs — 3 Good, 1 Warning, 2 Poor. The Sales Performance folder shows Avg Transaction Value (bullet chart, $2,504.71, On Track), Gross Margin % (72.5%, On Track), and Net Sales (bullet chart, $141.5M, Near Target), each with a value, goal, gap-to-goal, and status badge."></figure>
 <p>You can narrow the board several ways, and the filters combine:</p>
 <ul>
   <li><strong>Certification</strong> — All, Certified only, or Deprecated.</li>

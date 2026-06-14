@@ -80,4 +80,4 @@ A clear error is better than a result that *looks* right but was built on a gues
 
 ---
 
-← [Excel Connection Problems](excel-connection-problems.md) | [Home](../index.md) | [Aggregates Not Building →](aggregates-not-building.md)
+← [Excel Connection Problems](excel-connection-problems.md) | [Home](../index.md) | [Field Compatibility Warnings →](field-compatibility-warnings.md)

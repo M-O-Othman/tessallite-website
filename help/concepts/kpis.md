@@ -2,7 +2,7 @@
 title: "KPIs (Key Performance Indicators)"
 audience: modeller
 area: concepts
-updated: 2026-05-31
+updated: 2026-06-14
 ---
 
 ## What this covers
@@ -151,6 +151,17 @@ Composite KPIs combine multiple child KPIs using weighted scores. Set a parent K
 3. Children with **no value or no usable target are excluded**, and the remaining weights are renormalised. If every child is excluded, the composite has no value.
 4. The composite's own status, trend, and formatting are then computed from the score against the composite's target — exactly the same way as for any other KPI, and identically wherever the KPI appears (KPIs panel, Scorecard, the `$KPIs` table for BI tools).
 
+### When a child input breaks
+
+There are two very different reasons a child can end up with no value, and the platform now treats them differently:
+
+- **No data.** The child evaluated correctly but simply has nothing to show for the current slice (for example, a region with no sales this month). This is normal. The child is quietly dropped, the remaining weights renormalise, and the parent keeps showing a healthy score. Nothing is flagged.
+- **A broken input.** The child's evaluation **failed** — for example its formula references something that no longer exists, the underlying query errored, or it tripped a nesting or circular-reference guard. This is not "no data"; it means one of the numbers feeding your score is broken.
+
+When a child is broken, the composite still computes its score from the children that did work, but it now carries a visible **Degraded** badge on its scorecard card. Hover the badge to see exactly which child failed and why. This stops a broken input from being silently swept under the rug while the parent shows a falsely confident number.
+
+If **every** child is broken, there is nothing trustworthy left to score from, so the composite shows an error instead of inventing a number.
+
 ### Nested composites
 
 A composite can itself be the child of another composite. The platform scores these **recursively, from the bottom up**: the inner composite's weighted score becomes its raw value inside the outer composite, and is normalised against the inner composite's own target like any other child. Example: an "Overall Health" composite whose only child is a "Financial Health" composite scoring 40 against a target of 50 evaluates to 80 (40/50 of target, normalised to 0-100).
@@ -167,6 +178,10 @@ Composite scores respect the viewer's privileges. Draft children are excluded fo
 ## The KPI Scorecard
 
 The KPI Scorecard provides a live, at-a-glance view of all KPIs in a model.
+
+![The KPI Scorecard for the acme demo ModelX, open on the KPIs tab. The summary bar reads 6 total KPIs — 3 Good, 1 Warning, 2 Poor — with filters for certification, display folder, indicator type, and a "viewing as persona" preview. Below, the Sales Performance folder shows cards for Avg Transaction Value (bullet chart, $2,504.71, On Track), Gross Margin % (72.5%, On Track), and Net Sales (bullet chart, $141.5M, Near Target), each with its current value, goal, gap-to-goal, and status badge.](../assets/screencaps/kpi-scorecard.png)
+
+Each card is built from one server-computed evaluation, so the visual, the value, the gap-to-goal, and the status badge always tell the same story. The summary bar at the top counts how many KPIs are Good, Warning, or Poor, and the filters let you narrow by certification, folder, or indicator type — or preview the board as a specific persona before you publish.
 
 ### What it shows
 

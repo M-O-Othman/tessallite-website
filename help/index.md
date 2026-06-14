@@ -185,6 +185,7 @@ Deploys and operates the Tessallite platform. Start with [Architecture overview]
 
 - [Excel Connection Problems](troubleshooting/excel-connection-problems.md)
 - [Query Returns Wrong Results](troubleshooting/query-returns-wrong-results.md)
+- [Field Compatibility Warnings](troubleshooting/field-compatibility-warnings.md)
 - [Aggregates Not Building](troubleshooting/aggregates-not-building.md)
 - [Service Not Starting](troubleshooting/service-not-starting.md)
 - [Common Errors](troubleshooting/common-errors.md)

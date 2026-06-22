@@ -2,7 +2,7 @@
 title: "Drill-through"
 audience: modeller
 area: modelling
-updated: 2026-06-03
+updated: 2026-06-21
 ---
 
 ## Why drill-through matters
@@ -42,10 +42,18 @@ The reason configuration exists — even though the default "every column" works
 
 A drill-through call returns a structured response the frontend renders as a table:
 
-- **`columns`** — the ordered list of column names and their data types. The frontend uses the type to right-align numerics and parse dates.
-- **`rows`** — each row is an array of values aligned with `columns`. Values come back typed (numbers as numbers, not strings) so the browser does not re-parse them.
+- **`columns`** — the ordered list of column names. The frontend uses data types inferred from the values to right-align numerics and parse dates.
+- **`rows`** — each row is a dictionary keyed by column name. Values come back typed (numbers as numbers, not strings) so the browser does not re-parse them.
 - **`page`** — three opaque pagination fields: `cursor` (where the current page starts), `next_cursor` (what to send for the next page), `has_more` (is there another page).
-- **`fact_table`** — the physical name of the fact table rows came from. This is surfaced for transparency — there is no magic middleware reassembling rows from three sources.
+- **`drill_mode`** — either `"hierarchy"` (the result is one level of a dimension hierarchy, and the user can drill deeper) or `"leaf"` (the result is fact-table detail rows with no further drill-down available).
+- **`drill_dimension`** — when `drill_mode` is `"hierarchy"`, identifies the dimension being drilled (its `id`, `name`, and `display_name`). Null for leaf-mode drills.
+- **`hierarchy_path`** — a list of entries recording the levels already traversed to reach the current drill position. Each entry carries a `level_name`, `dimension_name`, and the `value` at that level. Empty on a fresh leaf drill.
+- **`drillable_hierarchies`** — a list of hierarchies the user can drill into next from the current position. Each entry carries `hierarchy_id`, `hierarchy_name`, `current_level_name`, and `next_level_name`. The frontend uses this to render "drill into..." options on the result.
+- **`fact_table`** — the physical name of the fact table the rows came from (leaf mode only). This is surfaced for transparency — there is no middleware reassembling rows from multiple sources.
+- **`route_type`** — the execution route that served this drill (for example `"source"` or `"aggregate"`), displayed in the Route badge.
+- **`execution_ms`** — wall-clock milliseconds the drill query took to execute.
+- **`bytes_processed`** — bytes scanned by the source engine (where the connector reports it; zero otherwise).
+- **`rows_returned`** — total row count in this page of the result.
 
 Rows are ordered by every projected column on each call — the detail columns first, then the measure value. This is a *best-effort widest key*: the sort takes the broadest deterministic ordering the model can reach, so each row usually gets a distinct ordering position even when the cell coordinate is the same for every row. A **strict total order is only guaranteed when the fact table has a primary key exposed as a dimension** — that key is then added to the end of the sort as a guaranteed-unique tie-breaker, and every row is distinctly ordered. Without a PK-backed dimension, two rows that share identical projected detail *and* an identical measure value tie, and the database is free to order tied rows either way between runs; in that case a tie that straddles a page boundary can, on a non-stable-scan engine, swap a row between adjacent pages (it is still returned exactly once across the full page set, so totals reconcile, but the per-page disjointness guarantee is best-effort, not absolute, for those tied rows). This is why the order matters at all: a deterministic order is what keeps pagination safe — sorting only by a value that is identical on every row (the clicked cell coordinate) would let page two repeat or skip rows from page one, because a database is free to return table rows in any order it likes between two runs of the same query.
 

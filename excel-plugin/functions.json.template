@@ -6,7 +6,7 @@
       "id": "LISTBYID",
       "name": "LISTBYID",
       "description": "Returns the members of a Tessallite named set as a spilled array.",
-      "helpUrl": "https://cloud.tessallite.io/help/integrations/excel-add-in.html",
+      "helpUrl": "${PLUGIN_BASE_URL}/help/integrations/excel-add-in.html",
       "parameters": [
         {
           "name": "named_set_id",
@@ -28,7 +28,7 @@
       "id": "KPIVALUE",
       "name": "KPIVALUE",
       "description": "Returns the current value of a Tessallite KPI.",
-      "helpUrl": "https://cloud.tessallite.io/help/concepts/kpis.html",
+      "helpUrl": "${PLUGIN_BASE_URL}/help/concepts/kpis.html",
       "parameters": [
         {
           "name": "kpi_id",
@@ -46,7 +46,7 @@
       "id": "KPIGOAL",
       "name": "KPIGOAL",
       "description": "Returns the goal (target) value of a Tessallite KPI.",
-      "helpUrl": "https://cloud.tessallite.io/help/concepts/kpis.html",
+      "helpUrl": "${PLUGIN_BASE_URL}/help/concepts/kpis.html",
       "parameters": [
         {
           "name": "kpi_id",
@@ -64,7 +64,7 @@
       "id": "KPISTATUS",
       "name": "KPISTATUS",
       "description": "Returns the status code of a Tessallite KPI (1 = Good, 0 = Warning, -1 = Poor).",
-      "helpUrl": "https://cloud.tessallite.io/help/concepts/kpis.html",
+      "helpUrl": "${PLUGIN_BASE_URL}/help/concepts/kpis.html",
       "parameters": [
         {
           "name": "kpi_id",

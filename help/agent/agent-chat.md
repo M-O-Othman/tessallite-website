@@ -2,7 +2,7 @@
 title: "Agent Chat"
 audience: analyst
 area: agent
-updated: 2026-05-15
+updated: 2026-06-21
 ---
 
 ![Live Agent Chat workspace for the acme-demo project.](../assets/screencaps/agent-chat.png)
@@ -22,6 +22,7 @@ The agent works at project level. A project can contain multiple models, but onl
 - **Persona or model controls** narrow the semantic context when configured.
 - **Trace and citations** show which model objects, glossary terms, and query steps influenced the answer.
 - **Judge verdicts** flag whether the answer passed the configured quality rubric.
+- **Visuals and data** show polished Tessallite-themed ECharts by default, with the data table kept in its own expandable section. Diagnostics such as thought summary and generated queries stay collapsed until opened.
 
 ## Writing effective questions
 

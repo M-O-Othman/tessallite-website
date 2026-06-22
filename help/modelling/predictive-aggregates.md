@@ -2,7 +2,7 @@
 title: "Predictive Aggregates"
 audience: modeller
 area: modelling
-updated: 2026-06-12
+updated: 2026-06-21
 ---
 
 ## What this covers
@@ -83,7 +83,7 @@ Because the sweep is a cron, there is a delay of up to roughly an hour between s
 A daily sweep (`predictive_feedback_sweep`, at the hour configured by `scheduler.predictive_feedback_hour`, on the half-hour) closes the loop:
 
 - **Validate.** A predictive aggregate that earns at least `predictive.validation_min_hits` successful query hits inside the last `predictive.evaluation_window_days` is stamped `predictive_validated_at = now` and emits a `validated` lifecycle event. The `creation_reason` is intentionally **not** changed — a validated predictive aggregate keeps its `predictive` label.
-- **Retire.** A predictive aggregate older than `predictive.unused_retire_days` that has **never** earned a successful hit is flipped to `status='retired'` and emits a `retired_unused` event. One that has been hit at least once — even below the validation threshold — is left alone.
+- **Retire.** A predictive aggregate older than `predictive.unused_retire_days` that has **never** earned a successful hit is flipped to `status='retired'`, its underlying physical table is dropped to reclaim target storage, and a `retired_unused` lifecycle event is emitted. One that has been hit at least once — even below the validation threshold — is left alone.
 
 The validation timestamp is the only feedback signal the eviction policy reads (see below).
 
@@ -98,7 +98,7 @@ Each model carries a dual-axis budget, edited in the **Aggregates** panel under 
 
 Either or both may be left unset. When **both** are unset, the build still stops at a small fixed number of aggregates per model as a safety belt, so the predictor can never run away.
 
-> **What the byte budget bounds today.** The budget is applied to the *current build batch* — it limits how much one sweep selects, using an estimated-bytes heuristic computed before the DDL runs. It does not yet subtract bytes already occupied by previously built predictive aggregates, and retiring or evicting an aggregate flips its status but does not drop the underlying table. So the byte axis is best read as "how much a single build may add", not "total live bytes on disk". Treat it as a per-batch guardrail and keep an eye on actual target storage for long-lived models.
+> **What the byte budget bounds.** Before selecting candidates, the build sweep queries all **active** predictive aggregates for the model and computes their estimated byte footprint. That running total is subtracted from the budget before any new candidate is considered, so the budget bounds the model's **total live predictive footprint** — not just one build batch. If a model already sits at its byte cap, a re-run of the sweep selects nothing new. The estimate uses the same heuristic (rows multiplied by a fixed per-row byte factor multiplied by measure count) for both live aggregates and candidates, so the comparison is consistent even though it is approximate. When a predictive aggregate is **retired** by the feedback sweep, its underlying physical table is dropped and its byte footprint is reclaimed — the next build sweep sees the freed headroom and may fill it with fresh candidates. The count axis works the same way: live predictive aggregate count is subtracted before new candidates are admitted.
 
 ---
 

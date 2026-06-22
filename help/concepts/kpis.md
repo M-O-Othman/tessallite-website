@@ -130,11 +130,12 @@ KPIs can be displayed using different visual presentations:
 
 | Type | Description |
 |---|---|
-| Traffic light | Status icon with green/amber/red colours. |
+| Traffic light | Three-lamp signal with the active lamp lit green, amber or red by status. |
 | Gauge | Circular dial showing performance relative to target. The needle position accounts for the KPI direction, so a "lower is better" KPI that beats its target shows the needle in the green zone. |
-| Bullet chart | Horizontal bar with target marker. |
-| RAG bar | Stacked coloured segments showing status bands. |
-| Speedometer | Dial with needle, fixed scale. |
+| Bullet chart | Horizontal bar that grows to the value over translucent band lanes, with a target marker at the threshold to reach. |
+| RAG bar | Solid red/amber/green track with a marker at the value. |
+| Progress ring | Circular ring filling toward the target, coloured by status, with the percent shown in the centre. |
+| Thermometer | Vertical column rising through the status bands. |
 
 ### Persona filtering
 

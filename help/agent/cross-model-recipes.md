@@ -31,7 +31,7 @@ A recipe is a small JSON document a modeller authors. It has:
 - **A name and description.** Human-readable. The description is what the answer LLM reads when deciding whether to call the recipe.
 - **Parameters.** Named placeholders the user's question fills in (typically a time window, a region, a category).
 - **Steps.** An ordered list of single-model queries. Each step pins to a model in the project's allow-list, names its measures, dimensions, filters, and limit, and is given a step name.
-- **A combine expression.** A short formula that combines the step results into a single value or table. Reference each step's measure with a dot: `step_a.revenue / step_b.qty`, `step_a.amount - step_b.amount`, or leave the combine empty when the recipe simply runs the queries side-by-side. The editor checks the expression when you save: every step name and measure you reference must exist on the steps.
+- **A combine expression.** A small formula that combines the step results into a single value or table. You build it from blocks rather than typing text: each block is either a **number**, a **step measure** (pick one of your steps, then one of its measures from drop-downs), or an **operation** (divide, multiply, subtract, round, and so on) whose inputs are themselves blocks. Nest blocks to express things like "divide one step's measure by another, multiply by 100, then round to 2 decimals". Leave the combine set to *None* when the recipe simply runs the queries side-by-side. Because you choose steps and measures from lists, the references are always valid — and a step can be named anything (even a word like `global`) without confusing the formula.
 - **Notes.** Free text. Read by the judge as a hint about what good output looks like.
 
 Recipes live under *Tenant Administration → Projects → \<project> → Conversational agent → Recipes*. The same surface is exposed via the recipes API.
@@ -89,7 +89,10 @@ A worked example. The recipe answers "what is inventory turnover for [time windo
       "limit": 1
     }
   ],
-  "combine": "cogs.cogs / avg_inventory.avg_inventory",
+  "combine": {"op": "div", "args": [
+    {"ref": {"step": "cogs", "measure": "cogs"}},
+    {"ref": {"step": "avg_inventory", "measure": "avg_inventory"}}
+  ]},
   "notes": "Express the answer as a unitless ratio with two decimal places. Mention the window."
 }
 ```

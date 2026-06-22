@@ -635,8 +635,33 @@ Click **Advanced KPI** in the KPIs panel header to open the 5-step wizard direct
 
 - Set the **display name**, **description**, and **display folder**.
 - Choose a **number format** (currency, percentage, integer, decimal, custom).
-- Choose a **visual presentation** (traffic light, gauge, bullet chart, RAG bar, speedometer).
+- Choose a **visual presentation** (traffic light, gauge, bullet chart, RAG bar, progress ring, thermometer). Each option in the picker carries a one-line description of what it draws.
 - Set **unit label** and **null display value**.
+
+#### Choosing a visual presentation
+
+Every presentation type plots the same underlying status, so the visual, the
+coloured band, and the status badge always tell one consistent story. Pick the
+shape that fits how people read the metric:
+
+- **Traffic light** — a three-lamp signal with the lamp matching the status lit
+  (green / amber / red). Best for a glance-and-go board where the only question
+  is "are we good?" Use when the exact number matters less than the state.
+- **Gauge** — a circular dial with a needle over coloured threshold bands. Best
+  for "percent of target" style metrics where people expect a speedometer feel.
+- **Bullet chart** — a horizontal bar that grows to the value, riding over
+  translucent band lanes, with a target marker at the threshold you must reach.
+  Best for value-versus-target comparisons in a compact, dense layout.
+- **RAG bar** — a solid red/amber/green track with a marker at the value. Best
+  when the band the value falls into is the headline, not the precise position.
+- **Progress ring** — a circular ring that fills toward the target and is
+  coloured by status, with the percent shown in the centre. Best for completion
+  or attainment metrics ("78% of goal").
+- **Thermometer** — a vertical column that rises through the bands. Best for
+  "how full / how high" metrics where a rising level is the natural mental model.
+
+Avoid switching types card-to-card on the same board without reason; a
+consistent shape makes a scorecard faster to scan.
 - Configure **trend** settings: comparison period (day, week, month, quarter, year) and sparkline periods.
 - Choose an **indicator type** (none, leading, lagging).
 - Select a **time dimension** (required for time intelligence functions).

@@ -2,7 +2,7 @@
 title: "Configure your project agent"
 audience: tenant-admin
 area: agent
-updated: 2026-04-27
+updated: 2026-06-21
 ---
 
 ## What this covers
@@ -76,6 +76,14 @@ Configuration lives in the **project drawer**, opened from *Tenant Administratio
 - **Judge rubric.** A reference to a rubric defined in this project. The *Manage rubrics* button opens the rubric editor in a dialog. See [Write a judge rubric](write-a-judge-rubric.md).
 - **Judge block visibility.** *Transparent* shows the verdict and reasoning to the user when the judge blocks an answer; *opaque* shows a generic "withheld for review" message. Pick transparent for internal users where the rubric is well-tuned; opaque for external users.
 - **Visibility toggles.** Four switches — *show thought process*, *show semantic query*, *show physical query*, *enable feedback* — control how much of the trace the user can see in the answer card and the trace drawer. The judge verdict and the citations are always shown.
+
+### Output & Charts
+
+- **Answer format.** Controls whether the narration is plain prose or a structured format. Plain prose is safest for most business users.
+- **Include data table.** Shows the shaped result rows in a separate expandable table under the chart. Keep this on when users need to inspect values behind a visual.
+- **Chart type selector.** Lets the agent choose a chart automatically, follow the LLM's chart hint, force a chart type, or disable charts.
+- **Chart renderer.** Defaults to **Polished ECharts**. This renders backend-shaped visual artifacts with the Tessallite chart skin in both Agent Chat and the standalone conversational client. **Basic HTML** is the legacy static renderer for deployments that need sandboxed HTML output.
+- **Chart size and palette.** Adjust the visual footprint and colour set used by generated charts.
 
 ### Webhook
 

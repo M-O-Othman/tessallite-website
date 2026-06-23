@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Licensing Explained</title>
+    <meta name="description" content="Plain-language explanation of Tessallite Community, Enterprise, source-available code, and legal documents.">
+    <link rel="icon" type="image/png" href="../assets/logos/png/favicon.png">
+    <link rel="stylesheet" href="../css/brand.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .guide-hero { padding: 82px 0 68px; background: linear-gradient(180deg, var(--white) 0%, var(--mint) 100%); border-bottom: 1px solid var(--slate-border); }
+        .eyebrow { color: var(--accent-gold); font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 12px; }
+        .guide-copy { max-width: 820px; color: rgba(51, 51, 51, .88); font-size: 19px; line-height: 1.65; }
+        .guide-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+        .guide-card { background: var(--white); border: 1px solid var(--slate-border); border-radius: 14px; padding: 24px; }
+        .guide-card h3 { color: var(--primary-green); margin-bottom: 10px; }
+        .guide-card p, .guide-card li { color: rgba(51,51,51,.86); line-height: 1.65; }
+        .guide-card ul { padding-left: 20px; }
+        @media (max-width: 900px) { .guide-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container header-container">
+            <a href="../index.html" class="logo"><img src="../assets/logos/png/logo-primary-horizontal.png" alt="Tessallite" height="80"></a>
+            <nav class="nav" aria-label="Primary navigation">
+                <button class="nav-toggle" aria-label="Toggle navigation" aria-controls="site-nav-list"><span class="hamburger"></span></button>
+                <ul class="nav-list" id="site-nav-list">
+                    <li><a href="../index.html" class="nav-link">Product</a></li>
+                    <li><a href="../screens.html" class="nav-link">Screens</a></li>
+                    <li><a href="../pricing.html" class="nav-link">Pricing</a></li>
+                    <li><a href="../download.html" class="nav-link">Download</a></li>
+                    <li><a href="install-local.html" class="nav-link">Install guide</a></li>
+                    <li><a href="../docs/" class="nav-link">Docs</a></li>
+                    <li><a href="../register.html" class="nav-link">Get a licence</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <section class="guide-hero">
+            <div class="container">
+                <p class="eyebrow">Licensing</p>
+                <h1 class="hero-title">Community is free to run. Source-available is not the same as open-source.</h1>
+                <p class="guide-copy">Tessallite separates runtime use from source-code rights. Community Edition is the free self-hosted product you can evaluate and run within its signed licence limits. Source-available means selected source files can be viewed and studied, but they are not released under an open-source licence like Apache, MIT, GPL, or BSD.</p>
+            </div>
+        </section>
+        <section class="section-white">
+            <div class="container guide-grid">
+                <article class="guide-card">
+                    <h3>Community Edition</h3>
+                    <p>Community Edition is the free, self-hosted edition activated by a signed local licence file. It is designed for evaluation, proof of value, training, development, and small internal use.</p>
+                    <ul>
+                        <li>Full product surface for evaluation.</li>
+                        <li>Control-plane limits such as tenants, users, and models.</li>
+                        <li>No public claim of open-source rights.</li>
+                    </ul>
+                </article>
+                <article class="guide-card">
+                    <h3>Enterprise Edition</h3>
+                    <p>Enterprise is the commercial path for production teams that need unlimited scale, deployment support, SSO, support SLA, and security evidence.</p>
+                    <ul>
+                        <li>Custom annual licence.</li>
+                        <li>Production packaging and deployment options.</li>
+                        <li>Commercial support and assurance material.</li>
+                    </ul>
+                </article>
+                <article class="guide-card">
+                    <h3>Source-available code</h3>
+                    <p>Some Community source may be published for review and internal evaluation. That does not mean the code can be freely redistributed, resold, hosted as a service, or used to create a competing product.</p>
+                </article>
+                <article class="guide-card">
+                    <h3>Where the legal files live</h3>
+                    <p>The detailed legal documents are under the website legal folder and are linked from the legal page. The version shipped with a signed release bundle remains the authoritative copy for that release.</p>
+                    <p><a href="../legal.html">Open licence and legal page</a></p>
+                </article>
+            </div>
+        </section>
+    </main>
+    <footer class="footer section-charcoal"><div class="container footer-bottom"><p>&copy; 2026 Tessallite Ltd. All rights reserved. &middot; <a href="excel-bi.html">Previous: Excel and BI</a> &middot; <a href="index.html">Docs home</a> &middot; <a href="evaluation-playbook.html">Next: Evaluation playbook</a></p></div></footer>
+    <script src="../js/script.js"></script>
+</body>
+</html>

@@ -3,8 +3,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Install Tessallite Locally</title>
-    <meta name="description" content="Install Tessallite Community Edition locally with Docker Compose using the signed bundle and Community licence.">
+    <title>Install Tessallite Community Edition</title>
+    <meta name="description" content="Detailed Community Edition installation guide for the signed Tessallite release bundle. No GitHub clone or source build required.">
     <link rel="icon" type="image/png" href="../assets/logos/png/favicon.png">
     <link rel="stylesheet" href="../css/brand.css">
     <link rel="stylesheet" href="../css/style.css">
@@ -21,8 +21,7 @@
             border-bottom: 1px solid var(--slate-border);
         }
 
-        .guide-kicker,
-        .section-eyebrow {
+        .eyebrow {
             color: var(--accent-gold);
             font-size: 13px;
             font-weight: 700;
@@ -32,50 +31,101 @@
         }
 
         .guide-copy {
-            max-width: 820px;
+            max-width: 860px;
             color: rgba(51, 51, 51, .88);
             font-size: 19px;
             line-height: 1.65;
+            margin-bottom: 24px;
+        }
+
+        .guide-actions,
+        .step-actions {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .button-quiet {
+            background: var(--white);
+            color: var(--primary-green);
+            border-color: var(--slate-border);
+        }
+
+        .button-quiet:hover {
+            border-color: var(--primary-green);
+            box-shadow: 0 10px 22px rgba(0, 108, 53, .08);
         }
 
         .guide-layout {
             display: grid;
-            grid-template-columns: minmax(0, .72fr) minmax(0, 1.28fr);
-            gap: 36px;
+            grid-template-columns: minmax(280px, .72fr) minmax(0, 1.28fr);
+            gap: 34px;
             align-items: start;
         }
 
-        .guide-panel,
+        .guide-sidebar,
         .guide-step,
-        .guide-note {
+        .guide-card,
+        .check-card {
             background: var(--white);
             border: 1px solid var(--slate-border);
             border-radius: 14px;
             padding: 24px;
         }
 
-        .guide-panel h2,
+        .guide-sidebar {
+            position: sticky;
+            top: 96px;
+        }
+
+        .guide-sidebar h2,
         .guide-step h3,
-        .guide-note h3 {
+        .guide-card h3,
+        .check-card h3 {
             color: var(--primary-green);
             margin-bottom: 10px;
         }
 
-        .guide-panel ul,
-        .guide-step ol,
-        .guide-step ul {
+        .guide-sidebar p,
+        .guide-step p,
+        .guide-card p,
+        .check-card p,
+        .guide-sidebar li,
+        .guide-step li,
+        .guide-card li {
+            color: rgba(51, 51, 51, .86);
+            line-height: 1.62;
+        }
+
+        .guide-sidebar ul,
+        .guide-step ul,
+        .guide-card ul {
             padding-left: 20px;
         }
 
-        .guide-panel li,
-        .guide-step li {
-            margin: 9px 0;
-            color: rgba(51, 51, 51, .86);
+        .guide-sidebar li,
+        .guide-step li,
+        .guide-card li {
+            margin: 8px 0;
         }
 
         .guide-steps {
             display: grid;
             gap: 18px;
+        }
+
+        .step-number {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--primary-green);
+            color: var(--white);
+            font-weight: 700;
+            margin-bottom: 14px;
         }
 
         .code-panel {
@@ -95,14 +145,67 @@
             overflow-wrap: anywhere;
         }
 
-        .guide-note {
-            margin-top: 22px;
-            background: #fbfdfb;
+        .notice {
+            border-left: 4px solid var(--accent-gold);
+            background: #fffdf6;
+            padding: 16px 18px;
+            border-radius: 10px;
+            margin: 18px 0;
+            color: rgba(51, 51, 51, .86);
+            line-height: 1.6;
         }
 
-        @media (max-width: 900px) {
-            .guide-layout {
+        .check-grid,
+        .ops-grid {
+            display: grid;
+            gap: 22px;
+        }
+
+        .check-grid {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        .ops-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--white);
+            border: 1px solid var(--slate-border);
+            border-radius: 14px;
+            overflow: hidden;
+            display: table;
+        }
+
+        .summary-table th,
+        .summary-table td {
+            text-align: left;
+            padding: 14px 16px;
+            border-bottom: 1px solid #e6edf2;
+            vertical-align: top;
+        }
+
+        .summary-table th {
+            color: var(--primary-green);
+            width: 190px;
+        }
+
+        .summary-table tr:last-child th,
+        .summary-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        @media (max-width: 980px) {
+            .guide-layout,
+            .check-grid,
+            .ops-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .guide-sidebar {
+                position: static;
             }
         }
     </style>
@@ -133,82 +236,239 @@
     <main>
         <section class="guide-hero">
             <div class="container">
-                <p class="guide-kicker">Local installation</p>
-                <h1 class="hero-title">Install Tessallite Community Edition on your own machine.</h1>
-                <p class="guide-copy">Use this guide after you have a Community licence and the signed download bundle. It explains the local Docker Compose path in the language an evaluator or platform owner needs before first launch.</p>
+                <p class="eyebrow">Community Edition install</p>
+                <h1 class="hero-title">Install from the signed release bundle. Do not clone GitHub.</h1>
+                <p class="guide-copy">Community Edition is distributed as a pre-built, signed, run-ready bundle. You download it, verify it, place your signed licence file, run one installer command, and open Tessallite in the browser. A GitHub checkout is for source review and development, not the normal install path.</p>
+                <div class="guide-actions">
+                    <a href="../register.html" class="button button-primary">Get a Community licence</a>
+                    <a href="../download.html" class="button button-quiet">Download the bundle</a>
+                </div>
             </div>
         </section>
 
         <section class="section-white">
-            <div class="container guide-layout">
-                <aside class="guide-panel">
-                    <h2>Before you start</h2>
-                    <ul>
-                        <li>A Tessallite Community licence file.</li>
-                        <li>The signed Community release bundle.</li>
-                        <li>Docker and Docker Compose v2 installed.</li>
-                        <li>At least 8 GB RAM available for a smooth evaluation.</li>
-                        <li>Ports 3000, 5433, and 8080 free on the host.</li>
-                    </ul>
-                    <div class="guide-note">
-                        <h3>Need the files?</h3>
-                        <p>Start with the licence and download pages, then return here.</p>
-                        <p><a href="../register.html">Get a licence</a> · <a href="../download.html">Download bundle</a></p>
-                    </div>
-                </aside>
-
-                <div class="guide-steps">
-                    <article class="guide-step">
-                        <h3>1. Verify the release</h3>
-                        <p>Check the release before unpacking or running it.</p>
-                        <pre class="code-panel"><code>sha256sum -c SHA256SUMS</code></pre>
-                        <p>The Download page includes the full signature verification command and evidence-pack notes.</p>
+            <div class="container">
+                <div class="section-header">
+                    <p class="eyebrow">Before you begin</p>
+                    <h2 class="section-title">Have the bundle, licence, and host ready.</h2>
+                    <p class="section-description">The installer is designed to be re-runnable. If a preflight check fails, fix the reported issue and run the same command again.</p>
+                </div>
+                <div class="check-grid">
+                    <article class="check-card">
+                        <h3>Release bundle</h3>
+                        <p>The signed archive from the Download page, for example <code>tessallite-community-X.Y.Z.tar.gz</code>.</p>
                     </article>
-
-                    <article class="guide-step">
-                        <h3>2. Unpack the bundle</h3>
-                        <pre class="code-panel"><code>tar -xzf tessallite-community-X.Y.Z.tar.gz
-cd tessallite-community-X.Y.Z</code></pre>
-                        <p>Replace <code>X.Y.Z</code> with the release version shown on the Download page.</p>
+                    <article class="check-card">
+                        <h3>Licence file</h3>
+                        <p>Your signed Community licence JSON from the registration flow. It will be copied to <code>license.json</code>.</p>
                     </article>
-
-                    <article class="guide-step">
-                        <h3>3. Add the licence</h3>
-                        <pre class="code-panel"><code>cp /path/to/tessallite-license.json ./license.json</code></pre>
-                        <p>Keep the licence file private. It is used locally by the stack during startup.</p>
+                    <article class="check-card">
+                        <h3>Docker host</h3>
+                        <p>Docker and Docker Compose v2 installed, with at least 8 GB RAM recommended for a smooth evaluation.</p>
                     </article>
-
-                    <article class="guide-step">
-                        <h3>4. Start Tessallite</h3>
-                        <pre class="code-panel"><code>./install.sh</code></pre>
-                        <p>The installer prepares configuration, starts the containers, and runs the platform checks.</p>
-                    </article>
-
-                    <article class="guide-step">
-                        <h3>5. Open the product</h3>
-                        <p>When the installer reports success, open:</p>
-                        <pre class="code-panel"><code>http://localhost:3000</code></pre>
-                        <p>Use the system-admin credentials created during setup. If the page is not ready immediately, wait a minute and refresh.</p>
+                    <article class="check-card">
+                        <h3>Open ports</h3>
+                        <p>Ports <code>3000</code>, <code>8001</code>, <code>8080</code>, and <code>5433</code> must be free on the host.</p>
                     </article>
                 </div>
             </div>
         </section>
 
         <section class="section-mint">
+            <div class="container guide-layout">
+                <aside class="guide-sidebar">
+                    <h2>Install path</h2>
+                    <ul>
+                        <li>Verify the downloaded bundle.</li>
+                        <li>Unpack the release archive.</li>
+                        <li>Copy the licence to <code>license.json</code>.</li>
+                        <li>Let <code>install.sh</code> create secrets in <code>.env</code>.</li>
+                        <li>Start the stack and wait for health.</li>
+                        <li>Open <code>http://localhost:3000</code>.</li>
+                    </ul>
+                    <div class="notice">Do not use <code>git clone</code> for this flow. The release bundle contains the compose files, installer, signed checksums, and either bundled images or pinned image references.</div>
+                </aside>
+
+                <div class="guide-steps">
+                    <article class="guide-step" id="verify">
+                        <span class="step-number">1</span>
+                        <h3>Move the bundle to the installation host</h3>
+                        <p>Copy the downloaded archive to the machine that will run Tessallite. Work in a directory owned by the installing user, not in a shared downloads folder.</p>
+                        <pre class="code-panel"><code>mkdir -p ~/tessallite-community
+mv ~/Downloads/tessallite-community-X.Y.Z.tar.gz ~/tessallite-community/
+cd ~/tessallite-community</code></pre>
+                    </article>
+
+                    <article class="guide-step">
+                        <span class="step-number">2</span>
+                        <h3>Verify integrity and authenticity</h3>
+                        <p>The release download provides <code>SHA256SUMS</code> and <code>SHA256SUMS.sig</code>, either beside the archive or inside the unpacked release directory. Verify checksums and the Ed25519 signature before running the installer.</p>
+                        <pre class="code-panel"><code># From the directory that contains SHA256SUMS and SHA256SUMS.sig:
+sha256sum -c SHA256SUMS
+
+# Signature verification. The public key is also shown on the Download page.
+python3 - <<'PY'
+import base64
+from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
+
+PUB = "/by3PGaeLD425bBkMrAbD2NeHROHyjLHVA37pS5w3+0="
+sig = base64.b64decode(open("SHA256SUMS.sig").read().splitlines()[1])
+Ed25519PublicKey.from_public_bytes(base64.b64decode(PUB)).verify(
+    sig,
+    open("SHA256SUMS", "rb").read(),
+)
+print("signature OK")
+PY</code></pre>
+                        <p>If either check fails, stop. Do not run the installer from that bundle.</p>
+                    </article>
+
+                    <article class="guide-step">
+                        <span class="step-number">3</span>
+                        <h3>Unpack the release</h3>
+                        <p>Unpack the archive and enter the release directory. The directory should contain <code>install.sh</code>, <code>docker-compose.yml</code>, <code>.env.example</code>, release evidence, and possibly an <code>images/</code> folder for offline installs.</p>
+                        <pre class="code-panel"><code>tar -xzf tessallite-community-X.Y.Z.tar.gz
+cd tessallite-community-X.Y.Z
+ls</code></pre>
+                    </article>
+
+                    <article class="guide-step">
+                        <span class="step-number">4</span>
+                        <h3>Place your Community licence</h3>
+                        <p>Copy the signed licence JSON into the release directory as <code>license.json</code>. Keep this file private.</p>
+                        <pre class="code-panel"><code>cp /path/to/your-tessallite-community-license.json ./license.json
+chmod 600 ./license.json</code></pre>
+                        <p>The default <code>.env.example</code> expects <code>LICENSE_FILE_HOST=./license.json</code> and includes the public verification key. If Tessallite issued a different key, use the one included with your licence email.</p>
+                    </article>
+
+                    <article class="guide-step">
+                        <span class="step-number">5</span>
+                        <h3>Review configuration before first run</h3>
+                        <p>You normally do not need to hand-create secrets. If <code>.env</code> does not exist, the installer copies <code>.env.example</code> and generates strong values for the required secrets.</p>
+                        <table class="summary-table" aria-label="Important Community installer configuration">
+                            <tr><th><code>SYSTEM_ADMIN_EMAIL</code></th><td>Default admin email printed by the installer. Change before first run if needed.</td></tr>
+                            <tr><th><code>SYSTEM_ADMIN_PASSWORD</code></th><td>Generated by <code>install.sh</code> when empty. Read it from <code>.env</code> after install.</td></tr>
+                            <tr><th><code>LICENSE_FILE_HOST</code></th><td>Defaults to <code>./license.json</code>.</td></tr>
+                            <tr><th><code>LICENSE_PUBLIC_KEYS</code></th><td>Public key used for local licence verification. This is public, not a secret.</td></tr>
+                            <tr><th><code>LLM_API_KEY</code></th><td>Optional. Add your provider key later if you want to use the conversational agent.</td></tr>
+                        </table>
+                    </article>
+
+                    <article class="guide-step" id="run">
+                        <span class="step-number">6</span>
+                        <h3>Run the installer</h3>
+                        <p>The installer checks Docker, checks required ports, creates <code>.env</code> if needed, generates secrets, validates the licence file, loads bundled images when present, starts containers, and waits for health.</p>
+                        <pre class="code-panel"><code>chmod +x ./install.sh
+./install.sh</code></pre>
+                        <p>If the release includes <code>images/*.tar</code>, the installer loads those images locally with <code>docker load</code>. That is the air-gapped path. If no image tarballs are present, Docker Compose pulls the pinned release images.</p>
+                    </article>
+
+                    <article class="guide-step">
+                        <span class="step-number">7</span>
+                        <h3>Open Tessallite</h3>
+                        <p>When the installer reports success, open the UI and sign in as the system admin.</p>
+                        <pre class="code-panel"><code>http://localhost:3000</code></pre>
+                        <p>The installer prints the admin email. The generated password is stored in <code>.env</code> as <code>SYSTEM_ADMIN_PASSWORD</code>.</p>
+                        <pre class="code-panel"><code>grep '^SYSTEM_ADMIN_EMAIL=' .env
+grep '^SYSTEM_ADMIN_PASSWORD=' .env</code></pre>
+                    </article>
+
+                    <article class="guide-step">
+                        <span class="step-number">8</span>
+                        <h3>Run the first health check</h3>
+                        <p>Use the bundled health check after install and after any restart or upgrade.</p>
+                        <pre class="code-panel"><code>./healthcheck.sh
+docker compose --env-file .env ps</code></pre>
+                        <p>Expected result: the UI, model service, query router, optimizer, scheduler, gateway, and metadata database are running. The gateway exposes JDBC on <code>5433</code> and XMLA/HTTP on <code>8080</code>.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-white">
             <div class="container">
                 <div class="section-header">
-                    <p class="section-eyebrow">What runs locally</p>
-                    <h2 class="section-title">A complete evaluation stack.</h2>
-                    <p class="section-description">The local bundle starts the web UI, model service, query router, optimizer, scheduler, gateway, and PostgreSQL metadata store. BI clients connect through the gateway; user queries still follow the governed Tessallite path.</p>
+                    <p class="eyebrow">What runs locally</p>
+                    <h2 class="section-title">Community starts a complete evaluation stack.</h2>
+                    <p class="section-description">The Community bundle is not just a UI demo. It starts the services needed to model data, serve BI tools, run routed queries, maintain acceleration artifacts, and manage the platform locally.</p>
                 </div>
-                <div class="guide-note">
-                    <h3>Common first checks</h3>
+                <table class="summary-table" aria-label="Community services">
+                    <tr><th>Frontend</th><td>Web application at <code>http://localhost:3000</code>.</td></tr>
+                    <tr><th>Model service</th><td>Projects, models, definitions, users, access control, and licence-aware control-plane operations.</td></tr>
+                    <tr><th>Query router</th><td>Semantic binding, policy checks, aggregate and pocket routing, and source execution.</td></tr>
+                    <tr><th>Optimizer</th><td>Miss analysis, aggregate recommendations, and acceleration planning.</td></tr>
+                    <tr><th>Scheduler</th><td>Refresh schedules, drift checks, and lifecycle jobs.</td></tr>
+                    <tr><th>Gateway</th><td>JDBC on <code>localhost:5433</code> and XMLA/HTTP on <code>http://localhost:8080</code>.</td></tr>
+                    <tr><th>PostgreSQL</th><td>Metadata and managed target schemas for the local evaluation stack.</td></tr>
+                </table>
+            </div>
+        </section>
+
+        <section class="section-mint">
+            <div class="container">
+                <div class="section-header">
+                    <p class="eyebrow">Operating basics</p>
+                    <h2 class="section-title">Day-2 commands you will actually use.</h2>
+                </div>
+                <div class="ops-grid">
+                    <article class="guide-card">
+                        <h3>Stop and start</h3>
+                        <pre class="code-panel"><code>docker compose --env-file .env down
+docker compose --env-file .env up -d</code></pre>
+                    </article>
+                    <article class="guide-card">
+                        <h3>Logs</h3>
+                        <pre class="code-panel"><code>docker compose --env-file .env logs -f
+docker compose --env-file .env logs -f model-service</code></pre>
+                    </article>
+                    <article class="guide-card">
+                        <h3>Health</h3>
+                        <pre class="code-panel"><code>./healthcheck.sh
+docker compose --env-file .env ps</code></pre>
+                    </article>
+                    <article class="guide-card">
+                        <h3>Upgrade</h3>
+                        <p>Download the new signed bundle, verify it, stop the old stack, copy forward <code>.env</code> and <code>license.json</code>, then run the new <code>install.sh</code>.</p>
+                    </article>
+                    <article class="guide-card">
+                        <h3>Backup</h3>
+                        <p>Keep a secure copy of <code>.env</code>, <code>license.json</code>, and the PostgreSQL volume or database dump. Without <code>.env</code>, generated secrets and the admin password are lost.</p>
+                    </article>
+                    <article class="guide-card">
+                        <h3>Agent key</h3>
+                        <p>The conversational agent is bring-your-own-key. Add <code>LLM_API_KEY</code> in <code>.env</code> when you are ready to test agent workflows.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-white">
+            <div class="container guide-layout">
+                <div class="guide-card">
+                    <p class="eyebrow">Air-gapped installs</p>
+                    <h2 class="section-title">Use the bundle with image tarballs when no registry is available.</h2>
+                    <p>If the release includes an <code>images/</code> directory with OCI tarballs, <code>install.sh</code> loads the images locally and skips pulling from a registry. Licence verification is local and offline. Keep the evidence pack with the installation record so reviewers can inspect checksums, signatures, SBOMs, and the offline statement.</p>
+                </div>
+                <div class="guide-card">
+                    <p class="eyebrow">Troubleshooting</p>
+                    <h2 class="section-title">Common first-run failures.</h2>
                     <ul>
-                        <li>If Docker is not running, start Docker and rerun the installer.</li>
-                        <li>If a port is already in use, stop the conflicting process before starting Tessallite.</li>
-                        <li>If the UI is not ready, wait for services to finish starting and refresh the browser.</li>
-                        <li>If the licence is rejected, confirm that the file was copied as <code>license.json</code>.</li>
+                        <li><strong>Docker not found:</strong> install Docker and confirm <code>docker compose version</code> works.</li>
+                        <li><strong>Port in use:</strong> free <code>3000</code>, <code>8001</code>, <code>8080</code>, or <code>5433</code>, then rerun <code>./install.sh</code>.</li>
+                        <li><strong>Licence rejected:</strong> confirm the file is named <code>license.json</code> and <code>LICENSE_PUBLIC_KEYS</code> matches the key issued with it.</li>
+                        <li><strong>UI not ready:</strong> wait a minute, run <code>docker compose --env-file .env ps</code>, then check logs for the unhealthy service.</li>
+                        <li><strong>Not enough disk:</strong> free at least 5 GB before loading images or starting the stack.</li>
                     </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="get-started" class="cta section-green">
+            <div class="container center invert reveal">
+                <h2 class="cta-title">Ready to install Community Edition?</h2>
+                <p class="cta-subtitle">Get the licence, download the signed bundle, verify it, and run the installer on your Docker host.</p>
+                <div class="cta-actions">
+                    <a href="../register.html" class="button button-secondary">Get a licence</a>
+                    <a href="../download.html" class="button button-white-outline">Download bundle</a>
                 </div>
             </div>
         </section>
@@ -226,16 +486,16 @@ cd tessallite-community-X.Y.Z</code></pre>
                 <ul>
                     <li><a href="../register.html">Get a licence</a></li>
                     <li><a href="../download.html">Download</a></li>
-                    <li><a href="index.html">Docs</a></li>
+                    <li><a href="../pricing.html">Pricing</a></li>
                 </ul>
             </div>
             <div class="link-group">
-                <h4>Product</h4>
+                <h4>Docs</h4>
                 <ul>
-                    <li><a href="../index.html">Product</a></li>
-                    <li><a href="../screens.html">Product screens</a></li>
-                    <li><a href="../pricing.html">Pricing</a></li>
-                    <li><a href="../download.html#security">Security &amp; verification</a></li>
+                    <li><a href="index.html">Docs home</a></li>
+                    <li><a href="product-overview.html">Product overview</a></li>
+                    <li><a href="licensing.html">Licensing explained</a></li>
+                    <li><a href="../download.html#security">Security and verification</a></li>
                 </ul>
             </div>
             <div class="link-group">
@@ -248,7 +508,7 @@ cd tessallite-community-X.Y.Z</code></pre>
         </div>
         <div class="container">
             <div class="footer-bottom">
-                <p>&copy; 2026 Tessallite Ltd. All rights reserved.</p>
+                <p>&copy; 2026 Tessallite Ltd. All rights reserved. &middot; <a href="index.html">Docs home</a></p>
             </div>
         </div>
     </footer>

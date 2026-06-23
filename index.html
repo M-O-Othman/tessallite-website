@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tessallite | Trusted Business Answers from Large Data</title>
-    <meta name="description" content="Tessallite helps companies turn large, complex data into trusted KPI answers for leaders, analysts, dashboards, spreadsheets, applications, and AI data assistants.">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tessallite | Governed Semantic Layer for BI, Excel, and AI</title>
+    <meta name="description" content="Tessallite is a governed semantic layer and query acceleration platform for BI tools, Excel, dashboards, APIs, and conversational AI agents.">
     <link rel="icon" type="image/png" href="assets/logos/png/favicon.png">
     <link rel="stylesheet" href="css/brand.css">
     <link rel="stylesheet" href="css/style.css">
@@ -15,35 +15,153 @@
             cursor: default;
         }
 
-        .homepage-directory {
-            padding: 28px 0;
-            background: var(--white);
+        .reveal {
+            opacity: 1;
+            transform: none;
+        }
+
+        .site-hero {
+            padding: 86px 0 72px;
+            background: linear-gradient(180deg, var(--white) 0%, var(--mint) 100%);
             border-bottom: 1px solid var(--slate-border);
         }
 
-        .homepage-directory-grid {
+        .site-hero-grid {
             display: grid;
-            grid-template-columns: 220px 1fr;
-            gap: 28px;
+            grid-template-columns: minmax(0, .92fr) minmax(420px, 1.08fr);
+            gap: 54px;
             align-items: center;
         }
 
-        .homepage-directory-label {
+        .eyebrow {
             color: var(--accent-gold);
             font-size: 13px;
             font-weight: 700;
             letter-spacing: .08em;
             text-transform: uppercase;
+            margin-bottom: 12px;
         }
 
-        .homepage-directory-links {
+        .hero-copy {
+            max-width: 760px;
+            color: rgba(51, 51, 51, .88);
+            font-size: 19px;
+            line-height: 1.65;
+            margin-bottom: 28px;
+        }
+
+        .hero-actions,
+        .section-actions {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .button-quiet {
+            background: var(--white);
+            color: var(--primary-green);
+            border-color: var(--slate-border);
+        }
+
+        .button-quiet:hover {
+            border-color: var(--primary-green);
+            box-shadow: 0 10px 22px rgba(0, 108, 53, .08);
+        }
+
+        .hero-proof {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 28px;
+        }
+
+        .hero-proof span {
+            min-height: 46px;
+            display: flex;
+            align-items: center;
+            border: 1px solid #dfe9e2;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, .7);
+            color: var(--primary-green);
+            font-size: 13px;
+            font-weight: 700;
+            padding: 10px 12px;
+        }
+
+        .screen-stack {
+            display: grid;
+            gap: 16px;
+        }
+
+        .hero-screen,
+        .screen-tile,
+        .proof-card,
+        .workflow-card,
+        .route-card,
+        .deployment-card,
+        .docs-card {
+            background: var(--white);
+            border: 1px solid var(--slate-border);
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 18px 40px rgba(0, 0, 0, .06);
+        }
+
+        .hero-screen img,
+        .screen-tile img,
+        .proof-card img {
+            display: block;
+            width: 100%;
+            object-fit: cover;
+            object-position: top left;
+        }
+
+        .hero-screen img {
+            aspect-ratio: 16 / 9;
+        }
+
+        .screen-row {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .screen-tile img {
+            aspect-ratio: 16 / 10;
+        }
+
+        .screen-caption {
+            padding: 14px 16px;
+            border-top: 1px solid var(--slate-border);
+        }
+
+        .screen-caption strong {
+            display: block;
+            color: var(--primary-green);
+            margin-bottom: 4px;
+        }
+
+        .screen-caption span {
+            color: #5b6b7b;
+            font-size: 13px;
+            line-height: 1.45;
+        }
+
+        .homepage-directory {
+            padding: 24px 0;
+            background: var(--white);
+            border-bottom: 1px solid var(--slate-border);
+        }
+
+        .directory-links {
             display: grid;
             grid-template-columns: repeat(6, minmax(0, 1fr));
             gap: 10px;
         }
 
-        .homepage-directory-links a {
-            min-height: 54px;
+        .directory-links a {
+            min-height: 52px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -57,20 +175,160 @@
             padding: 10px 12px;
         }
 
-        .homepage-directory-links a:hover {
+        .directory-links a:hover {
             border-color: var(--primary-green);
             box-shadow: 0 10px 22px rgba(0, 108, 53, .08);
         }
 
-        @media (max-width: 980px) {
-            .homepage-directory-grid,
-            .homepage-directory-links {
+        .proof-grid,
+        .workflow-grid,
+        .route-grid,
+        .deployment-grid,
+        .docs-grid {
+            display: grid;
+            gap: 22px;
+        }
+
+        .proof-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .proof-card img {
+            aspect-ratio: 16 / 10;
+        }
+
+        .proof-body,
+        .workflow-card,
+        .route-card,
+        .deployment-card,
+        .docs-card {
+            padding: 24px;
+        }
+
+        .proof-body h3,
+        .workflow-card h3,
+        .route-card h3,
+        .deployment-card h3,
+        .docs-card h3 {
+            color: var(--primary-green);
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .proof-body p,
+        .workflow-card p,
+        .route-card p,
+        .deployment-card p,
+        .docs-card p {
+            color: rgba(51, 51, 51, .86);
+            font-size: 15px;
+            line-height: 1.62;
+        }
+
+        .workflow-grid {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        .step-number {
+            width: 34px;
+            height: 34px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            background: var(--primary-green);
+            color: var(--white);
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .route-grid,
+        .deployment-grid,
+        .docs-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .integration-strip {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 18px;
+            margin-top: 26px;
+        }
+
+        .integration-pill {
+            min-height: 82px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            border: 1px solid var(--slate-border);
+            border-radius: 12px;
+            background: var(--white);
+            color: var(--charcoal);
+            font-weight: 700;
+            padding: 14px;
+        }
+
+        .integration-pill img {
+            max-height: 32px;
+            max-width: 92px;
+            object-fit: contain;
+        }
+
+        .dark-section .section-title,
+        .dark-section .section-description {
+            color: var(--white);
+        }
+
+        .dark-section .section-description {
+            opacity: .88;
+        }
+
+        .dark-section .route-card {
+            background: rgba(255, 255, 255, .07);
+            border-color: rgba(255, 255, 255, .16);
+            box-shadow: none;
+        }
+
+        .dark-section .route-card h3,
+        .dark-section .route-card p {
+            color: var(--white);
+        }
+
+        .dark-section .route-card p {
+            opacity: .86;
+        }
+
+        @media (max-width: 1020px) {
+            .site-hero-grid,
+            .proof-grid,
+            .workflow-grid,
+            .route-grid,
+            .deployment-grid,
+            .docs-grid,
+            .integration-strip {
                 grid-template-columns: 1fr;
             }
 
-            .homepage-directory-links a {
-                justify-content: flex-start;
-                text-align: left;
+            .screen-stack {
+                max-width: 760px;
+            }
+
+            .directory-links {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 640px) {
+            .site-hero {
+                padding: 62px 0 54px;
+            }
+
+            .site-hero-grid,
+            .screen-row,
+            .hero-proof,
+            .directory-links {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -90,8 +348,8 @@
                     <li><a href="screens.html" class="nav-link">Screens</a></li>
                     <li><a href="pricing.html" class="nav-link">Pricing</a></li>
                     <li><a href="download.html" class="nav-link">Download</a></li>
-                    <li><a href="download.html#install" class="nav-link">Install guide</a></li>
-                    <li><a href="help/index.html" target="_blank" rel="noopener" class="nav-link">Docs</a></li>
+                    <li><a href="help/install-local.html" class="nav-link">Install guide</a></li>
+                    <li><a href="docs/" class="nav-link">Docs</a></li>
                     <li><a href="register.html" class="nav-link">Get a licence</a></li>
                 </ul>
             </nav>
@@ -99,397 +357,269 @@
     </header>
 
     <main>
-        <section id="overview" class="hero hero-modern">
-            <div class="container hero-container hero-modern-grid">
-                <div class="hero-content reveal">
-                    <p class="hero-kicker">Trusted answers from large, complex company data</p>
-                    <h1 class="hero-title">One reliable place for business numbers, dashboards, and AI data questions.</h1>
-                    <p class="hero-subtitle hero-subtitle-body">Tessallite helps companies turn scattered, high-volume data into answers people can trust. Your team defines each important KPI once, decides who is allowed to see it, and lets Tessallite deliver the same answer to leaders, analysts, dashboards, spreadsheets, business applications, and AI data assistants.</p>
+        <section id="overview" class="site-hero">
+            <div class="container site-hero-grid">
+                <div class="reveal">
+                    <p class="eyebrow">Governed semantic layer for BI, Excel, and AI</p>
+                    <h1 class="hero-title">Define metrics once. Use them safely everywhere.</h1>
+                    <p class="hero-copy">Tessallite sits between your BI tools and source data. It maps raw tables to approved business definitions, enforces access rules, routes each query through the fastest safe path, and gives dashboards, spreadsheets, APIs, and AI agents the same trusted answer.</p>
                     <div class="hero-actions">
                         <a href="mailto:sales@tessallite.io?subject=Tessallite%20Demo%20Request" class="button button-primary">Book a demo</a>
-                        <a href="#platform" class="button button-quiet">Understand the idea</a>
+                        <a href="register.html" class="button button-quiet">Try Community</a>
                     </div>
-                    <div class="trust-strip" aria-label="Platform highlights">
-                        <span>One KPI definition</span>
-                        <span>AI assistant ready</span>
-                        <span>Excel and dashboard friendly</span>
+                    <div class="hero-proof" aria-label="Platform highlights">
+                        <span>Semantic modelling</span>
+                        <span>JDBC and XMLA endpoints</span>
                         <span>Row and column security</span>
+                        <span>Automatic query acceleration</span>
                     </div>
                 </div>
-                <div class="hero-visual reveal">
-                    <img src="assets/illustrations/generated/tessallite-governed-analytics-hero.png" alt="Governed analytics command center" class="hero-artwork" loading="eager" decoding="async">
-                    <article class="answer-console" aria-label="Tessallite trusted answer console">
-                        <div class="console-topline">
-                            <span class="status-dot"></span>
-                            <span>Trusted answer path</span>
-                            <strong>Finance persona</strong>
-                        </div>
-                        <div class="console-question">
-                            <span>Question</span>
-                            <p>"Gross margin by region, fiscal QTD"</p>
-                        </div>
-                        <div class="console-grid">
-                            <div>
-                                <span>Metric</span>
-                                <strong>Gross Margin %</strong>
-                            </div>
-                            <div>
-                                <span>Calendar</span>
-                                <strong>Fiscal</strong>
-                            </div>
-                            <div>
-                                <span>Policy</span>
-                                <strong>Approved</strong>
-                            </div>
-                            <div>
-                                <span>Answer path</span>
-                                <strong>Prepared</strong>
-                            </div>
-                        </div>
-                        <div class="route-lane" aria-label="Answer stages">
-                            <span>Question</span>
-                            <span>KPI rule</span>
-                            <span>Best path</span>
-                            <span>Answer</span>
-                        </div>
-                        <div class="console-output">
-                            <span>Delivered to</span>
-                            <p>Excel | Dashboards | Business Apps | AI Assistant</p>
-                        </div>
-                    </article>
+
+                <div class="screen-stack reveal" aria-label="Tessallite product screens">
+                    <figure class="hero-screen">
+                        <img src="assets/screenshots/product-model-builder.png" alt="Tessallite Model Builder canvas showing a semantic model">
+                        <figcaption class="screen-caption">
+                            <strong>Model Builder</strong>
+                            <span>Build the governed model, joins, measures, dimensions, aggregates, and health checks in one workspace.</span>
+                        </figcaption>
+                    </figure>
+                    <div class="screen-row">
+                        <figure class="screen-tile">
+                            <img src="assets/screenshots/product-conversational-agent.png" alt="Tessallite conversational agent with visual answer">
+                            <figcaption class="screen-caption">
+                                <strong>Agent</strong>
+                                <span>Ask in business language with governed context and traceable answers.</span>
+                            </figcaption>
+                        </figure>
+                        <figure class="screen-tile">
+                            <img src="assets/screenshots/product-excel-connection.png" alt="Excel connection workflow for Tessallite">
+                            <figcaption class="screen-caption">
+                                <strong>Excel</strong>
+                                <span>Connect familiar spreadsheet workflows to the same deployed model.</span>
+                            </figcaption>
+                        </figure>
+                    </div>
                 </div>
             </div>
         </section>
 
         <nav class="homepage-directory" aria-label="Homepage sections">
-            <div class="container homepage-directory-grid">
-                <p class="homepage-directory-label">Explore the platform</p>
-                <div class="homepage-directory-links">
-                    <a href="#assistants">AI Assistants</a>
-                    <a href="#governance">Governance</a>
-                    <a href="#acceleration">Acceleration</a>
-                    <a href="#integrations">Connected Tools</a>
-                    <a href="#operations">Operations</a>
-                    <a href="#deployment">Deployment</a>
-                </div>
+            <div class="container directory-links">
+                <a href="#platform">What it is</a>
+                <a href="#screens-preview">Product proof</a>
+                <a href="#governance">Governance</a>
+                <a href="#acceleration">Acceleration</a>
+                <a href="#integrations">BI and Excel</a>
+                <a href="#deployment">Deployment</a>
             </div>
         </nav>
 
-        <section id="platform" class="channel-band section-white">
+        <section id="platform" class="section-white">
             <div class="container">
                 <div class="section-header center reveal">
-                    <div class="badge">The core idea</div>
-                    <h2 class="section-title">Define the business meaning once. Use it everywhere.</h2>
-                    <p class="section-description">Most reporting problems are not caused by a lack of data. They are caused by different teams using different definitions for the same business question. Tessallite gives your organisation one controlled place to define revenue, margin, customers, dates, regions, access rules, and ownership. After that, every report and question can use the same approved meaning.</p>
+                    <p class="eyebrow">Product category</p>
+                    <h2 class="section-title">A semantic layer and query acceleration platform.</h2>
+                    <p class="section-description">Tessallite gives platform teams one controlled layer for metric definitions, data access, query routing, and business-facing metadata. To the tools, Tessallite looks like a database. To the business, it becomes the place where important numbers have one approved meaning.</p>
                 </div>
-                <div class="channel-ribbon reveal">
-                    <article>
-                        <span>01</span>
-                        <h3>Executives</h3>
-                        <p>Executives get the same trusted KPI in spreadsheet and dashboard workflows, with clear context about ownership and freshness.</p>
+                <div class="workflow-grid reveal">
+                    <article class="workflow-card">
+                        <span class="step-number">1</span>
+                        <h3>Model</h3>
+                        <p>Define dimensions, measures, joins, calendars, hierarchies, glossary terms, and model versions once.</p>
                     </article>
-                    <article>
-                        <span>02</span>
-                        <h3>Analysts</h3>
-                        <p>Analysts explore data without rebuilding definitions from scratch or worrying that their answer uses a different business rule.</p>
+                    <article class="workflow-card">
+                        <span class="step-number">2</span>
+                        <h3>Govern</h3>
+                        <p>Apply workspace roles, project access, personas, row security, column security, and data tags consistently.</p>
                     </article>
-                    <article>
-                        <span>03</span>
-                        <h3>Data teams</h3>
-                        <p>Data teams keep control over definitions, changes, security, source connections, and the way each answer is calculated.</p>
+                    <article class="workflow-card">
+                        <span class="step-number">3</span>
+                        <h3>Route</h3>
+                        <p>Serve each query through an aggregate, pocket table, or source path depending on what is safe and accurate.</p>
                     </article>
-                    <article>
-                        <span>04</span>
-                        <h3>AI assistants</h3>
-                        <p>AI data assistants answer questions from approved business definitions instead of guessing from raw database tables.</p>
-                    </article>
-                </div>
-            </div>
-        </section>
-
-        <section id="assistants" class="agent-section section-mint">
-            <div class="container">
-                <div class="grid grid-2 align-center">
-                    <div class="agent-panel reveal">
-                        <img src="assets/illustrations/generated/tessallite-conversational-analytics.png" alt="Business user asking trusted data questions" class="panel-image" loading="lazy" decoding="async">
-                    </div>
-                    <div class="reveal">
-                        <div class="badge">AI data assistants</div>
-                        <h2 class="section-title">Let people ask questions in plain language without losing control.</h2>
-                        <p class="section-description">AI is useful only when it understands the business rules. Tessallite gives AI data assistants a safe foundation: approved KPI definitions, approved data fields, approved date rules, and the same access restrictions used by the rest of the company. The result is a conversational experience that is easier for business users, while still controlled by the data team.</p>
-                        <div class="feature-stack">
-                            <div class="feature-stack-item">
-                                <h4 class="feature-stack-title">Ask in business language</h4>
-                                <p class="feature-stack-copy">A manager can ask about revenue, margin, customers, products, or a financial period without knowing where the data is stored or how the tables connect.</p>
-                            </div>
-                            <div class="feature-stack-item">
-                                <h4 class="feature-stack-title">Keep answers tied to approved definitions</h4>
-                                <p class="feature-stack-copy">The assistant works from governed business terms and KPI rules, so it is less likely to invent its own meaning for important numbers.</p>
-                            </div>
-                            <div class="feature-stack-item">
-                                <h4 class="feature-stack-title">Review what happened</h4>
-                                <p class="feature-stack-copy">Conversation history and answer traces help teams review what was asked, which data was used, and why the answer was returned.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="semantic-studio section-white">
-            <div class="container">
-                <div class="grid grid-2 align-center">
-                    <div class="reveal">
-                        <div class="badge">Business definition workspace</div>
-                        <h2 class="section-title">A working room for the data team to define trusted answers.</h2>
-                        <p class="section-description">Behind every simple business answer there are rules: which source is correct, how tables relate, what counts as a customer, how margin is calculated, which calendar to use, and who owns the definition. Tessallite gives data teams a clear workspace to build, test, approve, version, and publish those rules so business users do not have to manage that complexity themselves.</p>
-                        <div class="studio-list">
-                            <span>Visual definition workspace with health checks</span>
-                            <span>Reusable KPI calculations and date rules</span>
-                            <span>Business-friendly names and glossary terms</span>
-                            <span>Controlled save, publish, export, and rollback</span>
-                        </div>
-                    </div>
-                    <div class="semantic-visual reveal">
-                        <img src="assets/illustrations/generated/tessallite-model-governance-acceleration.png" alt="Business definition and governance workspace" class="semantic-zoom" loading="lazy" decoding="async">
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="governance" class="governance-section section-charcoal">
-            <div class="container">
-                <div class="section-header reveal">
-                    <div class="badge">Enterprise control</div>
-                    <h2 class="section-title invert">Security and trust travel with every answer.</h2>
-                    <p class="section-description invert">Tessallite is designed for environments where not everyone should see the same data. The platform can shape what each person, role, or audience is allowed to ask for, while keeping the rules consistent across dashboards, spreadsheets, specialist tools, applications, and AI assistants.</p>
-                </div>
-                <div class="governance-grid reveal">
-                    <article>
-                        <h3>Tenant and project access</h3>
-                        <p>Separate workspaces, project access, and controlled administration help keep each customer, department, or team in the right area.</p>
-                    </article>
-                    <article>
-                        <h3>Audience views</h3>
-                        <p>A finance user, sales manager, and executive can each see the right version of the data, with automatic filters and permissions applied.</p>
-                    </article>
-                    <article>
-                        <h3>Data tags and column controls</h3>
-                        <p>Sensitive fields can be labelled and hidden consistently, so private columns are not accidentally exposed through another tool.</p>
-                    </article>
-                    <article>
-                        <h3>Trust metadata</h3>
-                        <p>Freshness, data origin, owners, glossary definitions, and review history help stakeholders understand where an answer came from.</p>
+                    <article class="workflow-card">
+                        <span class="step-number">4</span>
+                        <h3>Explain</h3>
+                        <p>Expose owners, freshness, lineage, route details, query logs, and model health so teams can trust the answer.</p>
                     </article>
                 </div>
             </div>
         </section>
 
-        <section id="acceleration" class="acceleration-section section-white">
+        <section id="screens-preview" class="section-mint">
             <div class="container">
                 <div class="section-header center reveal">
-                    <div class="badge">Fast without losing accuracy</div>
-                    <h2 class="section-title">Large data should feel interactive, not painful.</h2>
-                    <p class="section-description">When many people keep asking the same type of question, it is wasteful to scan the largest data tables again and again. Tessallite learns which answers can be prepared safely, keeps those prepared answers fresh, and still falls back to the original data when a prepared answer is not appropriate.</p>
+                    <p class="eyebrow">Product proof</p>
+                    <h2 class="section-title">Use real product surfaces, not slideware.</h2>
+                    <p class="section-description">The public site now leads with the working screens evaluators need to understand: modeller canvas, conversational agent, and Excel connection. The full product screens page describes what each surface does and when to use it.</p>
                 </div>
-                <div class="route-cards reveal">
+                <div class="proof-grid reveal">
+                    <article class="proof-card">
+                        <img src="assets/screenshots/product-model-builder.png" alt="Tessallite semantic modeller screen">
+                        <div class="proof-body">
+                            <h3>Modeller screen</h3>
+                            <p>Shows source tables, joins, measures, dimensions, aggregates, pockets, validation state, and model health in one graph-led workspace.</p>
+                        </div>
+                    </article>
+                    <article class="proof-card">
+                        <img src="assets/screenshots/product-conversational-agent.png" alt="Tessallite conversational agent screen">
+                        <div class="proof-body">
+                            <h3>Conversational agent</h3>
+                            <p>Answers questions from approved model context, glossary terms, persona rules, and traceable query steps.</p>
+                        </div>
+                    </article>
+                    <article class="proof-card">
+                        <img src="assets/screenshots/product-excel-catalogue.png" alt="Tessallite Excel catalogue screen">
+                        <div class="proof-body">
+                            <h3>Excel workflow</h3>
+                            <p>Lets analysts work from familiar workbook and PivotTable patterns while still using governed model definitions.</p>
+                        </div>
+                    </article>
+                </div>
+                <div class="section-actions reveal" style="margin-top: 26px; justify-content: center;">
+                    <a href="screens.html" class="button button-primary">View product screens</a>
+                    <a href="docs/" class="button button-quiet">Open docs</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="governance" class="section-charcoal dark-section">
+            <div class="container">
+                <div class="section-header center reveal">
+                    <p class="eyebrow">Enterprise control</p>
+                    <h2 class="section-title">Security rules travel with every answer.</h2>
+                    <p class="section-description">Tessallite does not treat governance as a separate brochure page. The same access checks apply when a user asks through Excel, BI, SQL, an API, or the conversational agent.</p>
+                </div>
+                <div class="route-grid reveal">
                     <article class="route-card">
-                        <span class="route-label">Prepared summaries</span>
-                        <h3>Reusable answers for common questions</h3>
-                        <p>Frequently used totals and breakdowns can be prepared in advance so dashboards and spreadsheets respond quickly.</p>
+                        <h3>Audience-aware models</h3>
+                        <p>Personas and roles shape which measures, dimensions, hierarchies, and filters each audience can use.</p>
                     </article>
                     <article class="route-card">
-                        <span class="route-label">Focused slices</span>
-                        <h3>Fast views for repeated filtered analysis</h3>
-                        <p>Teams can prepare carefully controlled slices of data for repeated investigation without exposing everything.</p>
+                        <h3>Row and column controls</h3>
+                        <p>Row security, data tags, and column restrictions prevent sensitive fields from leaking through another client.</p>
                     </article>
                     <article class="route-card">
-                        <span class="route-label">Original data</span>
-                        <h3>Safe fallback when needed</h3>
-                        <p>If Tessallite cannot use a prepared answer safely, it goes back to the original source and records the reason.</p>
+                        <h3>Audit and trace</h3>
+                        <p>Query logs, route badges, owners, freshness, and lineage give reviewers evidence for where numbers came from.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section id="acceleration" class="section-white">
+            <div class="container">
+                <div class="section-header center reveal">
+                    <p class="eyebrow">Performance</p>
+                    <h2 class="section-title">Fast dashboards without hand-maintained summary tables.</h2>
+                    <p class="section-description">Tessallite observes repeated query patterns, builds useful aggregates, keeps them refreshed, and falls back to the original source when a prepared answer is not safe for the query shape.</p>
+                </div>
+                <div class="route-grid reveal">
+                    <article class="route-card">
+                        <h3>Aggregates</h3>
+                        <p>Reusable rollups for common grains and measures reduce repeated scans over large fact tables.</p>
                     </article>
                     <article class="route-card">
-                        <span class="route-label">Lifecycle</span>
-                        <h3>Keep fast paths healthy</h3>
-                        <p>Refresh schedules, usage history, budgets, validation, and retirement rules prevent old prepared data from becoming a liability.</p>
+                        <h3>Pocket tables</h3>
+                        <p>Controlled slices support repeated filtered analysis without opening access to the entire source shape.</p>
+                    </article>
+                    <article class="route-card">
+                        <h3>Source fallback</h3>
+                        <p>If no safe match exists, Tessallite executes through the source path and records the miss for later optimisation.</p>
                     </article>
                 </div>
             </div>
         </section>
 
-        <section id="integrations" class="integrations-section section-mint">
+        <section id="integrations" class="section-mint">
             <div class="container">
                 <div class="section-header center reveal">
-                    <div class="badge">Adopt without changing habits</div>
-                    <h2 class="section-title">Use the tools your teams already understand.</h2>
-                    <p class="section-description">Tessallite is not trying to replace every reporting tool. It sits between your data and the places where people ask questions, so the same approved business definitions can reach spreadsheets, dashboards, internal applications, advanced users, and AI data assistants.</p>
+                    <p class="eyebrow">Connected tools</p>
+                    <h2 class="section-title">Meet users in the tools they already use.</h2>
+                    <p class="section-description">Tessallite exposes governed models through standard endpoints: JDBC on the PostgreSQL wire protocol, XMLA for Excel and Power BI, REST for application access, and agent context for natural-language questions.</p>
                 </div>
-                <div class="integration-grid reveal">
-                    <article>
-                        <h3>Spreadsheets and dashboards</h3>
-                        <p>Business users can keep working with familiar pivot tables, dashboards, folders, and refresh workflows.</p>
-                        <p><a href="help/getting-started/connect-excel.html" target="_blank" rel="noopener">Connect Excel guide</a></p>
+                <div class="deployment-grid reveal">
+                    <article class="deployment-card">
+                        <h3>Excel and Power BI</h3>
+                        <p>Connect through XMLA, browse cubes, use friendly field names, and refresh workbooks against the deployed model.</p>
                     </article>
-                    <article>
-                        <h3>Analyst and specialist tools</h3>
-                        <p>Data teams can still use their preferred analysis tools when they need deeper inspection or advanced investigation.</p>
+                    <article class="deployment-card">
+                        <h3>SQL and BI tools</h3>
+                        <p>Use PostgreSQL-compatible clients such as DBeaver, Power BI PostgreSQL, Tableau, pgAdmin, or custom drivers.</p>
                     </article>
-                    <article>
-                        <h3>Business applications</h3>
-                        <p>Internal products and customer-facing applications can request governed answers without rebuilding metric logic.</p>
-                    </article>
-                    <article>
-                        <h3>Large data platforms</h3>
-                        <p>Tessallite can connect to large company data platforms, including cloud data systems and private data environments.</p>
+                    <article class="deployment-card">
+                        <h3>Apps and agents</h3>
+                        <p>Use headless APIs, embedded chat, and the conversational client when the answer needs to live inside another workflow.</p>
                     </article>
                 </div>
-                <div class="logo-cloud compact-logo-cloud reveal" aria-label="Supported platform logos">
-                    <div class="marquee-container">
-                        <div class="marquee-content logo-grid-flex">
-                            <img src="assets/logos/png/azure.png" alt="Azure">
-                            <img src="assets/logos/png/gcp.png" alt="GCP">
-                            <img src="assets/logos/png/aws.png" alt="AWS">
-                            <img src="assets/logos/png/hadoop.png" alt="Hadoop">
-                            <img src="assets/logos/png/oracle.png" alt="Oracle">
-                            <img src="assets/logos/png/spark.png" alt="Spark">
-                            <img src="assets/logos/png/postgresql.png" alt="PostgreSQL">
-                            <img src="assets/logos/png/azure.png" alt="Azure">
-                            <img src="assets/logos/png/gcp.png" alt="GCP">
-                            <img src="assets/logos/png/aws.png" alt="AWS">
-                            <img src="assets/logos/png/hadoop.png" alt="Hadoop">
-                            <img src="assets/logos/png/oracle.png" alt="Oracle">
-                            <img src="assets/logos/png/spark.png" alt="Spark">
-                            <img src="assets/logos/png/postgresql.png" alt="PostgreSQL">
-                        </div>
-                    </div>
+                <div class="integration-strip reveal" aria-label="Supported source and platform logos">
+                    <span class="integration-pill"><img src="assets/logos/png/postgresql.png" alt="PostgreSQL">PostgreSQL</span>
+                    <span class="integration-pill"><img src="assets/logos/png/gcp.png" alt="GCP">BigQuery</span>
+                    <span class="integration-pill"><img src="assets/logos/png/spark.png" alt="Spark">Spark</span>
+                    <span class="integration-pill"><img src="assets/logos/png/aws.png" alt="AWS">Redshift</span>
                 </div>
             </div>
         </section>
 
-        <section id="operations" class="operations-section section-white">
+        <section id="operations" class="section-white">
             <div class="container">
                 <div class="section-header center reveal">
-                    <div class="badge">Operational confidence</div>
-                    <h2 class="section-title">Keep trusted answers healthy after launch.</h2>
-                    <p class="section-description">A reporting layer is only useful if it stays reliable over time. Tessallite gives owners the checks, logs, and review screens needed to see what is used, what is slow, what changed in the source data, and what might break before users notice.</p>
+                    <p class="eyebrow">Operational readiness</p>
+                    <h2 class="section-title">Built for model owners after launch.</h2>
+                    <p class="section-description">The product includes model health, query logs, usage analytics, impact analysis, schema-change review, refresh history, alerting, and export/import workflows so the semantic layer can be operated, not just designed.</p>
                 </div>
-                <div class="ops-grid reveal">
-                    <article>
-                        <strong>Model health</strong>
-                        <span>Checks that identify broken definitions, missing fields, and problems that need attention before publishing.</span>
+                <div class="docs-grid reveal">
+                    <article class="docs-card">
+                        <h3>Model health</h3>
+                        <p>Find invalid dimensions, broken measures, failed aggregates, refresh issues, and warnings before users hit them.</p>
                     </article>
-                    <article>
-                        <strong>Usage analytics</strong>
-                        <span>Shows which business questions are popular, slow, repeated, or good candidates for improvement.</span>
+                    <article class="docs-card">
+                        <h3>Usage and impact</h3>
+                        <p>See which questions, reports, and columns are used so model changes can be reviewed with evidence.</p>
                     </article>
-                    <article>
-                        <strong>Impact analysis</strong>
-                        <span>Helps owners see which dashboards, reports, or questions could be affected by a change.</span>
-                    </article>
-                    <article>
-                        <strong>Schema change review</strong>
-                        <span>Surfaces source data changes early, before a renamed or removed field breaks a business workflow.</span>
-                    </article>
-                    <article>
-                        <strong>Data preview</strong>
-                        <span>Lets authorised users inspect sample data and field details without leaving the modelling workflow.</span>
-                    </article>
-                    <article>
-                        <strong>Portable governance</strong>
-                        <span>Move definitions between projects without exposing credentials, and share approved glossary terms safely.</span>
+                    <article class="docs-card">
+                        <h3>Export and import</h3>
+                        <p>Move model and project definitions without copying source credentials, then rebind them in the target environment.</p>
                     </article>
                 </div>
             </div>
         </section>
 
-        <section id="how-it-works" class="architecture-section section-mint">
+        <section id="deployment" class="section-mint">
             <div class="container">
                 <div class="section-header center reveal">
-                    <div class="badge">How it works</div>
-                    <h2 class="section-title">A controlled path from question to answer.</h2>
-                    <p class="section-description">When someone asks a question, Tessallite does more than send it directly to a database. It checks the business meaning, confirms the user's permissions, chooses the safest and fastest way to answer, and returns the result with context that makes it easier to trust.</p>
+                    <p class="eyebrow">Evaluation to production</p>
+                    <h2 class="section-title">Start locally. Move to supported rollout when the case is proven.</h2>
+                    <p class="section-description">Community is for a self-hosted evaluation with the full product surface and practical limits. Enterprise removes operating limits and adds deployment options, support, SSO, and security evidence for production teams.</p>
                 </div>
-                <div class="architecture-diagram reveal">
-                    <img src="assets/illustrations/generated/tessallite-architecture-flow.png" alt="Tessallite architecture showing business tools, governed answer layer, enterprise data sources, and trusted output" class="architecture-image" loading="lazy" decoding="async">
-                </div>
-                <div class="grid grid-3 reveal">
-                    <div class="step">
-                        <span class="step-num">01</span>
-                        <h4 class="step-title">Resolve</h4>
-                        <p>Match the question to approved KPI definitions, business terms, date rules, audience rules, and the current published version.</p>
-                    </div>
-                    <div class="step">
-                        <span class="step-num">02</span>
-                        <h4 class="step-title">Route</h4>
-                        <p>Choose a prepared answer when it is safe, or go back to the original data when accuracy requires it.</p>
-                    </div>
-                    <div class="step">
-                        <span class="step-num">03</span>
-                        <h4 class="step-title">Explain</h4>
-                        <p>Return the answer with context such as freshness, owner, data origin, and why Tessallite used that path.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="deployment" class="deployment section-white">
-            <div class="container">
-                <div class="section-header center reveal">
-                    <div class="badge">Deployment control</div>
-                    <h2 class="section-title">Run Tessallite where your security rules require it.</h2>
-                    <p class="section-description">Many customers cannot send sensitive data or metadata to uncontrolled services. Tessallite is designed for private and controlled deployments, so your organisation can keep credentials, question history, and data movement under its own operational rules.</p>
-                </div>
-                <div class="grid grid-3">
-                    <article class="card reveal">
-                        <div class="card-icon">
-                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                        </div>
-                        <h3 class="card-title">Private by design</h3>
-                        <p class="card-text">Keep definitions, question history, credentials, and operational logs inside your controlled environment.</p>
+                <div class="deployment-grid reveal">
+                    <article class="deployment-card">
+                        <h3>Community</h3>
+                        <p>Free local evaluation with the same modelling, BI, agent, governance, and acceleration surface.</p>
                     </article>
-                    <article class="card reveal">
-                        <div class="card-icon">
-                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                        </div>
-                        <h3 class="card-title">Operational setup</h3>
-                        <p class="card-text">Guided setup, environment checks, service health views, restart prompts, and controlled teardown flows help operations teams manage the platform.</p>
+                    <article class="deployment-card">
+                        <h3>Install guide</h3>
+                        <p>Follow the Docker Compose path, verify the signed bundle, add the licence, and open the local UI.</p>
                     </article>
-                    <article class="card reveal">
-                        <div class="card-icon">
-                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-                        </div>
-                        <h3 class="card-title">Documented adoption</h3>
-                        <p class="card-text">Documentation covers setup, business concepts, modelling, connected tools, administration, and troubleshooting.</p>
+                    <article class="deployment-card">
+                        <h3>Enterprise</h3>
+                        <p>Use Enterprise for unlimited tenants, models, users, SSO, support SLA, and production deployment guidance.</p>
                     </article>
                 </div>
-            </div>
-        </section>
-
-        <section id="vision" class="vision section-charcoal">
-            <div class="container">
-                <div class="grid grid-2 align-center">
-                    <div class="vision-content reveal">
-                        <h2 class="section-title invert">The founder's vision</h2>
-                        <p class="section-description invert vision-quote">"Tessallite was built to close the gap between very large data and practical business answers. The next generation of analytics will be conversational, but it must still be governed, explainable, and fast."</p>
-                        <div class="founder-credit">
-                            <h4 class="founder-name">Mohammed Othman</h4>
-                            <p class="founder-role">Founder & Lead Architect, Tessallite</p>
-                        </div>
-                    </div>
-                    <div class="vision-visual reveal center">
-                    <img src="assets/logos/png/logo-submark.png" alt="Tessallite submark" height="200" class="floating" loading="lazy" decoding="async">
-                    </div>
+                <div class="section-actions reveal" style="margin-top: 26px; justify-content: center;">
+                    <a href="pricing.html" class="button button-primary">Compare editions</a>
+                    <a href="help/install-local.html" class="button button-quiet">Read install guide</a>
                 </div>
             </div>
         </section>
 
         <section id="get-started" class="cta section-green">
             <div class="container center invert reveal">
-                <h2 class="cta-title">Give every team one trusted way to ask for the numbers.</h2>
-                <p class="cta-subtitle">Book a walkthrough focused on your KPIs, reporting workflows, AI data assistant plans, and the cost of repeated large-data queries.</p>
+                <h2 class="cta-title">Give every team one governed way to ask for numbers.</h2>
+                <p class="cta-subtitle">Book a product walkthrough or start a Community evaluation with the local bundle and public help path.</p>
                 <div class="cta-actions">
-                    <a href="download.html" class="button button-secondary">Download Community Edition</a>
-                    <a href="mailto:sales@tessallite.io?subject=Tessallite%20Demo%20Request" class="button button-white-outline">Book a demo</a>
+                    <a href="mailto:sales@tessallite.io?subject=Tessallite%20Demo%20Request" class="button button-secondary">Book a demo</a>
+                    <a href="register.html" class="button button-white-outline">Try Community</a>
                 </div>
             </div>
         </section>
@@ -505,36 +635,28 @@
             <div class="link-group">
                 <h4>Product</h4>
                 <ul>
-                    <li><a href="#platform">Platform</a></li>
+                    <li><a href="#platform">Product overview</a></li>
                     <li><a href="screens.html">Product screens</a></li>
-                    <li><a href="#assistants">AI Assistants</a></li>
-                    <li><a href="#acceleration">Acceleration</a></li>
-                    <li><a href="#integrations">Connected Tools</a></li>
-                </ul>
-            </div>
-            <div class="link-group">
-                <h4>Governance</h4>
-                <ul>
-                    <li><a href="download.html#security">Security &amp; verification</a></li>
+                    <li><a href="#integrations">Connected tools</a></li>
                     <li><a href="#operations">Operations</a></li>
-                    <li><a href="#deployment">Deployment</a></li>
                 </ul>
             </div>
             <div class="link-group">
-                <h4>Resources</h4>
+                <h4>Get started</h4>
                 <ul>
                     <li><a href="pricing.html">Pricing</a></li>
-                    <li><a href="download.html">Download Community</a></li>
                     <li><a href="register.html">Get a licence</a></li>
-                    <li><a href="help/index.html" target="_blank" rel="noopener">Documentation</a></li>
+                    <li><a href="download.html">Download</a></li>
+                    <li><a href="help/install-local.html">Install guide</a></li>
                 </ul>
             </div>
             <div class="link-group">
-                <h4>Legal</h4>
+                <h4>Docs</h4>
                 <ul>
-                    <li><a href="legal.html">Licence &amp; legal</a></li>
-                    <li><a href="legal/LICENSE-COMMUNITY.md" target="_blank" rel="noopener">Community Licence</a></li>
-                    <li><a href="legal/THIRD_PARTY_NOTICES.md" target="_blank" rel="noopener">Third-party notices</a></li>
+                    <li><a href="docs/">Documentation</a></li>
+                    <li><a href="help/product-overview.html">What Tessallite does</a></li>
+                    <li><a href="help/excel-bi.html">BI and Excel</a></li>
+                    <li><a href="download.html#security">Security and verification</a></li>
                 </ul>
             </div>
             <div class="link-group">
@@ -542,13 +664,12 @@
                 <ul>
                     <li><a href="mailto:info@tessallite.io">info@tessallite.io</a></li>
                     <li><a href="mailto:sales@tessallite.io">sales@tessallite.io</a></li>
-                    <li><a href="mailto:mo@tessallite.io">mo@tessallite.io</a></li>
                 </ul>
             </div>
         </div>
         <div class="container">
             <div class="footer-bottom">
-                <p>&copy; 2026 Tessallite Ltd. All rights reserved. &middot; <a href="legal.html">Licence &amp; legal</a> &middot; <a href="security.html">Security</a></p>
+                <p>&copy; 2026 Tessallite Ltd. All rights reserved. &middot; <a href="legal.html">Licence &amp; legal</a></p>
             </div>
         </div>
     </footer>

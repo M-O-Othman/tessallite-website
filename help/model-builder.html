@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Model Builder Guide</title>
+    <meta name="description" content="A public guide to the Tessallite Model Builder and semantic modelling workflow.">
+    <link rel="icon" type="image/png" href="../assets/logos/png/favicon.png">
+    <link rel="stylesheet" href="../css/brand.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .nav-current { color: var(--primary-green); font-weight: 700; cursor: default; }
+        .guide-hero { padding: 82px 0 68px; background: linear-gradient(180deg, var(--white) 0%, var(--mint) 100%); border-bottom: 1px solid var(--slate-border); }
+        .eyebrow { color: var(--accent-gold); font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 12px; }
+        .guide-copy { max-width: 820px; color: rgba(51, 51, 51, .88); font-size: 19px; line-height: 1.65; }
+        .screen-layout { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(320px, .9fr); gap: 34px; align-items: center; }
+        .screen-frame, .guide-card { background: var(--white); border: 1px solid var(--slate-border); border-radius: 14px; overflow: hidden; box-shadow: 0 18px 40px rgba(0,0,0,.06); }
+        .screen-frame img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: top left; }
+        .guide-card { padding: 24px; box-shadow: none; }
+        .guide-card h3 { color: var(--primary-green); margin-bottom: 10px; }
+        .guide-card p, .guide-card li { color: rgba(51,51,51,.86); line-height: 1.65; }
+        .guide-card ul { padding-left: 20px; }
+        .guide-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
+        @media (max-width: 980px) { .screen-layout, .guide-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container header-container">
+            <a href="../index.html" class="logo"><img src="../assets/logos/png/logo-primary-horizontal.png" alt="Tessallite" height="80"></a>
+            <nav class="nav" aria-label="Primary navigation">
+                <button class="nav-toggle" aria-label="Toggle navigation" aria-controls="site-nav-list"><span class="hamburger"></span></button>
+                <ul class="nav-list" id="site-nav-list">
+                    <li><a href="../index.html" class="nav-link">Product</a></li>
+                    <li><a href="../screens.html" class="nav-link">Screens</a></li>
+                    <li><a href="../pricing.html" class="nav-link">Pricing</a></li>
+                    <li><a href="../download.html" class="nav-link">Download</a></li>
+                    <li><a href="install-local.html" class="nav-link">Install guide</a></li>
+                    <li><a href="../docs/" class="nav-link">Docs</a></li>
+                    <li><a href="../register.html" class="nav-link">Get a licence</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="guide-hero">
+            <div class="container">
+                <p class="eyebrow">Modeller screen</p>
+                <h1 class="hero-title">Model Builder is where trusted business definitions are created.</h1>
+                <p class="guide-copy">A modeller connects source tables, defines joins, creates dimensions and measures, configures security, and publishes the model that downstream tools consume.</p>
+            </div>
+        </section>
+
+        <section class="section-white">
+            <div class="container screen-layout">
+                <figure class="screen-frame"><img src="../assets/screenshots/product-model-builder.png" alt="Tessallite Model Builder canvas"></figure>
+                <article class="guide-card">
+                    <h3>What the screen shows</h3>
+                    <ul>
+                        <li>A canvas showing fact and dimension tables as a graph.</li>
+                        <li>Joins as visible lines, so the model shape is easy to review.</li>
+                        <li>Tool panels for sources, joins, dimensions, measures, aggregates, refresh, lineage, and diagnostics.</li>
+                        <li>Health checks that surface broken fields, stale aggregates, and model issues before publishing.</li>
+                    </ul>
+                </article>
+            </div>
+        </section>
+
+        <section class="section-mint">
+            <div class="container">
+                <div class="section-header"><p class="eyebrow">Workflow</p><h2 class="section-title">From source tables to a deployed model.</h2></div>
+                <div class="guide-grid">
+                    <article class="guide-card"><h3>1. Add data</h3><p>Add source tables, classify facts and dimensions, and test source connections.</p></article>
+                    <article class="guide-card"><h3>2. Define meaning</h3><p>Create measures, dimensions, hierarchies, calendars, glossary terms, and friendly display names.</p></article>
+                    <article class="guide-card"><h3>3. Publish safely</h3><p>Run validation, configure access, deploy a version, and let BI tools consume the published model.</p></article>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer section-charcoal"><div class="container footer-bottom"><p>&copy; 2026 Tessallite Ltd. All rights reserved. &middot; <a href="product-overview.html">Previous: Overview</a> &middot; <a href="index.html">Docs home</a> &middot; <a href="agent-chat.html">Next: Agent Chat</a></p></div></footer>
+    <script src="../js/script.js"></script>
+</body>
+</html>

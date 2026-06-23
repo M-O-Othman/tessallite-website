@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>What Tessallite Does</title>
+    <meta name="description" content="A public guide explaining Tessallite as a governed semantic layer and query acceleration platform.">
+    <link rel="icon" type="image/png" href="../assets/logos/png/favicon.png">
+    <link rel="stylesheet" href="../css/brand.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .nav-current { color: var(--primary-green); font-weight: 700; cursor: default; }
+        .guide-hero { padding: 82px 0 68px; background: linear-gradient(180deg, var(--white) 0%, var(--mint) 100%); border-bottom: 1px solid var(--slate-border); }
+        .eyebrow { color: var(--accent-gold); font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 12px; }
+        .guide-copy { max-width: 820px; color: rgba(51, 51, 51, .88); font-size: 19px; line-height: 1.65; }
+        .guide-grid { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 34px; align-items: start; }
+        .guide-card, .guide-panel { background: var(--white); border: 1px solid var(--slate-border); border-radius: 14px; padding: 24px; }
+        .guide-card h2, .guide-panel h3 { color: var(--primary-green); margin-bottom: 10px; }
+        .guide-card p, .guide-panel p, .guide-panel li { color: rgba(51, 51, 51, .86); line-height: 1.65; }
+        .guide-panel ul { padding-left: 20px; }
+        .guide-panel li { margin: 8px 0; }
+        @media (max-width: 900px) { .guide-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container header-container">
+            <a href="../index.html" class="logo"><img src="../assets/logos/png/logo-primary-horizontal.png" alt="Tessallite" height="80"></a>
+            <nav class="nav" aria-label="Primary navigation">
+                <button class="nav-toggle" aria-label="Toggle navigation" aria-controls="site-nav-list"><span class="hamburger"></span></button>
+                <ul class="nav-list" id="site-nav-list">
+                    <li><a href="../index.html" class="nav-link">Product</a></li>
+                    <li><a href="../screens.html" class="nav-link">Screens</a></li>
+                    <li><a href="../pricing.html" class="nav-link">Pricing</a></li>
+                    <li><a href="../download.html" class="nav-link">Download</a></li>
+                    <li><a href="install-local.html" class="nav-link">Install guide</a></li>
+                    <li><a href="../docs/" class="nav-link">Docs</a></li>
+                    <li><a href="../register.html" class="nav-link">Get a licence</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="guide-hero">
+            <div class="container">
+                <p class="eyebrow">Product overview</p>
+                <h1 class="hero-title">Tessallite sits between business tools and source data.</h1>
+                <p class="guide-copy">BI tools, Excel, APIs, and agents ask Tessallite for data. Tessallite checks the published semantic model, confirms access, chooses the right execution path, and returns the same governed answer to every client.</p>
+            </div>
+        </section>
+
+        <section class="section-white">
+            <div class="container guide-grid">
+                <aside class="guide-card">
+                    <h2>Plain definition</h2>
+                    <p>Tessallite is a governed semantic layer and query acceleration platform. It defines what business terms mean, controls who can use them, and speeds up repeated questions by routing them through prepared summaries when safe.</p>
+                </aside>
+                <div class="guide-panel">
+                    <h3>What happens when a tool asks a question</h3>
+                    <ul>
+                        <li>The Gateway receives the SQL, DAX, XMLA, API, or agent-backed request.</li>
+                        <li>The Query Router maps fields to approved dimensions, measures, joins, calendars, and glossary terms.</li>
+                        <li>Security rules, persona restrictions, row filters, and column restrictions are applied before execution.</li>
+                        <li>Tessallite uses an aggregate or pocket table when it safely matches the query shape.</li>
+                        <li>If no safe fast path exists, the request runs through the source path and the miss is logged for optimisation.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-mint">
+            <div class="container guide-grid">
+                <div class="guide-panel">
+                    <h3>Why teams use it</h3>
+                    <p>Most analytics problems are caused by inconsistent definitions, unclear ownership, slow repeated queries, and tool-specific logic. Tessallite moves the definitions and routing rules into one governed layer so every downstream tool sees the same metric logic.</p>
+                </div>
+                <div class="guide-panel">
+                    <h3>Who owns it</h3>
+                    <p>Data platform teams operate the services. Modellers define the semantic model. Analysts and business users consume the model through Excel, BI tools, applications, or the conversational agent.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-white">
+            <div class="container">
+                <div class="section-header">
+                    <p class="eyebrow">Next steps</p>
+                    <h2 class="section-title">See the product surfaces and install path.</h2>
+                </div>
+                <div class="guide-grid">
+                    <div class="guide-panel"><h3>Product screens</h3><p>Review the modeller, agent, and Excel workflows with real screenshots.</p><p><a href="../screens.html">View product screens</a></p></div>
+                    <div class="guide-panel"><h3>Local evaluation</h3><p>Request a licence, download the signed bundle, and follow the install guide.</p><p><a href="install-local.html">Read install guide</a></p></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer section-charcoal">
+        <div class="container footer-bottom"><p>&copy; 2026 Tessallite Ltd. All rights reserved. &middot; <a href="index.html">Docs home</a> &middot; <a href="model-builder.html">Next: Model Builder</a></p></div>
+    </footer>
+    <script src="../js/script.js"></script>
+</body>
+</html>

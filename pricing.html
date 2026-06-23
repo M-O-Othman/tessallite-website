@@ -1,0 +1,590 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Pricing — Tessallite Community &amp; Enterprise</title>
+    <meta name="description" content="Tessallite editions and limits. Community is free and self-hosted with the full feature set and scale limits. Enterprise removes the limits and adds deployment options, support, and security assurance.">
+    <link rel="icon" type="image/png" href="assets/logos/png/favicon.png">
+    <link rel="stylesheet" href="css/brand.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .nav-current {
+            color: var(--primary-green);
+            font-weight: 700;
+            cursor: default;
+        }
+
+        .pricing-hero {
+            padding: 88px 0 72px;
+            background: linear-gradient(180deg, var(--white) 0%, var(--mint) 100%);
+            border-bottom: 1px solid var(--slate-border);
+        }
+
+        .pricing-hero-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.2fr) minmax(320px, .8fr);
+            gap: 48px;
+            align-items: center;
+        }
+
+        .pricing-kicker,
+        .section-eyebrow {
+            color: var(--accent-gold);
+            font-weight: 700;
+            font-size: 13px;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .pricing-hero .hero-title {
+            max-width: 760px;
+            margin-bottom: 20px;
+        }
+
+        .pricing-hero-copy {
+            max-width: 720px;
+            font-size: 19px;
+            line-height: 1.65;
+            color: rgba(51, 51, 51, .88);
+            margin-bottom: 28px;
+        }
+
+        .pricing-hero-actions,
+        .pricing-actions {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .button-quiet {
+            background: var(--white);
+            color: var(--primary-green);
+            border-color: var(--slate-border);
+        }
+
+        .button-quiet:hover {
+            border-color: var(--primary-green);
+            box-shadow: 0 10px 22px rgba(0, 108, 53, .08);
+        }
+
+        .pricing-proof {
+            background: var(--white);
+            border: 1px solid var(--slate-border);
+            border-radius: 14px;
+            box-shadow: 0 18px 40px rgba(0, 0, 0, .07);
+            overflow: hidden;
+        }
+
+        .proof-row {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            gap: 18px;
+            padding: 18px 22px;
+            border-bottom: 1px solid #e6edf2;
+        }
+
+        .proof-row:last-child {
+            border-bottom: none;
+        }
+
+        .proof-label {
+            color: #5b6b7b;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .proof-value {
+            color: var(--charcoal);
+            font-weight: 700;
+            line-height: 1.45;
+        }
+
+        .edition-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 24px;
+            align-items: stretch;
+        }
+
+        .edition-card {
+            border: 1px solid var(--slate-border);
+            border-radius: 14px;
+            background: var(--white);
+            padding: 28px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100%;
+        }
+
+        .edition-card.enterprise {
+            border-color: var(--primary-green);
+            box-shadow: 0 18px 42px rgba(0, 108, 53, .12);
+        }
+
+        .edition-topline {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            align-items: flex-start;
+            margin-bottom: 18px;
+        }
+
+        .edition-card h2 {
+            color: var(--primary-green);
+            font-size: 28px;
+            margin-bottom: 6px;
+        }
+
+        .edition-for {
+            color: #5b6b7b;
+            font-size: 15px;
+        }
+
+        .edition-badge {
+            white-space: nowrap;
+            border: 1px solid #d8e3dc;
+            border-radius: 999px;
+            padding: 6px 10px;
+            color: var(--primary-green);
+            background: #f6fbf8;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .edition-price {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            margin: 8px 0 18px;
+        }
+
+        .edition-price strong {
+            font-size: 34px;
+            line-height: 1;
+            color: var(--charcoal);
+        }
+
+        .edition-price span {
+            color: #5b6b7b;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .edition-summary {
+            color: rgba(51, 51, 51, .86);
+            margin-bottom: 22px;
+            min-height: 78px;
+        }
+
+        .edition-points {
+            list-style: none;
+            display: grid;
+            gap: 10px;
+            margin-bottom: 26px;
+        }
+
+        .edition-points li {
+            position: relative;
+            padding-left: 22px;
+            font-size: 15px;
+            color: rgba(51, 51, 51, .9);
+        }
+
+        .edition-points li::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: .62em;
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            background: var(--accent-gold);
+        }
+
+        .edition-card .pricing-actions {
+            margin-top: auto;
+        }
+
+        .comparison-wrap {
+            border: 1px solid var(--slate-border);
+            border-radius: 14px;
+            background: var(--white);
+            overflow: hidden;
+            box-shadow: 0 16px 34px rgba(0, 0, 0, .05);
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            text-align: left;
+            vertical-align: top;
+            padding: 16px 18px;
+            border-bottom: 1px solid #e6edf2;
+        }
+
+        .comparison-table thead th {
+            background: #f7faf8;
+            color: var(--primary-green);
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+        }
+
+        .comparison-table tbody th {
+            width: 30%;
+            color: var(--charcoal);
+            font-weight: 700;
+        }
+
+        .comparison-table tbody tr:last-child th,
+        .comparison-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .comparison-table td:nth-child(3) {
+            background: #fbfdfb;
+        }
+
+        .muted {
+            color: #5b6b7b;
+        }
+
+        .process-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 22px;
+            margin-top: 28px;
+        }
+
+        .process-card {
+            background: var(--white);
+            border: 1px solid var(--slate-border);
+            border-radius: 14px;
+            padding: 24px;
+        }
+
+        .process-number {
+            display: inline-flex;
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            align-items: center;
+            justify-content: center;
+            background: var(--primary-green);
+            color: var(--white);
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .process-card h3 {
+            color: var(--primary-green);
+            font-size: 19px;
+            margin-bottom: 10px;
+        }
+
+        .process-card p {
+            color: rgba(51, 51, 51, .86);
+            font-size: 15px;
+        }
+
+        .pricing-note {
+            margin-top: 22px;
+            color: #5b6b7b;
+            font-size: 14px;
+        }
+
+        @media (max-width: 900px) {
+            .pricing-hero-grid,
+            .edition-grid,
+            .process-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pricing-proof {
+                max-width: 560px;
+            }
+        }
+
+        @media (max-width: 720px) {
+            .pricing-hero {
+                padding: 64px 0 54px;
+            }
+
+            .proof-row {
+                grid-template-columns: 1fr;
+                gap: 4px;
+            }
+
+            .comparison-wrap {
+                overflow-x: auto;
+            }
+
+            .comparison-table {
+                min-width: 680px;
+            }
+
+            .edition-topline {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container header-container">
+            <a href="index.html" class="logo">
+                <img src="assets/logos/png/logo-primary-horizontal.png" alt="Tessallite" height="80">
+            </a>
+            <nav class="nav" aria-label="Primary navigation">
+                <button class="nav-toggle" aria-label="Toggle navigation" aria-controls="site-nav-list">
+                    <span class="hamburger"></span>
+                </button>
+                <ul class="nav-list" id="site-nav-list">
+                    <li><a href="index.html" class="nav-link">Product</a></li>
+                    <li><a href="screens.html" class="nav-link">Screens</a></li>
+                    <li><span class="nav-link nav-current" aria-current="page">Pricing</span></li>
+                    <li><a href="download.html" class="nav-link">Download</a></li>
+                    <li><a href="download.html#install" class="nav-link">Install guide</a></li>
+                    <li><a href="help/index.html" target="_blank" rel="noopener" class="nav-link">Docs</a></li>
+                    <li><a href="register.html" class="nav-link">Get a licence</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="pricing-hero" id="overview">
+            <div class="container pricing-hero-grid">
+                <div>
+                    <p class="pricing-kicker">Pricing and editions</p>
+                    <h1 class="hero-title">Start with the full platform. Scale when the rollout is real.</h1>
+                    <p class="pricing-hero-copy">Tessallite Community is free, self-hosted, and functionally complete for evaluation and small internal use. Enterprise keeps the same product surface and removes operating limits for production teams.</p>
+                    <div class="pricing-hero-actions">
+                        <a href="register.html" class="button button-primary">Get a free licence</a>
+                        <a href="#compare" class="button button-quiet">Compare editions</a>
+                    </div>
+                </div>
+                <aside class="pricing-proof" aria-label="Pricing summary">
+                    <div class="proof-row">
+                        <span class="proof-label">Product</span>
+                        <span class="proof-value">Same modelling, BI, AI agent, governance, and acceleration features in both editions.</span>
+                    </div>
+                    <div class="proof-row">
+                        <span class="proof-label">Community</span>
+                        <span class="proof-value">Free self-hosted licence for a controlled evaluation or small team.</span>
+                    </div>
+                    <div class="proof-row">
+                        <span class="proof-label">Enterprise</span>
+                        <span class="proof-value">Unlimited scale, production packaging, support SLA, and security evidence.</span>
+                    </div>
+                </aside>
+            </div>
+        </section>
+
+        <section class="section-white">
+            <div class="container">
+                <div class="section-header">
+                    <p class="section-eyebrow">Choose an edition</p>
+                    <h2 class="section-title">Two clear paths, one product.</h2>
+                    <p class="section-description">Community is designed to prove fit without a procurement cycle. Enterprise is for organisations standardising Tessallite across teams and environments.</p>
+                </div>
+
+                <div class="edition-grid">
+                    <article class="edition-card">
+                        <div class="edition-topline">
+                            <div>
+                                <h2>Community</h2>
+                                <p class="edition-for">Evaluation and small self-hosted teams</p>
+                            </div>
+                            <span class="edition-badge">Free</span>
+                        </div>
+                        <p class="edition-price"><strong>$0</strong><span>self-hosted</span></p>
+                        <p class="edition-summary">Use the complete Tessallite platform on your own infrastructure with practical scale limits for early adoption.</p>
+                        <ul class="edition-points">
+                            <li>Full semantic modelling, BI access, conversational AI, and acceleration.</li>
+                            <li>2 tenants: the built-in demo tenant plus 1 tenant of your own.</li>
+                            <li>Built-in demo tenant plus 1 own tenant, unlimited projects, 2 own models, and 2 users.</li>
+                            <li>Signed download, documentation, and local licence verification.</li>
+                        </ul>
+                        <div class="pricing-actions">
+                            <a href="register.html" class="button button-primary">Get my free licence</a>
+                            <a href="download.html" class="button button-quiet">Download</a>
+                        </div>
+                    </article>
+
+                    <article class="edition-card enterprise">
+                        <div class="edition-topline">
+                            <div>
+                                <h2>Enterprise</h2>
+                                <p class="edition-for">Production teams and governed rollouts</p>
+                            </div>
+                            <span class="edition-badge">Custom</span>
+                        </div>
+                        <p class="edition-price"><strong>Contact us</strong><span>annual licence</span></p>
+                        <p class="edition-summary">Run Tessallite without tenant, model, or user limits, backed by production deployment options and direct support.</p>
+                        <ul class="edition-points">
+                            <li>Unlimited tenants, models, and users.</li>
+                            <li>Single-server, Kubernetes, offline, and cloud-marketplace deployment paths.</li>
+                            <li>Priority support with an SLA and onboarding assistance.</li>
+                            <li>Security evidence pack, signed artifacts, and SSO support.</li>
+                        </ul>
+                        <div class="pricing-actions">
+                            <a href="mailto:sales@tessallite.io?subject=Tessallite%20Enterprise" class="button button-primary">Contact sales</a>
+                            <a href="download.html#security" class="button button-quiet">Review verification</a>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section id="compare" class="section-mint">
+            <div class="container">
+                <div class="section-header">
+                    <p class="section-eyebrow">Edition comparison</p>
+                    <h2 class="section-title">The limits are operational, not functional.</h2>
+                    <p class="section-description">Both editions expose the same product capabilities. Enterprise changes scale, deployment, support, and assurance.</p>
+                </div>
+                <div class="comparison-wrap" role="region" aria-label="Community and Enterprise edition comparison" tabindex="0">
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Area</th>
+                                <th>Community</th>
+                                <th>Enterprise</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>Feature access</th>
+                                <td>Complete platform: modelling, Excel and BI access, AI agent, governance, acceleration, and demo data.</td>
+                                <td>Complete platform with the same product surface.</td>
+                            </tr>
+                            <tr>
+                                <th>Scale</th>
+                                <td>Built-in demo tenant plus 1 own tenant, unlimited projects, 2 own models total, and 2 users.</td>
+                                <td>Unlimited tenants, models, and users.</td>
+                            </tr>
+                            <tr>
+                                <th>Deployment</th>
+                                <td>Self-hosted single-server install with signed artifacts.</td>
+                                <td>Single-server, Kubernetes, offline, and cloud-marketplace deployment options.</td>
+                            </tr>
+                            <tr>
+                                <th>Support</th>
+                                <td>Documentation and public release materials.</td>
+                                <td>Priority support, SLA, onboarding assistance, and deployment guidance.</td>
+                            </tr>
+                            <tr>
+                                <th>Security review</th>
+                                <td>Signed downloads and offline licence verification.</td>
+                                <td>Security evidence pack, SSO support, and reviewer-ready assurance material.</td>
+                            </tr>
+                            <tr>
+                                <th>Commercial model</th>
+                                <td>Free licence.</td>
+                                <td>Custom annual licence. Contact <a href="mailto:sales@tessallite.io">sales@tessallite.io</a>.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="pricing-note">Need more than the Community limits during a pilot? Contact us before rolling the evaluation into production.</p>
+            </div>
+        </section>
+
+        <section class="section-white">
+            <div class="container">
+                <div class="section-header">
+                    <p class="section-eyebrow">Procurement path</p>
+                    <h2 class="section-title">Designed for low-friction evaluation and controlled adoption.</h2>
+                    <p class="section-description">Start locally, prove the model, then move to a supported production footprint when the business case is clear.</p>
+                </div>
+                <div class="process-grid">
+                    <article class="process-card">
+                        <span class="process-number">1</span>
+                        <h3>Evaluate</h3>
+                        <p>Register for Community, install the signed bundle, and validate Tessallite with the included demo tenant or your own source data.</p>
+                    </article>
+                    <article class="process-card">
+                        <span class="process-number">2</span>
+                        <h3>Prove value</h3>
+                        <p>Use the same modelling, query, AI, and acceleration workflows your production users will rely on later.</p>
+                    </article>
+                    <article class="process-card">
+                        <span class="process-number">3</span>
+                        <h3>Scale</h3>
+                        <p>Move to Enterprise when you need more users, more models, SSO, security review material, or platform-team deployment support.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section id="get-started" class="cta section-green">
+            <div class="container center invert reveal">
+                <h2 class="cta-title">Ready to decide with real data?</h2>
+                <p class="cta-subtitle">Start with Community, then move to Enterprise when the rollout needs scale, support, or security assurance.</p>
+                <div class="cta-actions">
+                    <a href="register.html" class="button button-secondary">Get a free licence</a>
+                    <a href="mailto:sales@tessallite.io?subject=Tessallite%20Enterprise" class="button button-white-outline">Discuss Enterprise</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer section-charcoal">
+        <div class="container footer-fat reveal">
+            <div class="footer-brand">
+                <img src="assets/logos/png/logo-monochrome-white.png" alt="Tessallite" height="32">
+                <p class="footer-tagline">Trusted Business Answers</p>
+                <p class="footer-created">Created by <a href="mailto:mo@tessallite.io" class="footer-created-link">Mohammed Othman</a></p>
+            </div>
+            <div class="link-group">
+                <h4>Get started</h4>
+                <ul>
+                    <li><a href="pricing.html">Pricing</a></li>
+                    <li><a href="register.html">Get a licence</a></li>
+                    <li><a href="download.html">Download</a></li>
+                </ul>
+            </div>
+            <div class="link-group">
+                <h4>Product</h4>
+                <ul>
+                    <li><a href="index.html#platform">Platform</a></li>
+                    <li><a href="screens.html">Product screens</a></li>
+                    <li><a href="index.html#acceleration">Acceleration</a></li>
+                    <li><a href="download.html#security">Security &amp; verification</a></li>
+                </ul>
+            </div>
+            <div class="link-group">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="legal.html">Licence &amp; legal</a></li>
+                    <li><a href="legal/LICENSE-COMMUNITY.md" target="_blank" rel="noopener">Community Licence</a></li>
+                    <li><a href="legal/THIRD_PARTY_NOTICES.md" target="_blank" rel="noopener">Third-party notices</a></li>
+                </ul>
+            </div>
+            <div class="link-group">
+                <h4>Contact</h4>
+                <ul>
+                    <li><a href="mailto:info@tessallite.io">info@tessallite.io</a></li>
+                    <li><a href="mailto:sales@tessallite.io">sales@tessallite.io</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2026 Tessallite Ltd. All rights reserved. &middot; <a href="legal.html">Licence &amp; legal</a> &middot; <a href="security.html">Security</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

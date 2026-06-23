@@ -8,6 +8,72 @@
     <link rel="icon" type="image/png" href="assets/logos/png/favicon.png">
     <link rel="stylesheet" href="css/brand.css">
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        .nav-current {
+            color: var(--primary-green);
+            font-weight: 700;
+            cursor: default;
+        }
+
+        .homepage-directory {
+            padding: 28px 0;
+            background: var(--white);
+            border-bottom: 1px solid var(--slate-border);
+        }
+
+        .homepage-directory-grid {
+            display: grid;
+            grid-template-columns: 220px 1fr;
+            gap: 28px;
+            align-items: center;
+        }
+
+        .homepage-directory-label {
+            color: var(--accent-gold);
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+
+        .homepage-directory-links {
+            display: grid;
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .homepage-directory-links a {
+            min-height: 54px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            border: 1px solid var(--slate-border);
+            border-radius: 10px;
+            color: var(--primary-green);
+            background: #fbfdfb;
+            font-size: 14px;
+            font-weight: 700;
+            padding: 10px 12px;
+        }
+
+        .homepage-directory-links a:hover {
+            border-color: var(--primary-green);
+            box-shadow: 0 10px 22px rgba(0, 108, 53, .08);
+        }
+
+        @media (max-width: 980px) {
+            .homepage-directory-grid,
+            .homepage-directory-links {
+                grid-template-columns: 1fr;
+            }
+
+            .homepage-directory-links a {
+                justify-content: flex-start;
+                text-align: left;
+            }
+        }
+    </style>
 </head>
 <body>
     <header class="header">
@@ -20,13 +86,13 @@
                     <span class="hamburger"></span>
                 </button>
                 <ul class="nav-list" id="site-nav-list">
-                    <li><a href="#platform" class="nav-link">Platform</a></li>
-                    <li><a href="#assistants" class="nav-link">AI Assistants</a></li>
-                    <li><a href="#governance" class="nav-link">Governance</a></li>
-                    <li><a href="#acceleration" class="nav-link">Acceleration</a></li>
-                    <li><a href="#integrations" class="nav-link">Connected Tools</a></li>
-                    <li><a href="#operations" class="nav-link">Operations</a></li>
-                    <li><a href="help/index.html" class="nav-link">Docs</a></li>
+                    <li><span class="nav-link nav-current" aria-current="page">Product</span></li>
+                    <li><a href="screens.html" class="nav-link">Screens</a></li>
+                    <li><a href="pricing.html" class="nav-link">Pricing</a></li>
+                    <li><a href="download.html" class="nav-link">Download</a></li>
+                    <li><a href="download.html#install" class="nav-link">Install guide</a></li>
+                    <li><a href="help/index.html" target="_blank" rel="noopener" class="nav-link">Docs</a></li>
+                    <li><a href="register.html" class="nav-link">Get a licence</a></li>
                 </ul>
             </nav>
         </div>
@@ -40,7 +106,7 @@
                     <h1 class="hero-title">One reliable place for business numbers, dashboards, and AI data questions.</h1>
                     <p class="hero-subtitle hero-subtitle-body">Tessallite helps companies turn scattered, high-volume data into answers people can trust. Your team defines each important KPI once, decides who is allowed to see it, and lets Tessallite deliver the same answer to leaders, analysts, dashboards, spreadsheets, business applications, and AI data assistants.</p>
                     <div class="hero-actions">
-                        <a href="#get-started" class="button button-primary">Book a demo</a>
+                        <a href="mailto:sales@tessallite.io?subject=Tessallite%20Demo%20Request" class="button button-primary">Book a demo</a>
                         <a href="#platform" class="button button-quiet">Understand the idea</a>
                     </div>
                     <div class="trust-strip" aria-label="Platform highlights">
@@ -94,6 +160,20 @@
                 </div>
             </div>
         </section>
+
+        <nav class="homepage-directory" aria-label="Homepage sections">
+            <div class="container homepage-directory-grid">
+                <p class="homepage-directory-label">Explore the platform</p>
+                <div class="homepage-directory-links">
+                    <a href="#assistants">AI Assistants</a>
+                    <a href="#governance">Governance</a>
+                    <a href="#acceleration">Acceleration</a>
+                    <a href="#integrations">Connected Tools</a>
+                    <a href="#operations">Operations</a>
+                    <a href="#deployment">Deployment</a>
+                </div>
+            </div>
+        </nav>
 
         <section id="platform" class="channel-band section-white">
             <div class="container">
@@ -248,6 +328,7 @@
                     <article>
                         <h3>Spreadsheets and dashboards</h3>
                         <p>Business users can keep working with familiar pivot tables, dashboards, folders, and refresh workflows.</p>
+                        <p><a href="help/getting-started/connect-excel.html" target="_blank" rel="noopener">Connect Excel guide</a></p>
                     </article>
                     <article>
                         <h3>Analyst and specialist tools</h3>
@@ -407,8 +488,8 @@
                 <h2 class="cta-title">Give every team one trusted way to ask for the numbers.</h2>
                 <p class="cta-subtitle">Book a walkthrough focused on your KPIs, reporting workflows, AI data assistant plans, and the cost of repeated large-data queries.</p>
                 <div class="cta-actions">
-                    <a href="mailto:sales@tessallite.io?subject=Tessallite%20Demo%20Request" class="button button-secondary">Book a demo</a>
-                    <a href="https://github.com/M-O-Othman/tessallite" class="button button-white-outline">Explore on GitHub</a>
+                    <a href="download.html" class="button button-secondary">Download Community Edition</a>
+                    <a href="mailto:sales@tessallite.io?subject=Tessallite%20Demo%20Request" class="button button-white-outline">Book a demo</a>
                 </div>
             </div>
         </section>
@@ -425,14 +506,16 @@
                 <h4>Product</h4>
                 <ul>
                     <li><a href="#platform">Platform</a></li>
+                    <li><a href="screens.html">Product screens</a></li>
                     <li><a href="#assistants">AI Assistants</a></li>
                     <li><a href="#acceleration">Acceleration</a></li>
+                    <li><a href="#integrations">Connected Tools</a></li>
                 </ul>
             </div>
             <div class="link-group">
                 <h4>Governance</h4>
                 <ul>
-                    <li><a href="#governance">Security</a></li>
+                    <li><a href="download.html#security">Security &amp; verification</a></li>
                     <li><a href="#operations">Operations</a></li>
                     <li><a href="#deployment">Deployment</a></li>
                 </ul>
@@ -440,9 +523,18 @@
             <div class="link-group">
                 <h4>Resources</h4>
                 <ul>
-                    <li><a href="help/index.html">Documentation</a></li>
-                    <li><a href="https://github.com/M-O-Othman/tessallite">GitHub</a></li>
-                    <li><a href="#vision">Vision</a></li>
+                    <li><a href="pricing.html">Pricing</a></li>
+                    <li><a href="download.html">Download Community</a></li>
+                    <li><a href="register.html">Get a licence</a></li>
+                    <li><a href="help/index.html" target="_blank" rel="noopener">Documentation</a></li>
+                </ul>
+            </div>
+            <div class="link-group">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="legal.html">Licence &amp; legal</a></li>
+                    <li><a href="legal/LICENSE-COMMUNITY.md" target="_blank" rel="noopener">Community Licence</a></li>
+                    <li><a href="legal/THIRD_PARTY_NOTICES.md" target="_blank" rel="noopener">Third-party notices</a></li>
                 </ul>
             </div>
             <div class="link-group">
@@ -456,7 +548,7 @@
         </div>
         <div class="container">
             <div class="footer-bottom">
-                <p>&copy; 2026 Mohammed Othman. All rights reserved.</p>
+                <p>&copy; 2026 Tessallite Ltd. All rights reserved. &middot; <a href="legal.html">Licence &amp; legal</a> &middot; <a href="security.html">Security</a></p>
             </div>
         </div>
     </footer>

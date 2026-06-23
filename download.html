@@ -1,0 +1,742 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Download Tessallite Community Edition</title>
+    <meta name="description" content="Download Tessallite Community Edition. Get the signed self-hosted bundle, verify it, install it, and run Tessallite on your own servers.">
+    <link rel="icon" type="image/png" href="assets/logos/png/favicon.png">
+    <link rel="stylesheet" href="css/brand.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .nav-current {
+            color: var(--primary-green);
+            font-weight: 700;
+            cursor: default;
+        }
+
+        .download-hero {
+            padding: 86px 0 76px;
+            background: linear-gradient(180deg, var(--white) 0%, var(--mint) 100%);
+            border-bottom: 1px solid var(--slate-border);
+        }
+
+        .download-hero-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.05fr) minmax(340px, .95fr);
+            gap: 52px;
+            align-items: center;
+        }
+
+        .download-kicker,
+        .section-eyebrow {
+            color: var(--accent-gold);
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .download-copy {
+            max-width: 700px;
+            color: rgba(51, 51, 51, .88);
+            font-size: 19px;
+            line-height: 1.65;
+            margin-bottom: 28px;
+        }
+
+        .download-actions,
+        .card-actions {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .button-quiet {
+            background: var(--white);
+            color: var(--primary-green);
+            border-color: var(--slate-border);
+        }
+
+        .button-quiet:hover {
+            border-color: var(--primary-green);
+            box-shadow: 0 10px 22px rgba(0, 108, 53, .08);
+        }
+
+        .download-visual {
+            background: var(--white);
+            border: 1px solid var(--slate-border);
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 18px 42px rgba(0, 0, 0, .08);
+        }
+
+        .download-visual img {
+            display: block;
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            object-fit: cover;
+            border-bottom: 1px solid var(--slate-border);
+        }
+
+        .release-panel {
+            padding: 22px;
+            display: grid;
+            gap: 12px;
+        }
+
+        .release-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e6edf2;
+        }
+
+        .release-row:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .release-row span:first-child {
+            color: #5b6b7b;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .release-row span:last-child {
+            color: var(--charcoal);
+            font-weight: 700;
+            text-align: right;
+        }
+
+        .steps-grid,
+        .artifact-grid,
+        .operations-grid {
+            display: grid;
+            gap: 22px;
+        }
+
+        .steps-grid {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        .artifact-grid {
+            grid-template-columns: 1.3fr 1fr 1fr;
+        }
+
+        .operations-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .step-card,
+        .artifact-card,
+        .operation-card {
+            background: var(--white);
+            border: 1px solid var(--slate-border);
+            border-radius: 14px;
+            padding: 24px;
+        }
+
+        .step-number {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            background: var(--primary-green);
+            color: var(--white);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .step-card h3,
+        .artifact-card h3,
+        .operation-card h3 {
+            color: var(--primary-green);
+            font-size: 19px;
+            margin-bottom: 10px;
+        }
+
+        .step-card p,
+        .artifact-card p,
+        .operation-card p {
+            color: rgba(51, 51, 51, .84);
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .artifact-card.primary {
+            border-color: var(--primary-green);
+            box-shadow: 0 18px 42px rgba(0, 108, 53, .12);
+        }
+
+        .artifact-meta {
+            color: #5b6b7b;
+            font-size: 13px;
+            margin-top: 16px;
+        }
+
+        .code-panel {
+            background: #1f2a24;
+            color: #f7f7f2;
+            border-radius: 14px;
+            padding: 24px;
+            overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, .12);
+            font-family: var(--font-mono);
+            font-size: 13px;
+            line-height: 1.65;
+        }
+
+        .code-panel code {
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .split-section {
+            display: grid;
+            grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr);
+            gap: 40px;
+            align-items: start;
+        }
+
+        .trust-list {
+            list-style: none;
+            display: grid;
+            gap: 12px;
+            margin-top: 22px;
+        }
+
+        .trust-list li {
+            position: relative;
+            padding-left: 22px;
+            color: rgba(51, 51, 51, .88);
+        }
+
+        .trust-list li::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: .62em;
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            background: var(--accent-gold);
+        }
+
+        .security-grid,
+        .evidence-grid {
+            display: grid;
+            gap: 22px;
+        }
+
+        .security-grid {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            margin-top: 28px;
+        }
+
+        .evidence-grid {
+            grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+            align-items: start;
+            margin-top: 34px;
+        }
+
+        .security-card,
+        .advisory-panel {
+            background: var(--white);
+            border: 1px solid var(--slate-border);
+            border-radius: 14px;
+            padding: 24px;
+        }
+
+        .security-card h3,
+        .advisory-panel h3 {
+            color: var(--primary-green);
+            font-size: 19px;
+            margin-bottom: 10px;
+        }
+
+        .security-card p,
+        .advisory-panel p {
+            color: rgba(51, 51, 51, .84);
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .evidence-list {
+            list-style: none;
+            display: grid;
+            gap: 12px;
+        }
+
+        .evidence-list li {
+            display: grid;
+            grid-template-columns: 150px 1fr;
+            gap: 16px;
+            padding: 13px 0;
+            border-bottom: 1px solid #e6edf2;
+        }
+
+        .evidence-list li:last-child {
+            border-bottom: none;
+        }
+
+        .evidence-list strong {
+            color: var(--primary-green);
+        }
+
+        .advisory-list {
+            display: grid;
+            gap: 14px;
+            margin-top: 18px;
+        }
+
+        .advisory-item {
+            border: 1px solid #e6edf2;
+            border-radius: 12px;
+            padding: 16px;
+            background: #fbfdfb;
+        }
+
+        .advisory-head {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .severity {
+            border-radius: 999px;
+            padding: 3px 9px;
+            background: #e7f0fb;
+            color: #1c4e8a;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+        }
+
+        .severity.low {
+            background: #e7f4ee;
+            color: #13502f;
+        }
+
+        .severity.medium {
+            background: #fdf3e2;
+            color: #8a5a12;
+        }
+
+        .severity.high,
+        .severity.critical {
+            background: #fbe9e9;
+            color: #7a1f1f;
+        }
+
+        .advisory-id {
+            color: #5b6b7b;
+            font-family: var(--font-mono);
+            font-size: 13px;
+        }
+
+        @media (max-width: 980px) {
+            .download-hero-grid,
+            .split-section,
+            .steps-grid,
+            .artifact-grid,
+            .operations-grid,
+            .security-grid,
+            .evidence-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .download-visual {
+                max-width: 620px;
+            }
+        }
+
+        @media (max-width: 620px) {
+            .download-hero {
+                padding: 62px 0 54px;
+            }
+
+            .release-row {
+                flex-direction: column;
+                gap: 4px;
+            }
+
+            .release-row span:last-child {
+                text-align: left;
+            }
+
+            .evidence-list li {
+                grid-template-columns: 1fr;
+                gap: 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container header-container">
+            <a href="index.html" class="logo">
+                <img src="assets/logos/png/logo-primary-horizontal.png" alt="Tessallite" height="80">
+            </a>
+            <nav class="nav" aria-label="Primary navigation">
+                <button class="nav-toggle" aria-label="Toggle navigation" aria-controls="site-nav-list">
+                    <span class="hamburger"></span>
+                </button>
+                <ul class="nav-list" id="site-nav-list">
+                    <li><a href="index.html" class="nav-link">Product</a></li>
+                    <li><a href="screens.html" class="nav-link">Screens</a></li>
+                    <li><a href="pricing.html" class="nav-link">Pricing</a></li>
+                    <li><span class="nav-link nav-current" aria-current="page">Download</span></li>
+                    <li><a href="download.html#install" class="nav-link">Install guide</a></li>
+                    <li><a href="help/index.html" target="_blank" rel="noopener" class="nav-link">Docs</a></li>
+                    <li><a href="register.html" class="nav-link">Get a licence</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="download-hero" id="overview">
+            <div class="container download-hero-grid">
+                <div>
+                    <p class="download-kicker">Community Edition download</p>
+                    <h1 class="hero-title">Install Tessallite from one signed self-hosted bundle.</h1>
+                    <p class="download-copy">Download the Community Edition package, verify the release signature, add your licence, and start the full Tessallite stack on your own server.</p>
+                    <div class="download-actions">
+                        <a href="register.html" class="button button-primary">Get my free licence</a>
+                        <a href="#download" class="button button-quiet">View downloads</a>
+                    </div>
+                </div>
+                <aside class="download-visual" aria-label="Release package summary">
+                    <img src="assets/illustrations/hero-data-scale.png" alt="Tessallite Community running with spreadsheets and dashboards" loading="eager" decoding="async">
+                    <div class="release-panel">
+                        <div class="release-row">
+                            <span>Current release</span>
+                            <span id="rel-version">latest</span>
+                        </div>
+                        <div class="release-row">
+                            <span>Package</span>
+                            <span>Signed all-in-one bundle</span>
+                        </div>
+                        <div class="release-row">
+                            <span>Runtime</span>
+                            <span>Docker Compose, self-hosted</span>
+                        </div>
+                        <div class="release-row">
+                            <span>Licence</span>
+                            <span>Tessallite Community Licence (free)</span>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </section>
+
+        <section class="section-white">
+            <div class="container">
+                <div class="section-header">
+                    <p class="section-eyebrow">Install path</p>
+                    <h2 class="section-title">Four steps from licence to running stack.</h2>
+                    <p class="section-description">The Community bundle is built for local control: verify it, add your signed licence, and run without needing a managed Tessallite service.</p>
+                </div>
+                <div class="steps-grid">
+                    <article class="step-card">
+                        <span class="step-number">1</span>
+                        <h3>Register</h3>
+                        <p>Request a free Community licence and keep the signed licence file with your installation material.</p>
+                    </article>
+                    <article class="step-card">
+                        <span class="step-number">2</span>
+                        <h3>Download</h3>
+                        <p>Get the current signed Tessallite Community release bundle and its checksum manifest.</p>
+                    </article>
+                    <article class="step-card">
+                        <span class="step-number">3</span>
+                        <h3>Verify</h3>
+                        <p>Check the release checksum and Ed25519 signature before unpacking or installing.</p>
+                    </article>
+                    <article class="step-card">
+                        <span class="step-number">4</span>
+                        <h3>Run</h3>
+                        <p>Add <code>license.json</code>, run the installer, and open the Tessallite UI on your server.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section id="download" class="section-mint">
+            <div class="container">
+                <div class="section-header">
+                    <p class="section-eyebrow">Downloads</p>
+                    <h2 class="section-title">Choose the artifact that matches your job.</h2>
+                    <p class="section-description">Most users need the all-in-one bundle. Platform teams can inspect the included Kubernetes material before moving to Enterprise deployment support.</p>
+                </div>
+                <div class="artifact-grid">
+                    <article class="artifact-card primary">
+                        <h3>All-in-one Community bundle</h3>
+                        <p>One signed archive containing the product, container images, installer, checksum manifest, signature, Helm chart material, and security evidence pack.</p>
+                        <div class="card-actions">
+                            <a id="bundle-link" class="button button-primary" href="register.html" rel="nofollow">Download Tessallite Community</a>
+                            <a href="register.html" class="button button-quiet">Get a licence</a>
+                        </div>
+                        <p class="artifact-meta">Current release: <strong id="rel-version-2">latest</strong>. Free download; you also need a free <a href="register.html">licence</a> to activate. Requires Docker and Docker Compose v2.</p>
+                    </article>
+                    <article class="artifact-card">
+                        <h3>Kubernetes material</h3>
+                        <p>The Helm chart ships inside the bundle under <code>helm/</code> for platform teams planning OpenShift or Kubernetes deployment.</p>
+                        <div class="card-actions">
+                            <a href="download.html#install" class="button button-quiet">Read install guide</a>
+                        </div>
+                    </article>
+                    <article class="artifact-card">
+                        <h3>Developer source</h3>
+                        <p>Use the source checkout for engineering review and contribution. It is not the recommended production installation path.</p>
+                        <div class="card-actions">
+                            <a href="https://github.com/tessallite/tessallite-community" class="button button-quiet">View on GitHub</a>
+                        </div>
+                    </article>
+                </div>
+                <p class="section-description" style="margin-top:24px;">Tessallite Community Edition is free under the <strong><a href="legal.html">Tessallite Community Licence</a></strong>. The full terms (and all <a href="legal.html">licence &amp; legal documents</a>) are being finalised; the current licence also ships with your download. Questions? <a href="mailto:info@tessallite.io?subject=Community%20Licence">info@tessallite.io</a>.</p>
+            </div>
+        </section>
+
+        <section id="security" class="section-white">
+            <div class="container split-section">
+                <div>
+                    <p class="section-eyebrow">Security and verification</p>
+                    <h2 class="section-title">Everything a reviewer needs is attached to the release.</h2>
+                    <p class="section-description">Tessallite Community is designed for local inspection before it runs. The bundle carries checksums, signatures, deployment material, and the review evidence your IT team needs.</p>
+                    <ul class="trust-list">
+                        <li>Release signing key id: <code>tessallite-prod-2026</code>.</li>
+                        <li>Licence checks run locally and support offline evaluation.</li>
+                        <li>The evidence pack is included under <code>evidence/</code> for review before rollout.</li>
+                    </ul>
+                </div>
+                <pre class="code-panel"><code># integrity: checksums of every file
+sha256sum -c SHA256SUMS
+
+# authenticity: verify the release signature
+python3 - <<'PY'
+import base64
+from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
+PUB = "/by3PGaeLD425bBkMrAbD2NeHROHyjLHVA37pS5w3+0="
+sig = base64.b64decode(open("SHA256SUMS.sig").read().splitlines()[1])
+Ed25519PublicKey.from_public_bytes(base64.b64decode(PUB)).verify(
+    sig,
+    open("SHA256SUMS", "rb").read(),
+)
+print("signature OK")
+PY</code></pre>
+            </div>
+            <div class="container">
+                <div class="security-grid">
+                    <article class="security-card">
+                        <h3>Signed artifacts</h3>
+                        <p>The archive, checksum manifest, and detached signature let teams verify that the release has not been altered.</p>
+                    </article>
+                    <article class="security-card">
+                        <h3>Offline licence checks</h3>
+                        <p>The self-hosted stack verifies the signed licence locally. An evaluation install does not need a licence server to run.</p>
+                    </article>
+                    <article class="security-card">
+                        <h3>Review evidence</h3>
+                        <p>The bundle includes architecture notes, port matrix, image list, SBOM material, and release signatures for IT review.</p>
+                    </article>
+                    <article class="security-card">
+                        <h3>Private reporting</h3>
+                        <p>Security issues should be sent privately to <a href="mailto:info@tessallite.io?subject=Security%20report">info@tessallite.io</a>.</p>
+                    </article>
+                </div>
+                <div class="evidence-grid">
+                    <article class="advisory-panel">
+                        <h3>Evidence pack contents</h3>
+                        <ul class="evidence-list">
+                            <li><strong>Architecture</strong><span>Service map, trust boundaries, and deployment assumptions.</span></li>
+                            <li><strong>Network</strong><span>Port matrix, container list, and local endpoint summary.</span></li>
+                            <li><strong>Supply chain</strong><span>Image list, SBOM material, checksums, and release signature files.</span></li>
+                            <li><strong>Operations</strong><span>Offline statement, upgrade notes, and health-check guidance.</span></li>
+                        </ul>
+                    </article>
+                    <article class="advisory-panel">
+                        <h3>Security advisories</h3>
+                        <p>Public advisories appear here after a fix is available. The feed is loaded from the issuer service when configured.</p>
+                        <div id="adv-list" class="advisory-list">
+                            <p id="adv-status">The advisory feed will appear here once the service is configured.</p>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section id="install" class="section-mint">
+            <div class="container split-section">
+                <div>
+                    <p class="section-eyebrow">Install command flow</p>
+                    <h2 class="section-title">Unpack, add your licence, start the stack.</h2>
+                    <p class="section-description">Replace <code>X.Y.Z</code> with the release version shown on this page: <strong id="rel-version-3">latest</strong>.</p>
+                </div>
+                <pre class="code-panel"><code>tar -xzf tessallite-community-X.Y.Z.tar.gz
+cd tessallite-community-X.Y.Z
+
+cp /path/to/your-license.json ./license.json
+# Put LICENSE_PUBLIC_KEYS into .env when provided.
+
+./install.sh
+
+# Open http://localhost:3000
+# SYSTEM_ADMIN_EMAIL and SYSTEM_ADMIN_PASSWORD are in .env</code></pre>
+            </div>
+        </section>
+
+        <section class="section-white">
+            <div class="container">
+                <div class="section-header">
+                    <p class="section-eyebrow">Day-2 operations</p>
+                    <h2 class="section-title">Keep the installation observable and recoverable.</h2>
+                </div>
+                <div class="operations-grid">
+                    <article class="operation-card">
+                        <h3>Health</h3>
+                        <p>Run <code>./healthcheck.sh</code> after installation or upgrade to confirm every service is healthy.</p>
+                    </article>
+                    <article class="operation-card">
+                        <h3>Logs</h3>
+                        <p>Use Docker Compose logs to inspect individual services, such as <code>gateway</code>, <code>model-service</code>, or <code>query-router</code>.</p>
+                    </article>
+                    <article class="operation-card">
+                        <h3>Upgrade</h3>
+                        <p>Download the new signed bundle, verify it, stop the stack, and run <code>./install.sh</code> from the new release.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section id="get-started" class="cta section-green">
+            <div class="container center invert reveal">
+                <h2 class="cta-title">Need the licence first?</h2>
+                <p class="cta-subtitle">Register for Community, then return here to download and verify the signed bundle.</p>
+                <div class="cta-actions">
+                    <a href="register.html" class="button button-secondary">Get my free licence</a>
+                    <a href="#security" class="button button-white-outline">Review verification</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer section-charcoal">
+        <div class="container footer-fat reveal">
+            <div class="footer-brand">
+                <img src="assets/logos/png/logo-monochrome-white.png" alt="Tessallite" height="32">
+                <p class="footer-tagline">Trusted Business Answers</p>
+                <p class="footer-created">Created by <a href="mailto:mo@tessallite.io" class="footer-created-link">Mohammed Othman</a></p>
+            </div>
+            <div class="link-group">
+                <h4>Get started</h4>
+                <ul>
+                    <li><a href="register.html">Get a licence</a></li>
+                    <li><a href="download.html">Download</a></li>
+                    <li><a href="download.html#install">Install guide</a></li>
+                </ul>
+            </div>
+            <div class="link-group">
+                <h4>Product</h4>
+                <ul>
+                    <li><a href="index.html#platform">Platform</a></li>
+                    <li><a href="screens.html">Product screens</a></li>
+                    <li><a href="index.html#governance">Governance</a></li>
+                    <li><a href="download.html#security">Security &amp; verification</a></li>
+                </ul>
+            </div>
+            <div class="link-group">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="legal.html">Licence &amp; legal</a></li>
+                    <li><a href="legal/LICENSE-COMMUNITY.md" target="_blank" rel="noopener">Community Licence</a></li>
+                    <li><a href="legal/THIRD_PARTY_NOTICES.md" target="_blank" rel="noopener">Third-party notices</a></li>
+                </ul>
+            </div>
+            <div class="link-group">
+                <h4>Contact</h4>
+                <ul>
+                    <li><a href="mailto:info@tessallite.io">info@tessallite.io</a></li>
+                    <li><a href="mailto:sales@tessallite.io">sales@tessallite.io</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2026 Tessallite Ltd. All rights reserved. &middot; <a href="legal.html">Licence &amp; legal</a> &middot; <a href="security.html">Security</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="config.js"></script>
+    <script>
+        // Set at publish time (or via a small config.js). Defaults to a placeholder so the
+        // page renders before the tessallite-io bucket and release version are wired.
+        var DOWNLOAD_BASE = window.TESSALLITE_DOWNLOAD_URL || "";
+        var VERSION = window.TESSALLITE_VERSION || "latest";
+        ["rel-version", "rel-version-2", "rel-version-3"].forEach(function (id) {
+            var el = document.getElementById(id);
+            if (el) el.textContent = VERSION;
+        });
+        var link = document.getElementById("bundle-link");
+        var downloadConfigured = DOWNLOAD_BASE && DOWNLOAD_BASE.indexOf("REPLACE-WITH") === -1;
+        link.href = downloadConfigured ? DOWNLOAD_BASE.replace(/\/$/, "") + "/tessallite-community-" + VERSION + ".tar.gz" : "register.html";
+        if (downloadConfigured) {
+            link.textContent = "Download Community";
+        }
+        if (!downloadConfigured) {
+            link.textContent = "Get licence for download";
+        }
+
+        function esc(value) {
+            return String(value == null ? "" : value).replace(/[&<>"]/g, function (char) {
+                return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[char];
+            });
+        }
+        function severityClass(value) {
+            var key = String(value || "info").toLowerCase();
+            return ["low", "medium", "high", "critical"].indexOf(key) >= 0 ? key : "";
+        }
+        function renderAdvisories(items) {
+            var list = document.getElementById("adv-list");
+            if (!list) return;
+            if (!items || !items.length) {
+                list.innerHTML = "<p>No advisories at this time.</p>";
+                return;
+            }
+            list.innerHTML = items.map(function (item) {
+                var detail = item.link ? ' <a href="' + esc(item.link) + '">details</a>' : "";
+                var fixed = item.fixed_in ? "<p>Fixed in " + esc(item.fixed_in) + ".</p>" : "";
+                return '<article class="advisory-item">' +
+                    '<div class="advisory-head">' +
+                        '<span class="severity ' + severityClass(item.severity) + '">' + esc(item.severity || "info") + "</span>" +
+                        '<span class="advisory-id">' + esc(item.id || "advisory") + "</span>" +
+                    "</div>" +
+                    "<h4>" + esc(item.title || "Security advisory") + "</h4>" +
+                    "<p>" + esc(item.summary || "") + detail + "</p>" + fixed +
+                "</article>";
+            }).join("");
+        }
+        var ISSUER_URL = window.TESSALLITE_ISSUER_URL || "";
+        if (ISSUER_URL && ISSUER_URL.indexOf("REPLACE-WITH") === -1) {
+            fetch(ISSUER_URL.replace(/\/$/, "") + "/advisories")
+                .then(function (response) { return response.json(); })
+                .then(function (data) { renderAdvisories(data.advisories || []); })
+                .catch(function () {
+                    var status = document.getElementById("adv-status");
+                    if (status) status.textContent = "No published advisories are available from the feed right now.";
+                });
+        }
+    </script>
+    <script src="js/script.js"></script>
+</body>
+</html>

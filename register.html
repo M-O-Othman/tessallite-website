@@ -1,0 +1,573 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Get a Tessallite Community Licence</title>
+    <meta name="description" content="Register for a free Tessallite Community licence. Use the full self-hosted platform with Community edition scale limits.">
+    <link rel="icon" type="image/png" href="assets/logos/png/favicon.png">
+    <link rel="stylesheet" href="css/brand.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .nav-current {
+            color: var(--primary-green);
+            font-weight: 700;
+            cursor: default;
+        }
+
+        .licence-hero {
+            padding: 86px 0 76px;
+            background: linear-gradient(180deg, var(--white) 0%, var(--mint) 100%);
+            border-bottom: 1px solid var(--slate-border);
+        }
+
+        .licence-hero-grid {
+            display: grid;
+            grid-template-columns: minmax(0, .95fr) minmax(360px, 1.05fr);
+            gap: 54px;
+            align-items: start;
+        }
+
+        .licence-kicker,
+        .section-eyebrow {
+            color: var(--accent-gold);
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .licence-copy {
+            max-width: 690px;
+            color: rgba(51, 51, 51, .88);
+            font-size: 19px;
+            line-height: 1.65;
+            margin-bottom: 28px;
+        }
+
+        .licence-actions,
+        .form-actions {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .button-quiet {
+            background: var(--white);
+            color: var(--primary-green);
+            border-color: var(--slate-border);
+        }
+
+        .button-quiet:hover {
+            border-color: var(--primary-green);
+            box-shadow: 0 10px 22px rgba(0, 108, 53, .08);
+        }
+
+        .licence-highlights {
+            list-style: none;
+            display: grid;
+            gap: 12px;
+            margin-top: 28px;
+            max-width: 660px;
+        }
+
+        .licence-highlights li {
+            position: relative;
+            padding-left: 22px;
+            color: rgba(51, 51, 51, .88);
+        }
+
+        .licence-highlights li::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: .62em;
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            background: var(--accent-gold);
+        }
+
+        .licence-form-panel {
+            background: var(--white);
+            border: 1px solid var(--slate-border);
+            border-radius: 14px;
+            box-shadow: 0 18px 42px rgba(0, 0, 0, .08);
+            overflow: hidden;
+            scroll-margin-top: 128px;
+        }
+
+        .licence-form-panel:focus {
+            outline: 3px solid rgba(0, 108, 53, .16);
+            outline-offset: 4px;
+        }
+
+        .form-panel-header {
+            padding: 26px 28px;
+            border-bottom: 1px solid #e6edf2;
+            background: #fbfdfb;
+        }
+
+        .form-panel-header h2 {
+            color: var(--primary-green);
+            font-size: 26px;
+            margin-bottom: 8px;
+        }
+
+        .form-panel-header p {
+            color: #5b6b7b;
+            font-size: 15px;
+        }
+
+        .licence-form {
+            padding: 28px;
+            display: grid;
+            gap: 18px;
+        }
+
+        .field-group {
+            display: grid;
+            gap: 7px;
+        }
+
+        .field-group label {
+            color: var(--charcoal);
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .field-group input[type="email"],
+        .field-group input[type="text"] {
+            width: 100%;
+            min-height: 48px;
+            border: 1px solid var(--slate-border);
+            border-radius: 10px;
+            color: var(--charcoal);
+            font: inherit;
+            padding: 11px 13px;
+            background: var(--white);
+        }
+
+        .field-group input:focus {
+            outline: 3px solid rgba(0, 108, 53, .14);
+            border-color: var(--primary-green);
+        }
+
+        .consent-row {
+            display: grid;
+            grid-template-columns: 18px 1fr;
+            gap: 11px;
+            color: #5b6b7b;
+            font-size: 14px;
+            line-height: 1.55;
+        }
+
+        .consent-row input {
+            margin-top: 3px;
+        }
+
+        .form-actions .button {
+            border: none;
+            cursor: pointer;
+            min-height: 48px;
+        }
+
+        .form-actions .button:disabled {
+            opacity: .62;
+            cursor: default;
+        }
+
+        .msg {
+            display: none;
+            border-radius: 10px;
+            padding: 13px 15px;
+            font-size: 14px;
+            line-height: 1.55;
+        }
+
+        .msg.ok {
+            display: block;
+            background: #e7f4ee;
+            color: #13502f;
+            border: 1px solid #bbdccb;
+        }
+
+        .msg.err {
+            display: block;
+            background: #fbe9e9;
+            color: #7a1f1f;
+            border: 1px solid #f0c7c7;
+        }
+
+        .form-fine-print {
+            color: #5b6b7b;
+            font-size: 13px;
+            line-height: 1.55;
+        }
+
+        .licence-steps,
+        .licence-scope-grid {
+            display: grid;
+            gap: 22px;
+        }
+
+        .licence-steps {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .licence-scope-grid {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        .step-card,
+        .scope-card {
+            background: var(--white);
+            border: 1px solid var(--slate-border);
+            border-radius: 14px;
+            padding: 24px;
+        }
+
+        .step-number {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            background: var(--primary-green);
+            color: var(--white);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .step-card h3,
+        .scope-card h3 {
+            color: var(--primary-green);
+            font-size: 19px;
+            margin-bottom: 10px;
+        }
+
+        .step-card p,
+        .scope-card p {
+            color: rgba(51, 51, 51, .84);
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .scope-card strong {
+            display: block;
+            color: var(--charcoal);
+            font-size: 30px;
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+
+        .enterprise-panel {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 28px;
+            align-items: center;
+            background: var(--white);
+            border: 1px solid var(--slate-border);
+            border-radius: 14px;
+            padding: 28px;
+            box-shadow: 0 16px 34px rgba(0, 0, 0, .05);
+        }
+
+        .enterprise-panel h2 {
+            color: var(--primary-green);
+            margin-bottom: 8px;
+        }
+
+        .enterprise-panel p {
+            color: rgba(51, 51, 51, .86);
+            max-width: 760px;
+        }
+
+        @media (max-width: 980px) {
+            .licence-hero-grid,
+            .licence-steps,
+            .licence-scope-grid,
+            .enterprise-panel {
+                grid-template-columns: 1fr;
+            }
+
+            .licence-form-panel {
+                max-width: 680px;
+            }
+        }
+
+        @media (max-width: 620px) {
+            .licence-hero {
+                padding: 62px 0 54px;
+            }
+
+            .form-actions .button,
+            .licence-actions .button {
+                width: 100%;
+                justify-content: center;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container header-container">
+            <a href="index.html" class="logo">
+                <img src="assets/logos/png/logo-primary-horizontal.png" alt="Tessallite" height="80">
+            </a>
+            <nav class="nav" aria-label="Primary navigation">
+                <button class="nav-toggle" aria-label="Toggle navigation" aria-controls="site-nav-list">
+                    <span class="hamburger"></span>
+                </button>
+                <ul class="nav-list" id="site-nav-list">
+                    <li><a href="index.html" class="nav-link">Product</a></li>
+                    <li><a href="screens.html" class="nav-link">Screens</a></li>
+                    <li><a href="pricing.html" class="nav-link">Pricing</a></li>
+                    <li><a href="download.html" class="nav-link">Download</a></li>
+                    <li><a href="download.html#install" class="nav-link">Install guide</a></li>
+                    <li><a href="help/index.html" target="_blank" rel="noopener" class="nav-link">Docs</a></li>
+                    <li><span class="nav-link nav-current" aria-current="page">Get a licence</span></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="licence-hero">
+            <div class="container licence-hero-grid">
+                <div>
+                    <p class="licence-kicker">Community Edition licence</p>
+                    <h1 class="hero-title">Get the free licence that unlocks the full self-hosted platform.</h1>
+                    <p class="licence-copy">Register once, receive your signed Community licence, then install Tessallite locally with modelling, BI connectivity, governance, AI assistance, and acceleration enabled.</p>
+                    <div class="licence-actions">
+                        <a href="#licence-request" class="button button-primary">Request licence</a>
+                        <a href="pricing.html#compare" class="button button-quiet">Compare editions</a>
+                    </div>
+                    <ul class="licence-highlights">
+                        <li>No card required for Community Edition.</li>
+                        <li>Full product surface with limits on tenants, models, and users.</li>
+                        <li>Licence is issued to your email and used during installation.</li>
+                    </ul>
+                </div>
+
+                <aside class="licence-form-panel" id="licence-request" aria-label="Community licence registration" tabindex="-1">
+                    <div class="form-panel-header">
+                        <h2>Request your licence</h2>
+                        <p>Use a work email so the licence can be tied to your organisation.</p>
+                    </div>
+                    <form id="register-form" class="licence-form">
+                        <div class="field-group">
+                            <label for="email">Work email</label>
+                            <input id="email" name="email" type="email" required autocomplete="email">
+                        </div>
+
+                        <div class="field-group">
+                            <label for="company">Company</label>
+                            <input id="company" name="company" type="text" autocomplete="organization" placeholder="Optional">
+                        </div>
+
+                        <div class="field-group">
+                            <label for="name">Name</label>
+                            <input id="name" name="name" type="text" autocomplete="name" placeholder="Optional">
+                        </div>
+
+                        <label class="consent-row" for="consent">
+                            <input id="consent" name="consent" type="checkbox" required>
+                            <span>I agree to receive my Tessallite licence and occasional product updates at this email.</span>
+                        </label>
+
+                        <div class="form-actions">
+                            <button id="submit" type="submit" class="button button-primary">Email my Community licence</button>
+                        </div>
+
+                        <div id="msg" class="msg" aria-live="polite"></div>
+
+                        <p class="form-fine-print">Already have a licence? Go straight to the <a href="download.html">download page</a>.</p>
+                    </form>
+                </aside>
+            </div>
+        </section>
+
+        <section class="section-white">
+            <div class="container">
+                <div class="section-header">
+                    <p class="section-eyebrow">What happens next</p>
+                    <h2 class="section-title">A clean path from request to installation.</h2>
+                    <p class="section-description">The licence request does not change the product. It gives the self-hosted stack the signed entitlement it needs to activate Community Edition.</p>
+                </div>
+                <div class="licence-steps">
+                    <article class="step-card">
+                        <span class="step-number">1</span>
+                        <h3>Register</h3>
+                        <p>Submit your email and receive the signed Community licence file or direct fallback download.</p>
+                    </article>
+                    <article class="step-card">
+                        <span class="step-number">2</span>
+                        <h3>Install</h3>
+                        <p>Download the signed bundle, verify it, and place the licence file with the installer.</p>
+                    </article>
+                    <article class="step-card">
+                        <span class="step-number">3</span>
+                        <h3>Evaluate</h3>
+                        <p>Use the included demo tenant or connect your own source data to test the full platform.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-mint">
+            <div class="container">
+                <div class="section-header">
+                    <p class="section-eyebrow">Community scope</p>
+                    <h2 class="section-title">Full capabilities with clear operating limits.</h2>
+                    <p class="section-description">Community is designed for evaluation and small internal use. Enterprise removes these limits for production rollouts.</p>
+                </div>
+                <div class="licence-scope-grid">
+                    <article class="scope-card">
+                        <strong>2</strong>
+                        <h3>Tenants</h3>
+                        <p>The built-in demo tenant plus one tenant of your own.</p>
+                    </article>
+                    <article class="scope-card">
+                        <strong>2</strong>
+                        <h3>Models</h3>
+                        <p>Enough room to prove semantic modelling and BI access on your own data.</p>
+                    </article>
+                    <article class="scope-card">
+                        <strong>2</strong>
+                        <h3>Users</h3>
+                        <p>Designed for a small evaluation team before wider adoption.</p>
+                    </article>
+                    <article class="scope-card">
+                        <strong>All</strong>
+                        <h3>Features</h3>
+                        <p>Modelling, query, AI, governance, acceleration, and administration are included.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-white">
+            <div class="container">
+                <div class="enterprise-panel">
+                    <div>
+                        <p class="section-eyebrow">Need production scale?</p>
+                        <h2>Move to Enterprise when limits become the blocker.</h2>
+                        <p>Enterprise keeps the same product surface and adds unlimited scale, supported deployment paths, SSO, security evidence, onboarding, and support SLA.</p>
+                    </div>
+                    <div class="licence-actions">
+                        <a href="mailto:sales@tessallite.io?subject=Tessallite%20Enterprise" class="button button-primary">Contact sales</a>
+                        <a href="download.html#security" class="button button-quiet">Review verification</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer section-charcoal">
+        <div class="container footer-fat reveal">
+            <div class="footer-brand">
+                <img src="assets/logos/png/logo-monochrome-white.png" alt="Tessallite" height="32">
+                <p class="footer-tagline">Trusted Business Answers</p>
+                <p class="footer-created">Created by <a href="mailto:mo@tessallite.io" class="footer-created-link">Mohammed Othman</a></p>
+            </div>
+            <div class="link-group">
+                <h4>Get started</h4>
+                <ul>
+                    <li><a href="pricing.html">Pricing</a></li>
+                    <li><a href="register.html">Get a licence</a></li>
+                    <li><a href="download.html">Download</a></li>
+                </ul>
+            </div>
+            <div class="link-group">
+                <h4>Product</h4>
+                <ul>
+                    <li><a href="index.html#platform">Platform</a></li>
+                    <li><a href="screens.html">Product screens</a></li>
+                    <li><a href="index.html#governance">Governance</a></li>
+                    <li><a href="download.html#security">Security &amp; verification</a></li>
+                </ul>
+            </div>
+            <div class="link-group">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="legal.html">Licence &amp; legal</a></li>
+                    <li><a href="legal/LICENSE-COMMUNITY.md" target="_blank" rel="noopener">Community Licence</a></li>
+                    <li><a href="legal/THIRD_PARTY_NOTICES.md" target="_blank" rel="noopener">Third-party notices</a></li>
+                </ul>
+            </div>
+            <div class="link-group">
+                <h4>Contact</h4>
+                <ul>
+                    <li><a href="mailto:info@tessallite.io">info@tessallite.io</a></li>
+                    <li><a href="mailto:sales@tessallite.io">sales@tessallite.io</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2026 Tessallite Ltd. All rights reserved. &middot; <a href="legal.html">Licence &amp; legal</a> &middot; <a href="security.html">Security</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="config.js"></script>
+    <script>
+        const ISSUER_URL = window.TESSALLITE_ISSUER_URL || "https://REPLACE-WITH-ISSUER-FUNCTION-URL";
+
+        const form = document.getElementById("register-form");
+        const msg = document.getElementById("msg");
+        const btn = document.getElementById("submit");
+
+        function show(kind, text) {
+            msg.className = kind ? "msg " + kind : "msg";
+            msg.textContent = text;
+        }
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            btn.disabled = true;
+            show("", "");
+            try {
+                const res = await fetch(ISSUER_URL.replace(/\/$/, "") + "/register", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        email: form.email.value.trim(),
+                        company: form.company.value.trim() || null,
+                        name: form.name.value.trim() || null,
+                        consent: form.consent.checked,
+                    }),
+                });
+                const data = await res.json().catch(() => ({}));
+                if (!res.ok) {
+                    show("err", data.error || "Registration failed. Please try again.");
+                    return;
+                }
+                if (data.emailed) {
+                    show("ok", "Your licence is on its way. Check your email, then upload it in the Tessallite admin screen.");
+                } else if (data.license) {
+                    const blob = new Blob([JSON.stringify(data.license, null, 2)], { type: "application/json" });
+                    const a = document.createElement("a");
+                    a.href = URL.createObjectURL(blob);
+                    a.download = "tessallite-license.json";
+                    a.click();
+                    show("ok", "Your licence has downloaded. Upload it in the Tessallite admin screen to activate.");
+                } else {
+                    show("ok", "Registered. Your licence ID is " + (data.license_id || "issued") + ".");
+                }
+                form.reset();
+            } catch (err) {
+                show("err", "Could not reach the licence service. Please try again later.");
+            } finally {
+                btn.disabled = false;
+            }
+        });
+    </script>
+    <script src="js/script.js"></script>
+</body>
+</html>

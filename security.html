@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="refresh" content="0; url=download.html#security">
+    <title>Security moved to Download — Tessallite</title>
+    <meta name="description" content="Tessallite security, verification, evidence pack, and advisories now live on the Download page.">
+    <link rel="icon" type="image/png" href="assets/logos/png/favicon.png">
+    <link rel="stylesheet" href="css/brand.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .moved-page {
+            min-height: calc(100vh - 120px);
+            display: grid;
+            align-items: center;
+            background: linear-gradient(180deg, var(--white) 0%, var(--mint) 100%);
+            border-bottom: 1px solid var(--slate-border);
+            padding: 84px 0;
+        }
+
+        .moved-panel {
+            max-width: 760px;
+        }
+
+        .moved-kicker {
+            color: var(--accent-gold);
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .moved-actions {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-top: 28px;
+        }
+
+        .button-quiet {
+            background: var(--white);
+            color: var(--primary-green);
+            border-color: var(--slate-border);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container header-container">
+            <a href="index.html" class="logo">
+                <img src="assets/logos/png/logo-primary-horizontal.png" alt="Tessallite" height="80">
+            </a>
+            <nav class="nav" aria-label="Primary navigation">
+                <button class="nav-toggle" aria-label="Toggle navigation" aria-controls="site-nav-list">
+                    <span class="hamburger"></span>
+                </button>
+                <ul class="nav-list" id="site-nav-list">
+                    <li><a href="index.html" class="nav-link">Product</a></li>
+                    <li><a href="screens.html" class="nav-link">Screens</a></li>
+                    <li><a href="pricing.html" class="nav-link">Pricing</a></li>
+                    <li><a href="download.html" class="nav-link">Download</a></li>
+                    <li><a href="download.html#install" class="nav-link">Install guide</a></li>
+                    <li><a href="help/index.html" target="_blank" rel="noopener" class="nav-link">Docs</a></li>
+                    <li><a href="register.html" class="nav-link">Get a licence</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="moved-page">
+        <div class="container moved-panel">
+            <p class="moved-kicker">Security content moved</p>
+            <h1 class="hero-title">Security, verification, evidence, and advisories now live on Download.</h1>
+            <p class="hero-subtitle hero-subtitle-body">The Download page now carries the signed-release verification flow, evidence-pack details, and advisory feed in the same place as the release bundle.</p>
+            <div class="moved-actions">
+                <a href="download.html#security" class="button button-primary">Open security and verification</a>
+                <a href="download.html" class="button button-quiet">Open Download</a>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

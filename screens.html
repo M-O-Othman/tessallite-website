@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Product Screens — Tessallite</title>
+    <meta name="description" content="See real Tessallite product screens for the modeller canvas, conversational agent, and Excel connection workflows.">
+    <link rel="icon" type="image/png" href="assets/logos/png/favicon.png">
+    <link rel="stylesheet" href="css/brand.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .nav-current {
+            color: var(--primary-green);
+            font-weight: 700;
+            cursor: default;
+        }
+
+        .screens-hero {
+            padding: 88px 0 72px;
+            background: linear-gradient(180deg, var(--white) 0%, var(--mint) 100%);
+            border-bottom: 1px solid var(--slate-border);
+        }
+
+        .screens-hero-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(320px, .72fr);
+            gap: 52px;
+            align-items: center;
+        }
+
+        .screen-kicker,
+        .section-eyebrow {
+            color: var(--accent-gold);
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .screens-copy {
+            max-width: 760px;
+            color: rgba(51, 51, 51, .88);
+            font-size: 19px;
+            line-height: 1.65;
+            margin-bottom: 28px;
+        }
+
+        .screens-actions {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .button-quiet {
+            background: var(--white);
+            color: var(--primary-green);
+            border-color: var(--slate-border);
+        }
+
+        .button-quiet:hover {
+            border-color: var(--primary-green);
+            box-shadow: 0 10px 22px rgba(0, 108, 53, .08);
+        }
+
+        .screen-summary {
+            background: var(--white);
+            border: 1px solid var(--slate-border);
+            border-radius: 14px;
+            box-shadow: 0 18px 42px rgba(0, 0, 0, .08);
+            overflow: hidden;
+        }
+
+        .summary-row {
+            display: grid;
+            grid-template-columns: 118px 1fr;
+            gap: 18px;
+            padding: 18px 22px;
+            border-bottom: 1px solid #e6edf2;
+        }
+
+        .summary-row:last-child {
+            border-bottom: none;
+        }
+
+        .summary-row span:first-child {
+            color: #5b6b7b;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .summary-row span:last-child {
+            color: var(--charcoal);
+            font-weight: 700;
+            line-height: 1.45;
+        }
+
+        .screen-block {
+            display: grid;
+            grid-template-columns: minmax(0, 1.12fr) minmax(300px, .88fr);
+            gap: 40px;
+            align-items: center;
+            margin-top: 44px;
+        }
+
+        .screen-block.reverse {
+            grid-template-columns: minmax(300px, .88fr) minmax(0, 1.12fr);
+        }
+
+        .screen-media {
+            background: var(--white);
+            border: 1px solid var(--slate-border);
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 18px 42px rgba(0, 0, 0, .08);
+        }
+
+        .screen-media img {
+            display: block;
+            width: 100%;
+            aspect-ratio: 16 / 10;
+            object-fit: cover;
+            object-position: top left;
+        }
+
+        .screen-media.narrow img {
+            aspect-ratio: 4 / 3;
+            object-position: center;
+        }
+
+        .screen-body h2 {
+            color: var(--primary-green);
+            font-size: 32px;
+            margin-bottom: 14px;
+        }
+
+        .screen-body p {
+            color: rgba(51, 51, 51, .88);
+            font-size: 16px;
+            line-height: 1.7;
+            margin-bottom: 18px;
+        }
+
+        .screen-points {
+            list-style: none;
+            display: grid;
+            gap: 12px;
+        }
+
+        .screen-points li {
+            position: relative;
+            padding-left: 24px;
+            color: rgba(51, 51, 51, .9);
+            line-height: 1.58;
+        }
+
+        .screen-points li::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: .62em;
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            background: var(--accent-gold);
+        }
+
+        .excel-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .workflow-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 22px;
+            margin-top: 28px;
+        }
+
+        .workflow-card {
+            background: var(--white);
+            border: 1px solid var(--slate-border);
+            border-radius: 14px;
+            padding: 24px;
+        }
+
+        .workflow-card h3 {
+            color: var(--primary-green);
+            font-size: 19px;
+            margin-bottom: 10px;
+        }
+
+        .workflow-card p {
+            color: rgba(51, 51, 51, .86);
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 980px) {
+            .screens-hero-grid,
+            .screen-block,
+            .screen-block.reverse,
+            .workflow-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .screen-block.reverse .screen-media {
+                order: 1;
+            }
+
+            .screen-block.reverse .screen-body {
+                order: 2;
+            }
+        }
+
+        @media (max-width: 720px) {
+            .screens-hero {
+                padding: 64px 0 54px;
+            }
+
+            .summary-row,
+            .excel-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .screen-body h2 {
+                font-size: 26px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container header-container">
+            <a href="index.html" class="logo">
+                <img src="assets/logos/png/logo-primary-horizontal.png" alt="Tessallite" height="80">
+            </a>
+            <nav class="nav" aria-label="Primary navigation">
+                <button class="nav-toggle" aria-label="Toggle navigation" aria-controls="site-nav-list">
+                    <span class="hamburger"></span>
+                </button>
+                <ul class="nav-list" id="site-nav-list">
+                    <li><a href="index.html" class="nav-link">Product</a></li>
+                    <li><span class="nav-link nav-current" aria-current="page">Screens</span></li>
+                    <li><a href="pricing.html" class="nav-link">Pricing</a></li>
+                    <li><a href="download.html" class="nav-link">Download</a></li>
+                    <li><a href="download.html#install" class="nav-link">Install guide</a></li>
+                    <li><a href="help/index.html" target="_blank" rel="noopener" class="nav-link">Docs</a></li>
+                    <li><a href="register.html" class="nav-link">Get a licence</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="screens-hero">
+            <div class="container screens-hero-grid">
+                <div>
+                    <p class="screen-kicker">Product screens</p>
+                    <h1 class="hero-title">The same governed model, used by modellers, analysts, and Excel users.</h1>
+                    <p class="screens-copy">These are real Tessallite screens from the help library, product playbook, and UAT evidence. They show how the platform moves from model definition to governed answers and familiar business tools.</p>
+                    <div class="screens-actions">
+                        <a href="#modeller" class="button button-primary">View screens</a>
+                        <a href="help/index.html" target="_blank" rel="noopener" class="button button-quiet">Open docs</a>
+                    </div>
+                </div>
+                <aside class="screen-summary" aria-label="Screen summary">
+                    <div class="summary-row">
+                        <span>Modeller</span>
+                        <span>Build the semantic model, joins, measures, dimensions, health checks, and acceleration rules.</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Agent</span>
+                        <span>Ask questions in business language and receive governed charts, tables, diagnostics, and trace context.</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Excel</span>
+                        <span>Connect workbooks through XMLA or the add-in so spreadsheet users use the same approved definitions.</span>
+                    </div>
+                </aside>
+            </div>
+        </section>
+
+        <section id="modeller" class="section-white">
+            <div class="container">
+                <div class="section-header">
+                    <p class="section-eyebrow">Modeller workspace</p>
+                    <h2 class="section-title">Model Builder turns source tables into a governed business model.</h2>
+                    <p class="section-description">The modeller screen is where a project owner defines the model before dashboards, SQL clients, Excel, and the agent can use it.</p>
+                </div>
+                <div class="screen-block">
+                    <figure class="screen-media">
+                        <img src="assets/screenshots/product-model-builder.png" alt="Tessallite Model Builder canvas with source tables, joins, dimensions, measures, and deployment status" loading="lazy" decoding="async">
+                    </figure>
+                    <div class="screen-body">
+                        <h2>Modeller screen</h2>
+                        <p>The canvas shows the fact table in context with related dimensions, joins, model status, deployment state, and validation feedback. The modeller can move between the canvas, query panel, model health, and usage analytics without leaving the model.</p>
+                        <ul class="screen-points">
+                            <li>Tables and joins show how the business model maps to source data.</li>
+                            <li>Summary chips expose counts for tables, joins, dimensions, measures, aggregates, and target state.</li>
+                            <li>Deployment and validation indicators show whether the model is ready for governed use.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="agent" class="section-mint">
+            <div class="container">
+                <div class="screen-block reverse">
+                    <div class="screen-body">
+                        <p class="section-eyebrow">Conversational analytics</p>
+                        <h2>Conversational agent screen</h2>
+                        <p>The agent screen lets a user ask in business language and receive a governed answer, not a raw table dump. The example shows a completed answer with an aggregate route badge, explanatory text, a chart, and expandable data.</p>
+                        <ul class="screen-points">
+                            <li>Conversation history stays on the left, so users can return to previous questions.</li>
+                            <li>Answers can include narrative, charts, tables, route badges, diagnostics, and supporting data.</li>
+                            <li>The agent works from approved model terms, glossary context, persona scope, and the same query path used by other tools.</li>
+                        </ul>
+                    </div>
+                    <figure class="screen-media">
+                        <img src="assets/screenshots/product-conversational-agent.png" alt="Tessallite conversational agent answer with revenue by payment method chart and completed route badge" loading="lazy" decoding="async">
+                    </figure>
+                </div>
+            </div>
+        </section>
+
+        <section id="excel" class="section-white">
+            <div class="container">
+                <div class="section-header">
+                    <p class="section-eyebrow">Excel and plugin workflow</p>
+                    <h2 class="section-title">Spreadsheet users keep Excel while Tessallite keeps the definitions governed.</h2>
+                    <p class="section-description">Tessallite supports Excel through XMLA PivotTables and the Tessallite Excel add-in. Both paths use the deployed model, row security, personas, and approved measures. The add-in is served by your own Tessallite instance — the guide shows how to connect.</p>
+                    <div class="download-actions" style="margin-top:18px;">
+                        <a href="help/getting-started/connect-excel.html" class="button button-primary" target="_blank" rel="noopener">Connect Excel — step-by-step guide</a>
+                    </div>
+                </div>
+                <div class="screen-block">
+                    <div class="excel-grid">
+                        <figure class="screen-media narrow">
+                            <img src="assets/screenshots/product-excel-connection.png" alt="Excel Data Connection Wizard configured for a Tessallite XMLA endpoint" loading="lazy" decoding="async">
+                        </figure>
+                        <figure class="screen-media narrow">
+                            <img src="assets/screenshots/product-excel-catalogue.png" alt="Excel catalogue selection for a Tessallite model connection" loading="lazy" decoding="async">
+                        </figure>
+                    </div>
+                    <div class="screen-body">
+                        <h2>Excel screen</h2>
+                        <p>The Excel connection workflow uses the XMLA endpoint so a workbook can browse Tessallite models as governed cubes. The add-in path adds a task pane for guided report building, agent questions, CUBE formulas, drill-through, trace, diagnostics, and glossary lookup.</p>
+                        <ul class="screen-points">
+                            <li>Native PivotTables connect through the XMLA endpoint for slicers, timelines, subtotals, and drill-through.</li>
+                            <li>The add-in works from the same deployed model and supports guided report building inside Excel.</li>
+                            <li>Workbook numbers reconcile with dashboards and agent answers because they share the semantic layer.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-mint">
+            <div class="container">
+                <div class="section-header">
+                    <p class="section-eyebrow">How the screens fit together</p>
+                    <h2 class="section-title">One model surface, many user workflows.</h2>
+                </div>
+                <div class="workflow-grid">
+                    <article class="workflow-card">
+                        <h3>Define once</h3>
+                        <p>Modellers define measures, dimensions, joins, personas, glossary terms, and acceleration rules in Model Builder.</p>
+                    </article>
+                    <article class="workflow-card">
+                        <h3>Ask safely</h3>
+                        <p>The conversational agent answers from approved model context and exposes charts, data, trace, and diagnostics.</p>
+                    </article>
+                    <article class="workflow-card">
+                        <h3>Use everywhere</h3>
+                        <p>Excel, dashboards, SQL clients, applications, and the agent all use the same published model and security rules.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section id="get-started" class="cta section-green">
+            <div class="container center invert reveal">
+                <h2 class="cta-title">Ready to try the product path?</h2>
+                <p class="cta-subtitle">Start with a Community licence, install locally, then explore the modeller, agent, and Excel workflows against the same model.</p>
+                <div class="cta-actions">
+                    <a href="register.html" class="button button-secondary">Get a free licence</a>
+                    <a href="download.html#install" class="button button-white-outline">Read install guide</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer section-charcoal">
+        <div class="container footer-fat reveal">
+            <div class="footer-brand">
+                <img src="assets/logos/png/logo-monochrome-white.png" alt="Tessallite" height="32">
+                <p class="footer-tagline">Trusted Business Answers</p>
+                <p class="footer-created">Created by <a href="mailto:mo@tessallite.io" class="footer-created-link">Mohammed Othman</a></p>
+            </div>
+            <div class="link-group">
+                <h4>Get started</h4>
+                <ul>
+                    <li><a href="pricing.html">Pricing</a></li>
+                    <li><a href="register.html">Get a licence</a></li>
+                    <li><a href="download.html">Download</a></li>
+                </ul>
+            </div>
+            <div class="link-group">
+                <h4>Product</h4>
+                <ul>
+                    <li><a href="index.html">Product overview</a></li>
+                    <li><a href="screens.html">Product screens</a></li>
+                    <li><a href="download.html#security">Security &amp; verification</a></li>
+                </ul>
+            </div>
+            <div class="link-group">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="legal.html">Licence &amp; legal</a></li>
+                    <li><a href="legal/LICENSE-COMMUNITY.md" target="_blank" rel="noopener">Community Licence</a></li>
+                    <li><a href="legal/THIRD_PARTY_NOTICES.md" target="_blank" rel="noopener">Third-party notices</a></li>
+                </ul>
+            </div>
+            <div class="link-group">
+                <h4>Contact</h4>
+                <ul>
+                    <li><a href="mailto:info@tessallite.io">info@tessallite.io</a></li>
+                    <li><a href="mailto:sales@tessallite.io">sales@tessallite.io</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2026 Tessallite Ltd. All rights reserved. &middot; <a href="legal.html">Licence &amp; legal</a> &middot; <a href="security.html">Security</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

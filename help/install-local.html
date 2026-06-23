@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Install Tessallite Locally</title>
+    <meta name="description" content="Install Tessallite Community Edition locally with Docker Compose using the signed bundle and Community licence.">
+    <link rel="icon" type="image/png" href="../assets/logos/png/favicon.png">
+    <link rel="stylesheet" href="../css/brand.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .nav-current {
+            color: var(--primary-green);
+            font-weight: 700;
+            cursor: default;
+        }
+
+        .guide-hero {
+            padding: 82px 0 70px;
+            background: linear-gradient(180deg, var(--white) 0%, var(--mint) 100%);
+            border-bottom: 1px solid var(--slate-border);
+        }
+
+        .guide-kicker,
+        .section-eyebrow {
+            color: var(--accent-gold);
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .guide-copy {
+            max-width: 820px;
+            color: rgba(51, 51, 51, .88);
+            font-size: 19px;
+            line-height: 1.65;
+        }
+
+        .guide-layout {
+            display: grid;
+            grid-template-columns: minmax(0, .72fr) minmax(0, 1.28fr);
+            gap: 36px;
+            align-items: start;
+        }
+
+        .guide-panel,
+        .guide-step,
+        .guide-note {
+            background: var(--white);
+            border: 1px solid var(--slate-border);
+            border-radius: 14px;
+            padding: 24px;
+        }
+
+        .guide-panel h2,
+        .guide-step h3,
+        .guide-note h3 {
+            color: var(--primary-green);
+            margin-bottom: 10px;
+        }
+
+        .guide-panel ul,
+        .guide-step ol,
+        .guide-step ul {
+            padding-left: 20px;
+        }
+
+        .guide-panel li,
+        .guide-step li {
+            margin: 9px 0;
+            color: rgba(51, 51, 51, .86);
+        }
+
+        .guide-steps {
+            display: grid;
+            gap: 18px;
+        }
+
+        .code-panel {
+            background: #1f2a24;
+            color: #f7f7f2;
+            border-radius: 12px;
+            padding: 18px;
+            overflow-x: auto;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            line-height: 1.65;
+            margin: 14px 0;
+        }
+
+        .code-panel code {
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .guide-note {
+            margin-top: 22px;
+            background: #fbfdfb;
+        }
+
+        @media (max-width: 900px) {
+            .guide-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container header-container">
+            <a href="../index.html" class="logo">
+                <img src="../assets/logos/png/logo-primary-horizontal.png" alt="Tessallite" height="80">
+            </a>
+            <nav class="nav" aria-label="Primary navigation">
+                <button class="nav-toggle" aria-label="Toggle navigation" aria-controls="site-nav-list">
+                    <span class="hamburger"></span>
+                </button>
+                <ul class="nav-list" id="site-nav-list">
+                    <li><a href="../index.html" class="nav-link">Product</a></li>
+                    <li><a href="../screens.html" class="nav-link">Screens</a></li>
+                    <li><a href="../pricing.html" class="nav-link">Pricing</a></li>
+                    <li><a href="../download.html" class="nav-link">Download</a></li>
+                    <li><span class="nav-link nav-current" aria-current="page">Install guide</span></li>
+                    <li><a href="../docs/" class="nav-link">Docs</a></li>
+                    <li><a href="../register.html" class="nav-link">Get a licence</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="guide-hero">
+            <div class="container">
+                <p class="guide-kicker">Local installation</p>
+                <h1 class="hero-title">Install Tessallite Community Edition on your own machine.</h1>
+                <p class="guide-copy">Use this guide after you have a Community licence and the signed download bundle. It explains the local Docker Compose path in the language an evaluator or platform owner needs before first launch.</p>
+            </div>
+        </section>
+
+        <section class="section-white">
+            <div class="container guide-layout">
+                <aside class="guide-panel">
+                    <h2>Before you start</h2>
+                    <ul>
+                        <li>A Tessallite Community licence file.</li>
+                        <li>The signed Community release bundle.</li>
+                        <li>Docker and Docker Compose v2 installed.</li>
+                        <li>At least 8 GB RAM available for a smooth evaluation.</li>
+                        <li>Ports 3000, 5433, and 8080 free on the host.</li>
+                    </ul>
+                    <div class="guide-note">
+                        <h3>Need the files?</h3>
+                        <p>Start with the licence and download pages, then return here.</p>
+                        <p><a href="../register.html">Get a licence</a> · <a href="../download.html">Download bundle</a></p>
+                    </div>
+                </aside>
+
+                <div class="guide-steps">
+                    <article class="guide-step">
+                        <h3>1. Verify the release</h3>
+                        <p>Check the release before unpacking or running it.</p>
+                        <pre class="code-panel"><code>sha256sum -c SHA256SUMS</code></pre>
+                        <p>The Download page includes the full signature verification command and evidence-pack notes.</p>
+                    </article>
+
+                    <article class="guide-step">
+                        <h3>2. Unpack the bundle</h3>
+                        <pre class="code-panel"><code>tar -xzf tessallite-community-X.Y.Z.tar.gz
+cd tessallite-community-X.Y.Z</code></pre>
+                        <p>Replace <code>X.Y.Z</code> with the release version shown on the Download page.</p>
+                    </article>
+
+                    <article class="guide-step">
+                        <h3>3. Add the licence</h3>
+                        <pre class="code-panel"><code>cp /path/to/tessallite-license.json ./license.json</code></pre>
+                        <p>Keep the licence file private. It is used locally by the stack during startup.</p>
+                    </article>
+
+                    <article class="guide-step">
+                        <h3>4. Start Tessallite</h3>
+                        <pre class="code-panel"><code>./install.sh</code></pre>
+                        <p>The installer prepares configuration, starts the containers, and runs the platform checks.</p>
+                    </article>
+
+                    <article class="guide-step">
+                        <h3>5. Open the product</h3>
+                        <p>When the installer reports success, open:</p>
+                        <pre class="code-panel"><code>http://localhost:3000</code></pre>
+                        <p>Use the system-admin credentials created during setup. If the page is not ready immediately, wait a minute and refresh.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-mint">
+            <div class="container">
+                <div class="section-header">
+                    <p class="section-eyebrow">What runs locally</p>
+                    <h2 class="section-title">A complete evaluation stack.</h2>
+                    <p class="section-description">The local bundle starts the web UI, model service, query router, optimizer, scheduler, gateway, and PostgreSQL metadata store. BI clients connect through the gateway; user queries still follow the governed Tessallite path.</p>
+                </div>
+                <div class="guide-note">
+                    <h3>Common first checks</h3>
+                    <ul>
+                        <li>If Docker is not running, start Docker and rerun the installer.</li>
+                        <li>If a port is already in use, stop the conflicting process before starting Tessallite.</li>
+                        <li>If the UI is not ready, wait for services to finish starting and refresh the browser.</li>
+                        <li>If the licence is rejected, confirm that the file was copied as <code>license.json</code>.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer section-charcoal">
+        <div class="container footer-fat reveal">
+            <div class="footer-brand">
+                <img src="../assets/logos/png/logo-monochrome-white.png" alt="Tessallite" height="32">
+                <p class="footer-tagline">Trusted Business Answers</p>
+                <p class="footer-created">Created by <a href="mailto:mo@tessallite.io" class="footer-created-link">Mohammed Othman</a></p>
+            </div>
+            <div class="link-group">
+                <h4>Get started</h4>
+                <ul>
+                    <li><a href="../register.html">Get a licence</a></li>
+                    <li><a href="../download.html">Download</a></li>
+                    <li><a href="index.html">Docs</a></li>
+                </ul>
+            </div>
+            <div class="link-group">
+                <h4>Product</h4>
+                <ul>
+                    <li><a href="../index.html">Product</a></li>
+                    <li><a href="../screens.html">Product screens</a></li>
+                    <li><a href="../pricing.html">Pricing</a></li>
+                    <li><a href="../download.html#security">Security &amp; verification</a></li>
+                </ul>
+            </div>
+            <div class="link-group">
+                <h4>Contact</h4>
+                <ul>
+                    <li><a href="mailto:info@tessallite.io">info@tessallite.io</a></li>
+                    <li><a href="mailto:sales@tessallite.io">sales@tessallite.io</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2026 Tessallite Ltd. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/script.js"></script>
+</body>
+</html>

@@ -393,6 +393,7 @@
                 <ul class="nav-list" id="site-nav-list">
                     <li><a href="index.html" class="nav-link">Product</a></li>
                     <li><a href="screens.html" class="nav-link">Screens</a></li>
+                    <li><a href="benchmarks.html" class="nav-link">Benchmarks</a></li>
                     <li><a href="pricing.html" class="nav-link">Pricing</a></li>
                     <li><span class="nav-link nav-current" aria-current="page">Download</span></li>
                     <li><a href="download.html#install" class="nav-link">Install guide</a></li>
@@ -726,6 +727,35 @@ cp /path/to/your-license.json ./license.json
                 "</article>";
             }).join("");
         }
+        // Dynamic release info: a small HTML snippet (release-info.html) that the control
+        // center regenerates per public release and pushes to the website repo via GH.
+        // Imported here at display time so the live page always reflects the current release
+        // without a code change. Fails soft — the config.js defaults above stay if absent.
+        fetch("release-info.html", { cache: "no-store" })
+            .then(function (response) { return response.ok ? response.text() : ""; })
+            .then(function (snippet) {
+                if (!snippet) return;
+                var holder = document.createElement("div");
+                holder.innerHTML = snippet;
+                var info = holder.querySelector("[data-version]");
+                if (!info) return;
+                var version = info.getAttribute("data-version");
+                var url = info.getAttribute("href") || info.getAttribute("data-url");
+                if (version) {
+                    ["rel-version", "rel-version-2", "rel-version-3"].forEach(function (id) {
+                        var el = document.getElementById(id);
+                        if (el) el.textContent = version;
+                    });
+                }
+                var dl = document.getElementById("bundle-link");
+                if (dl && url) {
+                    dl.href = url;
+                    dl.textContent = "Download Tessallite Community " + (version ? "v" + version : "");
+                    dl.removeAttribute("rel");
+                }
+            })
+            .catch(function () {});
+
         var ISSUER_URL = window.TESSALLITE_ISSUER_URL || "";
         if (ISSUER_URL && ISSUER_URL.indexOf("REPLACE-WITH") === -1) {
             fetch(ISSUER_URL.replace(/\/$/, "") + "/advisories")

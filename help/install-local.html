@@ -350,6 +350,7 @@ chmod 600 ./license.json</code></pre>
                             <tr><th><code>LICENSE_FILE_HOST</code></th><td>Defaults to <code>./license.json</code>.</td></tr>
                             <tr><th><code>LICENSE_PUBLIC_KEYS</code></th><td>Public key used for local licence verification. This is public, not a secret.</td></tr>
                             <tr><th><code>LLM_API_KEY</code></th><td>Optional. Add your provider key later if you want to use the conversational agent.</td></tr>
+                            <tr><th><code>LLM_ALLOW_SERVICE_ACCOUNT_AUTH</code></th><td><strong>Cost safety &mdash; leave <code>false</code> (default).</strong> While <code>false</code>, the agent may authenticate only with a bring-your-own API key, so usage is billed to the key's owner. <code>true</code> also allows cloud service-account billing (e.g. Google Vertex AI), which charges the host's own cloud project. Only enable if you intend to pay LLM cost from this host.</td></tr>
                         </table>
                     </article>
 

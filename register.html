@@ -326,6 +326,7 @@
                 <ul class="nav-list" id="site-nav-list">
                     <li><a href="index.html" class="nav-link">Product</a></li>
                     <li><a href="screens.html" class="nav-link">Screens</a></li>
+                    <li><a href="benchmarks.html" class="nav-link">Benchmarks</a></li>
                     <li><a href="pricing.html" class="nav-link">Pricing</a></li>
                     <li><a href="download.html" class="nav-link">Download</a></li>
                     <li><a href="download.html#install" class="nav-link">Install guide</a></li>
@@ -549,14 +550,14 @@
                     return;
                 }
                 if (data.emailed) {
-                    show("ok", "Your licence is on its way. Check your email, then upload it in the Tessallite admin screen.");
+                    show("ok", "Your licence is on its way. Check your email, save it as license.json beside the Community installer, then run ./install.sh.");
                 } else if (data.license) {
                     const blob = new Blob([JSON.stringify(data.license, null, 2)], { type: "application/json" });
                     const a = document.createElement("a");
                     a.href = URL.createObjectURL(blob);
                     a.download = "tessallite-license.json";
                     a.click();
-                    show("ok", "Your licence has downloaded. Upload it in the Tessallite admin screen to activate.");
+                    show("ok", "Your licence has downloaded. Save it as license.json beside the Community installer, then run ./install.sh.");
                 } else {
                     show("ok", "Registered. Your licence ID is " + (data.license_id || "issued") + ".");
                 }

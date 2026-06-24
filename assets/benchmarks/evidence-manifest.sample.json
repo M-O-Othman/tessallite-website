@@ -1,0 +1,85 @@
+{
+  "status": "methodology_scaffold",
+  "last_updated": "2026-06-23",
+  "scale": "SF1000",
+  "declared_scale": "SF1000",
+  "correctness_verified": false,
+  "maximum_bytes_billed": 2199023255552,
+  "maximum_bytes_billed_note": "Each measured query was capped at the per-scale maximum_bytes_billed ceiling; runs over the cap were rejected, not billed.",
+  "workload": {
+    "label": "TPC-DS-derived SF1000 retail analytics workload",
+    "source_engine": "BigQuery",
+    "audit_statement": "Not an official TPC audited result"
+  },
+  "evidence_status": "pending",
+  "graphs": [
+    {
+      "id": "latency",
+      "title": "P50/P95 latency",
+      "status": "pending_evidence",
+      "expected_inputs": [
+        "query_id",
+        "route",
+        "run_id",
+        "elapsed_ms"
+      ]
+    },
+    {
+      "id": "bytes",
+      "title": "Bytes processed",
+      "status": "pending_evidence",
+      "expected_inputs": [
+        "query_id",
+        "route",
+        "bytes_processed",
+        "cache_hit"
+      ]
+    },
+    {
+      "id": "route_mix",
+      "title": "Route mix",
+      "status": "pending_evidence",
+      "expected_inputs": [
+        "query_id",
+        "selected_route",
+        "aggregate_id",
+        "pocket_id"
+      ]
+    },
+    {
+      "id": "convergence",
+      "title": "Convergence curve",
+      "status": "pending_evidence",
+      "expected_inputs": [
+        "optimizer_sweep",
+        "route",
+        "p95_ms",
+        "bytes_processed"
+      ]
+    },
+    {
+      "id": "manual_effort",
+      "title": "Manual effort",
+      "status": "pending_evidence",
+      "expected_inputs": [
+        "scenario",
+        "manual_ddl_lines",
+        "objects_maintained",
+        "protocols_served"
+      ]
+    }
+  ],
+  "publication_requirements": [
+    "Benchmark date",
+    "BigQuery region",
+    "Compute model",
+    "Cache mode",
+    "Query count",
+    "Run count",
+    "Tessallite version",
+    "Model version",
+    "Aggregate and pocket seed state",
+    "Correctness tolerance",
+    "Raw evidence bundle reference"
+  ]
+}

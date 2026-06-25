@@ -123,3 +123,83 @@ if (header) {
         }
     });
 }
+
+// Screenshot enlargement
+const screenshotImages = Array.from(document.querySelectorAll(
+    '.hero-screen img, .screen-tile img, .proof-card img, .screen-media img, .mini-screen-card img, .screen-frame img'
+));
+
+if (screenshotImages.length) {
+    const lightbox = document.createElement('div');
+    lightbox.className = 'screenshot-lightbox';
+    lightbox.setAttribute('role', 'dialog');
+    lightbox.setAttribute('aria-modal', 'true');
+    lightbox.setAttribute('aria-label', 'Expanded product screenshot');
+    lightbox.innerHTML = `
+        <div class="screenshot-lightbox__panel" role="document">
+            <img class="screenshot-lightbox__image" alt="">
+            <div class="screenshot-lightbox__caption"></div>
+            <button class="screenshot-lightbox__close" type="button" aria-label="Close expanded screenshot">&times;</button>
+        </div>
+    `;
+    document.body.appendChild(lightbox);
+
+    const lightboxImage = lightbox.querySelector('.screenshot-lightbox__image');
+    const lightboxCaption = lightbox.querySelector('.screenshot-lightbox__caption');
+    const closeButton = lightbox.querySelector('.screenshot-lightbox__close');
+    let activeTrigger = null;
+
+    const getCaption = (image) => {
+        const figure = image.closest('figure, article');
+        const strong = figure?.querySelector('figcaption strong, .proof-body h3');
+        return strong?.textContent?.trim() || image.alt || 'Product screenshot';
+    };
+
+    const openScreenshot = (image) => {
+        activeTrigger = image.closest('figure, article') || image;
+        lightboxImage.src = image.currentSrc || image.src;
+        lightboxImage.alt = image.alt || '';
+        lightboxCaption.textContent = getCaption(image);
+        lightbox.classList.add('is-open');
+        document.body.classList.add('screenshot-lightbox-open');
+        closeButton.focus({ preventScroll: true });
+    };
+
+    const closeScreenshot = () => {
+        lightbox.classList.remove('is-open');
+        document.body.classList.remove('screenshot-lightbox-open');
+        lightboxImage.removeAttribute('src');
+        if (activeTrigger instanceof HTMLElement) {
+            activeTrigger.focus({ preventScroll: true });
+        }
+        activeTrigger = null;
+    };
+
+    screenshotImages.forEach((image) => {
+        const trigger = image.closest('figure, article') || image;
+        trigger.classList.add('screenshot-zoomable');
+        trigger.setAttribute('role', 'button');
+        trigger.setAttribute('tabindex', '0');
+        trigger.setAttribute('aria-label', `View larger: ${getCaption(image)}`);
+
+        trigger.addEventListener('click', () => openScreenshot(image));
+        trigger.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                openScreenshot(image);
+            }
+        });
+    });
+
+    closeButton.addEventListener('click', closeScreenshot);
+    lightbox.addEventListener('click', (event) => {
+        if (event.target === lightbox) {
+            closeScreenshot();
+        }
+    });
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && lightbox.classList.contains('is-open')) {
+            closeScreenshot();
+        }
+    });
+}

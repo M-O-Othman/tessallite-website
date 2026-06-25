@@ -884,6 +884,144 @@ section {
     z-index: auto;
 }
 
+/* Screenshot cards and enlargement */
+.screenshot-zoomable {
+    position: relative;
+    cursor: zoom-in;
+    outline: none;
+    transform: translateY(0);
+    transition:
+        transform 220ms ease,
+        box-shadow 220ms ease,
+        border-color 220ms ease;
+}
+
+.screenshot-zoomable::after {
+    content: "View larger";
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    z-index: 2;
+    padding: 8px 10px;
+    border: 1px solid rgba(255, 255, 255, .72);
+    border-radius: 999px;
+    background: rgba(0, 108, 53, .9);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.screenshot-zoomable:hover,
+.screenshot-zoomable:focus-visible {
+    border-color: rgba(0, 108, 53, .34) !important;
+    box-shadow: 0 24px 58px rgba(0, 48, 28, .16) !important;
+    transform: translateY(-3px);
+}
+
+.screenshot-zoomable:hover::after,
+.screenshot-zoomable:focus-visible::after {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.screenshot-zoomable img {
+    transition: transform 260ms ease, filter 260ms ease;
+}
+
+.screenshot-zoomable:hover img,
+.screenshot-zoomable:focus-visible img {
+    transform: scale(1.015);
+    filter: saturate(1.03) contrast(1.02);
+}
+
+.screenshot-lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: grid;
+    place-items: center;
+    padding: 28px;
+    background: rgba(8, 21, 15, .76);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 180ms ease;
+}
+
+.screenshot-lightbox.is-open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.screenshot-lightbox__panel {
+    position: relative;
+    width: min(1180px, 96vw);
+    max-height: 92vh;
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, .24);
+    border-radius: 12px;
+    background: #f8fbf8;
+    box-shadow: 0 30px 90px rgba(0, 0, 0, .36);
+    transform: translateY(10px) scale(.985);
+    transition: transform 180ms ease;
+}
+
+.screenshot-lightbox.is-open .screenshot-lightbox__panel {
+    transform: translateY(0) scale(1);
+}
+
+.screenshot-lightbox__image {
+    display: block;
+    width: 100%;
+    max-height: calc(92vh - 72px);
+    object-fit: contain;
+    background: #f8fbf8;
+}
+
+.screenshot-lightbox__caption {
+    min-height: 54px;
+    display: flex;
+    align-items: center;
+    padding: 14px 56px 14px 18px;
+    border-top: 1px solid var(--slate-border);
+    color: var(--charcoal);
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.45;
+    background: #fff;
+}
+
+.screenshot-lightbox__close {
+    position: absolute;
+    right: 14px;
+    bottom: 12px;
+    width: 34px;
+    height: 34px;
+    border: 1px solid var(--slate-border);
+    border-radius: 999px;
+    background: #fff;
+    color: var(--primary-green);
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.screenshot-lightbox__close:hover,
+.screenshot-lightbox__close:focus-visible {
+    border-color: var(--primary-green);
+    box-shadow: 0 8px 18px rgba(0, 108, 53, .16);
+    outline: none;
+}
+
+body.screenshot-lightbox-open {
+    overflow: hidden;
+}
+
 /* Architecture Image */
 .architecture-image {
     width: 100%;

@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Product Screens — Tessallite</title>
-    <meta name="description" content="See real Tessallite product screens for the modeller canvas, conversational agent, and Excel connection workflows.">
+    <meta name="description" content="See real Tessallite product screens for the modeller canvas, query routing, governed endpoints, and Excel or BI workflows.">
     <link rel="icon" type="image/png" href="assets/logos/png/favicon.png">
     <link rel="stylesheet" href="css/brand.css">
     <link rel="stylesheet" href="css/style.css">
@@ -120,8 +120,9 @@
             display: block;
             width: 100%;
             aspect-ratio: 16 / 10;
-            object-fit: cover;
-            object-position: top left;
+            object-fit: contain;
+            object-position: center top;
+            background: #f8fbf8;
         }
 
         .screen-media.narrow img {
@@ -166,6 +167,18 @@
             background: var(--accent-gold);
         }
 
+        .evidence-note {
+            margin-top: 18px;
+            padding: 14px 16px;
+            border: 1px solid rgba(0, 108, 53, .16);
+            border-radius: 10px;
+            background: #f7fbf8;
+            color: var(--primary-green);
+            font-size: 14px;
+            font-weight: 700;
+            line-height: 1.5;
+        }
+
         .excel-grid {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -198,11 +211,58 @@
             line-height: 1.6;
         }
 
+        .screen-gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 22px;
+            margin-top: 32px;
+        }
+
+        .mini-screen-card {
+            background: var(--white);
+            border: 1px solid var(--slate-border);
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 18px 42px rgba(0, 0, 0, .08);
+        }
+
+        .mini-screen-card img {
+            display: block;
+            width: 100%;
+            aspect-ratio: 16 / 10;
+            object-fit: contain;
+            object-position: center top;
+            background: #f8fbf8;
+        }
+
+        .mini-screen-card figcaption {
+            padding: 20px 22px;
+            border-top: 1px solid var(--slate-border);
+        }
+
+        .mini-screen-card strong {
+            display: block;
+            color: var(--primary-green);
+            margin-bottom: 6px;
+        }
+
+        .mini-screen-card span {
+            color: rgba(51, 51, 51, .86);
+            font-size: 15px;
+            line-height: 1.55;
+        }
+
+        .mini-screen-card .evidence-note {
+            margin-top: 12px;
+            font-size: 13px;
+        }
+
         @media (max-width: 980px) {
             .screens-hero-grid,
             .screen-block,
             .screen-block.reverse,
-            .workflow-grid {
+            .workflow-grid,
+            .screen-gallery-grid {
                 grid-template-columns: 1fr;
             }
 
@@ -261,7 +321,7 @@
                 <div>
                     <p class="screen-kicker">Product screens</p>
                     <h1 class="hero-title">The same governed model, used by modellers, analysts, and Excel users.</h1>
-                    <p class="screens-copy">These are real Tessallite screens from the help library, product playbook, and UAT evidence. They show how the platform moves from model definition to governed answers and familiar business tools.</p>
+                    <p class="screens-copy">These are real Tessallite screens from the help library, product playbook, and UAT evidence. They show how the platform moves from model definition to governed query execution and familiar business tools.</p>
                     <div class="screens-actions">
                         <a href="#modeller" class="button button-primary">View screens</a>
                         <a href="docs/" class="button button-quiet">Open docs</a>
@@ -273,12 +333,12 @@
                         <span>Build the semantic model, joins, measures, dimensions, health checks, and acceleration rules.</span>
                     </div>
                     <div class="summary-row">
-                        <span>Agent</span>
-                        <span>Ask questions in business language and receive governed charts, tables, diagnostics, and trace context.</span>
+                        <span>Query routing</span>
+                        <span>Run SQL or pivot-style queries and see parse, bind, route, rewrite, and result evidence.</span>
                     </div>
                     <div class="summary-row">
-                        <span>Excel</span>
-                        <span>Connect workbooks through XMLA or the add-in so spreadsheet users use the same approved definitions.</span>
+                        <span>BI clients</span>
+                        <span>Connect Excel, Power BI, SQL clients, and dashboards through governed endpoints.</span>
                     </div>
                 </aside>
             </div>
@@ -293,7 +353,7 @@
                 </div>
                 <div class="screen-block">
                     <figure class="screen-media">
-                        <img src="assets/screenshots/product-model-builder.png" alt="Tessallite Model Builder canvas with source tables, joins, dimensions, measures, and deployment status" loading="lazy" decoding="async">
+                        <img src="assets/screenshots/product-model-builder.jpg" alt="Tessallite Model Builder canvas with source tables, joins, dimensions, measures, and deployment status" loading="eager" decoding="async">
                     </figure>
                     <div class="screen-body">
                         <h2>Modeller screen</h2>
@@ -303,26 +363,28 @@
                             <li>Summary chips expose counts for tables, joins, dimensions, measures, aggregates, and target state.</li>
                             <li>Deployment and validation indicators show whether the model is ready for governed use.</li>
                         </ul>
+                        <p class="evidence-note">Evidence shown: deployed TPC-DS Retail model with source tables, joins, measures, dimensions, aggregates, and validation status visible in the workspace.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="agent" class="section-mint">
+        <section id="query-routing" class="section-mint">
             <div class="container">
                 <div class="screen-block reverse">
                     <div class="screen-body">
-                        <p class="section-eyebrow">Conversational analytics</p>
-                        <h2>Conversational agent screen</h2>
-                        <p>The agent screen lets a user ask in business language and receive a governed answer, not a raw table dump. The example shows a completed answer with an aggregate route badge, explanatory text, a chart, and expandable data.</p>
+                        <p class="section-eyebrow">Query execution</p>
+                        <h2>Query routing screen</h2>
+                        <p>The query screen shows the path a question takes through Tessallite: parse, semantic binding, route selection, rewrite, execution, and result review. The example shows an aggregate route with generated SQL and returned data.</p>
                         <ul class="screen-points">
-                            <li>Conversation history stays on the left, so users can return to previous questions.</li>
-                            <li>Answers can include narrative, charts, tables, route badges, diagnostics, and supporting data.</li>
-                            <li>The agent works from approved model terms, glossary context, persona scope, and the same query path used by other tools.</li>
+                            <li>Validation and dry-run controls let users check a query before execution.</li>
+                            <li>The route pipeline explains why Tessallite used an aggregate, pocket table, or source path.</li>
+                            <li>Rewritten SQL and route badges make performance and correctness review visible.</li>
                         </ul>
+                        <p class="evidence-note">Evidence shown: parse, bind, route, rewrite, and result stages, with the query routed through an aggregate and rewritten SQL displayed.</p>
                     </div>
                     <figure class="screen-media">
-                        <img src="assets/screenshots/product-conversational-agent.png" alt="Tessallite conversational agent answer with revenue by payment method chart and completed route badge" loading="lazy" decoding="async">
+                        <img src="assets/screenshots/product-query-routing.jpg" alt="Tessallite query routing screen with SQL rewrite, aggregate route, and results" loading="eager" decoding="async">
                     </figure>
                 </div>
             </div>
@@ -331,36 +393,65 @@
         <section id="excel" class="section-white">
             <div class="container">
                 <div class="section-header">
-                    <p class="section-eyebrow">Excel and plugin workflow</p>
-                    <h2 class="section-title">Spreadsheet users keep Excel while Tessallite keeps the definitions governed.</h2>
-                    <p class="section-description">Tessallite supports Excel through XMLA PivotTables and the Tessallite Excel add-in. Both paths use the deployed model, row security, personas, and approved measures. The add-in is served by your own Tessallite instance — the guide shows how to connect.</p>
+                    <p class="section-eyebrow">Excel, Power BI, and SQL clients</p>
+                    <h2 class="section-title">Business tools stay familiar while Tessallite keeps definitions governed.</h2>
+                    <p class="section-description">Tessallite supports Excel through XMLA PivotTables, Power BI through Analysis Services, and SQL clients through the PostgreSQL wire endpoint. These paths use the deployed model, row security, personas, and approved measures.</p>
                     <div class="download-actions" style="margin-top:18px;">
                         <a href="help/excel-bi.html" class="button button-primary">Connect Excel — step-by-step guide</a>
                     </div>
                 </div>
                 <div class="screen-block">
                     <div class="excel-grid">
-                        <figure class="screen-media narrow">
-                            <img src="assets/screenshots/product-excel-connection.png" alt="Excel Data Connection Wizard configured for a Tessallite XMLA endpoint" loading="lazy" decoding="async">
+                        <figure class="screen-media">
+                            <img src="assets/screenshots/product-excel-dashboard.jpg" alt="Excel retail analytics dashboard using Tessallite PivotTable fields" loading="eager" decoding="async">
                         </figure>
-                        <figure class="screen-media narrow">
-                            <img src="assets/screenshots/product-excel-catalogue.png" alt="Excel catalogue selection for a Tessallite model connection" loading="lazy" decoding="async">
+                        <figure class="screen-media">
+                            <img src="assets/screenshots/product-powerbi-analysis-services.jpg" alt="Power BI Get Data menu selecting Analysis Services for Tessallite" loading="eager" decoding="async">
                         </figure>
                     </div>
                     <div class="screen-body">
                         <h2>Excel screen</h2>
-                        <p>The Excel connection workflow uses the XMLA endpoint so a workbook can browse Tessallite models as governed cubes. The add-in path adds a task pane for guided report building, agent questions, CUBE formulas, drill-through, trace, diagnostics, and glossary lookup.</p>
+                        <p>The BI connection workflow uses Tessallite endpoints so a workbook, dashboard, or SQL client can browse governed models and run queries without copying metric logic into each tool.</p>
                         <ul class="screen-points">
                             <li>Native PivotTables connect through the XMLA endpoint for slicers, timelines, subtotals, and drill-through.</li>
-                            <li>The add-in works from the same deployed model and supports guided report building inside Excel.</li>
-                            <li>Workbook numbers reconcile with dashboards and agent answers because they share the semantic layer.</li>
+                            <li>Power BI can connect through Analysis Services style discovery against the same deployed model.</li>
+                            <li>Workbook numbers reconcile with dashboards, SQL clients, and agent answers because they share the semantic layer.</li>
                         </ul>
+                        <p class="evidence-note">Evidence shown: an Excel retail analytics workbook using model fields, plus the Power BI Analysis Services connection path.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section class="section-mint">
+        <section id="operations" class="section-mint">
+            <div class="container">
+                <div class="section-header">
+                    <p class="section-eyebrow">Operations and connectivity</p>
+                    <h2 class="section-title">The supporting screens show how models are exposed, checked, and accelerated.</h2>
+                    <p class="section-description">These screens are useful during evaluation because they show the operational proof behind the model: endpoints, health status, aggregate acceleration, and direct SQL client access.</p>
+                </div>
+                <div class="screen-gallery-grid">
+                    <figure class="mini-screen-card">
+                        <img src="assets/screenshots/product-endpoints-panel.jpg" alt="Tessallite Endpoints panel with REST, JDBC, XMLA, Excel, and MCP connection details" loading="eager" decoding="async">
+                        <figcaption><strong>Endpoints panel</strong><span>Shows REST, JDBC, XMLA, Excel plugin, and AI assistant connection details for a deployed model.</span><p class="evidence-note">Evidence shown: the XMLA/DAX connection string and protocol-specific tabs.</p></figcaption>
+                    </figure>
+                    <figure class="mini-screen-card">
+                        <img src="assets/screenshots/product-model-health.jpg" alt="Tessallite Model Health screen with validation status and latency chart" loading="eager" decoding="async">
+                        <figcaption><strong>Model health</strong><span>Surfaces validation state, deployment metadata, latency checks, and open alerts before teams rely on the model.</span><p class="evidence-note">Evidence shown: zero open alerts and a cold-start latency chart.</p></figcaption>
+                    </figure>
+                    <figure class="mini-screen-card">
+                        <img src="assets/screenshots/product-aggregates.jpg" alt="Tessallite Aggregates screen listing active aggregate tables and rebuild controls" loading="eager" decoding="async">
+                        <figcaption><strong>Aggregates</strong><span>Lists acceleration structures, grains, measures, scores, lifecycle state, rebuild controls, and history.</span><p class="evidence-note">Evidence shown: active aggregates with grains, measures, scores, rebuild controls, and history.</p></figcaption>
+                    </figure>
+                    <figure class="mini-screen-card">
+                        <img src="assets/screenshots/product-dbeaver-query.jpg" alt="DBeaver SQL client querying Tessallite through the PostgreSQL wire endpoint" loading="eager" decoding="async">
+                        <figcaption><strong>SQL client access</strong><span>Shows DBeaver connected through the PostgreSQL wire endpoint and querying governed model fields.</span><p class="evidence-note">Evidence shown: DBeaver connected to Tessallite and returning query results.</p></figcaption>
+                    </figure>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-white">
             <div class="container">
                 <div class="section-header">
                     <p class="section-eyebrow">How the screens fit together</p>

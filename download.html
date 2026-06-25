@@ -504,6 +504,11 @@
                         </div>
                     </article>
                 </div>
+                <div id="old-versions" class="old-versions" hidden style="margin-top:32px;">
+                    <h3>Previous releases</h3>
+                    <p class="section-description">Earlier Community Edition bundles, kept for reference and reproducible installs. Always prefer the current release above unless you have a specific reason to pin an older one.</p>
+                    <ul id="old-versions-list" class="old-versions-list" style="list-style:none;padding:0;margin:0;"></ul>
+                </div>
                 <p class="section-description" style="margin-top:24px;">Tessallite Community Edition is free under the <strong><a href="legal.html">Tessallite Community Licence</a></strong>. The full terms (and all <a href="legal.html">licence &amp; legal documents</a>) are being finalised; the current licence also ships with your download. Questions? <a href="mailto:info@tessallite.io?subject=Community%20Licence">info@tessallite.io</a>.</p>
             </div>
         </section>
@@ -753,6 +758,32 @@ cp /path/to/your-license.json ./license.json
                     dl.textContent = "Download Tessallite Community " + (version ? "v" + version : "");
                     dl.removeAttribute("rel");
                 }
+            })
+            .catch(function () {});
+
+        // Previous releases: old-versions.html (regenerated per release from the
+        // archive bucket) embeds a JSON list of {version,file,url}. Render it as a
+        // simple list; fails soft (section stays hidden) when absent or empty.
+        fetch("old-versions.html", { cache: "no-store" })
+            .then(function (response) { return response.ok ? response.text() : ""; })
+            .then(function (snippet) {
+                if (!snippet) return;
+                var holder = document.createElement("div");
+                holder.innerHTML = snippet;
+                var data = holder.querySelector("#old-versions-data");
+                if (!data) return;
+                var items = [];
+                try { items = JSON.parse(data.textContent || "[]"); } catch (e) { return; }
+                if (!items.length) return;
+                var list = document.getElementById("old-versions-list");
+                var section = document.getElementById("old-versions");
+                if (!list || !section) return;
+                list.innerHTML = items.map(function (it) {
+                    return '<li style="margin:6px 0;"><a href="' + esc(it.url) +
+                        '" rel="nofollow">' + esc(it.file) +
+                        "</a> <span class=\"artifact-meta\">v" + esc(it.version) + "</span></li>";
+                }).join("");
+                section.hidden = false;
             })
             .catch(function () {});
 

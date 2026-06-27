@@ -180,13 +180,28 @@
 
                 const statusNode = target.querySelector('[data-graph-status]');
                 const inputsNode = target.querySelector('[data-graph-inputs]');
+                const shellNode = target.querySelector('.graph-shell');
 
                 if (statusNode) {
                     statusNode.textContent = formatStatus(graph.status);
                 }
 
-                if (inputsNode && Array.isArray(graph.expected_inputs)) {
-                    inputsNode.textContent = `Expected evidence fields: ${graph.expected_inputs.join(', ')}.`;
+                // Render the chart from the manifest's chart data. Only reached
+                // after the published + scale (F-03) + correctness (F-06) gates
+                // above have all passed, so a chart can never paint from an
+                // unpublished or unverified manifest.
+                if (shellNode && graph.chart) {
+                    renderChart(shellNode, graph.chart);
+                }
+
+                // For a published chart show the plain-language caption; otherwise
+                // fall back to the engineering "expected fields" line.
+                if (inputsNode) {
+                    if (graph.chart && typeof graph.caption === 'string') {
+                        inputsNode.textContent = graph.caption;
+                    } else if (Array.isArray(graph.expected_inputs)) {
+                        inputsNode.textContent = `Expected evidence fields: ${graph.expected_inputs.join(', ')}.`;
+                    }
                 }
             });
         })
@@ -204,5 +219,101 @@
         }
         const rounded = unit === 0 ? value : Math.round(value * 100) / 100;
         return `${rounded} ${units[unit]}`;
+    }
+
+    // ---- chart rendering (LINEAR only — business audience; never a log axis) ----
+    const NS = 'http://www.w3.org/2000/svg';
+    const COLORS = ['#c0563b', '#006c35', '#b8860b'];
+
+    function svgEl(tag, attrs) {
+        const el = document.createElementNS(NS, tag);
+        for (const k in attrs) {
+            el.setAttribute(k, attrs[k]);
+        }
+        return el;
+    }
+    function svgText(x, y, str, attrs) {
+        const t = svgEl('text', Object.assign({ x: x, y: y }, attrs || {}));
+        t.textContent = str;
+        return t;
+    }
+    function usd(n) {
+        return n >= 1 ? '$' + n.toFixed(0) : '$' + n.toFixed(2);
+    }
+    function gb(n) {
+        if (n >= 1) return n.toFixed(0) + ' GB';
+        if (n >= 0.001) return (n * 1000).toFixed(1) + ' MB';
+        if (n >= 1e-6) return (n * 1e6).toFixed(1) + ' KB';
+        if (n > 0) return Math.round(n * 1e9) + ' B';
+        return '0';
+    }
+    function count(n) {
+        return String(Math.round(n));
+    }
+    // Linear "nice" axis ticks (0..ceil). Math.log10 is only used to size the step,
+    // not to scale the axis — the axis itself is strictly linear.
+    function niceTicks(maxv, n) {
+        if (!(maxv > 0)) return [0, 1];
+        const raw = maxv / n;
+        const mag = Math.pow(10, Math.floor(Math.log10(raw)));
+        const step = [1, 2, 2.5, 5, 10].map((m) => m * mag).find((s) => s >= raw) || 10 * mag;
+        const ticks = [];
+        for (let v = 0; v <= maxv + 1e-9; v += step) ticks.push(v);
+        return ticks;
+    }
+
+    function renderChart(shell, chart) {
+        if (!shell || !chart || chart.type !== 'grouped_bars' || !Array.isArray(chart.series)) {
+            return;
+        }
+        const fmt = chart.unit === 'usd' ? usd : chart.unit === 'gb' ? gb : count;
+        while (shell.firstChild) shell.removeChild(shell.firstChild);
+        shell.classList.add('graph-shell--chart');
+
+        const W = 760, H = 300, P = { l: 82, r: 14, t: 30, b: 66 };
+        const s = svgEl('svg', {
+            viewBox: '0 0 ' + W + ' ' + H,
+            width: '100%',
+            preserveAspectRatio: 'xMidYMid meet',
+            role: 'img',
+        });
+        const all = chart.series.reduce((acc, ser) => acc.concat(ser.values), []);
+        const maxv = Math.max.apply(null, all);
+        const ticks = niceTicks(maxv, 5);
+        const top = ticks[ticks.length - 1] || 1;
+        const y = (v) => (H - P.b) - (v / top) * (H - P.b - P.t);
+
+        ticks.forEach((tv) => {
+            const yy = y(tv);
+            s.appendChild(svgEl('line', { x1: P.l, y1: yy, x2: W - P.r, y2: yy, stroke: '#eef2ef' }));
+            s.appendChild(svgText(P.l - 8, yy + 3, fmt(tv), { 'text-anchor': 'end', 'font-size': '10', fill: '#8a97a3' }));
+        });
+        s.appendChild(svgEl('line', { x1: P.l, y1: H - P.b, x2: W - P.r, y2: H - P.b, stroke: '#cdd6cf' }));
+
+        const n = chart.labels.length;
+        const gw = (W - P.l - P.r) / n;
+        const k = chart.series.length;
+        const bw = Math.min(70, (gw - 18) / k);
+        chart.labels.forEach((lb, i) => {
+            const cx = P.l + i * gw + gw / 2;
+            chart.series.forEach((ser, j) => {
+                const v = ser.values[i];
+                const x = cx - (k * bw) / 2 + j * bw;
+                const yy = y(v);
+                const h = (H - P.b) - yy;
+                const barY = Math.min(yy, (H - P.b) - 2);
+                s.appendChild(svgEl('rect', { x: x + 2, y: barY, width: bw - 6, height: Math.max(h, 2), fill: COLORS[j % COLORS.length], rx: 3 }));
+                s.appendChild(svgText(x + 2 + (bw - 6) / 2, barY - 5, fmt(v), { 'text-anchor': 'middle', 'font-size': '10', fill: '#1f2a24', 'font-weight': '700' }));
+            });
+            String(lb).split('\n').forEach((ln, r) =>
+                s.appendChild(svgText(cx, H - P.b + 18 + r * 12, ln, { 'text-anchor': 'middle', 'font-size': '10.5', fill: '#3a4a40' }))
+            );
+        });
+        chart.series.forEach((ser, j) => {
+            const lx = P.l + 8 + j * 215;
+            s.appendChild(svgEl('rect', { x: lx, y: 6, width: 12, height: 12, fill: COLORS[j % COLORS.length], rx: 2 }));
+            s.appendChild(svgText(lx + 17, 16, ser.name, { 'font-size': '11.5', fill: '#1f2a24' }));
+        });
+        shell.appendChild(s);
     }
 }());

@@ -1,0 +1,68 @@
+[
+  {
+    "query": "native: year,month",
+    "source_bytes": 66011067896,
+    "aggregate_bytes": 1968,
+    "reduction": "33,542,209x"
+  },
+  {
+    "query": "native: year,month,item_category",
+    "source_bytes": 133062378266,
+    "aggregate_bytes": 37458,
+    "reduction": "3,552,309x"
+  },
+  {
+    "query": "native: year,month,store_region,store_state",
+    "source_bytes": 110017646375,
+    "aggregate_bytes": 82292,
+    "reduction": "1,336,918x"
+  },
+  {
+    "query": "native: year,quarter,item_cat,item_brand",
+    "source_bytes": 133067811651,
+    "aggregate_bytes": 1524606,
+    "reduction": "87,280x"
+  },
+  {
+    "query": "native: year,month,customer_segment",
+    "source_bytes": 88144987290,
+    "aggregate_bytes": 6276,
+    "reduction": "14,044,772x"
+  },
+  {
+    "query": "native: year,month,promo_type,item_cat",
+    "source_bytes": 155065000900,
+    "aggregate_bytes": 98050882,
+    "reduction": "1,581x"
+  },
+  {
+    "query": "rollup: year (from y/m)",
+    "source_bytes": 66010483504,
+    "aggregate_bytes": 1480,
+    "reduction": "44,601,678x"
+  },
+  {
+    "query": "rollup: item_category (from y/m/cat)",
+    "source_bytes": 67050886786,
+    "aggregate_bytes": 15810,
+    "reduction": "4,241,043x"
+  },
+  {
+    "query": "rollup: store_region (from y/m/reg/st)",
+    "source_bytes": 66009562035,
+    "aggregate_bytes": 38068,
+    "reduction": "1,733,991x"
+  },
+  {
+    "query": "unmatched grain: by day (d_date)",
+    "source_bytes": 66010483504,
+    "aggregate_bytes": null,
+    "reduction": "source-only"
+  },
+  {
+    "query": "unmatched dim: by item_class",
+    "source_bytes": 67051451155,
+    "aggregate_bytes": null,
+    "reduction": "source-only"
+  }
+]

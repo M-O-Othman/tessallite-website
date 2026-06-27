@@ -1,0 +1,118 @@
+{
+  "status": "published",
+  "last_updated": "2026-06-27",
+  "scale": "SF1000",
+  "declared_scale": "SF1000",
+  "correctness_verified": true,
+  "maximum_bytes_billed": 2199023255552,
+  "maximum_bytes_billed_note": "Live A/B runs were capped at 2 TiB maximum_bytes_billed per query; headline per-question byte figures are cache-immune BigQuery dry-runs (use_query_cache=false), so they reflect data to scan, not a cached read.",
+  "workload": {
+    "label": "TPC-DS-derived SF1000 retail analytics workload",
+    "source_engine": "BigQuery",
+    "audit_statement": "Not an official TPC audited result"
+  },
+  "evidence_status": "published",
+  "environment": {
+    "benchmark_date": "2026-06-27",
+    "bigquery_region": "us-west1",
+    "compute_model": "BigQuery on-demand (~$5 per TB scanned, 10 MB minimum per query)",
+    "cache_mode": "cache-immune dry-run for byte figures; live A/B with per-model result-cache eviction for routing/correctness",
+    "query_count": "4 gateway A/B questions + 17 measured business questions",
+    "run_count": "1 warmup + 3 measured runs per leg",
+    "tessallite_version": "1.1.4 (query-router build 1fae474a)",
+    "model_version": "tpcds_retail_sf1000",
+    "seed_state": "14 maintained aggregates materialised; 2 governed named lists",
+    "correctness_tolerance": "relative 1e-6, absolute 0.01, unordered set-equality",
+    "dataset_facts": "store_sales = 2,879,987,999 rows, 24 tables, 0 load errors"
+  },
+  "report_url": "tpcds-sf1000-report.html",
+  "raw_evidence": [
+    "assets/benchmarks/tpcds-sf1000-ab-postfix.json",
+    "assets/benchmarks/tpcds-sf1000-bytes-matrix.json",
+    "assets/benchmarks/tpcds-sf1000-superset-matrix.json"
+  ],
+  "graphs": [
+    {
+      "id": "cost",
+      "title": "Cost to ask the same question 1,000 times",
+      "status": "verified",
+      "expected_inputs": ["business_question", "route", "bytes_scanned", "cost_usd"],
+      "caption": "BigQuery on-demand (~$5/TB, 10 MB minimum per query). The green bars are a few cents — too small to see next to hundreds of dollars. That is the point.",
+      "chart": {
+        "type": "grouped_bars",
+        "unit": "usd",
+        "labels": [
+          "A simple question\n(sales by region)",
+          "A medium question\n(sales by category, monthly)",
+          "A heavy question\n(promotion impact by\ncategory, monthly)"
+        ],
+        "series": [
+          { "name": "Today (raw BigQuery, each time)", "values": [330, 445, 775] },
+          { "name": "With Tessallite", "values": [0.05, 0.05, 0.41] }
+        ]
+      }
+    },
+    {
+      "id": "bytes",
+      "title": "Data scanned to answer one question",
+      "status": "verified",
+      "expected_inputs": ["business_question", "route", "bytes_scanned", "cache_hit"],
+      "caption": "Cache-immune BigQuery dry-runs. The green bars are a few kilobytes to a few megabytes — invisible beside 66–155 GB. Same answer, tiny read.",
+      "chart": {
+        "type": "grouped_bars",
+        "unit": "gb",
+        "labels": [
+          "A simple question\n(sales by region)",
+          "A medium question\n(sales by category, monthly)",
+          "A heavy question\n(promotion impact by\ncategory, monthly)"
+        ],
+        "series": [
+          { "name": "Today (raw BigQuery)", "values": [66.0, 89.1, 155.1] },
+          { "name": "With Tessallite", "values": [0.000000041, 0.0000044, 0.0818] }
+        ]
+      }
+    },
+    {
+      "id": "route_mix",
+      "title": "Route mix and correctness",
+      "status": "verified",
+      "expected_inputs": ["business_question", "selected_route", "aggregate_id", "answer_matches_source"],
+      "caption": "Four everyday questions through the live gateway: with acceleration on, all four answered from a maintained summary; off, all four from the raw source. All four answers were identical.",
+      "chart": {
+        "type": "grouped_bars",
+        "unit": "count",
+        "labels": ["Acceleration ON", "Acceleration OFF"],
+        "series": [
+          { "name": "Answered from a summary", "values": [4, 0] },
+          { "name": "Answered from raw source", "values": [0, 4] }
+        ]
+      }
+    },
+    {
+      "id": "convergence",
+      "title": "Convergence curve",
+      "status": "planned_future_run",
+      "expected_inputs": ["optimizer_sweep", "route", "p95_ms", "bytes_processed"]
+    },
+    {
+      "id": "manual_effort",
+      "title": "Manual effort",
+      "status": "planned_future_run",
+      "expected_inputs": ["scenario", "manual_ddl_lines", "objects_maintained", "protocols_served"]
+    }
+  ],
+  "latency_note": "At SF1000, wall-clock is similar on both legs (~10 s end-to-end, ~0.9 s server data-time): BigQuery is massively parallel and its own result cache masks repeated reads. The acceleration win at a terabyte is cost (bytes scanned), not latency — so this page leads with cost and data scanned, not a latency chart.",
+  "publication_requirements": [
+    "Benchmark date",
+    "BigQuery region",
+    "Compute model",
+    "Cache mode",
+    "Query count",
+    "Run count",
+    "Tessallite version",
+    "Model version",
+    "Aggregate and pocket seed state",
+    "Correctness tolerance",
+    "Raw evidence bundle reference"
+  ]
+}

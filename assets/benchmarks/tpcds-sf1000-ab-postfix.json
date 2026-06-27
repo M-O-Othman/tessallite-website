@@ -1,0 +1,172 @@
+{
+  "schema_version": "tpcds-acceleration-evidence/v2-ab",
+  "methodology": "ab-flag-flip",
+  "scale": "sf1000",
+  "dataset": "tessallite-io.tpcds_sf1000_demo",
+  "model": "tpcds_retail_sf1000",
+  "runs_per_query": 3,
+  "warmup_discards": 1,
+  "tolerance": {
+    "relative_epsilon": 1e-06,
+    "absolute_epsilon": 0.01,
+    "ordering": "unordered"
+  },
+  "final_state": "aggregations_enabled=ON",
+  "disclaimer": "TPC-DS-derived workload on BigQuery. Not an official TPC audited result.",
+  "queries": [
+    {
+      "id": "net_sales_by_year",
+      "on": {
+        "route_type": "aggregate",
+        "aggregate_id": "c9624340-09ea-4290-8f4f-ac7b15bc4900",
+        "bytes": 0,
+        "server_elapsed_ms": 901,
+        "real_runs": 3,
+        "wall_runs_ms": [
+          11572.9,
+          10413.2,
+          10488.4
+        ],
+        "wall_p50_ms": 10488.4,
+        "wall_p95_ms": 11464.4
+      },
+      "off": {
+        "route_type": "source",
+        "aggregate_id": null,
+        "bytes": 0,
+        "server_elapsed_ms": 878,
+        "real_runs": 3,
+        "wall_runs_ms": [
+          9925.8,
+          9822.5,
+          9635.8
+        ],
+        "wall_p50_ms": 9822.5,
+        "wall_p95_ms": 9915.5
+      },
+      "bytes_reduction_x": null,
+      "latency_speedup_x": 0.9,
+      "rows": 7,
+      "correct": true,
+      "bq_tieout_scan_bytes": 66010483504,
+      "off_matches_bq_tieout": false
+    },
+    {
+      "id": "net_sales_by_category",
+      "on": {
+        "route_type": "aggregate",
+        "aggregate_id": "4b5de24b-76d7-4d23-835d-51f9d1054880",
+        "bytes": 0,
+        "server_elapsed_ms": 863,
+        "real_runs": 3,
+        "wall_runs_ms": [
+          10768.0,
+          10317.5,
+          10521.1
+        ],
+        "wall_p50_ms": 10521.1,
+        "wall_p95_ms": 10743.3
+      },
+      "off": {
+        "route_type": "source",
+        "aggregate_id": null,
+        "bytes": 0,
+        "server_elapsed_ms": 922,
+        "real_runs": 3,
+        "wall_runs_ms": [
+          10158.2,
+          9754.4,
+          10083.8
+        ],
+        "wall_p50_ms": 10083.8,
+        "wall_p95_ms": 10150.8
+      },
+      "bytes_reduction_x": null,
+      "latency_speedup_x": 1.0,
+      "rows": 11,
+      "correct": true,
+      "bq_tieout_scan_bytes": 67050886786,
+      "off_matches_bq_tieout": false
+    },
+    {
+      "id": "net_sales_by_region",
+      "on": {
+        "route_type": "aggregate",
+        "aggregate_id": "1eb3e20d-ed7b-41e8-bd54-841a2961a1d8",
+        "bytes": 0,
+        "server_elapsed_ms": 853,
+        "real_runs": 3,
+        "wall_runs_ms": [
+          9705.1,
+          9873.5,
+          9119.2
+        ],
+        "wall_p50_ms": 9705.1,
+        "wall_p95_ms": 9856.7
+      },
+      "off": {
+        "route_type": "source",
+        "aggregate_id": null,
+        "bytes": 0,
+        "server_elapsed_ms": 803,
+        "real_runs": 3,
+        "wall_runs_ms": [
+          9553.1,
+          9171.8,
+          9945.7
+        ],
+        "wall_p50_ms": 9553.1,
+        "wall_p95_ms": 9906.4
+      },
+      "bytes_reduction_x": null,
+      "latency_speedup_x": 1.0,
+      "rows": 2,
+      "correct": true,
+      "bq_tieout_scan_bytes": 66009562035,
+      "off_matches_bq_tieout": false
+    },
+    {
+      "id": "net_sales_by_customer_segment",
+      "on": {
+        "route_type": "aggregate",
+        "aggregate_id": "f95e1d30-a1e6-41ca-826a-6004793e001d",
+        "bytes": 0,
+        "server_elapsed_ms": 931,
+        "real_runs": 3,
+        "wall_runs_ms": [
+          9737.9,
+          10276.1,
+          10169.3
+        ],
+        "wall_p50_ms": 10169.3,
+        "wall_p95_ms": 10265.4
+      },
+      "off": {
+        "route_type": "source",
+        "aggregate_id": null,
+        "bytes": 0,
+        "server_elapsed_ms": 954,
+        "real_runs": 3,
+        "wall_runs_ms": [
+          10046.6,
+          11425.4,
+          10167.4
+        ],
+        "wall_p50_ms": 10167.4,
+        "wall_p95_ms": 11299.6
+      },
+      "bytes_reduction_x": null,
+      "latency_speedup_x": 1.0,
+      "rows": 3,
+      "correct": true,
+      "bq_tieout_scan_bytes": 66140136866,
+      "off_matches_bq_tieout": false
+    }
+  ],
+  "summary": {
+    "queries": 4,
+    "all_correct": true,
+    "on_aggregate_routed": 4,
+    "off_source_routed": 4
+  }
+}

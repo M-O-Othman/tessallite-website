@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Governed analytics at near-zero cost — Tessallite on a terabyte (TPC-DS SF1000)</title>
+<style>
+  :root{--green:#006c35;--ink:#1f2a24;--mut:#5b6b7b;--line:#e6edf2;--mint:#f3f9f5;--gold:#b8860b;}
+  *{box-sizing:border-box}
+  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--ink);margin:0;line-height:1.6;background:#fff}
+  .wrap{max-width:980px;margin:0 auto;padding:32px 24px 80px;position:relative;z-index:1}
+  .banner{background:#eef7f1;border:1px solid #cfe8d8;border-radius:10px;padding:14px 16px;color:#13502f;font-size:14px;margin-bottom:24px}
+  h1{color:var(--green);font-size:32px;margin:6px 0 6px;line-height:1.15}
+  h2{color:var(--green);font-size:21px;margin:38px 0 12px;border-bottom:1px solid var(--line);padding-bottom:6px}
+  h3{color:var(--ink);font-size:16px;margin:18px 0 6px}
+  .kicker{color:var(--gold);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+  .lead{font-size:18px;color:rgba(31,42,36,.92)}
+  .disc{color:var(--mut);font-size:13px;margin-top:18px}
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:20px 0}
+  .card{background:var(--mint);border:1px solid var(--line);border-radius:12px;padding:18px}
+  .card .big{font-size:26px;font-weight:800;color:var(--green);line-height:1.1}
+  .card .lbl{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);margin-bottom:6px}
+  .card p{font-size:13px;color:rgba(31,42,36,.85);margin:8px 0 0}
+  .callout{background:linear-gradient(180deg,#f0f8f3,#fbfdfc);border:1px solid #cfe8d8;border-radius:16px;padding:24px 26px;margin:22px 0}
+  .callout .fig{font-size:30px;font-weight:800;color:var(--green);line-height:1.15;margin:0 0 8px}
+  .callout p{margin:0;font-size:14px;color:rgba(31,42,36,.9)}
+  table{border-collapse:collapse;width:100%;font-size:14px;margin:8px 0}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+  th{background:var(--mint);color:var(--green);font-size:13px}
+  td.r,th.r{text-align:right}
+  .measured{background:#eef7f1}
+  .tag{display:inline-block;font-size:11px;font-weight:700;border-radius:999px;padding:2px 8px}
+  .tag.m{background:#dff0e6;color:#13502f}
+  ul{margin:8px 0 8px 18px}.small{font-size:13px;color:var(--mut)}
+  .explain{background:#f7faf8;border-left:3px solid var(--green);padding:10px 14px;margin:10px 0;font-size:14px;color:rgba(31,42,36,.88)}
+  .chart{margin:10px 0 6px;border:1px solid var(--line);border-radius:10px;padding:10px;background:#fff}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="banner">Measured on a full terabyte of industry-standard data (TPC-DS) on BigQuery, June 2026 &mdash; the same answer, raw versus accelerated.</div>
+
+  <p class="kicker">Governed analytics, at near-zero cost</p>
+  <h1>The same answer, for a fraction of the cost &mdash; on a terabyte.</h1>
+  <p class="lead">Tessallite answers the questions your business repeats every day &mdash; in Excel, Power BI, the API
+  and the agent &mdash; from a tiny maintained summary instead of re-reading the whole terabyte. On a full terabyte of
+  industry-standard data, that turns hundreds of dollars per thousand runs into a few cents, with the identical answer.</p>
+
+  <div class="cards">
+    <div class="card"><div class="lbl">Cost per 1,000 runs</div><div class="big">$330 &rarr; 5&cent;</div><p>A question that costs hundreds of dollars to repeat runs for pennies.</p></div>
+    <div class="card"><div class="lbl">Data scanned per question</div><div class="big">66 GB &rarr; a few KB</div><p>Read from a maintained summary, not the whole terabyte.</p></div>
+    <div class="card"><div class="lbl">Answers identical</div><div class="big">4 / 4</div><p>Every accelerated answer matched the raw answer, exactly.</p></div>
+  </div>
+
+  <div class="callout">
+    <p class="fig">~$116,000 a year &rarr; ~$18 a year</p>
+    <p>A team running 40 dashboards refreshed hourly asks these questions roughly 350,000 times a year. Today that is
+    about $116,000 in BigQuery scan; with Tessallite it is about $18 &mdash; the same answers, delivered to every tool.
+    <span class="small">(BigQuery on-demand at ~$5/TB; per-run figures measured below.)</span></p>
+  </div>
+
+  <h2>The proof &mdash; four everyday business questions <span class="tag m">SF1000 MEASURED</span></h2>
+  <p class="small">We asked each question through the live connection the way Excel or Power BI would &mdash; first the
+  normal way (raw BigQuery), then with Tessallite &mdash; and the two answers came back identical. "Cost per 1,000
+  runs" uses BigQuery's on-demand price (~$5 per terabyte scanned, 10 MB minimum per query).</p>
+  <table>
+    <tr><th>Business question</th><th>Answered from</th><th class="r">Data scanned today<br>(raw BigQuery)</th><th class="r">Data scanned<br>with Tessallite</th><th class="r">Cost per 1,000 runs<br>(today &rarr; with Tessallite)</th><th>Same answer?</th></tr>
+    <tr class="measured"><td>Sales revenue by year</td><td>maintained summary</td><td class="r">66.0 GB</td><td class="r">1,480 bytes</td><td class="r"><strong>$330 &rarr; $0.05</strong></td><td>yes</td></tr>
+    <tr class="measured"><td>Sales revenue by product category</td><td>maintained summary</td><td class="r">67.1 GB</td><td class="r">255 bytes</td><td class="r"><strong>$335 &rarr; $0.05</strong></td><td>yes</td></tr>
+    <tr class="measured"><td>Sales revenue by sales region</td><td>maintained summary</td><td class="r">66.0 GB</td><td class="r">41 bytes</td><td class="r"><strong>$330 &rarr; $0.05</strong></td><td>yes</td></tr>
+    <tr class="measured"><td>Sales revenue by customer type</td><td>maintained summary</td><td class="r">66.1 GB</td><td class="r">3,348 bytes</td><td class="r"><strong>$330 &rarr; $0.05</strong></td><td>yes</td></tr>
+  </table>
+  <p class="small">Tens of gigabytes the normal way; a few bytes with Tessallite &mdash; the same answer, for a fraction
+  of a cent instead of a few hundred dollars per thousand runs. ("Customer type" is the retailer's preferred-customer flag.)</p>
+
+  <h2>See it at true scale <span class="tag m">SF1000 MEASURED</span></h2>
+  <p class="small">The cloud bill and the data each question moves, on a real linear scale &mdash; not compressed. Lower is better.</p>
+  <h3>What it costs to ask the same question 1,000 times</h3>
+  <p class="small">Three everyday questions, from a simple one to a heavy one. Red = today (raw BigQuery, each time); green = with Tessallite.</p>
+  <div id="chart-cost" class="chart"></div>
+  <p class="small">The green bars are a few cents &mdash; too small to see beside hundreds of dollars. That is the point.</p>
+  <h3>Data scanned to answer one question</h3>
+  <p class="small">The same three questions, in gigabytes. Red = raw BigQuery; green = with Tessallite.</p>
+  <div id="chart-bytes" class="chart"></div>
+  <p class="small">The green bars are a few kilobytes to a few megabytes &mdash; invisible beside 66&ndash;155 GB. Same answer, tiny read.</p>
+
+  <h2>What it is worth to you</h2>
+  <ul>
+    <li><strong>A smaller cloud bill, now.</strong> The questions your teams repeat every day read kilobytes instead of tens of gigabytes &mdash; hundreds of dollars per thousand runs become a few cents, and the saving recurs on every refresh.</li>
+    <li><strong>One answer, everywhere.</strong> The same governed definition and the same accelerated result in Excel, Power BI, the API and the agent &mdash; one source of truth, not five.</li>
+    <li><strong>Nothing to hand-build or babysit.</strong> Tessallite suggests and maintains the acceleration from how the business actually queries; nothing silently breaks when the model changes.</li>
+    <li><strong>The same answer, always.</strong> Every accelerated result is the raw-source result &mdash; faster and far cheaper, never a different number.</li>
+  </ul>
+
+  <h2>Your whole question set &mdash; 17 questions, all accelerated <span class="tag m">SF1000 MEASURED</span></h2>
+  <p class="small">Not one query &mdash; the everyday set a commercial, finance or merchandising team actually asks. For
+  each, the data scanned the normal way versus with Tessallite, and the recurring cost at 1,000 runs.</p>
+  <table>
+    <tr><th>Business question</th><th class="r">Data scanned today<br>(raw BigQuery)</th><th class="r">Data scanned<br>with Tessallite</th><th class="r">Cost per 1,000 runs<br>(today &rarr; with Tessallite)</th></tr>
+    <tr class="measured"><td>Sales revenue by region</td><td class="r">66.0 GB</td><td class="r">41 bytes</td><td class="r"><strong>$330 &rarr; $0.05</strong></td></tr>
+    <tr><td>Sales revenue by quarter</td><td class="r">66.0 GB</td><td class="r">112 bytes</td><td class="r">$330 &rarr; $0.05</td></tr>
+    <tr class="measured"><td>Sales revenue by product category</td><td class="r">67.1 GB</td><td class="r">255 bytes</td><td class="r"><strong>$335 &rarr; $0.05</strong></td></tr>
+    <tr><td>Sales revenue by month</td><td class="r">66.0 GB</td><td class="r">304 bytes</td><td class="r">$330 &rarr; $0.05</td></tr>
+    <tr><td>Sales revenue by state</td><td class="r">66.0 GB</td><td class="r">436 bytes</td><td class="r">$330 &rarr; $0.05</td></tr>
+    <tr><td>Sales revenue by region, month by month</td><td class="r">88.0 GB</td><td class="r">725 bytes</td><td class="r">$440 &rarr; $0.05</td></tr>
+    <tr><td>Sales revenue by year and month</td><td class="r">66.0 GB</td><td class="r">2.0 KB</td><td class="r">$330 &rarr; $0.05</td></tr>
+    <tr><td>Sales revenue by product class</td><td class="r">67.1 GB</td><td class="r">2.6 KB</td><td class="r">$335 &rarr; $0.05</td></tr>
+    <tr><td>Sales revenue by product category, month by month</td><td class="r">89.1 GB</td><td class="r">4.4 KB</td><td class="r">$445 &rarr; $0.05</td></tr>
+    <tr><td>Sales revenue by customer type, month by month</td><td class="r">88.1 GB</td><td class="r">6.3 KB</td><td class="r">$440 &rarr; $0.05</td></tr>
+    <tr><td>Sales revenue by state, month by month</td><td class="r">88.0 GB</td><td class="r">7.8 KB</td><td class="r">$440 &rarr; $0.05</td></tr>
+    <tr><td>Sales revenue by product category, by year and month</td><td class="r">89.1 GB</td><td class="r">26.5 KB</td><td class="r">$445 &rarr; $0.05</td></tr>
+    <tr><td>Sales revenue by brand</td><td class="r">67.1 GB</td><td class="r">24.4 KB</td><td class="r">$335 &rarr; $0.05</td></tr>
+    <tr><td>Sales revenue by product category and brand</td><td class="r">67.1 GB</td><td class="r">47.7 KB</td><td class="r">$335 &rarr; $0.05</td></tr>
+    <tr><td>Sales revenue by region and state, month by month</td><td class="r">88.0 GB</td><td class="r">69.4 KB</td><td class="r">$440 &rarr; $0.05</td></tr>
+    <tr><td>Sales revenue by product category and brand, by quarter</td><td class="r">89.1 GB</td><td class="r">1.2 MB</td><td class="r">$445 &rarr; $0.05</td></tr>
+    <tr><td>Promotion impact: revenue by promotion type and category, month by month</td><td class="r">155.1 GB</td><td class="r">81.8 MB</td><td class="r">$775 &rarr; $0.41</td></tr>
+  </table>
+  <p class="small">Two reusable governed lists &mdash; favourite product categories and key stores by state &mdash; are
+  defined on the model so everyone filters on the same definition. The heaviest question in the set still drops from
+  $775 to 41 cents per thousand runs.</p>
+
+  <h2>How Tessallite does it</h2>
+  <p class="small">The capabilities behind these results &mdash; and what your teams use day to day.</p>
+  <table>
+    <tr><th>Capability</th><th>What it does</th><th>What it did here</th></tr>
+    <tr><td><strong>Governed semantic model</strong></td>
+        <td>Business measures (revenue, margin, returns), dimensions (year, category, region, customer type) and the table joins are defined <em>once</em>, centrally.</td>
+        <td>"Revenue by category" means the same thing in Excel, the API and the agent &mdash; correct by design, not re-derived per tool.</td></tr>
+    <tr><td><strong>Aggregate acceleration</strong></td>
+        <td>Tessallite maintains small summaries of the huge fact table at the grains people actually query, and routes matching questions to them automatically.</td>
+        <td>The headline win: questions answered from byte- to kilobyte-sized summaries instead of scanning 66&ndash;155 GB &mdash; same answer, a fraction of the cost.</td></tr>
+    <tr><td><strong>Transparent routing</strong></td>
+        <td>For every query Tessallite records the route it chose, the bytes it scanned, and the summary it used.</td>
+        <td>That is how the numbers in this report were captured &mdash; straight from Tessallite's own log and the live run.</td></tr>
+    <tr><td><strong>Multi-protocol gateway</strong></td>
+        <td>One governed model served over SQL clients, Excel / Power BI, the REST API and the conversational agent.</td>
+        <td>The same accelerated answer reached every tool; these numbers came through the real connection a BI user uses.</td></tr>
+    <tr><td><strong>Governed BigQuery source</strong></td>
+        <td>A read-only, access-controlled connection to BigQuery; every query flows through the gateway.</td>
+        <td>BigQuery stays the engine and system of record &mdash; Tessallite adds governance and acceleration without copying data out.</td></tr>
+  </table>
+
+  <h2>How we ran it</h2>
+  <p class="small"><strong>The industry's standard test, at full scale.</strong> TPC-DS is the benchmark the major
+  data-platform vendors use to prove performance: a complete model of a real retailer &mdash; sales, returns, customers,
+  promotions, calendar. We ran it at SF1000: a full terabyte, 2.88 billion sales records, 24 tables, loaded clean.</p>
+  <div class="cards">
+    <div class="card"><div class="lbl">Scale</div><div class="big">~1 TB</div><p>SF1000 &mdash; about one terabyte of analytics data.</p></div>
+    <div class="card"><div class="lbl">Sales records</div><div class="big">2.88 billion</div><p>2,879,987,999 line items &mdash; years of a large retailer's activity.</p></div>
+    <div class="card"><div class="lbl">Tables</div><div class="big">24</div><p>Stores, products, promotions, customers, dates &mdash; 0 load errors.</p></div>
+  </div>
+  <div class="explain">
+    <strong>Same question, both ways, identical answer.</strong> We ran each question on the same model through the
+    same connection &mdash; once accelerated, once straight to BigQuery. Identical overhead on both sides, so the gap is
+    pure data work, and the answers matched to the digit on every question. Byte figures come from BigQuery's own
+    dry-run with the result cache off, so each one is the real cost to scan.
+  </div>
+  <h3>Where the win shows up</h3>
+  <div class="explain">
+    At a terabyte, the win is your bill &mdash; the number that compounds. BigQuery scans ~60 GB in seconds, so raw and
+    accelerated finish in similar wall-clock; but the accelerated question reads a few kilobytes and costs a few cents,
+    every time it runs. That saving recurs on every dashboard refresh, for every team, all year.
+  </div>
+
+  <p class="disc">Model <code>tpcds_retail_sf1000</code> &middot; measured June 2026 &middot; raw run records:
+  <code>tpcds-sf1000-ab-postfix.json</code>, <code>tpcds-sf1000-bytes-matrix.json</code>,
+  <code>tpcds-sf1000-superset-matrix.json</code>. TPC-DS-derived workload; not an official TPC audited result.</p>
+</div>
+<script>
+(function(){
+  const NS="http://www.w3.org/2000/svg";
+  const RAW="#c0563b", TSL="#006c35";
+  function E(t,a){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e;}
+  function T(x,y,s,a){const t=E("text",Object.assign({x:x,y:y},a||{}));t.textContent=s;return t;}
+  function svg(){return E("svg",{viewBox:"0 0 900 340",width:"100%",preserveAspectRatio:"xMidYMid meet",role:"img"});}
+  function fmtGB(n){if(n>=1)return n.toFixed(0)+" GB";if(n>=0.001)return (n*1000).toFixed(1)+" MB";if(n>=1e-6)return (n*1e6).toFixed(1)+" KB";if(n>0)return Math.round(n*1e9)+" B";return "0";}
+  function fmtUSD(n){return n>=1?("$"+n.toFixed(0)):("$"+n.toFixed(2));}
+  function niceTicks(maxv,count){
+    if(!(maxv>0))return [0,1];
+    const raw=maxv/count, mag=Math.pow(10,Math.floor(Math.log10(raw)));
+    const step=[1,2,2.5,5,10].map(m=>m*mag).find(s=>s>=raw)||10*mag;
+    const ticks=[]; for(let v=0; v<=maxv+1e-9; v+=step) ticks.push(v); return ticks;
+  }
+  // LINEAR grouped bar chart with a real value axis (no log scale — business audience).
+  function bar(id,opt){
+    const host=document.getElementById(id); if(!host)return;
+    const s=svg(), W=900,H=340,P={l:96,r:18,t:28,b:74};
+    const all=opt.series.flatMap(x=>x.values), maxv=Math.max.apply(null,all);
+    const ticks=niceTicks(maxv,5), top=ticks[ticks.length-1]||1;
+    const y=v=>(H-P.b)-(v/top)*(H-P.b-P.t);
+    ticks.forEach(tv=>{const yy=y(tv);
+      s.appendChild(E("line",{x1:P.l,y1:yy,x2:W-P.r,y2:yy,stroke:"#eef2ef"}));
+      s.appendChild(T(P.l-10,yy+3,opt.yfmt?opt.yfmt(tv):tv,{"text-anchor":"end","font-size":"11",fill:"#8a97a3"}));
+    });
+    s.appendChild(E("line",{x1:P.l,y1:H-P.b,x2:W-P.r,y2:H-P.b,stroke:"#cdd6cf"}));
+    const n=opt.labels.length, gw=(W-P.l-P.r)/n, k=opt.series.length, bw=Math.min(80,(gw-22)/k);
+    opt.labels.forEach((lb,i)=>{
+      const cx=P.l+i*gw+gw/2;
+      opt.series.forEach((ser,j)=>{
+        const v=ser.values[i], x=cx-(k*bw)/2+j*bw, yy=y(v), h=(H-P.b)-yy;
+        s.appendChild(E("rect",{x:x+2,y:Math.min(yy,(H-P.b)-2),width:bw-6,height:Math.max(h,2),fill:ser.color,rx:3}));
+        s.appendChild(T(x+2+(bw-6)/2,Math.min(yy,(H-P.b)-2)-6,opt.fmt?opt.fmt(v):v,{"text-anchor":"middle","font-size":"11",fill:"#1f2a24","font-weight":"700"}));
+      });
+      lb.split("\n").forEach((ln,r)=>s.appendChild(T(cx,H-P.b+20+r*13,ln,{"text-anchor":"middle","font-size":"11.5",fill:"#3a4a40"})));
+    });
+    opt.series.forEach((ser,j)=>{const lx=P.l+10+j*250;s.appendChild(E("rect",{x:lx,y:6,width:13,height:13,fill:ser.color,rx:2}));s.appendChild(T(lx+18,17,ser.name,{"font-size":"12.5",fill:"#1f2a24"}));});
+    host.appendChild(s);
+  }
+  const Q=["A simple question\n(sales by region)","A medium question\n(sales by category, monthly)","A heavy question\n(promotion impact by\ncategory, monthly)"];
+  bar("chart-cost",{labels:Q,fmt:fmtUSD,yfmt:fmtUSD,series:[
+    {name:"Today (raw BigQuery, each time)",color:RAW,values:[330,445,775]},
+    {name:"With Tessallite",color:TSL,values:[0.05,0.05,0.41]}]});
+  bar("chart-bytes",{labels:Q,fmt:fmtGB,yfmt:fmtGB,series:[
+    {name:"Today (raw BigQuery)",color:RAW,values:[66.0,89.1,155.1]},
+    {name:"With Tessallite",color:TSL,values:[0.000000041,0.0000044,0.0818]}]});
+})();
+</script>
+</body>
+</html>

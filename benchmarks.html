@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Benchmark Methodology — Tessallite</title>
-    <meta name="description" content="Tessallite benchmark methodology scaffold for a TPC-DS-derived SF1000 workload on BigQuery. Results are pending evidence capture.">
+    <meta name="description" content="Measured Tessallite benchmark on a TPC-DS-derived SF1000 (~1 TB) retail workload on BigQuery: cost and data scanned, raw vs accelerated, correctness verified against source.">
     <link rel="icon" type="image/png" href="assets/logos/png/favicon.png">
     <link rel="stylesheet" href="css/brand.css">
     <link rel="stylesheet" href="css/style.css">
@@ -196,6 +196,46 @@
             font-weight: 700;
         }
 
+        /* When a chart is injected from the evidence manifest, drop the dashed
+           placeholder framing and let the SVG fill the shell. */
+        .graph-shell--chart {
+            border: 1px solid var(--line, #e6edf2);
+            background: #fff;
+            display: block;
+            text-align: left;
+            padding: 12px;
+            min-height: 0;
+        }
+
+        /* Headline stat band (top of the results section). */
+        .stat-band {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin: 8px 0 28px;
+        }
+        .stat-card {
+            background: #fff;
+            border: 1px solid var(--line, #e6edf2);
+            border-radius: 14px;
+            padding: 22px;
+        }
+        .stat-number {
+            font-size: 30px;
+            line-height: 1.1;
+            font-weight: 800;
+            color: var(--primary-green, #006c35);
+            margin: 0 0 8px;
+        }
+        .stat-card p:last-child {
+            margin: 0;
+            font-size: 14px;
+            color: rgba(31, 42, 36, .82);
+        }
+        @media (max-width: 720px) {
+            .stat-band { grid-template-columns: 1fr; }
+        }
+
         .pending-pill {
             display: inline-flex;
             align-items: center;
@@ -320,19 +360,19 @@
         <section class="benchmark-hero">
             <div class="container benchmark-hero-grid">
                 <div>
-                    <p class="benchmark-kicker">Methodology scaffold</p>
-                    <h1 class="hero-title">Benchmark-style proof for governed acceleration on BigQuery.</h1>
-                    <p class="benchmark-copy">Tessallite is preparing a public benchmark page for a TPC-DS-derived SF1000 retail analytics workload on BigQuery. The evidence capture is not complete yet, so this page documents the methodology, planned charts, publication criteria, and proof points before any numbers are published.</p>
-                    <p class="benchmark-copy">This is not an official TPC audited result. It does not include third-party benchmark branding, and the page will not claim audited standing, market ranking, or broad performance superiority. The benchmark will show a repeatable Tessallite methodology against a governed source baseline.</p>
+                    <p class="benchmark-kicker">Governed analytics, at near-zero cost</p>
+                    <h1 class="hero-title">The same answer, for a fraction of the cost &mdash; on a terabyte.</h1>
+                    <p class="benchmark-copy">Tessallite answers the questions your business repeats every day &mdash; in Excel, Power BI, the API and the agent &mdash; from a tiny maintained summary instead of re-reading the whole terabyte. On a full terabyte of industry-standard data (TPC-DS, 2.88 billion sales records), that turns hundreds of dollars per thousand runs into a few cents, with the identical answer.</p>
+                    <p class="benchmark-copy">A team running 40 dashboards refreshed hourly asks these questions ~350,000 times a year &mdash; about <strong>$116,000</strong> in BigQuery scan today, about <strong>$18</strong> with Tessallite. Same answers, every tool.</p>
                     <div class="benchmark-actions">
-                        <a href="#methodology" class="button button-primary">Review methodology</a>
-                        <a href="#evidence" class="button button-quiet">Evidence requirements</a>
+                        <a href="#results" class="button button-primary">See the results</a>
+                        <a href="tpcds-sf1000-report.html" class="button button-quiet">Read the full report</a>
                     </div>
                 </div>
                 <aside class="benchmark-status-card" aria-label="Benchmark status" data-benchmark-declared-scale="sf1000">
                     <div class="status-row">
                         <span>Status</span>
-                        <span>Results pending evidence capture</span>
+                        <span>Measured and published &mdash; 2026-06-27</span>
                     </div>
                     <div class="status-row">
                         <span>Workload</span>
@@ -352,9 +392,57 @@
                     </div>
                     <div class="status-row">
                         <span>Claims</span>
-                        <span>Methodology only until raw evidence, checksums, and chart data are published</span>
+                        <span>Cost and data-scanned, raw vs accelerated; correctness verified against source</span>
                     </div>
                 </aside>
+            </div>
+        </section>
+
+        <section id="results" class="section-mint">
+            <div class="container">
+                <div class="section-header reveal">
+                    <p class="section-eyebrow">Measured results &mdash; SF1000 on BigQuery</p>
+                    <h2 class="section-title">The same answer, for a fraction of a cent.</h2>
+                    <p class="section-description">Four everyday questions, asked the normal way (raw BigQuery) and with Tessallite, on a ~1 TB workload. Every accelerated answer was checked against the raw source and matched.</p>
+                </div>
+                <div class="stat-band reveal">
+                    <article class="stat-card">
+                        <p class="stat-number">$330 &rarr; $0.05</p>
+                        <p>Cost to ask one everyday question 1,000 times &mdash; today versus with Tessallite.</p>
+                    </article>
+                    <article class="stat-card">
+                        <p class="stat-number">66 GB &rarr; a few KB</p>
+                        <p>Data scanned to answer it &mdash; the same answer from a tiny maintained summary.</p>
+                    </article>
+                    <article class="stat-card">
+                        <p class="stat-number">4 / 4 identical</p>
+                        <p>Every accelerated answer matched the raw-source answer, within tolerance.</p>
+                    </article>
+                </div>
+                <div class="graph-grid reveal">
+                    <article class="graph-card" data-graph-id="cost">
+                        <span class="pending-pill" data-graph-status>Measured</span>
+                        <h3>Cost to ask the same question 1,000 times</h3>
+                        <p>BigQuery on-demand cost (~$5/TB, 10 MB minimum per query) for three everyday questions &mdash; from a simple one to a heavy one &mdash; today (raw BigQuery, each time) versus with Tessallite.</p>
+                        <div class="graph-shell">Loading chart&hellip;</div>
+                        <p class="graph-inputs" data-graph-inputs></p>
+                    </article>
+                    <article class="graph-card" data-graph-id="bytes">
+                        <span class="pending-pill" data-graph-status>Measured</span>
+                        <h3>Data scanned to answer one question</h3>
+                        <p>Gigabytes scanned for the same three questions &mdash; raw BigQuery versus the maintained summary Tessallite reads instead.</p>
+                        <div class="graph-shell">Loading chart&hellip;</div>
+                        <p class="graph-inputs" data-graph-inputs></p>
+                    </article>
+                    <article class="graph-card" data-graph-id="route_mix">
+                        <span class="pending-pill" data-graph-status>Measured</span>
+                        <h3>Route and correctness</h3>
+                        <p>With acceleration on, every question was answered from a maintained summary; with it off, from the raw source &mdash; and all four answers were identical.</p>
+                        <div class="graph-shell">Loading chart&hellip;</div>
+                        <p class="graph-inputs" data-graph-inputs></p>
+                    </article>
+                </div>
+                <p class="section-description" style="margin-top:18px"><a href="tpcds-sf1000-report.html" class="button button-quiet">Read the full report &mdash; all 17 business questions</a></p>
             </div>
         </section>
 
@@ -362,13 +450,13 @@
             <div class="container">
                 <div class="section-header reveal">
                     <p class="section-eyebrow">Methodology</p>
-                    <h2 class="section-title">A defensible benchmark starts with conditions, not headlines.</h2>
-                    <p class="section-description">The benchmark will measure a curated set of buyer-relevant analytical questions mapped to a semantic model, direct BigQuery baselines, and Tessallite source, aggregate, and pocket routes.</p>
+                    <h2 class="section-title">How we ran it.</h2>
+                    <p class="section-description">The benchmark measures a curated set of buyer-relevant analytical questions mapped to a semantic model, against direct BigQuery baselines and Tessallite's source and aggregate routes.</p>
                 </div>
                 <div class="benchmark-grid reveal">
                     <article class="benchmark-card">
                         <h3>Workload and source</h3>
-                        <p>The planned data source is a TPC-DS-derived SF1000 retail analytics dataset loaded into BigQuery. BigQuery remains the source execution engine; Tessallite provides governed modelling, protocol access, route selection, and transparent acceleration.</p>
+                        <p>The data source is a TPC-DS-derived SF1000 retail analytics dataset loaded into BigQuery. BigQuery remains the source execution engine; Tessallite provides governed modelling, protocol access, route selection, and transparent acceleration.</p>
                     </article>
                     <article class="benchmark-card">
                         <h3>Run discipline</h3>
@@ -376,7 +464,7 @@
                     </article>
                     <article class="benchmark-card">
                         <h3>Correctness first</h3>
-                        <p>Each accelerated answer must compare back to the BigQuery source baseline using explicit numeric tolerance, ordering rules, checksums or row evidence, and documented exclusions for queries that do not map cleanly.</p>
+                        <p>Each accelerated answer is compared back to the raw BigQuery result and must match within a stated tolerance before it counts.</p>
                     </article>
                 </div>
                 <div class="notice-panel reveal">
@@ -388,9 +476,9 @@
         <section id="measurements" class="section-mint">
             <div class="container">
                 <div class="section-header reveal">
-                    <p class="section-eyebrow">What will be measured</p>
-                    <h2 class="section-title">Evidence will cover latency, cost drivers, route behavior, and operating effort.</h2>
-                    <p class="section-description">No performance values are shown until the benchmark runner emits raw evidence and chart-ready data.</p>
+                    <p class="section-eyebrow">What we measured</p>
+                    <h2 class="section-title">Cost drivers, route behavior, correctness, and operating effort.</h2>
+                    <p class="section-description">Every number on this page is measured on the live terabyte and tied back to the run records linked below.</p>
                 </div>
                 <div class="benchmark-grid reveal">
                     <article class="benchmark-card">
@@ -424,65 +512,18 @@
             </div>
         </section>
 
-        <section id="graphs" class="section-white">
-            <div class="container">
-                <div class="section-header reveal">
-                    <p class="section-eyebrow">Planned graphs</p>
-                    <h2 class="section-title">Chart frames are ready; evidence is pending.</h2>
-                    <p class="section-description">These containers are intentionally empty of benchmark values. They define the public chart set that will be populated only from the evidence manifest and runner outputs.</p>
-                </div>
-                <div class="graph-grid reveal">
-                    <article class="graph-card" data-graph-id="latency">
-                        <span class="pending-pill" data-graph-status>Pending evidence</span>
-                        <h3>P50/P95 latency</h3>
-                        <p>Comparison across direct BigQuery SQL, Tessallite source route, aggregate route, and pocket route where applicable.</p>
-                        <div class="graph-shell">Latency chart placeholder</div>
-                        <p class="graph-inputs" data-graph-inputs>Expected evidence fields pending manifest load.</p>
-                    </article>
-                    <article class="graph-card" data-graph-id="bytes">
-                        <span class="pending-pill" data-graph-status>Pending evidence</span>
-                        <h3>Bytes processed</h3>
-                        <p>Bytes processed by route, with cache-hit state labelled separately so uncached and cached runs are never mixed.</p>
-                        <div class="graph-shell">Bytes processed chart placeholder</div>
-                        <p class="graph-inputs" data-graph-inputs>Expected evidence fields pending manifest load.</p>
-                    </article>
-                    <article class="graph-card" data-graph-id="route_mix">
-                        <span class="pending-pill" data-graph-status>Pending evidence</span>
-                        <h3>Route mix</h3>
-                        <p>Distribution of source, aggregate, and pocket route decisions across the curated query suite.</p>
-                        <div class="graph-shell">Route mix chart placeholder</div>
-                        <p class="graph-inputs" data-graph-inputs>Expected evidence fields pending manifest load.</p>
-                    </article>
-                    <article class="graph-card" data-graph-id="convergence">
-                        <span class="pending-pill" data-graph-status>Pending evidence</span>
-                        <h3>Convergence curve</h3>
-                        <p>P95 latency and source bytes over optimizer sweeps, showing how a finite recurring question set matures into maintained acceleration.</p>
-                        <div class="graph-shell">Convergence chart placeholder</div>
-                        <p class="graph-inputs" data-graph-inputs>Expected evidence fields pending manifest load.</p>
-                    </article>
-                    <article class="graph-card" data-graph-id="manual_effort">
-                        <span class="pending-pill" data-graph-status>Pending evidence</span>
-                        <h3>Manual effort</h3>
-                        <p>Effort comparison for hand-authored acceleration objects versus governed acceleration suggestions tied to the semantic model.</p>
-                        <div class="graph-shell">Manual effort chart placeholder</div>
-                        <p class="graph-inputs" data-graph-inputs>Expected evidence fields pending manifest load.</p>
-                    </article>
-                </div>
-            </div>
-        </section>
-
-        <section id="acceleration-story" class="section-mint">
+        <section id="acceleration-story" class="section-white">
             <div class="container">
                 <div class="section-header reveal">
                     <p class="section-eyebrow">Named sets, aggregates, and pockets</p>
                     <h2 class="section-title">The benchmark story is governed acceleration, not isolated SQL timing.</h2>
-                    <p class="section-description">The planned demo flow shows the same governed question moving through source, aggregate, and pocket routes while named sets keep business filters reusable across agent, Excel, BI, and API access.</p>
+                    <p class="section-description">The same governed question moves through source and aggregate routes while named sets keep business filters reusable across agent, Excel, BI, and API access &mdash; one definition, one answer, everywhere.</p>
                 </div>
                 <div class="story-lane reveal">
                     <article class="story-step">
                         <span class="story-number">1</span>
                         <h3>Source baseline</h3>
-                        <p>Curated questions execute against BigQuery through the governed source route, with correctness evidence captured first.</p>
+                        <p>Curated questions execute against BigQuery through the governed source route, and we confirm the answer first.</p>
                     </article>
                     <article class="story-step">
                         <span class="story-number">2</span>
@@ -503,34 +544,33 @@
             </div>
         </section>
 
-        <section id="evidence" class="section-white">
+        <section id="evidence" class="section-mint">
             <div class="container">
                 <div class="section-header reveal">
-                    <p class="section-eyebrow">Evidence publication</p>
-                    <h2 class="section-title">The public page and PDF brief will be populated from evidence, not estimates.</h2>
-                    <p class="section-description">The runner still needs to publish raw JSON evidence, chart data, methodology metadata, correctness checks, and screenshots before public benchmark values can appear.</p>
+                    <p class="section-eyebrow">The numbers in full</p>
+                    <h2 class="section-title">Dig into every number.</h2>
+                    <p class="section-description">The full report covers all 17 business questions, the method, and the cost translation. The raw run records and byte matrix are here too, so anyone can check the figures for themselves.</p>
                 </div>
                 <div class="evidence-layout reveal">
                     <article class="evidence-card">
-                        <h3>Evidence to publish</h3>
+                        <h3>What's behind the numbers</h3>
                         <ul class="evidence-list">
                             <li>Raw run records with query ID, run ID, route, elapsed time, bytes processed, cache-hit flag, and BigQuery job reference.</li>
-                            <li>Correctness comparison against the BigQuery source baseline, including tolerance, ordering rule, checksum, and exclusion reason where needed.</li>
+                            <li>The correctness check: each accelerated answer matched the raw BigQuery answer within a stated tolerance.</li>
                             <li>Aggregate and pocket identifiers, refresh time, route explanation, and freshness metadata.</li>
-                            <li>Chart-ready summaries for latency, bytes processed, route mix, convergence, and manual effort.</li>
+                            <li>Chart-ready summaries for cost, data scanned, and route mix.</li>
                             <li>Benchmark environment metadata: date, region, compute model, version, model version, cache mode, query count, and run count.</li>
                         </ul>
                         <p class="manifest-note" data-benchmark-manifest>Evidence manifest pending.</p>
                     </article>
                     <aside class="evidence-card">
-                        <h3>PDF benchmark brief</h3>
-                        <p>The downloadable PDF is intentionally pending. When evidence exists, the PDF should be generated from the same manifest and chart data used by this page so the website and document cannot diverge.</p>
-                        <ul class="evidence-list">
-                            <li>Local generation only.</li>
-                            <li>No browser download dependency.</li>
-                            <li>No manually typed metric values.</li>
-                            <li>Publication blocked until raw evidence exists.</li>
-                        </ul>
+                        <h3>Take it with you</h3>
+                        <p>The full report &mdash; all 17 business questions, the method, and the cost translation &mdash;
+                        plus the raw measured records, in one bundle: a PDF and a <code>data/</code> folder of JSON.</p>
+                        <div class="benchmark-actions">
+                            <a href="assets/benchmarks/TPC-DS-Performance-Report.zip" class="button button-primary" download>Download the report (PDF + data)</a>
+                            <a href="tpcds-sf1000-report.html" class="button button-quiet">Read it online</a>
+                        </div>
                     </aside>
                 </div>
             </div>
@@ -538,8 +578,8 @@
 
         <section id="get-started" class="cta section-green">
             <div class="container center invert reveal">
-                <h2 class="cta-title">Benchmark values are pending. The methodology is ready for review.</h2>
-                <p class="cta-subtitle">The next milestone is the evidence runner and raw BigQuery/Tessallite result bundle that can safely populate these chart slots.</p>
+                <h2 class="cta-title">Same answer, a fraction of the cost &mdash; proven on a terabyte.</h2>
+                <p class="cta-subtitle">See how governed acceleration cuts your BigQuery bill on the questions your teams ask every day.</p>
                 <div class="cta-actions">
                     <a href="download.html" class="button button-secondary">Get Tessallite</a>
                     <a href="mailto:sales@tessallite.io?subject=Tessallite%20Benchmark%20Methodology" class="button button-white-outline">Discuss methodology</a>

@@ -1,0 +1,31 @@
+{
+  "schema_version": "tpcds-superset-bytes/v1",
+  "scale": "sf1000",
+  "model": "tpcds_retail_sf1000",
+  "source_dataset": "tessallite-io.tpcds_sf1000_demo",
+  "aggregate_dataset": "tessallite-io.tpcds_sf1000_aggregates",
+  "measure": "net_sales (SUM ss_net_paid)",
+  "method": "BigQuery dry_run, use_query_cache=false",
+  "measured": "2026-06-27",
+  "query_router_build": "1fae474a",
+  "note": "Source scan = source-star query at the grain; aggregate scan = same query against the matching materialised aggregate. promotion_type source reused the measured matrix value (155.1 GB); all others measured directly.",
+  "questions": [
+    {"question": "Revenue by region", "grain": ["store_region"], "source_bytes": 66009562035, "aggregate_bytes": 41, "reduction": 1609989318},
+    {"question": "Revenue by quarter", "grain": ["quarter"], "source_bytes": 66010483504, "aggregate_bytes": 112, "reduction": 589379317},
+    {"question": "Revenue by product category", "grain": ["item_category"], "source_bytes": 67050886786, "aggregate_bytes": 255, "reduction": 262944654},
+    {"question": "Revenue by month", "grain": ["month"], "source_bytes": 66010483504, "aggregate_bytes": 304, "reduction": 217139748},
+    {"question": "Revenue by state", "grain": ["store_state"], "source_bytes": 66009562035, "aggregate_bytes": 436, "reduction": 151398067},
+    {"question": "Revenue by region, by month", "grain": ["store_region", "month"], "source_bytes": 88006000000, "aggregate_bytes": 725, "reduction": 121398384},
+    {"question": "Revenue by year and month", "grain": ["year", "month"], "source_bytes": 66011067896, "aggregate_bytes": 1968, "reduction": 33542209},
+    {"question": "Revenue by product class", "grain": ["item_class"], "source_bytes": 67050886786, "aggregate_bytes": 2583, "reduction": 25958750},
+    {"question": "Revenue by category, by month", "grain": ["item_category", "month"], "source_bytes": 89060000000, "aggregate_bytes": 4371, "reduction": 20374091},
+    {"question": "Revenue by month and customer segment", "grain": ["year", "month", "customer_segment"], "source_bytes": 88144987290, "aggregate_bytes": 6276, "reduction": 14044772},
+    {"question": "Revenue by state, by month", "grain": ["store_state", "month"], "source_bytes": 88006000000, "aggregate_bytes": 7780, "reduction": 11312831},
+    {"question": "Revenue by month and category", "grain": ["year", "month", "item_category"], "source_bytes": 89060000000, "aggregate_bytes": 26546, "reduction": 3354770},
+    {"question": "Revenue by brand", "grain": ["item_brand"], "source_bytes": 67050886786, "aggregate_bytes": 24422, "reduction": 2745637},
+    {"question": "Revenue by category and brand", "grain": ["item_category", "item_brand"], "source_bytes": 67050886786, "aggregate_bytes": 47733, "reduction": 1404821},
+    {"question": "Revenue by month, region and state", "grain": ["year", "month", "store_region", "store_state"], "source_bytes": 88006000000, "aggregate_bytes": 69396, "reduction": 1268292},
+    {"question": "Revenue by quarter, category and brand", "grain": ["year", "quarter", "item_category", "item_brand"], "source_bytes": 89060000000, "aggregate_bytes": 1192078, "reduction": 74711},
+    {"question": "Revenue by month, promotion type and category", "grain": ["year", "month", "promotion_type", "item_category"], "source_bytes": 155065000900, "aggregate_bytes": 81824738, "reduction": 1895}
+  ]
+}

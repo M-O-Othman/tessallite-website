@@ -3,8 +3,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Product Screens — Tessallite</title>
-    <meta name="description" content="See real Tessallite product screens for the modeller canvas, query routing, governed endpoints, and Excel or BI workflows.">
+    <title>Product Tour — Tessallite</title>
+    <meta name="description" content="Take a guided tour of Tessallite: the modeller canvas, conversational agent, query routing, governed endpoints, and Excel or BI workflows.">
     <link rel="icon" type="image/png" href="assets/logos/png/favicon.png">
     <link rel="stylesheet" href="css/brand.css">
     <link rel="stylesheet" href="css/style.css">
@@ -303,7 +303,7 @@
                 </button>
                 <ul class="nav-list" id="site-nav-list">
                     <li><a href="index.html" class="nav-link">Product</a></li>
-                    <li><span class="nav-link nav-current" aria-current="page">Screens</span></li>
+                    <li><span class="nav-link nav-current" aria-current="page">Product Tour</span></li>
                     <li><a href="benchmarks.html" class="nav-link">Benchmarks</a></li>
                     <li><a href="pricing.html" class="nav-link">Pricing</a></li>
                     <li><a href="download.html" class="nav-link">Download</a></li>
@@ -319,11 +319,11 @@
         <section class="screens-hero">
             <div class="container screens-hero-grid">
                 <div>
-                    <p class="screen-kicker">Product screens</p>
+                    <p class="screen-kicker">Product tour</p>
                     <h1 class="hero-title">The same governed model, used by modellers, analysts, and Excel users.</h1>
-                    <p class="screens-copy">These are real Tessallite screens from the help library, product playbook, and UAT evidence. They show how the platform moves from model definition to governed query execution and familiar business tools.</p>
+                    <p class="screens-copy">These are real Tessallite screenshots from the product, help library, and UAT runs. They show how the platform moves from model definition to governed query execution and familiar business tools.</p>
                     <div class="screens-actions">
-                        <a href="#modeller" class="button button-primary">View screens</a>
+                        <a href="#modeller" class="button button-primary">Start the tour</a>
                         <a href="docs/" class="button button-quiet">Open docs</a>
                     </div>
                 </div>
@@ -335,6 +335,10 @@
                     <div class="summary-row">
                         <span>Query routing</span>
                         <span>Run SQL or pivot-style queries and see parse, bind, route, rewrite, and result evidence.</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Agent</span>
+                        <span>Ask in business language and get a governed answer with chart, data, and route.</span>
                     </div>
                     <div class="summary-row">
                         <span>BI clients</span>
@@ -349,14 +353,14 @@
                 <div class="section-header">
                     <p class="section-eyebrow">Modeller workspace</p>
                     <h2 class="section-title">Model Builder turns source tables into a governed business model.</h2>
-                    <p class="section-description">The modeller screen is where a project owner defines the model before dashboards, SQL clients, Excel, and the agent can use it.</p>
+                    <p class="section-description">The modeller workspace is where a project owner defines the model before dashboards, SQL clients, Excel, and the agent can use it.</p>
                 </div>
                 <div class="screen-block">
                     <figure class="screen-media">
                         <img src="assets/screenshots/product-model-builder.jpg" alt="Tessallite Model Builder canvas with source tables, joins, dimensions, measures, and deployment status" loading="eager" decoding="async">
                     </figure>
                     <div class="screen-body">
-                        <h2>Modeller screen</h2>
+                        <h2>Modeller</h2>
                         <p>The canvas shows the fact table in context with related dimensions, joins, model status, deployment state, and validation feedback. The modeller can move between the canvas, query panel, model health, and usage analytics without leaving the model.</p>
                         <ul class="screen-points">
                             <li>Tables and joins show how the business model maps to source data.</li>
@@ -374,7 +378,7 @@
                 <div class="screen-block reverse">
                     <div class="screen-body">
                         <p class="section-eyebrow">Query execution</p>
-                        <h2>Query routing screen</h2>
+                        <h2>Query routing</h2>
                         <p>The query screen shows the path a question takes through Tessallite: parse, semantic binding, route selection, rewrite, execution, and result review. The example shows an aggregate route with generated SQL and returned data.</p>
                         <ul class="screen-points">
                             <li>Validation and dry-run controls let users check a query before execution.</li>
@@ -390,7 +394,37 @@
             </div>
         </section>
 
-        <section id="excel" class="section-white">
+        <section id="agent" class="section-white">
+            <div class="container">
+                <div class="section-header">
+                    <p class="section-eyebrow">Conversational agent</p>
+                    <h2 class="section-title">Ask in plain business language and get a governed, traceable answer.</h2>
+                    <p class="section-description">The agent answers from the approved model context &mdash; the same measures, security, and definitions every other tool uses &mdash; and shows its working, so business users self-serve without leaving governance behind.</p>
+                </div>
+                <div class="screen-block">
+                    <div class="excel-grid">
+                        <figure class="screen-media">
+                            <img src="assets/screenshots/agent-uat-fee-distribution.png" alt="Tessallite conversational agent answering 'create a pie chart of fee amount by payment method' with a donut chart, a data table, and the semantic query behind it" loading="lazy" decoding="async">
+                        </figure>
+                        <figure class="screen-media">
+                            <img src="assets/screenshots/agent-uat-payment-method.png" alt="Tessallite conversational agent answering a transaction-amount-by-payment-method question with a narrative summary and a bar chart" loading="lazy" decoding="async">
+                        </figure>
+                    </div>
+                    <div class="screen-body">
+                        <h2>Conversational agent</h2>
+                        <p>A business user asks a question in natural language; the agent resolves it against the deployed model, runs it through the same governed routing as every other client, and returns a written answer, a chart, the underlying rows, and the semantic query behind it.</p>
+                        <ul class="screen-points">
+                            <li>Answers use approved measures, dimensions, personas, and row security &mdash; not ad-hoc SQL.</li>
+                            <li>Each answer exposes the chart, the data table, and the semantic query so the number can be trusted.</li>
+                            <li>The same model powers the agent, Excel, BI, SQL clients, and the API &mdash; one definition, one answer.</li>
+                        </ul>
+                        <p class="evidence-note">Evidence shown: real answers captured by the conversational-agent UAT harness &mdash; a fee-amount donut and a transaction-by-payment-method bar chart, each with its narrative answer, data rows, and semantic query.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="excel" class="section-mint">
             <div class="container">
                 <div class="section-header">
                     <p class="section-eyebrow">Excel, Power BI, and SQL clients</p>
@@ -410,7 +444,7 @@
                         </figure>
                     </div>
                     <div class="screen-body">
-                        <h2>Excel screen</h2>
+                        <h2>Excel and BI</h2>
                         <p>The BI connection workflow uses Tessallite endpoints so a workbook, dashboard, or SQL client can browse governed models and run queries without copying metric logic into each tool.</p>
                         <ul class="screen-points">
                             <li>Native PivotTables connect through the XMLA endpoint for slicers, timelines, subtotals, and drill-through.</li>
@@ -423,12 +457,12 @@
             </div>
         </section>
 
-        <section id="operations" class="section-mint">
+        <section id="operations" class="section-white">
             <div class="container">
                 <div class="section-header">
                     <p class="section-eyebrow">Operations and connectivity</p>
-                    <h2 class="section-title">The supporting screens show how models are exposed, checked, and accelerated.</h2>
-                    <p class="section-description">These screens are useful during evaluation because they show the operational proof behind the model: endpoints, health status, aggregate acceleration, and direct SQL client access.</p>
+                    <h2 class="section-title">The supporting views show how models are exposed, checked, and accelerated.</h2>
+                    <p class="section-description">These views are useful during evaluation because they show the operational proof behind the model: endpoints, health status, aggregate acceleration, and direct SQL client access.</p>
                 </div>
                 <div class="screen-gallery-grid">
                     <figure class="mini-screen-card">
@@ -451,10 +485,10 @@
             </div>
         </section>
 
-        <section class="section-white">
+        <section class="section-mint">
             <div class="container">
                 <div class="section-header">
-                    <p class="section-eyebrow">How the screens fit together</p>
+                    <p class="section-eyebrow">How the views fit together</p>
                     <h2 class="section-title">One model surface, many user workflows.</h2>
                 </div>
                 <div class="workflow-grid">
@@ -505,7 +539,7 @@
                 <h4>Product</h4>
                 <ul>
                     <li><a href="index.html">Product overview</a></li>
-                    <li><a href="screens.html">Product screens</a></li>
+                    <li><a href="screens.html">Product Tour</a></li>
                     <li><a href="download.html#security">Security &amp; verification</a></li>
                 </ul>
             </div>

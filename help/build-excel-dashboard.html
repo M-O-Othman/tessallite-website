@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Build a Live Dashboard in Excel — Step by Step — Tessallite</title>
+    <meta name="description" content="A friendly, step-by-step guide to building a live, governed dashboard in Excel on the Tessallite TPC-DS model over XMLA — connection, PivotTables, CUBE formulas, charts, and formatting.">
+    <link rel="icon" type="image/png" href="../assets/logos/png/favicon.png">
+    <link rel="stylesheet" href="../css/brand.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .guide-hero { padding: 72px 0 56px; background: linear-gradient(180deg, var(--white) 0%, var(--mint) 100%); border-bottom: 1px solid var(--slate-border); }
+        .eyebrow { color: var(--accent-gold); font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 12px; }
+        .guide-copy { max-width: 820px; color: rgba(51,51,51,.88); font-size: 19px; line-height: 1.65; }
+        .doc { max-width: 860px; }
+        .doc h2 { color: var(--primary-green); font-size: 24px; margin: 48px 0 6px; }
+        .doc h3 { color: var(--primary-green); font-size: 18px; margin: 30px 0 6px; }
+        .doc p, .doc li { color: rgba(51,51,51,.88); font-size: 16px; line-height: 1.7; }
+        .doc ul, .doc ol { padding-left: 22px; }
+        .doc li { margin: 6px 0; }
+        .stepnum { display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; border-radius:50%; background:var(--primary-green); color:#fff; font-weight:800; font-size:15px; margin-right:10px; vertical-align:middle; }
+        .shot { margin: 18px 0; border: 1px solid var(--slate-border); border-radius: 12px; overflow: hidden; box-shadow: 0 14px 32px rgba(0,0,0,.07); }
+        .shot img { display:block; width:100%; }
+        .shot figcaption { padding: 12px 16px; font-size: 14px; color: rgba(51,51,51,.78); background: var(--mint); border-top: 1px solid var(--slate-border); }
+        .tip { background:#f3f9f5; border-left:4px solid var(--primary-green); border-radius:8px; padding:12px 16px; margin:16px 0; font-size:15px; }
+        .tip b { color: var(--primary-green); }
+        .warn { background:#fff8ec; border-left:4px solid var(--accent-gold); border-radius:8px; padding:12px 16px; margin:16px 0; font-size:15px; }
+        .kid { background:#fff; border:1px dashed var(--slate-border); border-radius:10px; padding:12px 16px; margin:14px 0; font-size:15px; color:rgba(51,51,51,.82); }
+        .kid b { color: var(--primary-green); }
+        code, .code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 14px; }
+        .code { display:block; background:#1f2a24; color:#e8f3ec; border-radius:10px; padding:14px 16px; margin:12px 0; overflow:auto; white-space:pre; line-height:1.55; }
+        .ftab { width:100%; border-collapse:collapse; font-size:14px; margin:12px 0; }
+        .ftab th, .ftab td { border:1px solid var(--slate-border); padding:8px 10px; text-align:left; }
+        .ftab th { background: var(--mint); color: var(--primary-green); }
+        .toc { background: var(--white); border:1px solid var(--slate-border); border-radius:12px; padding:18px 22px; margin: 8px 0 8px; }
+        .toc a { color: var(--primary-green); text-decoration:none; }
+        .toc a:hover { text-decoration:underline; }
+        .dlrow { display:flex; flex-wrap:wrap; gap:12px; margin:18px 0; }
+        .dlrow a { display:inline-block; font-weight:700; text-decoration:none; border-radius:10px; padding:12px 20px; }
+        .dlrow .pri { background:var(--primary-green); color:#fff; }
+        .dlrow .gho { background:#fff; color:var(--primary-green); border:1px solid var(--primary-green); }
+        /* layout wireframe */
+        .wire { background:#fbfdfc; border:1px solid var(--slate-border); border-radius:12px; padding:14px; margin:12px 0 6px; }
+        .wgrid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+        .wb { border:1px solid var(--slate-border); border-radius:8px; padding:9px 10px; font-size:12px; font-weight:700; color:var(--primary-green); background:var(--white); min-height:44px; }
+        .wb span { display:block; font-weight:600; color:#5b6b7b; font-size:11px; font-family:ui-monospace,Menlo,Consolas,monospace; margin-top:4px; }
+        .wb.title { grid-column:1/5; background:var(--primary-green); color:#fff; text-align:center; }
+        .wb.title span { color:#dcefe3; }
+        .wb.kpi { text-align:center; background:var(--mint); }
+        .wb.chart { grid-column:span 2; background:#eef7f1; min-height:74px; }
+        .wcap { font-size:13px; color:rgba(51,51,51,.72); margin:8px 2px 0; }
+        @media (max-width:640px){ .wb.chart{grid-column:span 2} .wgrid{grid-template-columns:repeat(2,1fr)} .wb.title{grid-column:1/3} }
+    </style>
+</head>
+<body>
+    <header class="header"><div class="container header-container"><a href="../index.html" class="logo"><img src="../assets/logos/png/logo-primary-horizontal.png" alt="Tessallite" height="80"></a><nav class="nav" aria-label="Primary navigation"><button class="nav-toggle" aria-label="Toggle navigation" aria-controls="site-nav-list"><span class="hamburger"></span></button><ul class="nav-list" id="site-nav-list"><li><a href="../index.html" class="nav-link">Product</a></li><li><a href="../screens.html" class="nav-link">Screens</a></li><li><a href="../pricing.html" class="nav-link">Pricing</a></li><li><a href="../download.html" class="nav-link">Download</a></li><li><a href="install-local.html" class="nav-link">Install guide</a></li><li><a href="../docs/" class="nav-link">Docs</a></li><li><a href="../register.html" class="nav-link">Get a licence</a></li></ul></nav></div></header>
+
+    <main>
+    <section class="guide-hero"><div class="container">
+        <p class="eyebrow">Step-by-step guide</p>
+        <h1 class="hero-title">Build a live dashboard in Excel.</h1>
+        <p class="guide-copy">We'll build the exact Retail Analytics dashboard you can download from the benchmark page &mdash;
+        connected live to a Tessallite model, with KPI cards, charts, and clean formatting. No coding, no SQL. If you can
+        drag a box and type a few words, you can do this. Plan about 30&ndash;45 minutes the first time.</p>
+    </div></section>
+
+    <section class="section-white"><div class="container doc">
+
+        <div class="kid"><b>First, the big picture (in plain words).</b> A <b>model</b> in Tessallite is like a ready-made
+        menu of measurements (&ldquo;net sales&rdquo;, &ldquo;orders&rdquo;) and ways to slice them (&ldquo;by month&rdquo;, &ldquo;by category&rdquo;).
+        Excel can read that menu directly. You drag the things you want onto the page, and Excel asks the model for the
+        numbers. You never touch the raw database &mdash; the model does the hard part and keeps every number meaning the same.</p>
+        </div>
+
+        <div class="toc">
+            <b>What's in this guide</b>
+            <ol>
+                <li><a href="#prereq">What you need before you start</a></li>
+                <li><a href="#connect">Connect Excel to your model</a></li>
+                <li><a href="#map">The layout map &amp; exact cell ranges</a></li>
+                <li><a href="#pivots">Build the data tables (PivotTables)</a></li>
+                <li><a href="#kpis">Build the KPI cards (the big numbers)</a></li>
+                <li><a href="#charts">Add the charts</a></li>
+                <li><a href="#format">Lay out and format the dashboard</a></li>
+                <li><a href="#save">Save and refresh</a></li>
+                <li><a href="#trouble">If something goes wrong</a></li>
+            </ol>
+        </div>
+
+        <!-- 1 -->
+        <h2 id="prereq"><span class="stepnum">1</span>What you need before you start</h2>
+        <p>Three things, and then your login:</p>
+        <ul>
+            <li><b>A published, active model.</b> In Tessallite, open your project and make sure the <b>Model enabled</b>
+            switch is green. That &ldquo;turns on&rdquo; the model so Excel can see it.</li>
+            <li><b>A data source connected to it.</b> The model needs to be plugged into where the real data lives
+            (here it's BigQuery). You can see this in the <b>Connections</b> panel.</li>
+            <li><b>Excel on your computer</b> (Windows or Mac desktop). The live connection we use (called <b>XMLA</b>)
+            needs desktop Excel &mdash; the browser version can't do it.</li>
+            <li><b>Your Tessallite email and password</b> (Excel will ask for them once).</li>
+        </ul>
+        <p>Throughout this guide we use the example model <b>TPC-DS Retail Analytics</b> (the &ldquo;SF1&rdquo; size) &mdash;
+        the same model behind the public benchmark. Its cube is named <code>tpcds_retail</code>.</p>
+        <figure class="shot"><img src="../assets/screenshots/Goodscreens/conn.png" alt="Tessallite model canvas with Model enabled switch on and a connected BigQuery data source">
+            <figcaption>The example model is <b>enabled</b> (top toggle) and has a data source (<b>TPC-DS BigQuery</b>) in the Connections panel. That's the &ldquo;ready to use&rdquo; state you need.</figcaption></figure>
+        <div class="kid"><b>Why this matters:</b> if the model is switched off, or has no data source, Excel will connect but
+        see nothing &mdash; like opening a fridge that's unplugged. Green switch + a data source = good to go.</div>
+
+        <!-- 2 -->
+        <h2 id="connect"><span class="stepnum">2</span>Connect Excel to your model</h2>
+        <p>First, get the connection details from Tessallite. Open your project and click the <b>Endpoints</b> panel,
+        then open <b>XMLA / DAX</b> and pick the <b>Excel</b> tab. Tessallite shows you the exact steps and the address to use.</p>
+        <figure class="shot"><img src="../assets/screenshots/Goodscreens/endpoints.png" alt="Tessallite Endpoints panel showing the XMLA connection string and the Excel connection steps">
+            <figcaption>The <b>Endpoints &rarr; XMLA / DAX &rarr; Excel</b> tab gives you the server address, the catalog (your tenant), and the model/cube name. Keep this open while you work in Excel.</figcaption></figure>
+        <p>Now in Excel, follow these steps:</p>
+        <ol>
+            <li>Go to <b>Data &rarr; Get Data &rarr; From Database &rarr; From Analysis Services</b>.</li>
+            <li><b>Server name:</b> paste the XMLA address from the Endpoints panel
+            (for the demo it is <code>https://sql.cloud.tessallite.io:8080/api/v1/xmla/&lt;your-tenant&gt;</code>). Click <b>Next</b>.</li>
+            <li><b>Log on credentials:</b> choose &ldquo;Use the following user name and password&rdquo;, then type your
+            Tessallite <b>email</b> and <b>password</b>. Click <b>Next</b>.</li>
+            <li><b>Select the database (catalog):</b> pick your tenant (the demo is <code>acme-demo</code>).</li>
+            <li><b>Select the cube:</b> tick <b>Connect to a specific cube</b> and choose <code>tpcds_retail</code>. Click <b>Next</b>, then <b>Finish</b>.</li>
+        </ol>
+        <figure class="shot"><img src="../assets/screenshots/Goodscreens/xlma.png" alt="Excel Data Connection Wizard selecting the tpcds_retail database and cube">
+            <figcaption>Step 4&ndash;5: pick your catalog, tick &ldquo;Connect to a specific cube&rdquo;, and select <code>tpcds_retail</code>.</figcaption></figure>
+        <p>Excel then asks how to drop the data in. Choose <b>PivotTable Report</b> and click <b>OK</b>.</p>
+        <figure class="shot"><img src="../assets/screenshots/Goodscreens/XLMA_add_to_excel_wroeksheet.png" alt="Excel Import Data dialog with PivotTable Report selected">
+            <figcaption>Pick <b>PivotTable Report</b> &mdash; this gives you a live table you can build on. (You can place it on a new sheet.)</figcaption></figure>
+        <p>You're connected. On the right you'll see the <b>PivotTable Fields</b> list &mdash; this is the model's menu.</p>
+        <div class="kid"><b>Reading the menu:</b> the items under the little <b>&Sigma;</b> (sigma) are <b>measures</b> &mdash; the
+        numbers, like <code>net_sales</code>, <code>orders</code>, <code>quantity</code>. The folders below (like
+        <code>month</code>, <code>item_category</code>, <code>quarter</code>) are <b>dimensions</b> &mdash; the ways to slice those numbers.</div>
+        <figure class="shot"><img src="../assets/screenshots/Goodscreens/excel_connected_data.png" alt="Excel with the PivotTable Fields list showing the model measures and dimensions next to a finished dashboard">
+            <figcaption>The finished dashboard (left) and the model's field list (right). Everything you'll build comes from this menu.</figcaption></figure>
+
+        <!-- MAP -->
+        <h2 id="map"><span class="stepnum">&#9733;</span>The layout map &amp; exact cell ranges</h2>
+        <p>Before building, here is the finished dashboard <b>as a map</b>. Columns run <b>A&ndash;P</b>. Build each block to the
+        ranges shown and your workbook will match the download exactly. Keep this picture beside you for the rest of the guide.</p>
+
+        <p style="font-weight:700;color:var(--primary-green);margin:18px 0 0">Dashboard sheet &mdash; what goes where</p>
+        <div class="wire"><div class="wgrid">
+            <div class="wb title">Retail Analytics Dashboard <span>title row &mdash; A1:P1</span></div>
+            <div class="wb kpi">NET SALES <span>label A3 &middot; value A4</span></div>
+            <div class="wb kpi">GROSS SALES <span>E3 &middot; E4</span></div>
+            <div class="wb kpi">UNITS SOLD <span>I3 &middot; I4</span></div>
+            <div class="wb kpi">AVG TICKET <span>M3 &middot; M4</span></div>
+            <div class="wb kpi">ORDERS <span>A6 &middot; A7</span></div>
+            <div class="wb kpi">ACTIVE CUSTOMERS <span>E6 &middot; E7</span></div>
+            <div class="wb kpi">REV / CUSTOMER <span>I6 &middot; I7</span></div>
+            <div class="wb kpi">DISCOUNT RATE <span>M6 &middot; M7</span></div>
+            <div class="wb chart">Monthly Sales &mdash; line <span>A10:H23</span></div>
+            <div class="wb chart">Category Sales &mdash; column <span>H10:P23</span></div>
+            <div class="wb chart">Net Sales by Quarter &mdash; bar <span>A23:H36</span></div>
+            <div class="wb chart">Top Product Classes &mdash; bar <span>H23:P36</span></div>
+        </div>
+        <p class="wcap">Eight KPI cards in two rows (rows 3&ndash;4 and 6&ndash;7), then a 2&times;2 grid of charts (rows 10&ndash;36).</p></div>
+
+        <p style="font-weight:700;color:var(--primary-green);margin:18px 0 0">Data sheet &mdash; the four PivotTables, side by side</p>
+        <div class="wire"><div class="wgrid">
+            <div class="wb">By Month <span>pivot at B4 &middot; B4:D17</span></div>
+            <div class="wb">By Category <span>F4 &middot; F4:H16</span></div>
+            <div class="wb">By Quarter <span>J4 &middot; J4:L10</span></div>
+            <div class="wb">By Product Class <span>N4 &middot; N4:P104</span></div>
+        </div>
+        <p class="wcap">Title in A1, a label over each block in row 3. The dashboard's charts read these pivots via <code>GETPIVOTDATA</code>.</p></div>
+
+        <h3>Every range in one place</h3>
+        <table class="ftab">
+            <tr><th>Block</th><th>Cell / range (Dashboard sheet)</th></tr>
+            <tr><td>Title</td><td><code>A1</code> (merged across A1:L1)</td></tr>
+            <tr><td>KPI cards &mdash; row 1</td><td><code>A4</code>, <code>E4</code>, <code>I4</code>, <code>M4</code> (labels in row 3)</td></tr>
+            <tr><td>KPI cards &mdash; row 2</td><td><code>A7</code>, <code>E7</code>, <code>I7</code>, <code>M7</code> (labels in row 6)</td></tr>
+            <tr><td>Chart &mdash; Monthly</td><td><code>A10:H23</code></td></tr>
+            <tr><td>Chart &mdash; Category</td><td><code>H10:P23</code></td></tr>
+            <tr><td>Chart &mdash; Quarter</td><td><code>A23:H36</code></td></tr>
+            <tr><td>Chart &mdash; Product Class</td><td><code>H23:P36</code></td></tr>
+            <tr><td>Backing table &mdash; Monthly</td><td><code>A41:I53</code> (months in rows 42&ndash;53)</td></tr>
+            <tr><td>Backing table &mdash; Category</td><td><code>K41:T47</code></td></tr>
+            <tr><td>Backing table &mdash; Quarter</td><td><code>K56:Q60</code></td></tr>
+            <tr><td>Backing table &mdash; Product Class</td><td><code>A64:H70</code> (chart block <code>R64:T70</code>)</td></tr>
+            <tr><td>Model-map legend</td><td><code>K64:P70</code></td></tr>
+            <tr><td>PivotTables (Data sheet)</td><td><code>Data!B4</code> · <code>Data!F4</code> · <code>Data!J4</code> · <code>Data!N4</code></td></tr>
+        </table>
+
+        <!-- 3 -->
+        <h2 id="pivots"><span class="stepnum">3</span>Build the data tables (PivotTables)</h2>
+        <p>A dashboard is just a few small tables turned into charts. We'll make <b>one small PivotTable per slice</b> on a
+        single helper sheet (call it <b>Data</b>). Each one is a single, fast question to the model.</p>
+        <p>For your first table &mdash; <b>sales by month</b>:</p>
+        <ol>
+            <li>Click inside the PivotTable. In the field list, drag <b>month</b> into the <b>Rows</b> box.</li>
+            <li>Drag <b>net_sales</b> into the <b>Values</b> box, then drag <b>gross_sales</b> in too.</li>
+        </ol>
+        <p>That's it &mdash; you now have 12 months with two numbers each, pulled live from the model. Repeat for the other slices
+        (each is a brand-new PivotTable: <b>Insert &rarr; PivotTable &rarr; From this workbook's connection</b>):</p>
+        <table class="ftab">
+            <tr><th>Table</th><th>Drag to Rows</th><th>Drag to Values</th></tr>
+            <tr><td>By month</td><td><code>month</code></td><td><code>net_sales</code>, <code>gross_sales</code></td></tr>
+            <tr><td>By category</td><td><code>item_category</code></td><td><code>net_sales</code>, <code>gross_sales</code></td></tr>
+            <tr><td>By quarter</td><td><code>quarter</code></td><td><code>net_sales</code>, <code>gross_sales</code></td></tr>
+            <tr><td>By product class</td><td><code>item_class</code></td><td><code>net_sales</code>, <code>gross_sales</code></td></tr>
+        </table>
+        <p>Line them up side by side on the <b>Data</b> sheet and write a small label over each (&ldquo;By Month&rdquo;, &ldquo;By Category&rdquo;,
+        and so on) so the sheet looks tidy, not like leftovers.</p>
+        <div class="tip"><b>Why it's fast:</b> the model keeps small pre-computed summaries (&ldquo;aggregates&rdquo;). Each of these
+        tables reads a few hundred bytes instead of scanning the whole dataset &mdash; so refreshes are quick and cheap.</div>
+
+        <!-- 4 -->
+        <h2 id="kpis"><span class="stepnum">4</span>Build the KPI cards (the big numbers)</h2>
+        <p>The big headline numbers at the top (Net Sales, Orders, Customers&hellip;) are single values. For those we use a
+        small formula called <b>CUBEVALUE</b> &mdash; it asks the model for exactly one number.</p>
+        <div class="kid"><b>Think of CUBEVALUE like asking one question:</b> &ldquo;Hey model &mdash; what's the total net sales?&rdquo;
+        and it answers with one number you can put in a cell.</div>
+        <p>First, find your connection's name: <b>Data &rarr; Queries &amp; Connections</b>. Say it's <code>tpcds_retail</code>.
+        Then a KPI cell looks like this (the <code>/1000000</code> just turns pounds into millions so it reads &ldquo;£4.7&rdquo; not a huge number):</p>
+        <span class="code">=CUBEVALUE("tpcds_retail","[Measures].[net_sales]")/1000000</span>
+        <p>Here are the eight cards and their formulas (swap in your connection name):</p>
+        <table class="ftab">
+            <tr><th>Card</th><th>Formula</th></tr>
+            <tr><td>Net Sales</td><td><code>=CUBEVALUE("tpcds_retail","[Measures].[net_sales]")/1000000</code></td></tr>
+            <tr><td>Gross Sales</td><td><code>=CUBEVALUE("tpcds_retail","[Measures].[gross_sales]")/1000000</code></td></tr>
+            <tr><td>Units Sold</td><td><code>=CUBEVALUE("tpcds_retail","[Measures].[quantity]")/1000000</code></td></tr>
+            <tr><td>Avg Ticket</td><td><code>=CUBEVALUE("tpcds_retail","[Measures].[average_ticket]")</code></td></tr>
+            <tr><td>Orders</td><td><code>=CUBEVALUE("tpcds_retail","[Measures].[order_count]")/1000</code></td></tr>
+            <tr><td>Active Customers</td><td><code>=CUBEVALUE("tpcds_retail","[Measures].[customer_count]")/1000</code></td></tr>
+            <tr><td>Rev / Customer</td><td><code>=CUBEVALUE("tpcds_retail","[Measures].[revenue_per_customer]")</code></td></tr>
+            <tr><td>Discount Rate</td><td><code>=CUBEVALUE("tpcds_retail","[Measures].[discount_amount]")/CUBEVALUE("tpcds_retail","[Measures].[gross_sales]")</code></td></tr>
+        </table>
+        <div class="tip"><b>Shortcut:</b> type one formula, get it right, then copy the cell and just change the measure
+        name in the quotes. The measure names are exactly what you see in the field list.</div>
+
+        <!-- 5 -->
+        <h2 id="charts"><span class="stepnum">5</span>Add the charts</h2>
+        <p>Charts come straight from the little tables you built in Step 3.</p>
+        <ol>
+            <li>Click your <b>By Month</b> table, then <b>Insert &rarr; Chart</b> and pick a <b>Line</b> or <b>Column</b> chart.</li>
+            <li>Do the same for the others: <b>By Category</b> &rarr; column, <b>By Product Class</b> &rarr; bar,
+            <b>By Quarter</b> &rarr; column.</li>
+            <li>Give each chart a clear title (&ldquo;Monthly Sales&rdquo;, &ldquo;Category Sales&rdquo;, &hellip;).</li>
+        </ol>
+        <div class="tip"><b>Want the charts on a clean page, away from the tables?</b> Keep the PivotTables on the <b>Data</b>
+        sheet, and on your <b>Dashboard</b> sheet pull the values across with <code>GETPIVOTDATA</code> (Excel writes this for you
+        if you click a pivot cell with <code>=</code>). Then chart those cells. That's how the downloadable file is built &mdash;
+        a tidy dashboard up front, the pivots tucked on the Data sheet.</div>
+
+        <!-- 6 -->
+        <h2 id="format"><span class="stepnum">6</span>Lay out and format the dashboard</h2>
+        <p>This is what turns a few tables into something you'd proudly send. Take your time here.</p>
+        <h3>KPI cards</h3>
+        <ul>
+            <li>Put the eight numbers in a row of &ldquo;cards&rdquo; at the top. Merge a couple of cells for each, add a soft
+            background colour, a small grey label above, and a big bold number below.</li>
+            <li>Set the number look with <b>Format Cells &rarr; Custom</b>:
+                <table class="ftab">
+                    <tr><th>Looks like</th><th>Custom format code</th></tr>
+                    <tr><td>£4.7bn</td><td><code>"£"0.0,"bn"</code></td></tr>
+                    <tr><td>£508.0m</td><td><code>"£"0.0"m"</code></td></tr>
+                    <tr><td>138.9M (units)</td><td><code>#,##0.0"M"</code></td></tr>
+                    <tr><td>240k</td><td><code>#,##0"k"</code></td></tr>
+                    <tr><td>9.4%</td><td><code>0.0%</code></td></tr>
+                    <tr><td>£187</td><td><code>"£"0</code></td></tr>
+                </table>
+            </li>
+        </ul>
+        <h3>Charts &amp; colours</h3>
+        <ul>
+            <li>Arrange the charts in a neat 2&times;2 grid under the cards.</li>
+            <li>Use one or two brand colours (a green and a soft grey work well), remove busy gridlines, and keep titles short.</li>
+            <li><b>View &rarr; uncheck Gridlines</b> on the dashboard sheet for a clean, print-ready look.</li>
+        </ul>
+        <h3>Tidy the Data sheet</h3>
+        <ul>
+            <li>Keep all the PivotTables together on the <b>Data</b> sheet with a title row (&ldquo;Live model data &mdash; do not edit&rdquo;)
+            and a label over each block.</li>
+            <li>If you don't want viewers poking at it, right-click the sheet tab &rarr; <b>Hide</b>.</li>
+        </ul>
+
+        <!-- 7 -->
+        <h2 id="save"><span class="stepnum">7</span>Save and refresh</h2>
+        <ul>
+            <li><b>Save</b> as a normal <code>.xlsx</code> &mdash; no macros needed.</li>
+            <li>To pull fresh numbers any time: <b>Data &rarr; Refresh All</b>.</li>
+            <li>Refreshing talks to the live model, so it needs the connection and your credentials. If you send the file to
+            someone without a Tessallite login, it still opens and shows the last saved numbers &mdash; they just can't refresh.</li>
+        </ul>
+        <div class="dlrow">
+            <a class="pri" href="../assets/downloads/tessallite-tpcds-live-dashboard.xlsx" download="Tessallite-TPC-DS-Live-Dashboard.xlsx">Download the finished workbook</a>
+            <a class="gho" href="../tpcds-sf1000-report.html">See the benchmark</a>
+        </div>
+        <p class="small">Tip: open the finished workbook and click around &mdash; seeing the pieces in place makes every step above click into focus.</p>
+
+        <!-- 8 -->
+        <h2 id="trouble"><span class="stepnum">8</span>If something goes wrong</h2>
+        <ul>
+            <li><b>Refresh spins forever.</b> Turn off background refresh: <b>Data &rarr; Queries &amp; Connections</b> &rarr;
+            right-click the connection &rarr; <b>Properties</b> &rarr; untick <b>Enable background refresh</b>. Then refresh again.</li>
+            <li><b>Cells show #N/A.</b> The connection isn't live or a name is mis-typed. Re-check the measure name in the
+            field list, and make sure you can connect (Step 2).</li>
+            <li><b>&ldquo;Can't find the cube.&rdquo;</b> The model probably isn't enabled, or you picked the wrong catalog. Go back
+            to Step 1 and check the green <b>Model enabled</b> switch.</li>
+            <li><b>It asks for a password every time.</b> That's normal for a live file &mdash; the password isn't saved inside the
+            file for safety.</li>
+        </ul>
+        <div class="warn"><b>Remember:</b> you never edit the database. Everything &mdash; the measures, the slices, the security &mdash;
+        comes from the one governed model, so the same number means the same thing in Excel, Power BI, and everywhere else.</div>
+
+    </div></section>
+    </main>
+
+    <footer class="footer section-charcoal"><div class="container footer-bottom"><p>&copy; 2026 Tessallite Ltd. All rights reserved. &middot; <a href="../tpcds-sf1000-report.html">Back: TPC-DS benchmark</a> &middot; <a href="../index.html">Home</a> &middot; <a href="excel-bi.html">Excel and BI guide</a></p></div></footer>
+    <script src="../js/script.js"></script>
+</body>
+</html>

@@ -34,6 +34,12 @@
   ul{margin:8px 0 8px 18px}.small{font-size:13px;color:var(--mut)}
   .explain{background:#f7faf8;border-left:3px solid var(--green);padding:10px 14px;margin:10px 0;font-size:14px;color:rgba(31,42,36,.88)}
   .chart{margin:10px 0 6px;border:1px solid var(--line);border-radius:10px;padding:10px;background:#fff}
+  .cta{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:24px 0 4px}
+  .btn{display:inline-block;font-weight:700;font-size:15px;text-decoration:none;border-radius:10px;padding:13px 22px;transition:background .15s,color .15s}
+  .btn-primary{background:var(--green);color:#fff;border:1px solid var(--green)}
+  .btn-primary:hover{background:#00582b}
+  .btn-ghost{background:#fff;color:var(--green);border:1px solid var(--green)}
+  .btn-ghost:hover{background:var(--mint)}
 </style>
 </head>
 <body>
@@ -59,6 +65,13 @@
     about $116,000 in BigQuery scan; with Tessallite it is about $18 &mdash; the same answers, delivered to every tool.
     <span class="small">(BigQuery on-demand at ~$5/TB; per-run figures measured below.)</span></p>
   </div>
+
+  <div class="cta">
+    <a class="btn btn-primary" href="assets/downloads/tessallite-tpcds-live-dashboard.xlsx" download="Tessallite-TPC-DS-Live-Dashboard.xlsx">Download the live Excel dashboard</a>
+    <a class="btn btn-ghost" href="help/build-excel-dashboard.html">How to build a dashboard in Excel</a>
+  </div>
+  <p class="small">A real Excel workbook on this TPC-DS model. Opens with saved figures so you can explore offline;
+  refreshing against the live model needs a Tessallite connection and credentials.</p>
 
   <h2>The proof &mdash; four everyday business questions <span class="tag m">SF1000 MEASURED</span></h2>
   <p class="small">We asked each question through the live connection the way Excel or Power BI would &mdash; first the

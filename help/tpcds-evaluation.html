@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Evaluate Tessallite on TPC-DS — Tessallite</title>
+    <meta name="description" content="Reproduce the Tessallite terabyte benchmark yourself: what TPC-DS is, the SF1 and SF1000 datasets, prerequisites, how to build the model, and the curated business questions to run raw versus accelerated.">
+    <link rel="icon" type="image/png" href="../assets/logos/png/favicon.png">
+    <link rel="stylesheet" href="../css/brand.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .nav-current { color: var(--primary-green); font-weight: 700; cursor: default; }
+
+        .guide-hero { padding: 84px 0 66px; background: linear-gradient(180deg, var(--white) 0%, var(--mint) 100%); border-bottom: 1px solid var(--slate-border); }
+        .guide-hero-grid { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(330px, .92fr); gap: 46px; align-items: center; }
+        .eyebrow, .section-eyebrow { color: var(--accent-gold); font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 12px; }
+        .guide-copy { max-width: 760px; color: rgba(51, 51, 51, .88); font-size: 19px; line-height: 1.65; margin-bottom: 24px; }
+        .guide-actions { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+        .button-quiet { background: var(--white); color: var(--primary-green); border-color: var(--slate-border); }
+        .button-quiet:hover { border-color: var(--primary-green); box-shadow: 0 10px 22px rgba(0, 108, 53, .08); }
+
+        .status-card { background: var(--white); border: 1px solid var(--slate-border); border-radius: 14px; box-shadow: 0 18px 42px rgba(0, 0, 0, .08); overflow: hidden; }
+        .status-row { display: grid; grid-template-columns: 122px 1fr; gap: 16px; padding: 16px 20px; border-bottom: 1px solid #e6edf2; }
+        .status-row:last-child { border-bottom: none; }
+        .status-row span:first-child { color: #5b6b7b; font-size: 13px; font-weight: 700; }
+        .status-row span:last-child { color: var(--charcoal); font-weight: 700; line-height: 1.45; }
+
+        .card-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
+        .doc-card { background: var(--white); border: 1px solid var(--slate-border); border-radius: 14px; padding: 24px; }
+        .doc-card h3 { color: var(--primary-green); font-size: 19px; margin-bottom: 10px; }
+        .doc-card p { color: rgba(51, 51, 51, .86); font-size: 15px; line-height: 1.62; }
+        .doc-list { list-style: none; display: grid; gap: 10px; margin-top: 14px; }
+        .doc-list li { position: relative; padding-left: 22px; color: rgba(51, 51, 51, .9); line-height: 1.58; font-size: 15px; }
+        .doc-list li::before { content: ""; position: absolute; left: 0; top: .62em; width: 8px; height: 8px; border-radius: 999px; background: var(--accent-gold); }
+
+        .scale-table { width: 100%; border-collapse: collapse; margin-top: 22px; background: var(--white); border: 1px solid var(--slate-border); border-radius: 12px; overflow: hidden; }
+        .scale-table th, .scale-table td { text-align: left; padding: 14px 18px; border-bottom: 1px solid #e6edf2; font-size: 15px; }
+        .scale-table th { background: #f6fbf8; color: var(--primary-green); font-size: 13px; letter-spacing: .03em; text-transform: uppercase; }
+        .scale-table tr:last-child td { border-bottom: none; }
+        .scale-table td:first-child { font-weight: 700; color: var(--charcoal); }
+
+        .stat-band { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 8px 0 26px; }
+        .stat-card { background: #fff; border: 1px solid var(--slate-border); border-radius: 14px; padding: 22px; }
+        .stat-number { font-size: 28px; line-height: 1.12; font-weight: 800; color: var(--primary-green); margin: 0 0 8px; }
+        .stat-card p:last-child { margin: 0; font-size: 14px; color: rgba(31, 42, 36, .82); }
+
+        .story-lane { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 26px; }
+        .story-step { border: 1px solid var(--slate-border); border-radius: 14px; background: var(--white); padding: 22px; }
+        .story-number { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 999px; background: var(--primary-green); color: var(--white); font-weight: 700; margin-bottom: 12px; }
+        .story-step h3 { color: var(--primary-green); font-size: 18px; margin-bottom: 8px; }
+        .story-step p { font-size: 14px; line-height: 1.58; color: rgba(51, 51, 51, .86); }
+
+        .q-card { background: var(--white); border: 1px solid var(--slate-border); border-radius: 14px; padding: 24px; margin-top: 20px; }
+        .q-head { display: flex; flex-wrap: wrap; gap: 10px; align-items: baseline; justify-content: space-between; margin-bottom: 6px; }
+        .q-head h3 { color: var(--primary-green); font-size: 18px; margin: 0; }
+        .route-pill { display: inline-flex; align-items: center; border: 1px solid #d8e3dc; border-radius: 999px; background: #f6fbf8; color: var(--primary-green); font-size: 12px; font-weight: 700; padding: 4px 11px; }
+        .q-card > p { color: rgba(51, 51, 51, .86); font-size: 15px; line-height: 1.6; margin: 0 0 14px; }
+        .code-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .code-block { background: #0f1f17; border: 1px solid #14301f; border-radius: 10px; padding: 14px 16px; overflow-x: auto; }
+        .code-label { display: block; color: var(--accent-gold); font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 8px; }
+        .code-block pre { margin: 0; }
+        .code-block code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; font-size: 12.5px; line-height: 1.6; color: #e8f3ec; white-space: pre; }
+
+        .notice-panel { border: 1px solid #d8e3dc; border-left: 4px solid var(--accent-gold); border-radius: 12px; background: #fbfdfb; padding: 20px 22px; margin-top: 24px; color: rgba(51, 51, 51, .9); line-height: 1.62; }
+
+        @media (max-width: 980px) {
+            .guide-hero-grid, .card-grid, .story-lane, .stat-band, .code-pair { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 720px) {
+            .guide-hero { padding: 62px 0 50px; }
+            .status-row { grid-template-columns: 1fr; gap: 6px; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container header-container">
+            <a href="../index.html" class="logo">
+                <img src="../assets/logos/png/logo-primary-horizontal.png" alt="Tessallite" height="80">
+            </a>
+            <nav class="nav" aria-label="Primary navigation">
+                <button class="nav-toggle" aria-label="Toggle navigation" aria-controls="site-nav-list"><span class="hamburger"></span></button>
+                <ul class="nav-list" id="site-nav-list">
+                    <li><a href="../index.html" class="nav-link">Product</a></li>
+                    <li><a href="../screens.html" class="nav-link">Product Tour</a></li>
+                    <li><a href="../benchmarks.html" class="nav-link">Benchmarks</a></li>
+                    <li><a href="../pricing.html" class="nav-link">Pricing</a></li>
+                    <li><a href="../download.html" class="nav-link">Download</a></li>
+                    <li><a href="../docs/" class="nav-link">Docs</a></li>
+                    <li><a href="../register.html" class="nav-link">Get a licence</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="guide-hero">
+            <div class="container guide-hero-grid">
+                <div>
+                    <p class="eyebrow">Evaluate on TPC-DS</p>
+                    <h1 class="hero-title">Reproduce the terabyte result yourself.</h1>
+                    <p class="guide-copy">TPC-DS is the standard retail and e-commerce benchmark for data-warehouse analytics. This guide shows how to put Tessallite in front of a TPC-DS dataset &mdash; from a 1&nbsp;GB laptop scale to a full terabyte &mdash; and ask the same everyday business questions the raw way and the accelerated way, so you can verify the cost and the answers for yourself.</p>
+                    <div class="guide-actions">
+                        <a href="#reproduce" class="button button-primary">How to reproduce it</a>
+                        <a href="../tpcds-sf1000-report.html" class="button button-quiet">Read the published result</a>
+                    </div>
+                </div>
+                <aside class="status-card" aria-label="At a glance">
+                    <div class="status-row"><span>Workload</span><span>TPC-DS-derived retail analytics</span></div>
+                    <div class="status-row"><span>Scales</span><span>SF1 (~1&nbsp;GB), SF100 (~100&nbsp;GB), SF1000 (~1&nbsp;TB)</span></div>
+                    <div class="status-row"><span>You provide</span><span>A source warehouse with TPC-DS data and a Tessallite deployment</span></div>
+                    <div class="status-row"><span>You measure</span><span>Cost, data scanned, route, and answer correctness &mdash; raw vs accelerated</span></div>
+                </aside>
+            </div>
+        </section>
+
+        <section class="section-white">
+            <div class="container">
+                <div class="section-header">
+                    <p class="section-eyebrow">What it is</p>
+                    <h2 class="section-title">A standard dataset, used the honest way.</h2>
+                    <p class="section-description">TPC-DS models a large retailer selling through store, catalogue, and web channels. It is widely used to test the performance of systems built for data warehousing and analytics, because the schema and the questions look like a real business. Tessallite sits in front of your warehouse: the warehouse stays the source of truth, and Tessallite adds governed modelling, multi-protocol access, route selection, and transparent acceleration.</p>
+                </div>
+                <table class="scale-table">
+                    <thead>
+                        <tr><th>Scale factor</th><th>Approx. size</th><th>What it is for</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>SF1</td><td>~1 GB</td><td>Development and smoke validation. The first path for schema, load, model, acceleration, and query checks. Runs comfortably on a laptop-class deployment.</td></tr>
+                        <tr><td>SF100</td><td>~100 GB</td><td>Rehearsal scale. Use after SF1 is stable to validate load time, model ergonomics, and acceleration behaviour.</td></tr>
+                        <tr><td>SF1000</td><td>~1 TB (2.88 billion sales records)</td><td>Flagship scale. The published Tessallite result was measured here, on BigQuery.</td></tr>
+                    </tbody>
+                </table>
+                <div class="notice-panel">
+                    The Tessallite benchmark is <strong>TPC-DS-derived</strong>. It is not an official, audited TPC result, and it does not use the TPC logo. The data is generated with the public TPC-DS toolkit; you generate your own copy to evaluate &mdash; Tessallite does not redistribute the generated data.
+                </div>
+            </div>
+        </section>
+
+        <section class="section-mint">
+            <div class="container">
+                <div class="section-header">
+                    <p class="section-eyebrow">What to expect</p>
+                    <h2 class="section-title">The same answer, for a fraction of a cent.</h2>
+                    <p class="section-description">These are the headline figures from the published SF1000 run on BigQuery. When you reproduce it, your absolute numbers will depend on your warehouse, region, and pricing &mdash; but the shape holds: the accelerated route reads a tiny maintained summary instead of the whole terabyte, and returns the identical answer.</p>
+                </div>
+                <div class="stat-band">
+                    <article class="stat-card">
+                        <p class="stat-number">$330 &rarr; $0.05</p>
+                        <p>Cost to ask one everyday question 1,000 times &mdash; raw BigQuery versus with Tessallite.</p>
+                    </article>
+                    <article class="stat-card">
+                        <p class="stat-number">66 GB &rarr; a few KB</p>
+                        <p>Data scanned to answer it &mdash; the same answer from a maintained summary.</p>
+                    </article>
+                    <article class="stat-card">
+                        <p class="stat-number">4 / 4 identical</p>
+                        <p>Every accelerated answer matched the raw-source answer, within tolerance.</p>
+                    </article>
+                </div>
+                <p class="section-description" style="margin-top:6px">A team running 40 dashboards refreshed hourly asks these questions about 350,000 times a year &mdash; roughly <strong>$116,000</strong> in BigQuery scan today, about <strong>$18</strong> with Tessallite. <a href="../tpcds-sf1000-report.html">Read the full report &mdash; all 17 business questions.</a></p>
+            </div>
+        </section>
+
+        <section class="section-white">
+            <div class="container">
+                <div class="section-header">
+                    <p class="section-eyebrow">Before you start</p>
+                    <h2 class="section-title">Prerequisites.</h2>
+                </div>
+                <div class="card-grid">
+                    <article class="doc-card">
+                        <h3>A source warehouse</h3>
+                        <p>A warehouse you can load TPC-DS data into and that Tessallite can read through a governed connection. The published run used BigQuery; any supported source works.</p>
+                        <ul class="doc-list">
+                            <li>Read access for Tessallite's connection.</li>
+                            <li>A separate write target for materialised aggregates.</li>
+                        </ul>
+                    </article>
+                    <article class="doc-card">
+                        <h3>TPC-DS data</h3>
+                        <p>Generate it with the public TPC-DS toolkit (<code>dsdgen</code>) at the scale you want, then load the table files into your warehouse. Start at SF1.</p>
+                        <ul class="doc-list">
+                            <li>24 TPC-DS tables, standard schema.</li>
+                            <li>Keep the generated data private to your environment.</li>
+                        </ul>
+                    </article>
+                    <article class="doc-card">
+                        <h3>A Tessallite deployment</h3>
+                        <p>A running Tessallite stack with the gateway reachable. Community is enough to evaluate at SF1; larger scales follow the same steps.</p>
+                        <ul class="doc-list">
+                            <li>Gateway on JDBC and XMLA.</li>
+                            <li>A tenant and project to hold the model.</li>
+                        </ul>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section id="reproduce" class="section-mint">
+            <div class="container">
+                <div class="section-header">
+                    <p class="section-eyebrow">Reproduce it</p>
+                    <h2 class="section-title">Six steps from raw data to a verified result.</h2>
+                    <p class="section-description">Work up the scale ladder in order &mdash; SF1, then SF100, then SF1000. Prove the whole flow at SF1 first; the larger scales are the same steps against a bigger dataset.</p>
+                </div>
+                <div class="story-lane">
+                    <article class="story-step"><span class="story-number">1</span><h3>Load the data</h3><p>Generate TPC-DS data with <code>dsdgen</code> at SF1 and load the 24 tables into your warehouse. This is your source of truth and your raw-cost baseline.</p></article>
+                    <article class="story-step"><span class="story-number">2</span><h3>Build the model</h3><p>Connect the source, add the tables, and define the semantic model: <code>store_sales</code> as the fact, LEFT joins to the dimensions, and the business measures (net sales, gross margin, return rate).</p></article>
+                    <article class="story-step"><span class="story-number">3</span><h3>Seed acceleration</h3><p>Define the aggregates and pockets that match the recurring questions &mdash; for example monthly sales by channel and category &mdash; and let Tessallite maintain them.</p></article>
+                    <article class="story-step"><span class="story-number">4</span><h3>Connect a tool</h3><p>Point Excel, Power BI, a JDBC client, the API, or the agent at the gateway. Every tool reads the same governed model and gets the same answer.</p></article>
+                    <article class="story-step"><span class="story-number">5</span><h3>Run raw vs accelerated</h3><p>Ask each business question twice: once as direct warehouse SQL (your baseline) and once through Tessallite. Turn the warehouse result cache off so every run executes for real.</p></article>
+                    <article class="story-step"><span class="story-number">6</span><h3>Check and compare</h3><p>Confirm the accelerated answer equals the raw answer within tolerance, then compare bytes scanned and cost. Record the route Tessallite chose for each question.</p></article>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-white">
+            <div class="container">
+                <div class="section-header">
+                    <p class="section-eyebrow">Sample questions</p>
+                    <h2 class="section-title">Ask the same thing, two ways.</h2>
+                    <p class="section-description">These are real questions from the curated suite. On the left is the direct warehouse SQL you run as the baseline; on the right is the equivalent question against the Tessallite model. Same answer, far less to read. Replace <code>{project}.{dataset}</code> with your own warehouse location.</p>
+                </div>
+
+                <article class="q-card">
+                    <div class="q-head"><h3>1. Monthly net sales by channel</h3><span class="route-pill">Routes to: aggregate</span></div>
+                    <p>Net sales by month and sales channel for 2001. The baseline unions the three sales channels and joins the date dimension; the Tessallite query is a single governed statement.</p>
+                    <div class="code-pair">
+                        <div class="code-block">
+                            <span class="code-label">Direct warehouse SQL (baseline)</span>
+                            <pre><code>SELECT d.d_year  AS sales_year,
+       d.d_moy   AS sales_month,
+       channel,
+       SUM(net_sales) AS net_sales
+FROM (
+  SELECT ss_sold_date_sk AS sold_date_sk,
+         'store' AS channel,
+         ss_net_paid AS net_sales
+  FROM `{project}.{dataset}.store_sales`
+  UNION ALL
+  SELECT cs_sold_date_sk, 'catalog', cs_net_paid
+  FROM `{project}.{dataset}.catalog_sales`
+  UNION ALL
+  SELECT ws_sold_date_sk, 'web', ws_net_paid
+  FROM `{project}.{dataset}.web_sales`
+) sales
+JOIN `{project}.{dataset}.date_dim` d
+  ON d.d_date_sk = sales.sold_date_sk
+WHERE d.d_year = 2001
+GROUP BY sales_year, sales_month, channel
+ORDER BY sales_year, sales_month, channel</code></pre>
+                        </div>
+                        <div class="code-block">
+                            <span class="code-label">Through Tessallite</span>
+                            <pre><code>SELECT year,
+       month,
+       sales_channel,
+       SUM(net_sales) AS net_sales
+FROM tpcds_retail_analytics
+WHERE year = 2001
+GROUP BY year, month, sales_channel
+ORDER BY year, month, sales_channel</code></pre>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="q-card">
+                    <div class="q-head"><h3>2. Top categories by net sales</h3><span class="route-pill">Routes to: aggregate</span></div>
+                    <p>Rank product categories by net sales for 2001 across all channels.</p>
+                    <div class="code-pair">
+                        <div class="code-block">
+                            <span class="code-label">Direct warehouse SQL (baseline)</span>
+                            <pre><code>SELECT i.i_category AS item_category,
+       SUM(net_sales) AS net_sales
+FROM (
+  SELECT ss_item_sk AS item_sk, ss_sold_date_sk AS sold_date_sk,
+         ss_net_paid AS net_sales
+  FROM `{project}.{dataset}.store_sales`
+  UNION ALL
+  SELECT cs_item_sk, cs_sold_date_sk, cs_net_paid
+  FROM `{project}.{dataset}.catalog_sales`
+  UNION ALL
+  SELECT ws_item_sk, ws_sold_date_sk, ws_net_paid
+  FROM `{project}.{dataset}.web_sales`
+) sales
+JOIN `{project}.{dataset}.item` i
+  ON i.i_item_sk = sales.item_sk
+JOIN `{project}.{dataset}.date_dim` d
+  ON d.d_date_sk = sales.sold_date_sk
+WHERE d.d_year = 2001
+GROUP BY item_category
+ORDER BY net_sales DESC, item_category
+LIMIT 20</code></pre>
+                        </div>
+                        <div class="code-block">
+                            <span class="code-label">Through Tessallite</span>
+                            <pre><code>SELECT item_category,
+       SUM(net_sales) AS net_sales
+FROM tpcds_retail_analytics
+WHERE year = 2001
+GROUP BY item_category
+ORDER BY net_sales DESC, item_category
+LIMIT 20</code></pre>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="q-card">
+                    <div class="q-head"><h3>3. Store return-rate exceptions</h3><span class="route-pill">Routes to: source</span></div>
+                    <p>Stores with the highest return rate in 2001. An exception-style question that stays on the governed source route until a matching aggregate is seeded &mdash; useful for seeing how Tessallite reports the route it chose.</p>
+                    <div class="code-pair">
+                        <div class="code-block">
+                            <span class="code-label">Direct warehouse SQL (baseline)</span>
+                            <pre><code>SELECT s.s_state AS store_state,
+       s.s_store_name AS store_name,
+       SAFE_DIVIDE(SUM(sr.sr_return_amt),
+                   NULLIF(SUM(ss.ss_net_paid), 0)) AS return_rate,
+       SUM(ss.ss_net_paid)  AS net_sales,
+       SUM(sr.sr_return_amt) AS return_amount
+FROM `{project}.{dataset}.store_sales` ss
+JOIN `{project}.{dataset}.date_dim` d
+  ON d.d_date_sk = ss.ss_sold_date_sk
+JOIN `{project}.{dataset}.store` s
+  ON s.s_store_sk = ss.ss_store_sk
+LEFT JOIN `{project}.{dataset}.store_returns` sr
+  ON sr.sr_item_sk = ss.ss_item_sk
+ AND sr.sr_ticket_number = ss.ss_ticket_number
+WHERE d.d_year = 2001
+GROUP BY store_state, store_name
+HAVING net_sales > 0
+ORDER BY return_rate DESC, net_sales DESC
+LIMIT 20</code></pre>
+                        </div>
+                        <div class="code-block">
+                            <span class="code-label">Through Tessallite</span>
+                            <pre><code>SELECT store_state,
+       store_name,
+       return_rate,
+       SUM(net_sales)    AS net_sales,
+       SUM(return_amount) AS return_amount
+FROM tpcds_retail_analytics
+WHERE year = 2001
+GROUP BY store_state, store_name
+ORDER BY return_rate DESC, net_sales DESC
+LIMIT 20</code></pre>
+                        </div>
+                    </div>
+                </article>
+
+                <p class="section-description" style="margin-top:20px">The published report runs the full set of 17 business questions, including the CFO weekly revenue dashboard that routes to a maintained pocket. <a href="../tpcds-sf1000-report.html">See every question and its measured numbers.</a></p>
+            </div>
+        </section>
+
+        <section class="section-mint">
+            <div class="container">
+                <div class="section-header">
+                    <p class="section-eyebrow">Best practices</p>
+                    <h2 class="section-title">Measure it so the numbers stand up.</h2>
+                    <p class="section-description">A benchmark is only useful if it is honest. These are the controls the Tessallite run uses, and the ones we recommend you apply to yours.</p>
+                </div>
+                <div class="card-grid">
+                    <article class="doc-card">
+                        <h3>Measurement discipline</h3>
+                        <ul class="doc-list">
+                            <li>Turn the warehouse result cache off so every run executes for real.</li>
+                            <li>Run each question several times; discard a warmup run.</li>
+                            <li>Record P50 and P95 latency, variance, bytes processed, and the route chosen.</li>
+                            <li>Note the date, region, compute model, and versions with the run.</li>
+                        </ul>
+                    </article>
+                    <article class="doc-card">
+                        <h3>Correctness first</h3>
+                        <ul class="doc-list">
+                            <li>Compare each accelerated answer back to the raw warehouse answer before it counts.</li>
+                            <li>Use an explicit tolerance, and compare row order exactly for ranked or top-N questions.</li>
+                            <li>Pin each measure to the exact source columns so the accelerated value equals the baseline.</li>
+                            <li>If an accelerated answer ever disagrees, treat it as a failure, not a speed-up.</li>
+                        </ul>
+                    </article>
+                    <article class="doc-card">
+                        <h3>Scope honestly</h3>
+                        <ul class="doc-list">
+                            <li>Work up the scale ladder in order: SF1, then SF100, then SF1000.</li>
+                            <li>Cap the bytes a single query may bill so a runaway query is caught, not paid for.</li>
+                            <li>Label which scale every result came from; never relabel evidence across scales.</li>
+                            <li>Call it TPC-DS-derived, not an official audited TPC result.</li>
+                        </ul>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta section-green">
+            <div class="container center invert">
+                <h2 class="cta-title">See the proof, then run it yourself.</h2>
+                <p class="cta-subtitle">Read the measured terabyte result, take the full report with its raw run records, and get Tessallite to reproduce it on your own data.</p>
+                <div class="cta-actions">
+                    <a href="../assets/benchmarks/TPC-DS-Performance-Report.zip" class="button button-secondary" download>Download the report (PDF + data)</a>
+                    <a href="../benchmarks.html" class="button button-white-outline">Read the methodology</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer section-charcoal">
+        <div class="container footer-fat reveal">
+            <div class="footer-brand">
+                <img src="../assets/logos/png/logo-monochrome-white.png" alt="Tessallite" height="32">
+                <p class="footer-tagline">Trusted Business Answers</p>
+                <p class="footer-created">Created by <a href="mailto:mo@tessallite.io" class="footer-created-link">Mohammed Othman</a></p>
+            </div>
+            <div class="link-group">
+                <h4>Docs</h4>
+                <ul>
+                    <li><a href="product-overview.html">Product overview</a></li>
+                    <li><a href="model-builder.html">Model Builder</a></li>
+                    <li><a href="excel-bi.html">Excel and BI</a></li>
+                    <li><a href="evaluation-playbook.html">Evaluation playbook</a></li>
+                    <li><a href="tpcds-evaluation.html">TPC-DS evaluation</a></li>
+                </ul>
+            </div>
+            <div class="link-group">
+                <h4>Benchmark</h4>
+                <ul>
+                    <li><a href="../benchmarks.html">Methodology</a></li>
+                    <li><a href="../tpcds-sf1000-report.html">SF1000 report</a></li>
+                    <li><a href="../assets/benchmarks/TPC-DS-Performance-Report.zip">Report bundle</a></li>
+                </ul>
+            </div>
+            <div class="link-group">
+                <h4>Contact</h4>
+                <ul>
+                    <li><a href="mailto:info@tessallite.io">info@tessallite.io</a></li>
+                    <li><a href="mailto:sales@tessallite.io">sales@tessallite.io</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2026 Tessallite Ltd. All rights reserved. &middot; <a href="evaluation-playbook.html">Previous: Evaluation playbook</a> &middot; <a href="index.html">Docs home</a> &middot; <a href="../benchmarks.html">Next: Benchmarks</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/script.js"></script>
+</body>
+</html>

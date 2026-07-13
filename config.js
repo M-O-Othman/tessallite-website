@@ -11,4 +11,4 @@ window.TESSALLITE_ISSUER_URL = "https://issuer-6pjlis7ega-uc.a.run.app";  // dep
 // (Cloud CDN + backend bucket over gs://tessallite-io-downloads; edge-cached so GCS egress is bounded).
 // Direct public download of the free bundle (the licence is registered for separately).
 window.TESSALLITE_DOWNLOAD_URL = "https://downloads.tessallite.io";
-window.TESSALLITE_VERSION = "1.1.3";
+window.TESSALLITE_VERSION = "1.1.4";

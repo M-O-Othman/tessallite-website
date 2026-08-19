@@ -49,7 +49,8 @@
       "rows": 7,
       "correct": true,
       "bq_tieout_scan_bytes": 66010483504,
-      "off_matches_bq_tieout": false
+      "off_matches_bq_tieout": null,
+      "bq_tieout_note": "Not independently measured; correctness is ON-vs-OFF comparison"
     },
     {
       "id": "net_sales_by_category",
@@ -86,7 +87,8 @@
       "rows": 11,
       "correct": true,
       "bq_tieout_scan_bytes": 67050886786,
-      "off_matches_bq_tieout": false
+      "off_matches_bq_tieout": null,
+      "bq_tieout_note": "Not independently measured; correctness is ON-vs-OFF comparison"
     },
     {
       "id": "net_sales_by_region",
@@ -123,7 +125,8 @@
       "rows": 2,
       "correct": true,
       "bq_tieout_scan_bytes": 66009562035,
-      "off_matches_bq_tieout": false
+      "off_matches_bq_tieout": null,
+      "bq_tieout_note": "Not independently measured; correctness is ON-vs-OFF comparison"
     },
     {
       "id": "net_sales_by_customer_segment",
@@ -160,7 +163,8 @@
       "rows": 3,
       "correct": true,
       "bq_tieout_scan_bytes": 66140136866,
-      "off_matches_bq_tieout": false
+      "off_matches_bq_tieout": null,
+      "bq_tieout_note": "Not independently measured; correctness is ON-vs-OFF comparison"
     }
   ],
   "summary": {

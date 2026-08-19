@@ -82,5 +82,5 @@ Version history tracks changes to the definition, and impact analysis shows wher
 
 - [Define Dimensions](define-dimensions.html)
 - [Define Measures](define-measures.html)
-- [Impact Analysis](impact-analysis.html)
+- [Usage & Downstream Assets](usage-downstream-assets.html)
 - [KPIs](kpis.html)

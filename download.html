@@ -180,6 +180,23 @@
             margin-top: 16px;
         }
 
+        .download-status {
+            color: #6b4a08;
+            background: #fff7e6;
+            border: 1px solid #f1d18a;
+            border-radius: 10px;
+            padding: 10px 12px;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-top: 14px;
+        }
+
+        .button[aria-disabled="true"] {
+            cursor: not-allowed;
+            opacity: .72;
+            box-shadow: none;
+        }
+
         .code-panel {
             background: #1f2a24;
             color: #f7f7f2;
@@ -396,7 +413,7 @@
                     <li><a href="benchmarks.html" class="nav-link">Benchmarks</a></li>
                     <li><a href="pricing.html" class="nav-link">Pricing</a></li>
                     <li><span class="nav-link nav-current" aria-current="page">Download</span></li>
-                    <li><a href="download.html#install" class="nav-link">Install guide</a></li>
+                    <li><a href="help/install-local.html" class="nav-link">Install guide</a></li>
                     <li><a href="docs/" class="nav-link">Docs</a></li>
                     <li><a href="register.html" class="nav-link">Get a licence</a></li>
                 </ul>
@@ -456,12 +473,12 @@
                     <article class="step-card">
                         <span class="step-number">2</span>
                         <h3>Download</h3>
-                        <p>Get the current signed Tessallite Community release bundle and its checksum manifest.</p>
+                        <p>Get the release archive, its checksum manifest, and the detached signature &mdash; all published as separate files.</p>
                     </article>
                     <article class="step-card">
                         <span class="step-number">3</span>
                         <h3>Verify</h3>
-                        <p>Check the release checksum and Ed25519 signature before unpacking or installing.</p>
+                        <p>Check the archive checksum and Ed25519 signature before extracting. The verification files are served alongside the archive, not inside it.</p>
                     </article>
                     <article class="step-card">
                         <span class="step-number">4</span>
@@ -482,18 +499,21 @@
                 <div class="artifact-grid">
                     <article class="artifact-card primary">
                         <h3>All-in-one Community bundle</h3>
-                        <p>One signed archive containing the product, container images, installer, checksum manifest, signature, Helm chart material, and security evidence pack.</p>
+                        <p>One signed archive containing the product, container images, installer, Helm chart material, and security evidence pack. The checksum manifest and detached signature are published as separate files for pre-extraction verification.</p>
                         <div class="card-actions">
-                            <a id="bundle-link" class="button button-primary" href="register.html" rel="nofollow">Download Tessallite Community</a>
+                            <a id="bundle-link" class="button button-primary" href="#download-unavailable" rel="nofollow" aria-disabled="true">Download unavailable</a>
+                            <a id="bundle-sums" class="button button-quiet" href="#download-unavailable" hidden>SHA256SUMS</a>
+                            <a id="bundle-sig" class="button button-quiet" href="#download-unavailable" hidden>Signature</a>
                             <a href="register.html" class="button button-quiet">Get a licence</a>
                         </div>
+                        <p id="download-unavailable" class="download-status">The release download is not available from this page yet. The licence request is separate and does not start a bundle download.</p>
                         <p class="artifact-meta">Current release: <strong id="rel-version-2">latest</strong>. Free download; you also need a free <a href="register.html">licence</a> to activate. Requires Docker and Docker Compose v2.</p>
                     </article>
                     <article class="artifact-card">
                         <h3>Kubernetes material</h3>
                         <p>The Helm chart ships inside the bundle under <code>helm/</code> for platform teams planning OpenShift or Kubernetes deployment.</p>
                         <div class="card-actions">
-                            <a href="download.html#install" class="button button-quiet">Read install guide</a>
+                            <a href="help/install-local.html" class="button button-quiet">Read install guide</a>
                         </div>
                     </article>
                     <article class="artifact-card">
@@ -509,7 +529,7 @@
                     <p class="section-description">Earlier Community Edition bundles, kept for reference and reproducible installs. Always prefer the current release above unless you have a specific reason to pin an older one.</p>
                     <ul id="old-versions-list" class="old-versions-list" style="list-style:none;padding:0;margin:0;"></ul>
                 </div>
-                <p class="section-description" style="margin-top:24px;">Tessallite Community Edition is free under the <strong><a href="legal.html">Tessallite Community Licence</a></strong>. The full terms (and all <a href="legal.html">licence &amp; legal documents</a>) are being finalised; the current licence also ships with your download. Questions? <a href="mailto:info@tessallite.io?subject=Community%20Licence">info@tessallite.io</a>.</p>
+                <p class="section-description" style="margin-top:24px;">Tessallite Community Edition is free under the <strong><a href="legal.html">Tessallite Community Licence</a></strong>. The full terms &mdash; and all <a href="legal.html">licence &amp; legal documents</a>, including the source-available and open-code terms &mdash; are published in the legal centre; the current licence also ships with your download. Questions? <a href="mailto:info@tessallite.io?subject=Community%20Licence">info@tessallite.io</a>.</p>
             </div>
         </section>
 
@@ -525,27 +545,44 @@
                         <li>The evidence pack is included under <code>evidence/</code> for review before rollout.</li>
                     </ul>
                 </div>
-                <pre class="code-panel"><code># integrity: checksums of every file
-sha256sum -c SHA256SUMS
+                <pre class="code-panel"><code># Step 1: download the archive and its two detached verification files.
+# The companion filenames append to the FULL archive name, so the checksum
+# manifest names the .tar.gz itself and can be checked before extracting.
+V=X.Y.Z
+curl -LO https://downloads.tessallite.io/tessallite-community-$V.tar.gz
+curl -LO https://downloads.tessallite.io/tessallite-community-$V.tar.gz.SHA256SUMS
+curl -LO https://downloads.tessallite.io/tessallite-community-$V.tar.gz.SHA256SUMS.sig
 
-# authenticity: verify the release signature
-python3 - <<'PY'
-import base64
+# Step 2: verify the archive integrity BEFORE extracting.
+# The manifest is a single `sha256sum -c` line covering the archive itself.
+sha256sum -c tessallite-community-$V.tar.gz.SHA256SUMS
+
+# Step 3: verify the release signature over the exact manifest bytes.
+# Prerequisite: pip install cryptography
+# The .sig file is two lines: the signing key id, then the base64 signature.
+pip install cryptography
+python3 - "$V" <<'PY'
+import base64, sys
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
+V = sys.argv[1]
 PUB = "/by3PGaeLD425bBkMrAbD2NeHROHyjLHVA37pS5w3+0="
-sig = base64.b64decode(open("SHA256SUMS.sig").read().splitlines()[1])
+sig = base64.b64decode(
+    open(f"tessallite-community-{V}.tar.gz.SHA256SUMS.sig").read().splitlines()[1])
 Ed25519PublicKey.from_public_bytes(base64.b64decode(PUB)).verify(
     sig,
-    open("SHA256SUMS", "rb").read(),
+    open(f"tessallite-community-{V}.tar.gz.SHA256SUMS", "rb").read(),
 )
-print("signature OK")
-PY</code></pre>
+print("signature OK -- safe to extract")
+PY
+
+# Step 4: extract only after both checks pass.
+tar -xzf tessallite-community-$V.tar.gz</code></pre>
             </div>
             <div class="container">
                 <div class="security-grid">
                     <article class="security-card">
                         <h3>Signed artifacts</h3>
-                        <p>The archive, checksum manifest, and detached signature let teams verify that the release has not been altered.</p>
+                        <p>Two detached files are published alongside the archive: <code>&lt;archive&gt;.tar.gz.SHA256SUMS</code> (a checksum manifest of the archive itself) and its Ed25519 signature <code>.tar.gz.SHA256SUMS.sig</code>. Both are named after the full archive, so teams verify integrity and authenticity <em>before</em> extraction.</p>
                     </article>
                     <article class="security-card">
                         <h3>Offline licence checks</h3>
@@ -586,7 +623,7 @@ PY</code></pre>
                 <div>
                     <p class="section-eyebrow">Install command flow</p>
                     <h2 class="section-title">Unpack, add your licence, start the stack.</h2>
-                    <p class="section-description">Replace <code>X.Y.Z</code> with the release version shown on this page: <strong id="rel-version-3">latest</strong>.</p>
+                    <p class="section-description"><a href="#security">Verify the archive</a> first, then replace <code>X.Y.Z</code> with the release version shown on this page: <strong id="rel-version-3">latest</strong>.</p>
                 </div>
                 <pre class="code-panel"><code>tar -xzf tessallite-community-X.Y.Z.tar.gz
 cd tessallite-community-X.Y.Z
@@ -624,6 +661,34 @@ cp /path/to/your-license.json ./license.json
             </div>
         </section>
 
+        <section id="maturity" class="section-mint">
+            <div class="container">
+                <div class="section-header reveal">
+                    <p class="section-eyebrow">Capability maturity</p>
+                    <h2 class="section-title">Stable, beta, and preview capabilities.</h2>
+                    <p class="section-description">Core semantic modelling, BI access via the JDBC and XMLA protocols, query acceleration, row-level security, and multi-tenant isolation are stable and acceptance-tested. The Headless REST API, column-level security, the AI conversational agent, and several other capabilities are implemented and available but are Beta &mdash; unit-tested, with acceptance testing still in progress. The cards below list exactly what is stable and what carries a maturity qualification. Both Community and Enterprise share the same codebase and the same maturity status for every feature.</p>
+                </div>
+                <div class="licence-scope-grid reveal">
+                    <article class="scope-card">
+                        <h3>Beta</h3>
+                        <p>Implemented end to end and unit-tested, but acceptance testing is in progress. Includes: the Headless REST API, column-level security (data tags), the AI conversational agent, SSO (SAML/OIDC), comprehensive audit logging, the KPI system, the Excel task-pane add-in, multi-calendar support, semi-additive measures, the webhook event system, the embed API, and YAML/dbt model import. Evaluate these; do not rely on them contractually for production until they are promoted to stable.</p>
+                    </article>
+                    <article class="scope-card">
+                        <h3>Preview connectors</h3>
+                        <p>PostgreSQL and BigQuery are stable. Snowflake, Redshift, SQL Server, and Spark/Hive are implemented and available but require environment-specific acceptance validation. Connect and evaluate; report issues.</p>
+                    </article>
+                    <article class="scope-card">
+                        <h3>Integrations (dry-run only)</h3>
+                        <p>Collibra and Solidatus integrations support mapping, schema, admin UI, and dry-run export. Live synchronisation is not yet available; the connectors will indicate this clearly.</p>
+                    </article>
+                    <article class="scope-card">
+                        <h3>Stable core</h3>
+                        <p>Semantic modelling, dimension and measure definitions, aggregate and pocket-table acceleration, BI access via the JDBC and XMLA protocols, row-level security, multi-tenant isolation, and the model builder UI are stable and acceptance-tested. The Headless REST API, column-level security, and the AI conversational agent are Beta (see the Beta card); they are available but not yet acceptance-tested.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
         <section id="get-started" class="cta section-green">
             <div class="container center invert reveal">
                 <h2 class="cta-title">Need the licence first?</h2>
@@ -641,14 +706,14 @@ cp /path/to/your-license.json ./license.json
             <div class="footer-brand">
                 <img src="assets/logos/png/logo-monochrome-white.png" alt="Tessallite" height="32">
                 <p class="footer-tagline">Trusted Business Answers</p>
-                <p class="footer-created">Created by <a href="mailto:mo@tessallite.io" class="footer-created-link">Mohammed Othman</a></p>
+                <p class="footer-created">A product of <a href="mailto:info@tessallite.io" class="footer-created-link">Tessallite Ltd</a></p>
             </div>
             <div class="link-group">
                 <h4>Get started</h4>
                 <ul>
                     <li><a href="register.html">Get a licence</a></li>
                     <li><a href="download.html">Download</a></li>
-                    <li><a href="download.html#install">Install guide</a></li>
+                    <li><a href="help/install-local.html">Install guide</a></li>
                 </ul>
             </div>
             <div class="link-group">
@@ -685,8 +750,9 @@ cp /path/to/your-license.json ./license.json
 
     <script src="config.js"></script>
     <script>
-        // Set at publish time (or via a small config.js). Defaults to a placeholder so the
-        // page renders before the tessallite-io bucket and release version are wired.
+        // Set at publish time (or via a small config.js). Missing or placeholder
+        // values keep the download CTA disabled instead of sending download-seeking
+        // visitors to licence registration.
         var DOWNLOAD_BASE = window.TESSALLITE_DOWNLOAD_URL || "";
         var VERSION = window.TESSALLITE_VERSION || "latest";
         ["rel-version", "rel-version-2", "rel-version-3"].forEach(function (id) {
@@ -694,14 +760,81 @@ cp /path/to/your-license.json ./license.json
             if (el) el.textContent = VERSION;
         });
         var link = document.getElementById("bundle-link");
-        var downloadConfigured = DOWNLOAD_BASE && DOWNLOAD_BASE.indexOf("REPLACE-WITH") === -1;
-        link.href = downloadConfigured ? DOWNLOAD_BASE.replace(/\/$/, "") + "/tessallite-community-" + VERSION + ".tar.gz" : "register.html";
-        if (downloadConfigured) {
-            link.textContent = "Download Community";
+        var downloadStatus = document.getElementById("download-unavailable");
+
+        function isPlaceholder(value) {
+            return !value || String(value).indexOf("REPLACE-WITH") !== -1 || String(value).toLowerCase() === "latest";
         }
-        if (!downloadConfigured) {
-            link.textContent = "Get licence for download";
+
+        function validDownloadUrl(url) {
+            try {
+                var parsed = new URL(url, window.location.href);
+                return parsed.protocol === "https:" &&
+                    parsed.pathname.indexOf("tessallite-community-") !== -1 &&
+                    parsed.pathname.slice(-7) === ".tar.gz" &&
+                    parsed.href.indexOf("REPLACE-WITH") === -1;
+            } catch (e) {
+                return false;
+            }
         }
+
+        function validCompanionUrl(url, suffix) {
+            try {
+                var parsed = new URL(url, window.location.href);
+                return parsed.protocol === "https:" &&
+                    parsed.pathname.indexOf("tessallite-community-") !== -1 &&
+                    parsed.pathname.slice(-suffix.length) === suffix &&
+                    parsed.href.indexOf("REPLACE-WITH") === -1;
+            } catch (e) {
+                return false;
+            }
+        }
+
+        function setDownloadUnavailable(message) {
+            if (!link) return;
+            link.href = "#download-unavailable";
+            link.textContent = "Download unavailable";
+            link.setAttribute("aria-disabled", "true");
+            link.setAttribute("rel", "nofollow");
+            ["bundle-sums", "bundle-sig"].forEach(function (id) {
+                var el = document.getElementById(id);
+                if (!el) return;
+                el.href = "#download-unavailable";
+                el.setAttribute("hidden", "hidden");
+            });
+            if (downloadStatus) downloadStatus.textContent = message;
+        }
+
+        function setDownloadAvailable(url, version, sumsUrl, sigUrl) {
+            if (!link || !validDownloadUrl(url)) return false;
+            if (!validCompanionUrl(sumsUrl, ".tar.gz.SHA256SUMS") ||
+                    !validCompanionUrl(sigUrl, ".tar.gz.SHA256SUMS.sig")) {
+                return false;
+            }
+            link.href = url;
+            link.textContent = "Download Tessallite Community " + (version ? "v" + version : "");
+            link.removeAttribute("aria-disabled");
+            link.removeAttribute("rel");
+            var sumsLink = document.getElementById("bundle-sums");
+            var sigLink = document.getElementById("bundle-sig");
+            if (sumsLink) {
+                sumsLink.href = sumsUrl;
+                sumsLink.removeAttribute("hidden");
+            }
+            if (sigLink) {
+                sigLink.href = sigUrl;
+                sigLink.removeAttribute("hidden");
+            }
+            if (downloadStatus) {
+                downloadStatus.textContent = "The signed release bundle is available with checksum and signature companions. Requesting a licence is a separate activation step.";
+            }
+            return true;
+        }
+
+        // F-039-01: do not enable the CTA from config.js VERSION alone. Only
+        // release-info.html (written when tar + SHA256SUMS + .sig are in the
+        // bucket) can turn the button on.
+        setDownloadUnavailable("The signed release bundle is not linked until checksum and signature companions are published beside it. The licence request is separate and does not start a bundle download.");
 
         function esc(value) {
             return String(value == null ? "" : value).replace(/[&<>"]/g, function (char) {
@@ -746,6 +879,8 @@ cp /path/to/your-license.json ./license.json
                 if (!info) return;
                 var version = info.getAttribute("data-version");
                 var url = info.getAttribute("href") || info.getAttribute("data-url");
+                var sumsUrl = info.getAttribute("data-sums");
+                var sigUrl = info.getAttribute("data-sig");
                 if (version) {
                     ["rel-version", "rel-version-2", "rel-version-3"].forEach(function (id) {
                         var el = document.getElementById(id);
@@ -753,11 +888,10 @@ cp /path/to/your-license.json ./license.json
                     });
                 }
                 var dl = document.getElementById("bundle-link");
-                if (dl && url) {
-                    dl.href = url;
-                    dl.textContent = "Download Tessallite Community " + (version ? "v" + version : "");
-                    dl.removeAttribute("rel");
+                if (dl && url && setDownloadAvailable(url, version, sumsUrl, sigUrl)) {
+                    return;
                 }
+                setDownloadUnavailable("The release metadata is missing checksum/signature companions, so the download is not linked from this page. The licence request remains separate.");
             })
             .catch(function () {});
 

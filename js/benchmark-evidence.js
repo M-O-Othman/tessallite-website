@@ -157,7 +157,7 @@
             // F-04: surface the enforced per-scale cost ceiling honesty note.
             if (correctnessTarget) {
                 correctnessTarget.textContent =
-                    'Correctness verified against the BigQuery source baseline.';
+                    'Correctness verified: accelerated answers match the raw source query results.';
             }
             if (bytesNoteTarget) {
                 const cap = manifest.maximum_bytes_billed;

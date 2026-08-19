@@ -5,7 +5,7 @@
   "declared_scale": "SF1000",
   "correctness_verified": true,
   "maximum_bytes_billed": 2199023255552,
-  "maximum_bytes_billed_note": "Live A/B runs were capped at 2 TiB maximum_bytes_billed per query; headline per-question byte figures are cache-immune BigQuery dry-runs (use_query_cache=false), so they reflect data to scan, not a cached read.",
+  "maximum_bytes_billed_note": "Live A/B runs were capped at 2 TiB maximum_bytes_billed per query; headline per-question byte figures are cache-immune BigQuery dry-runs (use_query_cache=false), so they reflect data to scan, not a cached read. Bug-7567: live query-log bytes_processed was 0 on all A/B runs; cost and data-scanned charts use the separate dry-run byte estimates (tpcds-sf1000-bytes-matrix.json), not live-captured bytes.",
   "workload": {
     "label": "TPC-DS-derived SF1000 retail analytics workload",
     "source_engine": "BigQuery",
@@ -22,7 +22,7 @@
     "tessallite_version": "1.1.4 (query-router build 1fae474a)",
     "model_version": "tpcds_retail_sf1000",
     "seed_state": "14 maintained aggregates materialised; 2 governed named lists",
-    "correctness_tolerance": "relative 1e-6, absolute 0.01, unordered set-equality",
+    "correctness_tolerance": "relative 1e-6, absolute 0.01, unordered set-equality (ON-vs-OFF comparison; independent BigQuery baseline tie-out not measured)",
     "dataset_facts": "store_sales = 2,879,987,999 rows, 24 tables, 0 load errors"
   },
   "report_url": "tpcds-sf1000-report.html",

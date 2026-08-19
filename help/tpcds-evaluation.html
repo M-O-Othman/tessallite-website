@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Evaluate Tessallite on TPC-DS — Tessallite</title>
-    <meta name="description" content="Reproduce the Tessallite terabyte benchmark yourself: what TPC-DS is, the SF1 and SF1000 datasets, prerequisites, how to build the model, and the curated business questions to run raw versus accelerated.">
+    <meta name="description" content="Inspect the Tessallite terabyte benchmark evidence and run your own TPC-DS evaluation: what TPC-DS is, the SF1 and SF1000 datasets, prerequisites, how to build the model, and the curated business questions to run raw versus accelerated. The public package is evidence, not a runnable reproduction kit.">
     <link rel="icon" type="image/png" href="../assets/logos/png/favicon.png">
     <link rel="stylesheet" href="../css/brand.css">
     <link rel="stylesheet" href="../css/style.css">
@@ -98,17 +98,17 @@
             <div class="container guide-hero-grid">
                 <div>
                     <p class="eyebrow">Evaluate on TPC-DS</p>
-                    <h1 class="hero-title">Reproduce the terabyte result yourself.</h1>
-                    <p class="guide-copy">TPC-DS is the standard retail and e-commerce benchmark for data-warehouse analytics. This guide shows how to put Tessallite in front of a TPC-DS dataset &mdash; from a 1&nbsp;GB laptop scale to a full terabyte &mdash; and ask the same everyday business questions the raw way and the accelerated way, so you can verify the cost and the answers for yourself.</p>
+                    <h1 class="hero-title">Inspect the terabyte result, then run your own evaluation.</h1>
+                    <p class="guide-copy">TPC-DS is the standard retail and e-commerce benchmark for decision-support analytics. You can inspect the exact evidence behind our published SF1000 result &mdash; the report, the per-question byte and route matrices, and the live A/B records &mdash; and this guide shows how to put Tessallite in front of your own TPC-DS dataset, from a 1&nbsp;GB laptop scale to a full terabyte, and ask the same everyday questions the raw way and the accelerated way. Because the internal runner, seed, and complete query suite are not part of the public package, your run is an independent evaluation on your own environment rather than a byte-for-byte replay; the absolute numbers depend on your platform, region, and pricing, while the shape &mdash; a tiny maintained summary returning the identical answer &mdash; holds.</p>
                     <div class="guide-actions">
-                        <a href="#reproduce" class="button button-primary">How to reproduce it</a>
-                        <a href="../tpcds-sf1000-report.html" class="button button-quiet">Read the published result</a>
+                        <a href="#reproduce" class="button button-primary">Run your own evaluation</a>
+                        <a href="../tpcds-sf1000-report.html" class="button button-quiet">Inspect the published result</a>
                     </div>
                 </div>
                 <aside class="status-card" aria-label="At a glance">
                     <div class="status-row"><span>Workload</span><span>TPC-DS-derived retail analytics</span></div>
                     <div class="status-row"><span>Scales</span><span>SF1 (~1&nbsp;GB), SF100 (~100&nbsp;GB), SF1000 (~1&nbsp;TB)</span></div>
-                    <div class="status-row"><span>You provide</span><span>A source warehouse with TPC-DS data and a Tessallite deployment</span></div>
+                    <div class="status-row"><span>You provide</span><span>A source database with TPC-DS data and a Tessallite deployment</span></div>
                     <div class="status-row"><span>You measure</span><span>Cost, data scanned, route, and answer correctness &mdash; raw vs accelerated</span></div>
                 </aside>
             </div>
@@ -119,7 +119,7 @@
                 <div class="section-header">
                     <p class="section-eyebrow">What it is</p>
                     <h2 class="section-title">A standard dataset, used the honest way.</h2>
-                    <p class="section-description">TPC-DS models a large retailer selling through store, catalogue, and web channels. It is widely used to test the performance of systems built for data warehousing and analytics, because the schema and the questions look like a real business. Tessallite sits in front of your warehouse: the warehouse stays the source of truth, and Tessallite adds governed modelling, multi-protocol access, route selection, and transparent acceleration.</p>
+                    <p class="section-description">TPC-DS models a large retailer selling through store, catalogue, and web channels. It is widely used to test the performance of analytical and decision-support systems, because the schema and the questions look like a real business. Tessallite sits in front of your source database: the source stays the system of truth, and Tessallite adds governed modelling, multi-protocol access, route selection, and transparent acceleration.</p>
                 </div>
                 <table class="scale-table">
                     <thead>
@@ -142,7 +142,7 @@
                 <div class="section-header">
                     <p class="section-eyebrow">What to expect</p>
                     <h2 class="section-title">The same answer, for a fraction of a cent.</h2>
-                    <p class="section-description">These are the headline figures from the published SF1000 run on BigQuery. When you reproduce it, your absolute numbers will depend on your warehouse, region, and pricing &mdash; but the shape holds: the accelerated route reads a tiny maintained summary instead of the whole terabyte, and returns the identical answer.</p>
+                    <p class="section-description">These are the headline figures from the published SF1000 run on BigQuery. When you run your own evaluation, your absolute numbers will depend on your source platform, region, and pricing &mdash; but the shape holds: the accelerated route reads a tiny maintained summary instead of the whole terabyte, and returns the identical answer.</p>
                 </div>
                 <div class="stat-band">
                     <article class="stat-card">
@@ -170,8 +170,8 @@
                 </div>
                 <div class="card-grid">
                     <article class="doc-card">
-                        <h3>A source warehouse</h3>
-                        <p>A warehouse you can load TPC-DS data into and that Tessallite can read through a governed connection. The published run used BigQuery; any supported source works.</p>
+                        <h3>A source database</h3>
+                        <p>A source database you can load TPC-DS data into and that Tessallite can read through a governed connection. The published run used BigQuery; any supported source works.</p>
                         <ul class="doc-list">
                             <li>Read access for Tessallite's connection.</li>
                             <li>A separate write target for materialised aggregates.</li>
@@ -179,7 +179,7 @@
                     </article>
                     <article class="doc-card">
                         <h3>TPC-DS data</h3>
-                        <p>Generate it with the public TPC-DS toolkit (<code>dsdgen</code>) at the scale you want, then load the table files into your warehouse. Start at SF1.</p>
+                        <p>Generate it with the public TPC-DS toolkit (<code>dsdgen</code>) at the scale you want, then load the table files into your source database. Start at SF1.</p>
                         <ul class="doc-list">
                             <li>24 TPC-DS tables, standard schema.</li>
                             <li>Keep the generated data private to your environment.</li>
@@ -200,16 +200,16 @@
         <section id="reproduce" class="section-mint">
             <div class="container">
                 <div class="section-header">
-                    <p class="section-eyebrow">Reproduce it</p>
+                    <p class="section-eyebrow">Run your own evaluation</p>
                     <h2 class="section-title">Six steps from raw data to a verified result.</h2>
-                    <p class="section-description">Work up the scale ladder in order &mdash; SF1, then SF100, then SF1000. Prove the whole flow at SF1 first; the larger scales are the same steps against a bigger dataset.</p>
+                    <p class="section-description">These steps let you reproduce the <em>method</em> on your own data &mdash; they are not a packaged replay of our exact run. Work up the scale ladder in order &mdash; SF1, then SF100, then SF1000. Prove the whole flow at SF1 first; the larger scales are the same steps against a bigger dataset.</p>
                 </div>
                 <div class="story-lane">
-                    <article class="story-step"><span class="story-number">1</span><h3>Load the data</h3><p>Generate TPC-DS data with <code>dsdgen</code> at SF1 and load the 24 tables into your warehouse. This is your source of truth and your raw-cost baseline.</p></article>
+                    <article class="story-step"><span class="story-number">1</span><h3>Load the data</h3><p>Generate TPC-DS data with <code>dsdgen</code> at SF1 and load the 24 tables into your source database. This is your system of truth and your raw-cost baseline.</p></article>
                     <article class="story-step"><span class="story-number">2</span><h3>Build the model</h3><p>Connect the source, add the tables, and define the semantic model: <code>store_sales</code> as the fact, LEFT joins to the dimensions, and the business measures (net sales, gross margin, return rate).</p></article>
                     <article class="story-step"><span class="story-number">3</span><h3>Seed acceleration</h3><p>Define the aggregates and pockets that match the recurring questions &mdash; for example monthly sales by channel and category &mdash; and let Tessallite maintain them.</p></article>
                     <article class="story-step"><span class="story-number">4</span><h3>Connect a tool</h3><p>Point Excel, Power BI, a JDBC client, the API, or the agent at the gateway. Every tool reads the same governed model and gets the same answer.</p></article>
-                    <article class="story-step"><span class="story-number">5</span><h3>Run raw vs accelerated</h3><p>Ask each business question twice: once as direct warehouse SQL (your baseline) and once through Tessallite. Turn the warehouse result cache off so every run executes for real.</p></article>
+                    <article class="story-step"><span class="story-number">5</span><h3>Run raw vs accelerated</h3><p>Ask each business question twice: once as direct source SQL (your baseline) and once through Tessallite. Turn the source-side result cache off so every run executes for real.</p></article>
                     <article class="story-step"><span class="story-number">6</span><h3>Check and compare</h3><p>Confirm the accelerated answer equals the raw answer within tolerance, then compare bytes scanned and cost. Record the route Tessallite chose for each question.</p></article>
                 </div>
             </div>
@@ -220,7 +220,7 @@
                 <div class="section-header">
                     <p class="section-eyebrow">Sample questions</p>
                     <h2 class="section-title">Ask the same thing, two ways.</h2>
-                    <p class="section-description">These are real questions from the curated suite. On the left is the direct warehouse SQL you run as the baseline; on the right is the equivalent question against the Tessallite model. Same answer, far less to read. Replace <code>{project}.{dataset}</code> with your own warehouse location.</p>
+                    <p class="section-description">These are real questions from the curated suite. On the left is the direct source SQL you run as the baseline; on the right is the equivalent question against the Tessallite model. Same answer, far less to read. Replace <code>{project}.{dataset}</code> with your own source location.</p>
                 </div>
 
                 <article class="q-card">
@@ -228,7 +228,7 @@
                     <p>Net sales by month and sales channel for 2001. The baseline unions the three sales channels and joins the date dimension; the Tessallite query is a single governed statement.</p>
                     <div class="code-pair">
                         <div class="code-block">
-                            <span class="code-label">Direct warehouse SQL (baseline)</span>
+                            <span class="code-label">Direct source SQL (baseline)</span>
                             <pre><code>SELECT d.d_year  AS sales_year,
        d.d_moy   AS sales_month,
        channel,
@@ -270,7 +270,7 @@ ORDER BY year, month, sales_channel</code></pre>
                     <p>Rank product categories by net sales for 2001 across all channels.</p>
                     <div class="code-pair">
                         <div class="code-block">
-                            <span class="code-label">Direct warehouse SQL (baseline)</span>
+                            <span class="code-label">Direct source SQL (baseline)</span>
                             <pre><code>SELECT i.i_category AS item_category,
        SUM(net_sales) AS net_sales
 FROM (
@@ -311,7 +311,7 @@ LIMIT 20</code></pre>
                     <p>Stores with the highest return rate in 2001. An exception-style question that stays on the governed source route until a matching aggregate is seeded &mdash; useful for seeing how Tessallite reports the route it chose.</p>
                     <div class="code-pair">
                         <div class="code-block">
-                            <span class="code-label">Direct warehouse SQL (baseline)</span>
+                            <span class="code-label">Direct source SQL (baseline)</span>
                             <pre><code>SELECT s.s_state AS store_state,
        s.s_store_name AS store_name,
        SAFE_DIVIDE(SUM(sr.sr_return_amt),
@@ -363,7 +363,7 @@ LIMIT 20</code></pre>
                     <article class="doc-card">
                         <h3>Measurement discipline</h3>
                         <ul class="doc-list">
-                            <li>Turn the warehouse result cache off so every run executes for real.</li>
+                            <li>Turn the source-side result cache off so every run executes for real.</li>
                             <li>Run each question several times; discard a warmup run.</li>
                             <li>Record P50 and P95 latency, variance, bytes processed, and the route chosen.</li>
                             <li>Note the date, region, compute model, and versions with the run.</li>
@@ -372,7 +372,7 @@ LIMIT 20</code></pre>
                     <article class="doc-card">
                         <h3>Correctness first</h3>
                         <ul class="doc-list">
-                            <li>Compare each accelerated answer back to the raw warehouse answer before it counts.</li>
+                            <li>Compare each accelerated answer back to the raw source answer before it counts.</li>
                             <li>Use an explicit tolerance, and compare row order exactly for ranked or top-N questions.</li>
                             <li>Pin each measure to the exact source columns so the accelerated value equals the baseline.</li>
                             <li>If an accelerated answer ever disagrees, treat it as a failure, not a speed-up.</li>
@@ -393,10 +393,10 @@ LIMIT 20</code></pre>
 
         <section class="cta section-green">
             <div class="container center invert">
-                <h2 class="cta-title">See the proof, then run it yourself.</h2>
-                <p class="cta-subtitle">Read the measured terabyte result, take the full report with its raw run records, and get Tessallite to reproduce it on your own data.</p>
+                <h2 class="cta-title">Inspect the evidence, then evaluate on your own data.</h2>
+                <p class="cta-subtitle">The evidence package contains the measured terabyte report and its raw run records &mdash; the PDF, the per-question byte and route matrices, and the A/B result file &mdash; for you to inspect. It is an evidence package, not a runnable reproduction kit; use the steps above to evaluate Tessallite on your own TPC-DS data.</p>
                 <div class="cta-actions">
-                    <a href="../assets/benchmarks/TPC-DS-Performance-Report.zip" class="button button-secondary" download>Download the report (PDF + data)</a>
+                    <a href="../assets/benchmarks/TPC-DS-Performance-Report.zip" class="button button-secondary" download>Download the evidence package (PDF + data)</a>
                     <a href="../benchmarks.html" class="button button-white-outline">Read the methodology</a>
                 </div>
             </div>
@@ -408,7 +408,7 @@ LIMIT 20</code></pre>
             <div class="footer-brand">
                 <img src="../assets/logos/png/logo-monochrome-white.png" alt="Tessallite" height="32">
                 <p class="footer-tagline">Trusted Business Answers</p>
-                <p class="footer-created">Created by <a href="mailto:mo@tessallite.io" class="footer-created-link">Mohammed Othman</a></p>
+                <p class="footer-created">A product of <a href="mailto:info@tessallite.io" class="footer-created-link">Tessallite Ltd</a></p>
             </div>
             <div class="link-group">
                 <h4>Docs</h4>

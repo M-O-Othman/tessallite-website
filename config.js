@@ -10,4 +10,4 @@ window.TESSALLITE_ISSUER_URL = "https://issuer.tessallite.io";
 // Bundle is public at https://downloads.tessallite.io/tessallite-community-<version>.tar.gz
 // Direct public download of the free bundle (the licence is registered for separately).
 window.TESSALLITE_DOWNLOAD_URL = "https://downloads.tessallite.io";
-window.TESSALLITE_VERSION = "1.1.5";
+window.TESSALLITE_VERSION = "1.1.6";

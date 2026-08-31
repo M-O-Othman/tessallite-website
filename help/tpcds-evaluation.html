@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Evaluate Tessallite on TPC-DS — Tessallite</title>
-    <meta name="description" content="Inspect the Tessallite terabyte benchmark evidence and run your own TPC-DS evaluation: what TPC-DS is, the SF1 and SF1000 datasets, prerequisites, how to build the model, and the curated business questions to run raw versus accelerated. The public package is evidence, not a runnable reproduction kit.">
+    <meta name="description" content="Inspect the historical Tessallite terabyte benchmark evidence and run a current SF1 or SF100 TPC-DS evaluation: what TPC-DS is, prerequisites, how to build the model, and the curated business questions to run raw versus accelerated. The public package is evidence, not a runnable reproduction kit.">
     <link rel="icon" type="image/png" href="../assets/logos/png/favicon.png">
     <link rel="stylesheet" href="../css/brand.css">
     <link rel="stylesheet" href="../css/style.css">
@@ -98,16 +98,16 @@
             <div class="container guide-hero-grid">
                 <div>
                     <p class="eyebrow">Evaluate on TPC-DS</p>
-                    <h1 class="hero-title">Inspect the terabyte result, then run your own evaluation.</h1>
-                    <p class="guide-copy">TPC-DS is the standard retail and e-commerce benchmark for decision-support analytics. You can inspect the exact evidence behind our published SF1000 result &mdash; the report, the per-question byte and route matrices, and the live A/B records &mdash; and this guide shows how to put Tessallite in front of your own TPC-DS dataset, from a 1&nbsp;GB laptop scale to a full terabyte, and ask the same everyday questions the raw way and the accelerated way. Because the internal runner, seed, and complete query suite are not part of the public package, your run is an independent evaluation on your own environment rather than a byte-for-byte replay; the absolute numbers depend on your platform, region, and pricing, while the shape &mdash; a tiny maintained summary returning the identical answer &mdash; holds.</p>
+                    <h1 class="hero-title">Inspect the historical terabyte result, then run a current evaluation.</h1>
+                    <p class="guide-copy">TPC-DS is the standard retail and e-commerce benchmark for decision-support analytics. You can inspect the exact evidence behind our published SF1000 result &mdash; the report, the per-question byte and route matrices, and the live A/B records &mdash; and this guide shows how to put Tessallite in front of your own current SF1 or SF100 TPC-DS dataset and ask the same everyday questions the raw way and the accelerated way. The SF1000 exercise was a one-off and is retired; its public report is historical evidence, not an execution path. Because the internal runner, seed, and complete query suite are not part of the public package, your run is an independent evaluation rather than a byte-for-byte replay; the absolute numbers depend on your platform, region, and pricing.</p>
                     <div class="guide-actions">
-                        <a href="#reproduce" class="button button-primary">Run your own evaluation</a>
+                        <a href="#reproduce" class="button button-primary">Run a current evaluation</a>
                         <a href="../tpcds-sf1000-report.html" class="button button-quiet">Inspect the published result</a>
                     </div>
                 </div>
                 <aside class="status-card" aria-label="At a glance">
                     <div class="status-row"><span>Workload</span><span>TPC-DS-derived retail analytics</span></div>
-                    <div class="status-row"><span>Scales</span><span>SF1 (~1&nbsp;GB), SF100 (~100&nbsp;GB), SF1000 (~1&nbsp;TB)</span></div>
+                    <div class="status-row"><span>Scales</span><span>SF1 (~1&nbsp;GB), SF100 (~100&nbsp;GB); SF1000 historical evidence only</span></div>
                     <div class="status-row"><span>You provide</span><span>A source database with TPC-DS data and a Tessallite deployment</span></div>
                     <div class="status-row"><span>You measure</span><span>Cost, data scanned, route, and answer correctness &mdash; raw vs accelerated</span></div>
                 </aside>
@@ -128,11 +128,11 @@
                     <tbody>
                         <tr><td>SF1</td><td>~1 GB</td><td>Development and smoke validation. The first path for schema, load, model, acceleration, and query checks. Runs comfortably on a laptop-class deployment.</td></tr>
                         <tr><td>SF100</td><td>~100 GB</td><td>Rehearsal scale. Use after SF1 is stable to validate load time, model ergonomics, and acceleration behaviour.</td></tr>
-                        <tr><td>SF1000</td><td>~1 TB (2.88 billion sales records)</td><td>Flagship scale. The published Tessallite result was measured here, on BigQuery.</td></tr>
+                        <tr><td>SF1000</td><td>~1 TB (2.88 billion sales records)</td><td>Historical one-off result. The published Tessallite evidence was measured here on BigQuery; this scale is retired and is not available for execution.</td></tr>
                     </tbody>
                 </table>
                 <div class="notice-panel">
-                    The Tessallite benchmark is <strong>TPC-DS-derived</strong>. It is not an official, audited TPC result, and it does not use the TPC logo. The data is generated with the public TPC-DS toolkit; you generate your own copy to evaluate &mdash; Tessallite does not redistribute the generated data.
+                    <strong>SF1000 is retired.</strong> The published terabyte result remains available as historical evidence. Current evaluation guidance covers SF1 and SF100 only; do not generate, load, or recreate the retired SF1000 dataset. The Tessallite benchmark is <strong>TPC-DS-derived</strong>, not an official, audited TPC result, and it does not use the TPC logo. Tessallite does not redistribute generated data.
                 </div>
             </div>
         </section>
@@ -142,7 +142,7 @@
                 <div class="section-header">
                     <p class="section-eyebrow">What to expect</p>
                     <h2 class="section-title">The same answer, for a fraction of a cent.</h2>
-                    <p class="section-description">These are the headline figures from the published SF1000 run on BigQuery. When you run your own evaluation, your absolute numbers will depend on your source platform, region, and pricing &mdash; but the shape holds: the accelerated route reads a tiny maintained summary instead of the whole terabyte, and returns the identical answer.</p>
+                    <p class="section-description">These are the headline figures from the historical SF1000 run on BigQuery. They remain published evidence, not a current hosted-demo or execution tier. For a current evaluation, use SF1 or SF100; your absolute numbers will depend on your source platform, region, and pricing.</p>
                 </div>
                 <div class="stat-band">
                     <article class="stat-card">
@@ -202,7 +202,7 @@
                 <div class="section-header">
                     <p class="section-eyebrow">Run your own evaluation</p>
                     <h2 class="section-title">Six steps from raw data to a verified result.</h2>
-                    <p class="section-description">These steps let you reproduce the <em>method</em> on your own data &mdash; they are not a packaged replay of our exact run. Work up the scale ladder in order &mdash; SF1, then SF100, then SF1000. Prove the whole flow at SF1 first; the larger scales are the same steps against a bigger dataset.</p>
+                    <p class="section-description">These steps let you reproduce the <em>method</em> on your own data &mdash; they are not a packaged replay of our exact run. Work up the current scale ladder in order &mdash; SF1, then optionally SF100. Prove the whole flow at SF1 first; SF1000 is retired and remains available only as historical evidence.</p>
                 </div>
                 <div class="story-lane">
                     <article class="story-step"><span class="story-number">1</span><h3>Load the data</h3><p>Generate TPC-DS data with <code>dsdgen</code> at SF1 and load the 24 tables into your source database. This is your system of truth and your raw-cost baseline.</p></article>
@@ -381,7 +381,7 @@ LIMIT 20</code></pre>
                     <article class="doc-card">
                         <h3>Scope honestly</h3>
                         <ul class="doc-list">
-                            <li>Work up the scale ladder in order: SF1, then SF100, then SF1000.</li>
+                            <li>For current work, use SF1 first and optionally SF100; SF1000 is historical evidence only.</li>
                             <li>Cap the bytes a single query may bill so a runaway query is caught, not paid for.</li>
                             <li>Label which scale every result came from; never relabel evidence across scales.</li>
                             <li>Call it TPC-DS-derived, not an official audited TPC result.</li>
@@ -394,7 +394,7 @@ LIMIT 20</code></pre>
         <section class="cta section-green">
             <div class="container center invert">
                 <h2 class="cta-title">Inspect the evidence, then evaluate on your own data.</h2>
-                <p class="cta-subtitle">The evidence package contains the measured terabyte report and its raw run records &mdash; the PDF, the per-question byte and route matrices, and the A/B result file &mdash; for you to inspect. It is an evidence package, not a runnable reproduction kit; use the steps above to evaluate Tessallite on your own TPC-DS data.</p>
+                <p class="cta-subtitle">The evidence package contains the historical terabyte report and its raw run records &mdash; the PDF, the per-question byte and route matrices, and the A/B result file &mdash; for you to inspect. It is an evidence package, not a runnable reproduction kit; use the steps above to evaluate Tessallite on your own SF1 or SF100 TPC-DS data.</p>
                 <div class="cta-actions">
                     <a href="../assets/benchmarks/TPC-DS-Performance-Report.zip" class="button button-secondary" download>Download the evidence package (PDF + data)</a>
                     <a href="../benchmarks.html" class="button button-white-outline">Read the methodology</a>

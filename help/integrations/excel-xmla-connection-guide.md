@@ -2,7 +2,7 @@
 title: "Excel XMLA Connection Guide"
 audience: analyst
 area: Integrations
-updated: 2026-07-02
+updated: 2026-08-30
 ---
 
 ![Excel Data Connection Wizard — server credentials step.](../assets/screencaps/connect-excel-wizard.png)
@@ -10,6 +10,14 @@ updated: 2026-07-02
 ## What this covers
 
 Detailed connection reference for Microsoft Excel connecting to Tessallite via the XMLA endpoint on port 8080. For a shorter introduction, see [Connect Excel via XMLA](../getting-started/connect-excel.md).
+
+---
+
+## Prerequisites
+
+Native Excel PivotTables connect to Tessallite's XMLA endpoint using the **OLE DB Provider for Analysis Services** (MSOLAP) — a Microsoft component, not part of Tessallite. Most machines with a full Office/Excel installation already have it, but it is not guaranteed on every machine or every Office channel.
+
+Before connecting, confirm the provider is present: **Data** → **Get Data** → **From Other Sources** → **From Analysis Services** should show the connection wizard without any "provider not found" error at the very first step. If it does not, download and install the current **OLE DB Driver for Analysis Services** from Microsoft (search "OLE DB Driver for Analysis Services download"), matching your Excel's bitness (64-bit Excel needs the x64 driver). Run the installer as Administrator, and reboot if one is pending — a partial or non-elevated install is the most common cause of the driver appearing to install but the connection still failing (see Troubleshooting below).
 
 ---
 
@@ -73,6 +81,16 @@ Right-click anywhere in the PivotTable and select **Refresh** to re-query Tessal
 
 To set automatic refresh: **Data** → **Queries & Connections** → right-click the connection → **Properties** → **Usage** tab → enable **Refresh every N minutes**.
 
+### Saved workbooks and credentials
+
+Excel does **not** store your password inside the `.xlsx` file — only the username and server URL are saved. When you reopen a saved workbook (especially after **Enable Content**), Excel may prompt again for password and catalog via **Microsoft's native MSOLAP connection dialog** (this is Excel/OLE DB UI, not Tessallite).
+
+On some Windows setups that dialog opens **minimised or behind the Excel window**. If Refresh appears to hang with an hourglass and no error:
+
+1. **Alt+Tab** or **minimise Excel** to find the hidden credential dialog.
+2. Re-enter password and catalog, then click OK.
+3. On first connect, save the password if Excel offers it (Windows Credential Manager), so reopen skips the prompt.
+
 ---
 
 ## Manage connection properties
@@ -93,6 +111,8 @@ To set automatic refresh: **Data** → **Queries & Connections** → right-click
 | "Authentication failed" | Wrong credentials | Reset Tessallite password via Admin panel. |
 | "No cubes found" | No published model | Ask Modeller to save and publish the model in Model Builder. |
 | Excel cached a bad connection | Stale connection | Data → Queries & Connections → Delete connection → reconnect from scratch. |
+| "Provider cannot be found. It may not be properly installed." | The MSOLAP OLE DB provider (see Prerequisites above) is missing or only partially registered | Reinstall the OLE DB Driver for Analysis Services as Administrator (use the installer's Repair option if it is already listed in Programs and Features), matching your Excel's bitness, then reboot if a restart is pending before retrying. |
+| Refresh spins (hourglass) after reopening a saved workbook | Excel's native MSOLAP credential dialog opened minimised or behind the workbook, waiting for password/catalog input | Alt+Tab or minimise Excel to find Microsoft's connection dialog (not Tessallite). Re-enter credentials. Save password on first connect if offered. |
 
 ---
 

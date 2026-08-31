@@ -2,7 +2,7 @@
 title: "Excel Connection Problems"
 audience: analyst
 area: Troubleshooting
-updated: 2026-07-02
+updated: 2026-08-30
 ---
 
 ![Excel error dialog when XMLA endpoint is unreachable.](../assets/screencaps/excel-xmla-error-dialog.png)
@@ -35,6 +35,7 @@ Before troubleshooting, verify:
 | "No cubes were found" | No published model in the project | Ask Modeller to publish the model in Model Builder. |
 | Data looks stale | Aggregate not refreshed | Ask Modeller to check aggregate status and run a refresh if status is Stale. |
 | Excel shows error after previously working | Stale cached connection | Data → Queries & Connections → Delete connection → reconnect from scratch. |
+| Refresh spins (hourglass) after reopening a saved PivotTable workbook | Excel's native MSOLAP credential dialog opened minimised or behind the workbook | This is **Microsoft Excel / OLE DB UI**, not Tessallite. Alt+Tab or minimise Excel to find the password/catalog dialog, complete it, then retry Refresh. Save password on first connect if offered. |
 
 ---
 

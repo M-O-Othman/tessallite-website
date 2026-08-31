@@ -2,7 +2,7 @@
 title: "Excel PivotTable Features"
 audience: analyst
 area: Integrations
-updated: 2026-06-14
+updated: 2026-08-29
 ---
 
 ## What this covers
@@ -78,6 +78,8 @@ Reference a single PivotTable value from elsewhere in the workbook with `GETPIVO
 ## Hierarchies and subtotals
 
 Date, geography, and entity hierarchies appear in the field list with working expand/collapse. When you place more than one hierarchy on an axis, Tessallite computes the cross-product of subtotal levels so each subtotal and grand total is correct for additive measures. Non-additive measures (such as a ratio) show a dash in the total row instead of a misleading sum.
+
+Tessallite uses the same stable member identity in the field-list metadata and in plain, subtotal, and grand-total query results. Captions can stay business-friendly without changing that identity, so Excel can match refreshed members to the PivotCache stored in the workbook.
 
 ---
 

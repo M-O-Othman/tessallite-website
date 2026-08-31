@@ -71,7 +71,7 @@ Report Builder assembles a query from governed objects and writes the result to 
 2. Drag objects into the **Rows**, **Columns**, **Values**, and **Filters** zones, or start from a layout in the template picker.
 3. Click **Run**. The result range is written to the active sheet with friendly display names as headers.
 
-Because the add-in queries the deployed model, aggregate routing, calculated measures, and time variants all apply automatically.
+Because the add-in queries the deployed model, aggregate routing, calculated measures, and time variants all apply automatically. Member-list requests use that same deployed definition and never fall back to draft metadata. If discovery fails because the deployed definition is unavailable, the failure is retained in query history as `snapshot_unavailable` so an operator can distinguish deployment repair from an invalid dimension request.
 
 ### Connectionless Values And Local PivotTables
 
@@ -256,6 +256,7 @@ This setting applies only to the default single-value insert actions (the sigma 
 | Numbers differ from the web app | An older sheet result predates a model change, or a formula was calculated while another model was selected | Re-run the report, or select the model named in the formula and click **Refresh values**. |
 | `#NAME?` for every TESSALLITE formula | The custom functions runtime did not register this Excel session (common on Office 2019/2021 perpetual) | Re-insert the add-in from **Insert > My Add-ins > Shared Folder**. A plain Excel restart is not always enough. |
 | The pane works but every formula shows `#VALUE!` after a few seconds, and the server is on `localhost` | The custom functions sandbox is blocked from local network access, or it does not trust the server certificate | Ask your administrator to apply the one-time machine setup described in the plugin README (loopback exemption plus installing the certificate authority into the machine store). |
+| A cell sits at `#GETTING_DATA` for 30 seconds and then shows "Request timed out" | The request never reached the server. On a `localhost` deployment this is the custom functions sandbox blocking local network access | Apply the one-time machine setup described in the plugin README (loopback exemption plus the certificate authority in the machine store), or point the connection profile at the server's real host name instead of `localhost`. Type `=TESSALLITE.DIAG()` to confirm: `FETCH=FAIL` means the server was never reached. |
 | The add-in half-works: formulas respond but the ribbon button is gone, or the reverse | The Office add-in cache has become inconsistent after repeated add and remove cycles | Close Excel, delete the contents of `%LOCALAPPDATA%\Microsoft\Office\16.0\Wef`, reopen Excel, and re-insert the add-in. Sign in again afterwards — clearing the cache also clears the saved session. |
 | A KPI or named list you just created is not in the pane | It has not been deployed yet. The add-in shows the published model only | Save and Deploy the model in the web app, then refresh the pane. To check the draft itself, use the model builder. |
 | A cell shows "Published model unavailable" | The model's published version could not be read | Ask a modeller to deploy the model again, then refresh. The add-in stops here on purpose rather than showing unpublished figures. |

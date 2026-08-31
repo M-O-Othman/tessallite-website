@@ -22,7 +22,7 @@ This article explains how to create, bind, and manage calendar tables.
 
 ## Calendar table requirement rule
 
-Use a physical calendar table only when the calendar or workflow needs one. Standard, fiscal, ISO Week, and Thai Buddhist time variants can use the calendar type on the time hierarchy without a bound table. Retail 4-4-5 and Hijri time variants need a bound physical calendar table. Dense date enumeration, custom business period columns, coverage checks, and role-playing calendar aliases also need a bound table because those workflows join to or inspect real calendar rows.
+Use a physical calendar table only when the calendar or workflow needs one. Standard, fiscal, ISO Week, and Thai Buddhist time variants can use the calendar type on the time hierarchy without a bound table. Retail 4-4-5 and Hijri time variants need a bound physical calendar table. Dense date enumeration, custom business period columns, coverage checks, and calendar dimension aliases also need a bound table because those workflows join to or inspect real calendar rows.
 
 When you bind an existing table, map the real source columns. Do not keep default names such as `date_key` or `year_no` unless those columns actually exist in the source.
 

@@ -1,8 +1,8 @@
 {
-  "assembled_at": "2026-09-15T18:52:46.277494+00:00",
+  "assembled_at": "2026-09-15T22:41:23.526663+00:00",
   "product": "tessallite-website",
   "schema": 1,
-  "site_digest": "6cbc9ea7efd03af9108caeb65175bf891e5f1744359791495b7b2bf6b5e2d965",
-  "source_revision": "b412ea7b53699533b71eafc8513ddcfd438f0d16",
+  "site_digest": "004c657a0f961d8a1c79700993854c7a44fd5e80692177f175b134cbdfe0bbef",
+  "source_revision": "913de9fe4dfcf452e49f5ac5c5a708f04ebe88b9",
   "version": "1.1.7"
 }

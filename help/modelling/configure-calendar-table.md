@@ -159,6 +159,8 @@ This matters because of a quiet failure mode: if some fact dates fall **outside*
 
 Run this whenever you load new fact data, change the calendar's range, or notice a period total looking lower than you expected.
 
+The coverage check is a modelling action, not a reporting one. It reads the physical calendar and fact tables directly, without the persona filtering that applies to normal queries, so it is offered to modellers and administrators only, and it can be pointed only at a table and date column the model already contains. Viewers do not see the button; a request for a table outside the model is refused.
+
 ---
 
 ## Troubleshooting

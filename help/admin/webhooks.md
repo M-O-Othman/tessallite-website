@@ -139,6 +139,10 @@ The *Admin > Webhooks* page provides:
 - **Test delivery** — send a synthetic `webhook.test` event to verify connectivity and signature handling. A chip next to the button reports the outcome: success with the response code, or failure with the server's reason (or the request error if the endpoint could not be reached at all). Clicking Test again clears the previous outcome the moment the new request starts, so a stale result is never left showing during a fresh test.
 - **Rotate secret** — generate a new signing secret. **Requires confirmation**, since the old secret stops working immediately and cannot be recovered: the confirmation dialog names this consequence before you commit. The new secret is shown once so you can copy it to your receiving system.
 
+Saving a different endpoint URL invalidates its previous test outcome. A result
+from a test still running against the old URL is not shown for the new receiver.
+Use **Test delivery** again to verify the new URL after configuring its secret.
+
 ### Delivery history
 
 Click an endpoint row to open its delivery history drawer. Each entry shows:

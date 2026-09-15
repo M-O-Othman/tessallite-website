@@ -363,7 +363,7 @@
                     <p class="benchmark-kicker">Governed analytics, at near-zero cost</p>
                     <h1 class="hero-title">The same answer, for a fraction of the cost &mdash; on a terabyte.</h1>
                     <p class="benchmark-copy">Tessallite answers the questions your business repeats every day &mdash; in Excel, Power BI, the API and the agent &mdash; from a tiny maintained summary instead of re-reading the whole terabyte. On a full terabyte of industry-standard data (TPC-DS, 2.88 billion sales records), that turns hundreds of dollars per thousand runs into a few cents, with the identical answer.</p>
-                    <p class="benchmark-copy">A team running 40 dashboards refreshed hourly asks these questions ~350,000 times a year &mdash; about <strong>$116,000</strong> in BigQuery scan today, about <strong>$18</strong> with Tessallite. Same answers, every tool.</p>
+                    <p class="benchmark-copy">What that means for a year depends on your question mix. The measured run priced three shapes per 1,000 runs: a simple question at <strong>$330</strong> raw and <strong>5 cents</strong> accelerated, a medium one at <strong>$445</strong> and <strong>5 cents</strong>, a heavy one at <strong>$775</strong> and <strong>41 cents</strong>. Project from the shapes your dashboards actually run, not from the simple bar alone.</p>
                     <div class="benchmark-actions">
                         <a href="#results" class="button button-primary">See the results</a>
                         <a href="tpcds-sf1000-report.html" class="button button-quiet">Read the full report</a>
@@ -452,7 +452,7 @@
                 <div class="section-header reveal">
                     <p class="section-eyebrow">Methodology</p>
                     <h2 class="section-title">How we ran it.</h2>
-                    <p class="section-description">The benchmark measures a curated set of buyer-relevant analytical questions mapped to a semantic model, against direct BigQuery baselines and Tessallite's source and aggregate routes. Want to run it on your own data? <a href="help/tpcds-evaluation.html">Follow the TPC-DS evaluation guide</a>.</p>
+                    <p class="section-description">The benchmark measures a curated set of buyer-relevant analytical questions mapped to a semantic model, comparing Tessallite's accelerated route against its own unaccelerated source route on the same BigQuery data. It is an acceleration-on versus acceleration-off comparison; an independent BigQuery baseline tie-out was not measured, and this is not an official audited TPC result. Want to run it on your own data? <a href="help/tpcds-evaluation.html">Follow the TPC-DS evaluation guide</a>.</p>
                 </div>
                 <div class="benchmark-grid reveal">
                     <article class="benchmark-card">
@@ -479,7 +479,7 @@
                 <div class="section-header reveal">
                     <p class="section-eyebrow">What we measured</p>
                     <h2 class="section-title">Cost drivers, route behavior, correctness, and operating effort.</h2>
-                    <p class="section-description">Every number on this page is measured on the published TPC-DS SF1000 / 1 TB run (a one-off test, not the hosted trial) and tied back to the run records linked below. The live trial at cloud.tessallite.io is the SF1 demo.</p>
+                    <p class="section-description">Every number on this page comes from the published TPC-DS SF1000 / 1 TB run (a one-off test, not the hosted trial) and is tied back to the run records linked below. The per-question byte and cost figures are cache-immune BigQuery dry-run estimates rather than live billed bytes; the live A/B legs prove route selection and answer equality. The live trial at cloud.tessallite.io is the SF1 demo.</p>
                 </div>
                 <div class="benchmark-grid reveal">
                     <article class="benchmark-card">
